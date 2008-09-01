@@ -1,0 +1,16 @@
+javascript <<EOM
+(function(){
+var inputElm = document.getElementById('liberator-commandline-command');
+function swapBGColor(event){
+  inputElm.parentNode.style.backgroundColor = event.type=="focus" ? "lightgreen" : "";
+}
+inputElm.addEventListener('focus',swapBGColor,false);
+inputElm.addEventListener('blur', swapBGColor,false);
+})();
+
+function DLsave() {
+      javascript:location.href='http://delicious.com/post?v=4;url='+encodeURIComponent(location.href)+';title='+encodeURIComponent(document.title)
+}
+
+EOM
+

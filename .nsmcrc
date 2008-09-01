@@ -1,0 +1,10 @@
+set honeysnap HOST_LIST 10.254.77.71,10.254.77.2,10.254.77.129,10.254.77.94
+
+# Aliases
+alias ls = list
+alias ll = list
+alias serv = e cat /etc/services | grep 
+alias rp = eval $CPROMPT = "[#{$GREEN}nsm#{$RESET}:" + $basefile.to_s.chomp + "]$ "
+
+eval $CPROMPT = "[#{$GREEN}nsm#{$RESET}:" + $basefile.to_s.chomp + "]$ "
+

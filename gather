@@ -1,0 +1,15 @@
+#!/bin/sh
+
+echo "Gathering dotfiles"
+
+cp -f -v ~/.vimrc .
+cp -f -v ~/.zshrc .
+cp -f -v ~/.screenrc .
+cp -f -rv ~/.vim .
+mkdir -p .ssh
+cp -f -v ~/.ssh/config .ssh/
+mkdir -p .zg
+cp -f -v ~/.zg/zg.conf .zg/
+cp -f -v ~/.nsmcrc .
+cp -f -v ~/.vimperatorrc .
+

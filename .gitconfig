@@ -1,0 +1,13 @@
+[user]
+	name = dakrone
+	email = lee@writequit.org
+
+[core]
+      pager = less -FRSX
+      editor = vim
+
+[color]
+      ui = auto
+
+[merge]
+      tool = vimdiff

@@ -12,4 +12,5 @@ mkdir -p .zg
 cp -f -v ~/.zg/zg.conf .zg/
 cp -f -v ~/.nsmcrc .
 cp -f -v ~/.vimperatorrc .
+cp -f -v ~/.gitconfig .
 

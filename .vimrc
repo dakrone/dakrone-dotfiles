@@ -57,7 +57,7 @@ end
 let Tlist_Use_Right_Window=1
 let Tlist_Auto_Open=0
 let Tlist_Enable_Fold_Column=0
-let Tlist_Compact_Format=1
+let Tlist_Compact_Format=0
 let Tlist_WinWidth=28
 let Tlist_Exit_OnlyWindow=1
 let Tlist_File_Fold_Auto_Close = 1
@@ -179,6 +179,8 @@ nmap <LocalLeader>tt :Tlist<cr>
 nmap <LocalLeader>nn :NERDTreeToggle<cr>
 " When I'm pretty sure that the first suggestion is correct
 map <LocalLeader>r 1z=
+" If I forgot to sudo vim a file, do that with :w!!
+cmap w!! %!sudo tee > /dev/null %
 " ruby helpers
 iab rbang #!/usr/bin/env ruby
 iab idef def initialize

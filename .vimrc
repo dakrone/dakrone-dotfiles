@@ -41,6 +41,7 @@ set wildmode=longest:full
 set wildignore+=*.o,*~,.lo    " ignore object files
 set wildmenu                  " menu has tab completion
 let maplocalleader=','        " all my macros start with ,
+set foldmethod=syntax         " fold on syntax automagically, always
 
 set dictionary=/usr/share/dict/words " more words!
 

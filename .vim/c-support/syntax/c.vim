@@ -15,7 +15,7 @@
 "
 " fold C blocks
 "
-syn region cBlock start="{" end="}" transparent fold
-set foldmethod=syntax
-set foldlevel=999
+"syn region cBlock start="{" end="}" transparent fold
+"set foldmethod=syntax
+"set foldlevel=999
 

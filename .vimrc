@@ -159,6 +159,10 @@ endif
 " some useful mappings
 " Y yanks from cursor to $
 map Y y$
+" for yankring to work with previous mapping:
+function! YRRunAfterMaps()
+    nnoremap Y   :<C-U>YRYankCount 'y$'<CR>
+endfunction
 " toggle list mode
 nmap <LocalLeader>tl :set list!<cr>
 " toggle paste mode

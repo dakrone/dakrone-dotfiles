@@ -87,19 +87,6 @@ if has('statusline')
         " %=		right-align following items
         " #%n		buffer number
         " %l/%L,%c%V	line number, total number of lines, and column number
-        "function! SetStatusLineStyle()
-        "        if &stl == '' || &stl =~ 'synID'
-        "                let &stl="%f %y%([%R%M]%)%{'!'[&ff=='".&ff."']}%{'$'[!&list]}" .
-        "                                        \"%{'~'[&pm=='']}"                     .
-        "                                        \"%=#%n %l/%L,%c%V "                   .
-        "                                        \"git:%{call GitBranch()}"
-        "        else
-        "                let &stl="%f %y%([%R%M]%)%{'!'[&ff=='".&ff."']}%{'$'[!&list]}" .
-        "                                        \" (%{synIDattr(synID(line('.'),col('.'),0),'name')})" .
-        "                                        \"%=#%n %l/%L,%c%V "
-        "        endif
-        "endfunc
-        "call SetStatusLineStyle()
 
         function! SetStatusLineStyle()
                 let &stl="%f %y "                       .
@@ -214,20 +201,6 @@ map <LocalLeader>tn :tabnext<cr>     " next tab
 map <LocalLeader>tp :tabprev<cr>     " previous tab
 map <LocalLeader>tm :tabmove         " move a tab to a new location
 
-" "dcraven" pasted "TabMessage: Put output of ex commands in a new tab." 
-" (10 lines, 287B) at http://sial.org/pbot/20504
-
-"TabMessage: Put output of ex commands in a new tab.
-"function! TabMessage(cmd)
-"        redir => message
-"        silent execute a:cmd
-"        redir END
-"        tabnew
-"        silent put=message
-"        set nomodified
-"endfunction
-"command! -nargs=+ -complete=command TabMessage call TabMessage(<q-args>)
-
 " ---------------------------------------------------------------------------
 " auto load extensions for different file types
 if has('autocmd')
@@ -257,5 +230,4 @@ if has('autocmd')
         " improved formatting for markdown
         " http://plasticboy.com/markdown-vim-mode/
         autocmd BufRead *.mkd  set ai formatoptions=tcroqn2 comments=n:>
-        autocmd BufRead ~/.blog/entries/*  set ai formatoptions=tcroqn2 comments=n:>
 endif

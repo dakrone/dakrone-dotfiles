@@ -47,7 +47,7 @@ set foldcolumn=2              " 4 lines of column for fold showing, always
 set dictionary=/usr/share/dict/words " more words!
 
 if !has("gui_running")
-      colorscheme ir_black   " yum candy
+      colorscheme candycode   " yum candy
 end
 if has("gui_running")
       colorscheme macvim      " macvim == win

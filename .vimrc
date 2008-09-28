@@ -47,7 +47,8 @@ set foldcolumn=2              " 4 lines of column for fold showing, always
 set dictionary=/usr/share/dict/words " more words!
 
 if !has("gui_running")
-      colorscheme candycode   " yum candy
+      "colorscheme candycode   " yum candy
+      colorscheme ir_black    " only when I can change certain colors
 end
 if has("gui_running")
       colorscheme macvim      " macvim == win
@@ -147,6 +148,8 @@ if v:version >= 700
   nmap <LocalLeader>ss :set spell!<CR>
 
 endif
+" default to no spelling
+set nospell
 
 " ---------------------------------------------------------------------------
 " some useful mappings

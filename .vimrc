@@ -11,11 +11,11 @@ set ruler                     " show the line number on the bar
 set more                      " use more prompt
 set autoread                  " watch for file changes
 set number                    " line numbers
-set hidden
+set hidden                    " allow edit buffers to be hidden
 set noautowrite               " don't automagically write on :next
 set lazyredraw                " don't redraw when don't have to
 set showmode
-set showcmd
+set showcmd                   " Show us the command we're typing
 set nocompatible              " vim, not vi
 set autoindent smartindent    " auto/smart indent
 set expandtab                 " expand tabs to spaces
@@ -54,6 +54,12 @@ if has("gui_running")
       set guioptions-=T       " no toolbar
       set cursorline          " show the cursor line
 end
+
+if exists('&t_SI')
+      let &t_SI = "\<Esc>]12;lightgoldenrod\x7"
+      let &t_EI = "\<Esc>]12;grey80\x7"
+endif
+      
 
 " Settings for taglist.vim
 let Tlist_Use_Right_Window=1
@@ -172,6 +178,8 @@ nmap <LocalLeader>tt :Tlist<cr>
 nmap <LocalLeader>nn :NERDTreeToggle<cr>
 " When I'm pretty sure that the first suggestion is correct
 map <LocalLeader>r 1z=
+" q: sucks
+nmap q: :q
 " If I forgot to sudo vim a file, do that with :w!!
 cmap w!! %!sudo tee > /dev/null %
 " ruby helpers

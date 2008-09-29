@@ -48,10 +48,16 @@ set dictionary=/usr/share/dict/words " more words!
 
 if !has("gui_running")
       "colorscheme candycode   " yum candy
+
+      " I pretty much only like this scheme if I can use SIMBL with terminal
+      " colors:
+      " (http://www.culater.net/software/TerminalColors/TerminalColors.php)
+      " to change the really hard-to-read dark blue into a lighter shade.
       colorscheme ir_black    " only when I can change certain colors
 end
 if has("gui_running")
-      colorscheme macvim      " macvim == win
+      "colorscheme macvim      " macvim == win
+      colorscheme ir_black    " only when I can change certain colors
       set guioptions-=T       " no toolbar
       set cursorline          " show the cursor line
 end

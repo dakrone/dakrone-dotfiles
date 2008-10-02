@@ -112,7 +112,15 @@ if has('statusline')
                         \""
                  "      \"%#StatusLineNC#%{GitBranchInfoString()}%* " .
         endfunc
-        call SetStatusLineStyle()
+        " Not using it at the moment, using a different one
+        "call SetStatusLineStyle()
+        
+        " Current statusline
+        if filereadable(expand("$HOME/.vim/plugin/vimbuddy.vim"))
+              set statusline=%F%m%r%h%w\ [%{&ff}]\ [%Y]\ %=[a=\%03.3b]\ [h=\%02.2B]\ [%l,%v]\ %{VimBuddy()}
+        else
+              set statusline=%F%m%r%h%w\ [%{&ff}]\ [%Y]\ %=[a=\%03.3b]\ [h=\%02.2B]\ [%l,%v]
+        endif
 
         if has('title')
                 set titlestring=%t%(\ [%R%M]%)
@@ -191,6 +199,8 @@ map <LocalLeader>r 1z=
 nmap q: :q
 " If I forgot to sudo vim a file, do that with :w!!
 cmap w!! %!sudo tee > /dev/null %
+" Fix the # at the start of the line
+inoremap # X<BS>#
 " ruby helpers
 iab rbang #!/usr/bin/env ruby
 iab idef def initialize

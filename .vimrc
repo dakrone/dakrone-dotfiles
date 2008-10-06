@@ -28,6 +28,7 @@ set backspace=indent,eol,start
 set showfulltag               " show full completion tags
 set noerrorbells              " no error bells please
 set linebreak
+set tw=500                    " default textwidth is a max of 500
 set cmdheight=2               " command line two lines high
 set undolevels=1000           " 1000 undos
 set updatecount=100           " switch every 100 chars
@@ -43,6 +44,8 @@ set wildmenu                  " menu has tab completion
 let maplocalleader=','        " all my macros start with ,
 set foldmethod=syntax         " fold on syntax automagically, always
 set foldcolumn=2              " 4 lines of column for fold showing, always
+set whichwrap+=<,>,h,l        " backspaces and cursor keys wrap to
+set magic                     " Enable the "magic"
 
 set dictionary=/usr/share/dict/words " more words!
 

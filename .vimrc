@@ -46,6 +46,7 @@ set foldmethod=syntax         " fold on syntax automagically, always
 set foldcolumn=2              " 4 lines of column for fold showing, always
 set whichwrap+=<,>,h,l        " backspaces and cursor keys wrap to
 set magic                     " Enable the "magic"
+set visualbell t_vb=          " Disable ALL bells
 
 set dictionary=/usr/share/dict/words " more words!
 
@@ -84,6 +85,16 @@ let Tlist_File_Fold_Auto_Close = 1
 let html_number_lines=1
 let html_use_css=1
 let use_xhtml=1
+
+
+" ---------------------------------------------------------------------------
+"  configure autoclose
+"  default to off, I'll turn it on if I want to
+let g:AutoCloseOn = 0
+"  default: {'(': ')', '{': '}', '[': ']', '"': '"', "'": "'"}
+"  but completing ' makes typing lisp really suck, so I take it out of the defaults
+let g:AutoClosePairs = {'(': ')', '{': '}', '[': ']', '"': '"'}
+
 
 " ---------------------------------------------------------------------------
 " status line 

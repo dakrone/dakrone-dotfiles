@@ -10,6 +10,9 @@
 " Original matchit support thanks to Ned Konz.  See his ftplugin/ruby.vim at
 "   http://bike-nomad.com/vim/ruby.vim.
 " ----------------------------------------------------------------------------
+"
+"  MODIFICATION BY ME (Lee - http://writequit.org)
+set foldcolumn=5      " Need lots of fold columns in ruby
 
 " Only do this when not done yet for this buffer
 if (exists("b:did_ftplugin"))

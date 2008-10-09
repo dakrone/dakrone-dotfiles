@@ -47,6 +47,8 @@ set foldcolumn=2              " 4 lines of column for fold showing, always
 set whichwrap+=<,>,h,l        " backspaces and cursor keys wrap to
 set magic                     " Enable the "magic"
 set visualbell t_vb=          " Disable ALL bells
+set cursorline                " show the cursor line
+set matchpairs+=<:>           " add < and > to match pairs
 
 set dictionary=/usr/share/dict/words " more words!
 
@@ -60,10 +62,9 @@ if !has("gui_running")
       colorscheme ir_black    " only when I can change certain colors
 end
 if has("gui_running")
-      "colorscheme macvim      " macvim == win
-      colorscheme ir_black    " only when I can change certain colors
+      colorscheme macvim      " macvim == win
+      "colorscheme ir_black    " only when I can change certain colors
       set guioptions-=T       " no toolbar
-      set cursorline          " show the cursor line
 end
 
 if exists('&t_SI')
@@ -97,6 +98,16 @@ let g:AutoClosePairs = {'(': ')', '{': '}', '[': ']', '"': '"'}
 
 
 " ---------------------------------------------------------------------------
+"  configuration for fuzzyfinder
+" find in buffer is ,fb
+nmap <LocalLeader>fb :FuzzyFinderBuffer<CR>
+" find in file is ,ff
+nmap <LocalLeader>ff :FuzzyFinderFile<CR>
+" find in tag is ,ft
+nmap <LocalLeader>ft :FuzzyFinderTag<CR>
+
+
+" ---------------------------------------------------------------------------
 " status line 
 set laststatus=2
 if has('statusline')
@@ -116,25 +127,23 @@ if has('statusline')
         " %l/%L,%c%V	line number, total number of lines, and column number
 
         function! SetStatusLineStyle()
-                let &stl="%f %y "                       .
-                        \"%([%R%M]%)"                   .
-                        \"%#StatusLineNC#%{&ff=='unix'?'':&ff.'\ format'}%*" .
-                        \"%{'$'[!&list]}"               .
-                        \"%{'~'[&pm=='']}"              .
-                        \"%="                           .
-                        \"#%n %l/%L,%c%V "              .
-                        \""
+                "let &stl="%f %y "                       .
+                        "\"%([%R%M]%)"                   .
+                        "\"%#StatusLineNC#%{&ff=='unix'?'':&ff.'\ format'}%*" .
+                        "\"%{'$'[!&list]}"               .
+                        "\"%{'~'[&pm=='']}"              .
+                        "\"%="                           .
+                        "\"#%n %l/%L,%c%V "              .
+                        "\""
                  "      \"%#StatusLineNC#%{GitBranchInfoString()}%* " .
+              if filereadable(expand("$HOME/.vim/plugin/vimbuddy.vim"))
+                    let &stl="%F%m%r%h%w\ [%{&ff}]\ [%Y]\ %=[a=\%03.3b]\ [h=\%02.2B]\ [%l,%v]\ %{VimBuddy()}"
+              else
+                    let &stl="%F%m%r%h%w\ [%{&ff}]\ [%Y]\ %=[a=\%03.3b]\ [h=\%02.2B]\ [%l,%v]"
+              endif
         endfunc
         " Not using it at the moment, using a different one
-        "call SetStatusLineStyle()
-        
-        " Current statusline
-        if filereadable(expand("$HOME/.vim/plugin/vimbuddy.vim"))
-              set statusline=%F%m%r%h%w\ [%{&ff}]\ [%Y]\ %=[a=\%03.3b]\ [h=\%02.2B]\ [%l,%v]\ %{VimBuddy()}
-        else
-              set statusline=%F%m%r%h%w\ [%{&ff}]\ [%Y]\ %=[a=\%03.3b]\ [h=\%02.2B]\ [%l,%v]
-        endif
+        call SetStatusLineStyle()
 
         if has('title')
                 set titlestring=%t%(\ [%R%M]%)
@@ -148,6 +157,7 @@ endif
 "  searching
 set incsearch                 " incremental search
 set ignorecase                " search ignoring case
+set smartcase                 " Ignore case when searching lowercase
 set hlsearch                  " highlight the search
 set showmatch                 " show matching bracket
 set diffopt=filler,iwhite       " ignore all whitespace and sync
@@ -215,6 +225,8 @@ nmap q: :q
 cmap w!! %!sudo tee > /dev/null %
 " Fix the # at the start of the line
 inoremap # X<BS>#
+" Let's see if I can stand this:
+imap jj <Esc>
 " ruby helpers
 iab rbang #!/usr/bin/env ruby
 iab idef def initialize

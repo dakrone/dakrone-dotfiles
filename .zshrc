@@ -69,6 +69,7 @@ alias nl='netstat -tlna | grep -v "stream|dgram"'
 alias dmesg='sudo dmesg'
 alias gv='cd /Volumes/VAULT/'
 alias remhex='ssh -i ~/.ssh/id_rawpacket dakrone@localhost -p 6666'
+alias aremhex='autossh -M 20000 -i ~/.ssh/id_rawpacket dakrone@localhost -p 6666'
 alias scsetup='sudo socat -d -d TCP4-listen:6666,fork OPENSSL:hexbit:443,cert=host.pem,verify=0'
 alias rbsync='rsync -artv "/Users/hinmanm/Music/iTunes/iTunes Music" /Volumes/ALTHALUS/Music/'
 

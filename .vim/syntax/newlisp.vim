@@ -6,6 +6,7 @@
 " Started at:   2007 Nov 07 (The Great Revolution 90th Anniversary)
 " Last change:  2008 Sep 29
 " Last change:  2008 Sep 29 L.M. added copy for 9.9.5
+" Last change:  2008 Oct 7 L.M. added net-interface for 9.9.6
 " newLISP site: http://www.newlisp.org/
 
 " $Id: newlisp.vim,v 1.23 2008/09/29 00:50:50 slobin Exp $
@@ -139,7 +140,7 @@ syn keyword newlispFunction integer integer? intersect invert irr join lambda? l
 syn keyword newlispFunction let letex letn list list? load local log lookup lower-case macro?
 syn keyword newlispFunction main-args make-dir map mat match max member min mod mul multiply name
 syn keyword newlispFunction net-accept net-close net-connect net-error net-eval net-listen
-syn keyword newlispFunction net-local net-lookup net-peek net-peer net-ping net-receive
+syn keyword newlispFunction net-interface net-local net-lookup net-peek net-peer net-ping net-receive
 syn keyword newlispFunction net-receive-from net-receive-udp net-select net-send net-send-to
 syn keyword newlispFunction net-send-udp net-service net-sessions new nil? normal not now nper npv
 syn keyword newlispFunction nth null? number? open or pack parse parse-date peek pipe pmt pop

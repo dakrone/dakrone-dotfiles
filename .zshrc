@@ -82,7 +82,7 @@ alias gps='geektool-ps'
 alias gnw='geektool-network'
 
 # use vim as a pager
-alias vless=/usr/share/vim/vim70/macros/less.sh
+alias vless=/usr/share/vim/vim72/macros/less.sh
 
 # Use the screen from MacPorts
 # Not necessary any more since I got it from CVS and patched it myself

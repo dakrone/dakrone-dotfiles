@@ -43,7 +43,7 @@ set wildignore+=*.o,*~,.lo    " ignore object files
 set wildmenu                  " menu has tab completion
 let maplocalleader=','        " all my macros start with ,
 set foldmethod=syntax         " fold on syntax automagically, always
-set foldcolumn=2              " 4 lines of column for fold showing, always
+set foldcolumn=2              " 2 lines of column for fold showing, always
 set whichwrap+=<,>,h,l        " backspaces and cursor keys wrap to
 set magic                     " Enable the "magic"
 set visualbell t_vb=          " Disable ALL bells
@@ -59,11 +59,11 @@ if !has("gui_running")
       " colors:
       " (http://www.culater.net/software/TerminalColors/TerminalColors.php)
       " to change the really hard-to-read dark blue into a lighter shade.
-      colorscheme ir_black    " only when I can change certain colors
+      colorscheme ir_black_new " only when I can change certain colors
 end
 if has("gui_running")
       colorscheme macvim      " macvim == win
-      "colorscheme ir_black    " only when I can change certain colors
+      "colorscheme ir_black   " only when I can change certain colors
       set guioptions-=T       " no toolbar
 end
 
@@ -164,7 +164,7 @@ set diffopt=filler,iwhite       " ignore all whitespace and sync
 
 " ---------------------------------------------------------------------------
 "  mouse stuffs
-set mouse=a                   " mouse support in all modes
+"set mouse=a                   " mouse support in all modes
 set mousehide                 " hide the mouse when typing
 " this makes the mouse paste a block of text without formatting it 
 " (good for code)

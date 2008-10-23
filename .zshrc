@@ -3,7 +3,7 @@
 bindkey -e
 bindkey "^?"    backward-delete-char
 bindkey "^H"    backward-delete-char
-bindkey "^[[3~" delete-char
+bindkey "^[[3~" backward-delete-char
 bindkey "^[[1~" beginning-of-line
 bindkey "^[[4~" end-of-line
 ##
@@ -47,6 +47,7 @@ test -r /sw/bin/init.sh && . /sw/bin/init.sh
 # abbreviation
 export EDITOR=vim
 export PAGER=less
+export TERM=xterm-color
 
 # CVS for HeX
 export CVSROOT=:ext:dakrone@cvsup.rawpacket.org:/home/project/rawpacket/cvs

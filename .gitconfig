@@ -11,3 +11,7 @@
 
 [merge]
       tool = vimdiff
+
+[alias]
+      st = status
+      stat = status

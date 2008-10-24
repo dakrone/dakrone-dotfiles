@@ -62,9 +62,13 @@ if !has("gui_running")
       colorscheme ir_black_new " only when I can change certain colors
 end
 if has("gui_running")
-      colorscheme macvim      " macvim == win
-      "colorscheme ir_black   " only when I can change certain colors
-      set guioptions-=T       " no toolbar
+      "colorscheme macvim      " macvim == win
+      colorscheme ir_black_new     " only when I can change certain colors
+      set noantialias          " If I use ir_black_new, no antialiasing
+      set guioptions-=T        " no toolbar
+      set lines=65
+      set columns=140
+      set gfn=Monaco:h9
 end
 
 if exists('&t_SI')
@@ -137,9 +141,9 @@ if has('statusline')
                         "\""
                  "      \"%#StatusLineNC#%{GitBranchInfoString()}%* " .
               if filereadable(expand("$HOME/.vim/plugin/vimbuddy.vim"))
-                    let &stl="%F%m%r%h%w\ [%{&ff}]\ [%Y]\ %=[a=\%03.3b]\ [h=\%02.2B]\ [%l,%v]\ %{VimBuddy()}"
+                    let &stl="%F%m%r%h%w\ [%{&ff}]\ [%Y]\ %P\ %=[a=\%03.3b]\ [h=\%02.2B]\ [%l,%v]\ %{VimBuddy()}"
               else
-                    let &stl="%F%m%r%h%w\ [%{&ff}]\ [%Y]\ %=[a=\%03.3b]\ [h=\%02.2B]\ [%l,%v]"
+                    let &stl="%F%m%r%h%w\ [%{&ff}]\ [%Y]\ %P\ %=[a=\%03.3b]\ [h=\%02.2B]\ [%l,%v]"
               endif
         endfunc
         " Not using it at the moment, using a different one

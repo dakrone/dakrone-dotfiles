@@ -73,6 +73,7 @@ alias remhex='ssh -i ~/.ssh/id_rawpacket dakrone@localhost -p 6666'
 alias aremhex='autossh -M 20000 -i ~/.ssh/id_rawpacket dakrone@localhost -p 6666'
 alias scsetup='sudo socat -d -d TCP4-listen:6666,fork OPENSSL:hexbit:443,cert=host.pem,verify=0'
 alias rbsync='rsync -artv "/Users/hinmanm/Music/iTunes/iTunes Music" /Volumes/ALTHALUS/Music/'
+alias msync='rsync -v -e "ssh" -r -d ~/Music/iTunes/iTunes\ Music/* hinmanm@dagger:~/Music/'
 
 # aliases for MacVim
 alias gvim='open -a MacVim'

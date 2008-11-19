@@ -1,3 +1,4 @@
+
 javascript <<EOM
 (function(){
 var inputElm = document.getElementById('liberator-commandline-command');

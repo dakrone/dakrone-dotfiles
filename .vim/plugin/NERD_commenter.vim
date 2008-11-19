@@ -2,8 +2,8 @@
 " File:        NERD_commenter.vim
 " Description: vim global plugin that provides easy code commenting
 " Maintainer:  Martin Grenfell <martin_grenfell at msn dot com>
-" Version:     2.2.0
-" Last Change: 4th October, 2008
+" Version:     2.2.1
+" Last Change: 13th November, 2008
 " License:     This program is free software. It comes without any warranty,
 "              to the extent permitted by applicable law. You can redistribute
 "              it and/or modify it under the terms of the Do What The Fuck You
@@ -125,6 +125,8 @@ function s:SetUpForNewFiletype(filetype, forceReset)
         call s:MapDelimiters('%', '')
     elseif a:filetype == "acedb"
         call s:MapDelimitersWithAlternative('//','', '/*','*/')
+    elseif a:filetype == "actionscript"
+        call s:MapDelimitersWithAlternative('//','', '/*','*/')
     elseif a:filetype == "ada"
         call s:MapDelimitersWithAlternative('--','', '--  ', '')
     elseif a:filetype == "ahdl"
@@ -143,6 +145,8 @@ function s:SetUpForNewFiletype(filetype, forceReset)
         call s:MapDelimiters('#', '')
     elseif a:filetype == "apachestyle"
         call s:MapDelimiters('#', '')
+    elseif a:filetype == "asciidoc"
+        call s:MapDelimiters('//', '')
     elseif a:filetype == "applescript"
         call s:MapDelimitersWithAlternative('--', '', '(*', '*)')
     elseif a:filetype == "asm68k"
@@ -164,7 +168,7 @@ function s:SetUpForNewFiletype(filetype, forceReset)
     elseif a:filetype == "autoit"
         call s:MapDelimiters(';','')
     elseif a:filetype == "automake"
-        call s:MapDelimitersWithAlternative('#','', 'dnl ', '')
+        call s:MapDelimiters('##','')
     elseif a:filetype == "ave"
         call s:MapDelimiters("'",'')
     elseif a:filetype == "awk"
@@ -221,6 +225,8 @@ function s:SetUpForNewFiletype(filetype, forceReset)
         call s:MapDelimiters('#', '')
     elseif a:filetype == "config"
         call s:MapDelimiters('dnl ', '')
+    elseif a:filetype == "conkyrc"
+        call s:MapDelimiters('#', '')
     elseif a:filetype == "context"
         call s:MapDelimiters('%','')
     elseif a:filetype == "cpp"
@@ -244,6 +250,8 @@ function s:SetUpForNewFiletype(filetype, forceReset)
     elseif a:filetype == "cvs"
         call s:MapDelimiters('CVS:','')
     elseif a:filetype == "CVSAnnotate"
+        call s:MapDelimiters('','')
+    elseif a:filetype == "CVScommit"
         call s:MapDelimiters('','')
     elseif a:filetype == "d"
         call s:MapDelimitersWithAlternative('//','', '/*','*/')
@@ -337,6 +345,8 @@ function s:SetUpForNewFiletype(filetype, forceReset)
         call s:MapDelimiters('--', '')
     elseif a:filetype == "geek"
         call s:MapDelimiters('GEEK_COMMENT:', '')
+    elseif a:filetype == "genshi"
+        call s:MapDelimitersWithAlternative('<!--','-->', '{#', '#}')
     elseif a:filetype == "gentoo-conf-d"
         call s:MapDelimiters('#', '')
     elseif a:filetype == "gentoo-env-d"
@@ -351,14 +361,18 @@ function s:SetUpForNewFiletype(filetype, forceReset)
         call s:MapDelimiters('#', '')
     elseif a:filetype == 'gentoo-package-use'
         call s:MapDelimiters('#', '')
+    elseif a:filetype == 'git'
+        call s:MapDelimiters('', '')
     elseif a:filetype == 'gitAnnotate'
         call s:MapDelimiters('', '')
     elseif a:filetype == 'gitcommit'
-        call s:MapDelimiters('', '')
+        call s:MapDelimiters('#', '')
     elseif a:filetype == 'gitconfig'
         call s:MapDelimiters(';', '')
     elseif a:filetype == 'gitdiff'
         call s:MapDelimiters('', '')
+    elseif a:filetype == 'gitrebase'
+        call s:MapDelimiters('#', '')
     elseif a:filetype == "gnuplot"
         call s:MapDelimiters('#','')
     elseif a:filetype == "groovy"
@@ -376,12 +390,14 @@ function s:SetUpForNewFiletype(filetype, forceReset)
     elseif a:filetype == "h"
         call s:MapDelimitersWithAlternative('//','', '/*','*/')
     elseif a:filetype == "haml"
-        call s:MapDelimiters('/', '')
+        call s:MapDelimitersWithAlternative('-#', '', '/', '')
     elseif a:filetype == "help"
         call s:MapDelimiters('"','')
     elseif a:filetype == "hercules"
         call s:MapDelimitersWithAlternative('//','', '/*','*/')
     elseif a:filetype == "hog"
+        call s:MapDelimiters('#', '')
+    elseif a:filetype == "hostsaccess"
         call s:MapDelimiters('#', '')
     elseif a:filetype == "html"
         call s:MapDelimitersWithAlternative('<!--','-->', '//', '')
@@ -479,6 +495,8 @@ function s:SetUpForNewFiletype(filetype, forceReset)
         call s:MapDelimiters('#','')
     elseif a:filetype == "make"
         call s:MapDelimiters('#','')
+    elseif a:filetype == "mako"
+        call s:MapDelimiters('##', '')
     elseif a:filetype == "man"
         call s:MapDelimiters('."', '')
     elseif a:filetype == "map"
@@ -553,6 +571,8 @@ function s:SetUpForNewFiletype(filetype, forceReset)
         call s:MapDelimitersWithAlternative('//','', '/*','*/')
     elseif a:filetype == "objcpp"
         call s:MapDelimitersWithAlternative('//','', '/*','*/')
+    elseif a:filetype == "objj"
+        call s:MapDelimitersWithAlternative('//','', '/*','*/')
     elseif a:filetype == "ocaml"
         call s:MapDelimiters('(*','*)')
     elseif a:filetype == "occam"
@@ -619,12 +639,16 @@ function s:SetUpForNewFiletype(filetype, forceReset)
         call s:MapDelimiters('%', '')
     elseif a:filetype == "ppwiz"
         call s:MapDelimiters(';;', '')
+    elseif a:filetype == "processing"
+        call s:MapDelimitersWithAlternative('//','', '/*','*/')
     elseif a:filetype == "procmail"
         call s:MapDelimiters('#', '')
     elseif a:filetype == "progress"
         call s:MapDelimiters('/*','*/')
     elseif a:filetype == "prolog"
         call s:MapDelimitersWithAlternative('%','','/*','*/')
+    elseif a:filetype == "ps1"
+        call s:MapDelimiters('#', '')
     elseif a:filetype == "psf"
         call s:MapDelimiters('#', '')
     elseif a:filetype == "ptcap"
@@ -703,6 +727,8 @@ function s:SetUpForNewFiletype(filetype, forceReset)
         call s:MapDelimiters('<!--','-->')
     elseif a:filetype == "sicad"
         call s:MapDelimiters('*', '')
+    elseif a:filetype == "sieve"
+        call s:MapDelimiters('#', '')
     elseif a:filetype == "simula"
         call s:MapDelimitersWithAlternative('%', '', '--', '')
     elseif a:filetype == "sinda"
@@ -766,6 +792,8 @@ function s:SetUpForNewFiletype(filetype, forceReset)
     elseif a:filetype == "SVKAnnotate"
         call s:MapDelimiters('','')
     elseif a:filetype == "svn"
+        call s:MapDelimiters('','')
+    elseif a:filetype == "SVNannotate"
         call s:MapDelimiters('','')
     elseif a:filetype == "SVNAnnotate"
         call s:MapDelimiters('','')
@@ -1008,13 +1036,13 @@ function s:AppendCommentToLine()
 
     "stick the delimiters down at the end of the line. We have to format the
     "comment with spaces as appropriate
-    execute ":normal " . insOrApp . (isLineEmpty ? '' : ' ') . left . right . " "
+    execute ":normal! " . insOrApp . (isLineEmpty ? '' : ' ') . left . right . " "
 
     " if there is a right delimiter then we gotta move the cursor left
     " by the len of the right delimiter so we insert between the delimiters
     if lenRight > 0
         let leftMoveAmount = lenRight
-        execute ":normal " . leftMoveAmount . "h"
+        execute ":normal! " . leftMoveAmount . "h"
     endif
     startinsert
 endfunction
@@ -1593,11 +1621,11 @@ function! NERDComment(isVisual, type) range
 
     elseif a:type == 'yank'
         if a:isVisual
-            normal gvy
+            normal! gvy
         elseif countWasGiven
             execute firstLine .','. lastLine .'yank'
         else
-            normal Y
+            normal! yy
         endif
         execute firstLine .','. lastLine .'call NERDComment('. a:isVisual .', "norm")'
     endif
@@ -1634,19 +1662,19 @@ function s:PlaceDelimitersAndInsBetween()
     " place the delimiters down. We do it differently depending on whether
     " there is a left AND right delimiter
     if lenRight > 0
-        execute ":normal " . insOrApp . left . right
-        execute ":normal " . lenRight . "h"
+        execute ":normal! " . insOrApp . left . right
+        execute ":normal! " . lenRight . "h"
     else
-        execute ":normal " . insOrApp . left
+        execute ":normal! " . insOrApp . left
 
         " if we are tacking the delim on the EOL then we gotta add a space
         " after it cos when we go out of insert mode the cursor will move back
         " one and the user wont be in position to type the comment.
         if isDelimOnEOL
-            execute 'normal a '
+            execute 'normal! a '
         endif
     endif
-    normal l
+    normal! l
 
     "if needed convert spaces back to tabs and adjust the cursors col
     "accordingly
@@ -1815,7 +1843,7 @@ function s:UncommentLinesSexy(topline, bottomline)
     " if the first line contains only the left delim then just delete it
     if theLine =~ '^[ \t]*' . left . '[ \t]*$' && !g:NERDCompactSexyComs
         call cursor(a:topline, 1)
-        normal dd
+        normal! dd
         let bottomline = bottomline - 1
 
     " topline contains more than just the left delim
@@ -1839,7 +1867,7 @@ function s:UncommentLinesSexy(topline, bottomline)
     " if the bottomline contains only the right delim then just delete it
     if theLine =~ '^[ \t]*' . right . '[ \t]*$'
         call cursor(bottomline, 1)
-        normal dd
+        normal! dd
 
     " the last line contains more than the right delim
     else
@@ -3052,7 +3080,7 @@ function s:RestoreScreenState()
     endif
 
     call cursor(t:NERDComOldTopLine, 0)
-    normal zt
+    normal! zt
     call setpos(".", t:NERDComOldPos)
 endfunction
 

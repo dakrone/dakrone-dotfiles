@@ -1,3 +1,5 @@
+"map!  
+map!  
 " ---------------------------------------------------------------------------
 " first the disabled features due to security concerns
 set modelines=0               " no modelines [http://www.guninski.com/vim1.html]
@@ -68,7 +70,7 @@ if has("gui_running")
       set guioptions-=T        " no toolbar
       set lines=65
       set columns=140
-      set gfn=Monaco:h9
+      "set gfn=Monaco:h9
 end
 
 if exists('&t_SI')

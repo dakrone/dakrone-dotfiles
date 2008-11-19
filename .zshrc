@@ -53,7 +53,7 @@ export TERM=xterm-color
 export CVSROOT=:ext:dakrone@cvsup.rawpacket.org:/home/project/rawpacket/cvs
 
 # set aliases
-alias ls='ls -G'
+alias ls='ls --color=auto'
 alias l.='ls -d .*'
 alias ll='ls -lh'
 alias la='ls -alh'
@@ -70,13 +70,15 @@ alias nl='netstat -tlna | grep -v "stream|dgram"'
 alias dmesg='sudo dmesg'
 alias gv='cd /Volumes/VAULT/'
 alias remhex='ssh -i ~/.ssh/id_rawpacket dakrone@localhost -p 6666'
-alias aremhex='autossh -M 20000 -i ~/.ssh/id_rawpacket dakrone@localhost -p 6666'
+alias remblack='ssh -i ~/.ssh/id_rawpacket hinmanm@localhost -p 7777'
 alias scsetup='sudo socat -d -d TCP4-listen:6666,fork OPENSSL:hexbit:443,cert=host.pem,verify=0'
+alias scsetup2='sudo socat -d -d TCP4-listen:7777,fork OPENSSL:blackex:443,cert=host.pem,verify=0'
 alias rbsync='rsync -artv "/Users/hinmanm/Music/iTunes/iTunes Music" /Volumes/ALTHALUS/Music/'
 alias msync='rsync -v -e "ssh" -r -d ~/Music/iTunes/iTunes\ Music/* hinmanm@dagger:~/Music/'
+alias blackexprox='ssh -i ~/.ssh/id_rawpacket -ND 9999 hinmanm@localhost -p 7777'
+alias blackprox='ssh -i ~/.ssh/id_rawpacket -ND 9999 hinmanm@black'
 
 # aliases for MacVim
-alias gvim='open -a MacVim'
 alias mvim='open -a MacVim'
 
 # use geektool-ps and geektool-network
@@ -86,15 +88,11 @@ alias gnw='geektool-network'
 # use vim as a pager
 alias vless=/usr/share/vim/vim72/macros/less.sh
 
-# Use the screen from MacPorts
-# Not necessary any more since I got it from CVS and patched it myself
-#alias screen='/opt/local/bin/screen'
 # Don't resolv names in tcpdump
 alias tcpdump='tcpdump -n'
 # Use exuberant ctags
-alias ctags='/usr/local/bin/ctags'
+#alias ctags='/usr/local/bin/ctags'
 # alias for starting synergy server
-alias ssyn='synergys -f -n euclid'
 
 
 ### OPTIONS ###
@@ -209,7 +207,8 @@ function precmd {
     if which ibam > /dev/null; then
 	PR_APM_RESULT=`ibam --percentbattery`
     elif which apm > /dev/null; then
-	PR_APM_RESULT=`apm`
+	#PR_APM_RESULT=`apm`
+	PR_APM_RESULT=""
     fi
 }
 

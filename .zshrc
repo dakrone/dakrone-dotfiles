@@ -37,6 +37,8 @@ export PATH=~/bin:$PATH:/usr/local/sbin:/usr/local/bin:/usr/local/sbin:/usr/libe
 export PATH=/usr/local/bin/blackbag:$PATH
 # Path for git
 export PATH=$PATH:/usr/local/git/bin
+# Path for ruby gems
+export PATH=$PATH:/var/lib/gems/1.8/bin
 
 # manpath
 export MANPATH=$MANPATH:/usr/local/man:/opt/local/share/man

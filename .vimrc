@@ -101,6 +101,13 @@ let g:clj_paren_rainbow=1           " Rainbow parentheses'!
 let g:yankring_histotry_dir="~/.vim/"
 let g:yankring_histotry_file="~/.vim/yank.txt"
 
+" Settings for twitter
+let g:twitterusername='thnetos'
+let g:twitterpassword='' " use ,ts to input it.
+map <LocalLeader>ts :let g:twitterpassword=inputsecret('password? ')<cr>
+map <LocalLeader>tw :execute 'TwitterStatusUpdate ' . inputdialog('Enter a Twitter status message:')<cr>
+map <LocalLeader>tf :TwitterFriendsTimeline<cr>
+
 " ---------------------------------------------------------------------------
 "  configure autoclose
 "  default to off, I'll turn it on if I want to

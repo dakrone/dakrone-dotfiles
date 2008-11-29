@@ -45,7 +45,7 @@ set wildignore+=*.o,*~,.lo    " ignore object files
 set wildmenu                  " menu has tab completion
 let maplocalleader=','        " all my macros start with ,
 set foldmethod=syntax         " fold on syntax automagically, always
-set foldcolumn=2              " 2 lines of column for fold showing, always
+set foldcolumn=3              " 3 lines of column for fold showing, always
 set whichwrap+=<,>,h,l        " backspaces and cursor keys wrap to
 set magic                     " Enable the "magic"
 set visualbell t_vb=          " Disable ALL bells
@@ -101,12 +101,15 @@ let g:clj_paren_rainbow=1           " Rainbow parentheses'!
 let g:yankring_histotry_dir="~/.vim/"
 let g:yankring_histotry_file="~/.vim/yank.txt"
 
-" Settings for twitter
-let g:twitterusername='thnetos'
-let g:twitterpassword='' " use ,ts to input it.
-map <LocalLeader>ts :let g:twitterpassword=inputsecret('password? ')<cr>
-map <LocalLeader>tw :execute 'TwitterStatusUpdate ' . inputdialog('Enter a Twitter status message:')<cr>
-map <LocalLeader>tf :TwitterFriendsTimeline<cr>
+" Settings for twitvim
+let twitvim_login=''                " Requires using ,ts to input your username/password
+map <LocalLeader>tf :FriendsTwitter<cr>
+map <LocalLeader>ts :let twitvim_login=inputdialog('Twitter USER:PASS? ')<cr>
+map <LocalLeader>tw :PosttoTwitter<cr>
+
+" Bindings for Narrow/Widen
+map <LocalLeader>N :Narrow<cr>
+map <LocalLeader>W :Widen<cr>
 
 " ---------------------------------------------------------------------------
 "  configure autoclose
@@ -156,11 +159,7 @@ if has('statusline')
                         "\"#%n %l/%L,%c%V "              .
                         "\""
                  "      \"%#StatusLineNC#%{GitBranchInfoString()}%* " .
-              if filereadable(expand("$HOME/.vim/plugin/vimbuddy.vim"))
-                    let &stl="%F%m%r%h%w\ [%{&ff}]\ [%Y]\ %P\ %=[a=\%03.3b]\ [h=\%02.2B]\ [%l,%v]\ %{VimBuddy()}"
-              else
-                    let &stl="%F%m%r%h%w\ [%{&ff}]\ [%Y]\ %P\ %=[a=\%03.3b]\ [h=\%02.2B]\ [%l,%v]"
-              endif
+              let &stl="%F%m%r%h%w\ [%{&ff}]\ [%Y]\ %P\ %=[a=\%03.3b]\ [h=\%02.2B]\ [%l,%v]"
         endfunc
         " Not using it at the moment, using a different one
         call SetStatusLineStyle()

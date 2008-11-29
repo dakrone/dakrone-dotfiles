@@ -1,4 +1,4 @@
-set honeysnap HOST_LIST 10.254.77.71,10.254.77.2,10.254.77.129,10.254.77.94
+#set honeysnap HOST_LIST 10.254.77.71,10.254.77.2,10.254.77.129,10.254.77.94
 
 # Aliases
 alias ls = list

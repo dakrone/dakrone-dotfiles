@@ -63,27 +63,23 @@ alias lr='ls -lR'
 alias less='less -FRX'
 alias grep='egrep -i --color=auto'
 alias ..='cd ..'
-alias nsmc='cd ~/hex/hex/rawpacket-root/usr/home/analyzt/rp-NSM/nsm-console'
-alias archup='rsync -e "ssh -p 49007 -i /Users/hinmanm/.ssh/id_rsa_rawpacket -l rawpacket" -av 143.215.139.8:archives archives'
-alias currup='rsync -e "ssh -p 49007 -i /Users/hinmanm/.ssh/id_rsa_rawpacket -l rawpacket" -av 143.215.139.8:current current'
+alias nsmc='cd ~/src/ruby/nsm-console'
 alias serv='cat /etc/services | grep'
 alias pg='ps aux | grep'
-alias nl='netstat -tlna | grep -v "stream|dgram"'
+alias nl='sudo netstat -tunapl'
 alias dmesg='sudo dmesg'
-alias gv='cd /Volumes/VAULT/'
+alias gv='cd /media/VAULT/'
 alias remhex='ssh -i ~/.ssh/id_rawpacket dakrone@localhost -p 6666'
 alias remblack='ssh -i ~/.ssh/id_rawpacket hinmanm@localhost -p 7777'
 alias scsetup='sudo socat -d -d TCP4-listen:6666,fork OPENSSL:hexbit:443,cert=host.pem,verify=0'
 alias scsetup2='sudo socat -d -d TCP4-listen:7777,fork OPENSSL:blackex:443,cert=host.pem,verify=0'
-alias rbsync='rsync -artv "/Users/hinmanm/Music/iTunes/iTunes Music" /Volumes/ALTHALUS/Music/'
-alias msync='rsync -v -e "ssh" -r -d ~/Music/iTunes/iTunes\ Music/* hinmanm@dagger:~/Music/'
 alias blackexprox='ssh -i ~/.ssh/id_rawpacket -ND 9999 hinmanm@localhost -p 7777'
 alias blackprox='ssh -i ~/.ssh/id_rawpacket -ND 9999 hinmanm@black'
 
 # aliases for MacVim
 alias mvim='open -a MacVim'
 
-# use geektool-ps and geektool-network
+# use geektool-ps and geektool-network (only on Mac)
 alias gps='geektool-ps'
 alias gnw='geektool-network'
 
@@ -91,10 +87,7 @@ alias gnw='geektool-network'
 alias vless=/usr/share/vim/vim72/macros/less.sh
 
 # Don't resolv names in tcpdump
-alias tcpdump='tcpdump -n'
-# Use exuberant ctags
-#alias ctags='/usr/local/bin/ctags'
-# alias for starting synergy server
+alias tcpdump='tcpdump -ttttnnn'
 
 
 ### OPTIONS ###

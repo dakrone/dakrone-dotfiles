@@ -24,7 +24,7 @@ set expandtab                 " expand tabs to spaces
 set smarttab                  " tab and backspace are smart
 set tabstop=6                 " 6 spaces
 set shiftwidth=6
-set scrolloff=5               " keep at least 5 lines above/below
+set scrolloff=3               " keep at least 3 lines above/below
 set sidescrolloff=5           " keep at least 5 lines left/right
 set backspace=indent,eol,start
 set showfulltag               " show full completion tags

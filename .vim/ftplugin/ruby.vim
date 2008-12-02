@@ -16,8 +16,8 @@ if (exists("b:did_ftplugin"))
 endif
 let b:did_ftplugin = 1
 
-" Set foldcolumn to be 5 minimum
-set foldcolumn=5
+" Set foldcolumn to be 7 minimum, Ruby has a lot of folds
+set foldcolumn=7
 
 let s:cpo_save = &cpo
 set cpo&vim

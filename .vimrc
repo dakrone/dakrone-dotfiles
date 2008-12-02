@@ -78,6 +78,11 @@ if exists('&t_SI')
       let &t_EI = "\<Esc>]12;grey80\x7"
 endif
       
+" fish fixes
+if $SHELL =~ 'bin/fish'
+      set shell=/usr/bin/zsh
+endif
+
 
 " Settings for taglist.vim
 let Tlist_Use_Right_Window=1
@@ -111,6 +116,12 @@ map <LocalLeader>tw :PosttoTwitter<cr>
 " Bindings for Narrow/Widen
 map <LocalLeader>N :Narrow<cr>
 map <LocalLeader>W :Widen<cr>
+
+" PHP settings
+let php_sql_query=1
+let php_htmlInStrings=1
+let php_noShortTags=1
+let php_folding=1
 
 " ---------------------------------------------------------------------------
 "  configure autoclose
@@ -245,10 +256,10 @@ nmap q: :q
 cmap w!! %!sudo tee > /dev/null %
 " Fix the # at the start of the line
 inoremap # X<BS>#
-" Let's see if I can stand this:
+" When I forget I'm in Insert mode, how often do you type 'jj' anyway?:
 imap jj <Esc>
 " ruby helpers
-iab rbang #!/usr/bin/env ruby
+iab rbang #!/usr/bin/env ruby<cr>
 iab idef def initialize
 
 " ---------------------------------------------------------------------------

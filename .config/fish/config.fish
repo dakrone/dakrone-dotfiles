@@ -1,4 +1,13 @@
-set path ~/bin:$PATH:/usr/local/sbin:/usr/local/bin:/usr/local/sbin:/usr/libexec:/opt/local/bin:/opt/local/sbin:/usr/local/mysql/bin
+set PATH $PATH ~/bin
+set PATH $PATH /usr/local/sbin
+set PATH $PATH /usr/local/bin
+set PATH $PATH /usr/local/sbin
+set PATH $PATH /usr/libexec
+set PATH $PATH /opt/local/bin
+set PATH $PATH /opt/local/sbin
+set PATH $PATH /usr/local/mysql/bin
+set PATH $PATH /usr/local/git/bin
+set PATH $PATH /var/lib/gems/1.8/bin
 
 set EDITOR vim
 set PAGER less
@@ -46,33 +55,33 @@ function fish_prompt --description 'Write out the prompt'
 
       switch $USER
 
-            case root
+      case root
 
-            if not set -q __fish_prompt_cwd
-                  if set -q fish_color_cwd_root
-                        set -g __fish_prompt_cwd (set_color $fish_color_cwd_root)
-                  else
-                        set -g __fish_prompt_cwd (set_color $fish_color_cwd)
-                  end
-            end
-
-            printf '%s@%s %s%s%s# ' $USER $__fish_prompt_hostname "$__fish_prompt_cwd" (prompt_pwd) "$__fish_prompt_normal"
-
-            case '*'
-
-            if not set -q __fish_prompt_cwd
+      if not set -q __fish_prompt_cwd
+            if set -q fish_color_cwd_root
+                  set -g __fish_prompt_cwd (set_color $fish_color_cwd_root)
+            else
                   set -g __fish_prompt_cwd (set_color $fish_color_cwd)
             end
-
-            set blue (set_color blue)
-            set cyan (set_color cyan)
-            set green (set_color green)
-            set red (set_color red)
-            set purple (set_color purple)
-            set yellow (set_color yellow)
-
-            printf '%s-(%s%s%s@%s%s%s)-%s(%s%s%s)%s> %s' $blue $green $USER $cyan $green $__fish_prompt_hostname $blue $blue $purple (prompt_pwd) $blue $cyan $__fish_prompt_normal
-
       end
+
+      printf '%s@%s %s%s%s# ' $USER $__fish_prompt_hostname "$__fish_prompt_cwd" (prompt_pwd) "$__fish_prompt_normal"
+
+      case '*'
+
+      if not set -q __fish_prompt_cwd
+            set -g __fish_prompt_cwd (set_color $fish_color_cwd)
+      end
+
+      set blue (set_color blue)
+      set cyan (set_color cyan)
+      set green (set_color green)
+      set red (set_color red)
+      set purple (set_color purple)
+      set yellow (set_color yellow)
+
+      printf '%s-(%s%s%s@%s%s%s)-%s(%s%s%s)%s> %s' $blue $green $USER $cyan $green $__fish_prompt_hostname $blue $blue $purple (prompt_pwd) $blue $cyan $__fish_prompt_normal
+
+end
 
 end

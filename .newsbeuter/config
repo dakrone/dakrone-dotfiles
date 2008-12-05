@@ -1,0 +1,10 @@
+auto-reload yes
+browser firefox -new-tab %u
+cleanup-on-quit yes
+confirm-exit yes
+reload-time 30
+text-width 78
+
+# Keys
+bind-key j down
+bind-key k up

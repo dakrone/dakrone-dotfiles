@@ -221,7 +221,24 @@ endif
 set nospell
 
 " ---------------------------------------------------------------------------
+" Turn on omni-completion for the appropriate file types.
+autocmd FileType python set omnifunc=pythoncomplete#Complete
+autocmd FileType javascript set omnifunc=javascriptcomplete#CompleteJS
+autocmd FileType html set omnifunc=htmlcomplete#CompleteTags
+autocmd FileType css set omnifunc=csscomplete#CompleteCSS
+autocmd FileType xml set omnifunc=xmlcomplete#CompleteTags
+autocmd FileType php set omnifunc=phpcomplete#CompletePHP
+autocmd FileType c set omnifunc=ccomplete#Complete
+autocmd FileType ruby,eruby set omnifunc=rubycomplete#Complete
+autocmd FileType ruby,eruby let g:rubycomplete_rails = 1  " Rails support
+
+
+" ---------------------------------------------------------------------------
 " some useful mappings
+" Omnicomplete as Ctrl+Space
+inoremap <Nul> <C-x><C-o>
+" Also map user-defined omnicompletion as Ctrl+m
+inoremap <C-m> <C-x><C-u>
 " Y yanks from cursor to $
 map Y y$
 " for yankring to work with previous mapping:
@@ -282,7 +299,9 @@ endif
 map <LocalLeader>tc :tabnew %<cr>    " create a new tab       
 map <LocalLeader>td :tabclose<cr>    " close a tab
 map <LocalLeader>tn :tabnext<cr>     " next tab
+map <silent><A-Right> :tabnext<cr>           " next tab
 map <LocalLeader>tp :tabprev<cr>     " previous tab
+map <silent><A-Left> :tabprev<cr>            " previous tab
 map <LocalLeader>tm :tabmove         " move a tab to a new location
 
 " ---------------------------------------------------------------------------

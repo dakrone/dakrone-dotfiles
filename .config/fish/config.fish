@@ -18,7 +18,7 @@ set CVSROOT :ext:dakrone@cvsup.rawpacket.org:/home/project/rawpacket/cvs
 # Aliases
 function lr; ls -lR; end
 function l.; ls -d .*; end
-function less; less -FRX; end
+function less; less -FRX $argv; end
 function ..; cd ..; end
 function nsmc; cd ~/src/ruby/nsm-console; end
 function serv; cat /etc/services | grep $argv; end

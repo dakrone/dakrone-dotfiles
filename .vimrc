@@ -237,8 +237,8 @@ autocmd FileType ruby,eruby let g:rubycomplete_rails = 1  " Rails support
 " some useful mappings
 " Omnicomplete as Ctrl+Space
 inoremap <Nul> <C-x><C-o>
-" Also map user-defined omnicompletion as Ctrl+m
-inoremap <C-m> <C-x><C-u>
+" Also map user-defined omnicompletion as Ctrl+k
+inoremap <C-k> <C-x><C-u>
 " Y yanks from cursor to $
 map Y y$
 " for yankring to work with previous mapping:

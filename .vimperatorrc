@@ -1,5 +1,8 @@
 set guioptions+=m
 
+map <C-j> <Nop>
+map <C-k> <Nop>
+
 javascript <<EOM
 (function(){
 var inputElm = document.getElementById('liberator-commandline-command');

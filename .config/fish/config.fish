@@ -89,3 +89,7 @@ function fish_prompt --description 'Write out the prompt'
 end
 
 end
+
+function fish_title
+      echo -n \007\033k$_\033\\\033]\;
+end

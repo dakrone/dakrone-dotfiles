@@ -1,16 +1,20 @@
 startup_message off
 vbell off
-defscrollback 6000
+defscrollback 10000
 escape 
 hardstatus alwayslastline
 hardstatus string '%{= kG}[ %{G}%H %{g}][%= %{= kw}%?%-Lw%?%{r}(%{W}%n*%f%t%?(%u)%?%{r})%{w}%?%+Lw%?%?%= %{g}][%{B} %d/%m %{W}%c %{g}]'
+autodetach on
+silencewait 15
+msgwait 2                 # 1 second messages
+term screen
 
-#256 color stuff
-#terminfo and termcap for nice 256 color terminal
-## allow bold colors - necessary for some reason
+shell zsh
+
+# 256 color stuff
+# allow bold colors
 attrcolor b ".I"
-## tell screen how to set colors. AB = background, AF=foreground
-#termcapinfo xterm "Co#256:AB=\E[48;5;%dm:AF=\E[38;5;%dm"
+# tell screen how to set colors. AB = background, AF=foreground
 termcapinfo xterm-color "Co#256:AB=\E[48;5;%dm:AF=\E[38;5;%dm"
-## erase background with current bg color
+# erase background with current bg color
 defbce "on"

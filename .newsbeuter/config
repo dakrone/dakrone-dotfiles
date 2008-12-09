@@ -8,7 +8,7 @@ max-items 100
 notify-xterm yes
 reload-time 30
 reload-threads 1
-text-width 78
+text-width 80
 
 # Keys
 bind-key j down

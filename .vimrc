@@ -109,6 +109,7 @@ let g:yankring_histotry_file="~/.vim/yank.txt"
 " Settings for twitvim
 let twitvim_login=''                " Requires using ,ts to input your username/password
 let g:twitvim_enable_python=1       " Use python for fetchinng the tweets
+let g:twitvim_count=30              " Grab 30 tweets
 map <LocalLeader>tf :FriendsTwitter<cr>
 map <LocalLeader>ts :let twitvim_login=inputdialog('Twitter USER:PASS? ')<cr>
 map <LocalLeader>tw :PosttoTwitter<cr>

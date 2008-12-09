@@ -3,10 +3,10 @@ set PATH $PATH /usr/local/sbin
 set PATH $PATH /usr/local/bin
 set PATH $PATH /usr/local/sbin
 set PATH $PATH /usr/libexec
-set PATH $PATH /opt/local/bin
-set PATH $PATH /opt/local/sbin
-set PATH $PATH /usr/local/mysql/bin
-set PATH $PATH /usr/local/git/bin
+#set PATH $PATH /opt/local/bin
+#set PATH $PATH /opt/local/sbin
+#set PATH $PATH /usr/local/mysql/bin
+#set PATH $PATH /usr/local/git/bin
 set PATH $PATH /var/lib/gems/1.8/bin
 
 set EDITOR vim
@@ -31,6 +31,10 @@ function scsetup; sudo socat -d -d TCP4-listen:6666,fork OPENSSL:hexbit:443,cert
 function scsetup2; sudo socat -d -d TCP4-listen:7777,fork OPENSSL:blackex:443,cert=host.pem,verify=0; end
 function blackexprox; ssh -i ~/.ssh/id_rawpacket -ND 9999 hinmanm@localhost -p 7777; end
 function blackprox; ssh -i ~/.ssh/id_rawpacket -ND 9999 hinmanm@lblack; end
+# Calendar for a week
+function week; remind -c+1 ~/.reminders; end
+# Calendar for a month
+function month; remind -c ~/.reminders; end
 function zg;
       set d (eval /home/hinmanm/bin/zg.rb $argv)
       cd $d
@@ -65,7 +69,7 @@ function fish_prompt --description 'Write out the prompt'
             end
       end
 
-      printf '%s@%s %s%s%s# ' $USER $__fish_prompt_hostname "$__fish_prompt_cwd" (prompt_pwd) "$__fish_prompt_normal"
+      printf '%s@%s %s%s%s# ' $USER $__fish_prompt_hostname "$__fish_prompt_cwd" (pwd) "$__fish_prompt_normal"
 
       case '*'
 
@@ -80,7 +84,7 @@ function fish_prompt --description 'Write out the prompt'
       set purple (set_color purple)
       set yellow (set_color yellow)
 
-      printf '%s-(%s%s%s@%s%s%s)-%s(%s%s%s)%s> %s' $blue $green $USER $cyan $green $__fish_prompt_hostname $blue $blue $purple (prompt_pwd) $blue $cyan $__fish_prompt_normal
+      printf '%s-(%s%s%s@%s%s%s)-%s(%s%s%s)%s> %s' $blue $green $USER $cyan $green $__fish_prompt_hostname $blue $blue $purple (pwd) $blue $cyan $__fish_prompt_normal
 
 end
 

@@ -1,3 +1,4 @@
+set guioptions+=m
 
 javascript <<EOM
 (function(){

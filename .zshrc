@@ -134,7 +134,7 @@ setopt NO_HUP                 # don't send kill to background jobs when exiting
 
 # Keybindings
 bindkey -e
-bindkey "^?"    backward-delete-char
+#bindkey "^?"    backward-delete-char
 bindkey "^H"    backward-delete-char
 bindkey "^[[3~" backward-delete-char
 bindkey "^[[1~" beginning-of-line

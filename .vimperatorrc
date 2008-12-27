@@ -12,10 +12,5 @@ function swapBGColor(event){
 inputElm.addEventListener('focus',swapBGColor,false);
 inputElm.addEventListener('blur', swapBGColor,false);
 })();
-
-function DLsave() {
-      javascript:location.href='http://delicious.com/post?v=4;url='+encodeURIComponent(location.href)+';title='+encodeURIComponent(document.title)
-}
-
 EOM
 

@@ -1,8 +1,2 @@
 let g:netrw_dirhistmax  =10
-let g:netrw_dirhist_cnt =6
-let g:netrw_dirhist_1='/Users/hinmanm/src/ruby/dacs'
-let g:netrw_dirhist_2='/Users/hinmanm/Desktop/shoes-samples'
-let g:netrw_dirhist_3='/Users/hinmanm/src/rails/labview'
-let g:netrw_dirhist_4='/Users/hinmanm/.vim/ftplugin/clojure'
-let g:netrw_dirhist_5='/home/hinmanm/src/ruby/twitter/lib/twitter'
-let g:netrw_dirhist_6='/home/hinmanm/src/ruby/reek/lib/reek'
+let g:netrw_dirhist_cnt =0

@@ -51,6 +51,12 @@ set magic                     " Enable the "magic"
 set visualbell t_vb=          " Disable ALL bells
 set cursorline                " show the cursor line
 set matchpairs+=<:>           " add < and > to match pairs
+set tags=tags;/               " search recursively up for tags
+
+" highlight over 80 columns
+"highlight OverLength ctermbg=darkred ctermfg=white guibg=#FFD9D9
+highlight OverLength cterm=reverse
+match OverLength /\%81v.*/
 
 set dictionary=/usr/share/dict/words " more words!
 
@@ -88,6 +94,7 @@ endif
 let Tlist_Use_Right_Window=1
 let Tlist_Auto_Open=0
 let Tlist_Enable_Fold_Column=0
+let Tlist_Show_One_File = 1         " Only show tags for current buffer
 let Tlist_Compact_Format=0
 let Tlist_WinWidth=28
 let Tlist_Exit_OnlyWindow=1
@@ -280,18 +287,30 @@ imap jj <Esc>
 iab rbang #!/usr/bin/env ruby<cr>
 iab idef def initialize
 
+" Ack helpers
+function! Ack(args)
+      let grepprg_bak=&grepprg
+      set grepprg=ack\ -H\ --nocolor\ --nogroup
+      execute "silent! grep " . a:args
+      botright copen
+      let &grepprg=grepprg_bak
+endfunction
+
+command! -nargs=* -complete=file Ack call Ack(<q-args>)
+
+
 " ---------------------------------------------------------------------------
 " setup for the visual environment
 if $TERM =~ '^xterm'
-        set t_Co=256 
+      set t_Co=256 
 elseif $TERM =~ '^screen-bce'
-        set t_Co=256            " just guessing
+      set t_Co=256            " just guessing
 elseif $TERM =~ '^rxvt'
-        set t_Co=88
+      set t_Co=88
 elseif $TERM =~ '^linux'
-        set t_Co=8
+      set t_Co=8
 else
-        set t_Co=16
+      set t_Co=16
 endif
 
 " ---------------------------------------------------------------------------
@@ -300,38 +319,38 @@ endif
 map <LocalLeader>tc :tabnew %<cr>    " create a new tab       
 map <LocalLeader>td :tabclose<cr>    " close a tab
 map <LocalLeader>tn :tabnext<cr>     " next tab
-map <silent><A-Right> :tabnext<cr>           " next tab
+map <silent><m-Right> :tabnext<cr>           " next tab
 map <LocalLeader>tp :tabprev<cr>     " previous tab
-map <silent><A-Left> :tabprev<cr>            " previous tab
+map <silent><m-Left> :tabprev<cr>            " previous tab
 map <LocalLeader>tm :tabmove         " move a tab to a new location
 
 " ---------------------------------------------------------------------------
 " auto load extensions for different file types
 if has('autocmd')
-        filetype plugin indent on
-        syntax on
+      filetype plugin indent on
+      syntax on
 
-        " jump to last line edited in a given file (based on .viminfo)
-        "autocmd BufReadPost *
-        "       \ if !&diff && line("'\"") > 0 && line("'\"") <= line("$") |
-        "       \       exe "normal g`\"" |
-        "       \ endif
-        autocmd BufReadPost *
-                \ if line("'\"") > 0|
-                \       if line("'\"") <= line("$")|
-                \               exe("norm '\"")|
-                \       else|
-                \               exe "norm $"|
-                \       endif|
-                \ endif
+      " jump to last line edited in a given file (based on .viminfo)
+      "autocmd BufReadPost *
+      "       \ if !&diff && line("'\"") > 0 && line("'\"") <= line("$") |
+      "       \       exe "normal g`\"" |
+      "       \ endif
+      autocmd BufReadPost *
+                        \ if line("'\"") > 0|
+                        \       if line("'\"") <= line("$")|
+                        \               exe("norm '\"")|
+                        \       else|
+                        \               exe "norm $"|
+                        \       endif|
+                        \ endif
 
-        " improve legibility
-        au BufRead quickfix setlocal nobuflisted wrap number
+      " improve legibility
+      au BufRead quickfix setlocal nobuflisted wrap number
 
-        " configure various extenssions
-        let git_diff_spawn_mode=2
+      " configure various extensions
+      let git_diff_spawn_mode=2
 
-        " improved formatting for markdown
-        " http://plasticboy.com/markdown-vim-mode/
-        autocmd BufRead *.mkd  set ai formatoptions=tcroqn2 comments=n:>
+      " improved formatting for markdown
+      " http://plasticboy.com/markdown-vim-mode/
+      autocmd BufRead *.mkd  set ai formatoptions=tcroqn2 comments=n:>
 endif

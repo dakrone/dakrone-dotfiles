@@ -6,8 +6,8 @@ display-article-progress yes
 error-log "~/.newsbeuter/error.log"
 max-items 100
 notify-xterm yes
-reload-time 30
-reload-threads 1
+reload-time 20
+reload-threads 3
 text-width 80
 
 # Keys

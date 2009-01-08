@@ -1,6 +1,6 @@
 [user]
 	name = dakrone
-	email = lee@writequit.org
+      email = lee-at-writequit.org
 
 [core]
       pager = less -FRSX

@@ -59,6 +59,8 @@ alias tcpdump='tcpdump -ttttnnn'
 alias vless=/usr/share/vim/vim72/macros/less.sh
 alias week='remind -c+1 ~/.reminders'
 alias month='remind -c ~/.reminders'
+alias flacsync='rsync -av --delete --ignore-existing ~/Music/FLAC/ /media/ALTHALUS/FLAC/'
+alias musicsync='rsync -av --delete --ignore-existing ~/Music/Library/ /media/ALTHALUS/Library/'
 
 # history
 HISTFILE=$HOME/.zsh-history

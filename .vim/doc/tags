@@ -27,6 +27,7 @@
 'NERDTreeShowHidden'	NERD_tree.txt	/*'NERDTreeShowHidden'*
 'NERDTreeShowLineNumbers'	NERD_tree.txt	/*'NERDTreeShowLineNumbers'*
 'NERDTreeSortOrder'	NERD_tree.txt	/*'NERDTreeSortOrder'*
+'NERDTreeStatusline'	NERD_tree.txt	/*'NERDTreeStatusline'*
 'NERDTreeWinPos'	NERD_tree.txt	/*'NERDTreeWinPos'*
 'NERDTreeWinSize'	NERD_tree.txt	/*'NERDTreeWinSize'*
 'NERDUsePlaceHolders'	NERD_commenter.txt	/*'NERDUsePlaceHolders'*
@@ -219,12 +220,14 @@ NERDTree-e	NERD_tree.txt	/*NERDTree-e*
 NERDTree-f	NERD_tree.txt	/*NERDTree-f*
 NERDTree-gi	NERD_tree.txt	/*NERDTree-gi*
 NERDTree-go	NERD_tree.txt	/*NERDTree-go*
+NERDTree-gs	NERD_tree.txt	/*NERDTree-gs*
 NERDTree-i	NERD_tree.txt	/*NERDTree-i*
 NERDTree-m	NERD_tree.txt	/*NERDTree-m*
 NERDTree-o	NERD_tree.txt	/*NERDTree-o*
 NERDTree-p	NERD_tree.txt	/*NERDTree-p*
 NERDTree-q	NERD_tree.txt	/*NERDTree-q*
 NERDTree-r	NERD_tree.txt	/*NERDTree-r*
+NERDTree-s	NERD_tree.txt	/*NERDTree-s*
 NERDTree-t	NERD_tree.txt	/*NERDTree-t*
 NERDTree-u	NERD_tree.txt	/*NERDTree-u*
 NERDTree-x	NERD_tree.txt	/*NERDTree-x*
@@ -788,12 +791,14 @@ rails-:Rdestroy	rails.txt	/*rails-:Rdestroy*
 rails-:Rdoc	rails.txt	/*rails-:Rdoc*
 rails-:Rdoc!	rails.txt	/*rails-:Rdoc!*
 rails-:Redit	rails.txt	/*rails-:Redit*
+rails-:Renvironment	rails.txt	/*rails-:Renvironment*
 rails-:Rextract	rails.txt	/*rails-:Rextract*
 rails-:Rfind	rails.txt	/*rails-:Rfind*
 rails-:Rfixtures	rails.txt	/*rails-:Rfixtures*
 rails-:Rfunctionaltest	rails.txt	/*rails-:Rfunctionaltest*
 rails-:Rgenerate	rails.txt	/*rails-:Rgenerate*
 rails-:Rhelper	rails.txt	/*rails-:Rhelper*
+rails-:Rinitializer	rails.txt	/*rails-:Rinitializer*
 rails-:Rintegrationtest	rails.txt	/*rails-:Rintegrationtest*
 rails-:Rinvert	rails.txt	/*rails-:Rinvert*
 rails-:Rjavascript	rails.txt	/*rails-:Rjavascript*
@@ -812,7 +817,6 @@ rails-:Rpp	rails.txt	/*rails-:Rpp*
 rails-:Rpreview	rails.txt	/*rails-:Rpreview*
 rails-:Rpreview!	rails.txt	/*rails-:Rpreview!*
 rails-:Rproject	rails.txt	/*rails-:Rproject*
-rails-:Rproject!	rails.txt	/*rails-:Rproject!*
 rails-:Rrefresh	rails.txt	/*rails-:Rrefresh*
 rails-:Rrefresh!	rails.txt	/*rails-:Rrefresh!*
 rails-:Rrunner	rails.txt	/*rails-:Rrunner*

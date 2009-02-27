@@ -1,0 +1,28 @@
+#compdef zblog
+### vim:ft=zsh:foldmethod=marker
+###
+### Frank Terbeck <ft@bewatermyfriend.org>
+### Last-Modified: Wed Dec 26 14:37:41 2007
+###
+### URI: <http://ft.bewatermyfriend.org/comp/zsh.html>
+###
+
+_describe 'zblog commands' '(
+    "atomize:create atom.xml from index.html"
+    "approve:approve comments from moderation queue"
+    "exports:invoke optional export-hooks"
+    "genlastmod:generate string for Last-Modified header"
+    "lsreplaces:output a list of available replaces"
+    "lsmodqueue:list current comment moderation queue"
+    "update:updates blog pages, when needed"
+    "fupdate:forces a complete update"
+    "email:processes encrypted messages"
+    "plain:processes plaintext messages"
+    "commentmode:process comment mails"
+    "version:shows version information"
+    "commands:processes zblog commands"
+    "post:post via commandline"
+    "diff:provide diff via commandline"
+    "mupload:upload media files via commandline"
+    "exec:access various subcommands via commandline"
+)'

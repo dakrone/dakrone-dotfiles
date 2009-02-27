@@ -1,0 +1,15 @@
+### vim:ft=zsh:foldmethod=marker
+###
+### create small urls via tinyurl.com
+### needs wget, grep and sed. yes, it's a hack ;)
+
+[[ -z ${1} ]] && print "please give an url to shrink." && return 1
+local url=${1}
+local tiny="http://tinyurl.com/create.php?url="
+
+#print "${tiny}${url}" ; return
+wget  -O-                                               \
+        -o/dev/null                                     \
+        "${tiny}${url}"                                 \
+        | grep -Eio 'value="(http://tinyurl.com/.*)"'   \
+        | sed 's/value=//;s/"//g'

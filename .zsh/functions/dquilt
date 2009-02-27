@@ -1,0 +1,8 @@
+### vim:ft=zsh:foldmethod=marker
+###
+### call quilt with changed $QUILT_PATCHES
+
+check_com_print quilt || return 1
+
+local QUILT_PATCHES
+QUILT_PATCHES="debian/patches" quilt "$@"

@@ -1,0 +1,17 @@
+### vim:ft=zsh:foldmethod=marker
+###
+### rename xterm from within GNU-screen
+
+if [[ -z ${DISPLAY} ]] ; then
+    printf 'xtrename only makes sense in X11.\n'
+    return 1
+fi
+if [[ -z ${1} ]] ; then
+    printf 'usage: xtrename() "title for xterm"\n'
+    printf '  renames the title of xterm from _within_ screen.\n'
+    printf '  Also works without screen.\n'
+    return 0
+fi
+
+print -n "\eP\e]0;${1}\C-G\e\\"
+return 0

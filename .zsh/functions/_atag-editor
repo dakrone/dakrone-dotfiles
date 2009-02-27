@@ -1,0 +1,25 @@
+#compdef atag-editor
+###
+### Frank Terbeck <ft@bewatermyfriend.org>
+### Last-Modified: Fri Mar  7 00:05:29 2008
+###
+### URI: <http://ft.bewatermyfriend.org/comp/zsh.html>
+###
+local arguments
+local -a supported_extensions
+
+supported_extensions=( 'mp3' 'ogg' 'flac' )
+
+function _ae_files() {
+    _path_files -g "(#i)*.(${(j:|:)supported_extensions})" -g "*(-/)"
+}
+
+arguments=(
+    '-f[hand the force option for tag setting]'
+    '-d[run tag setting via atag() in dry run mode]'
+    '-v[enable verbose output]'
+    '-h[display help information]:'
+    '*::audio files:_ae_files'
+)
+
+_arguments -s $arguments

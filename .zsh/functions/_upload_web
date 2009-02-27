@@ -1,0 +1,26 @@
+#compdef upload_web.sh
+### vim:ft=zsh:foldmethod=marker
+###
+### Frank Terbeck <ft@bewatermyfriend.org>
+### Last-Modified: Fri Mar  7 10:12:10 2008
+###
+### URI: <http://ft.bewatermyfriend.org/comp/zsh.html>
+###
+
+local -a arguments
+
+_upload_web_subdirs() { #{{{
+    local expl
+    local root="$(command upload_web.sh --)"
+    local -a subdirs
+
+    subdirs=(${root}/*(/:t))
+    _wanted list expl 'subdir(s)' compadd ${expl} -- ${subdirs}
+}
+#}}}
+arguments=( #{{{
+    '*:subdir(s):_upload_web_subdirs'
+)
+#}}}
+
+_arguments -s ${arguments}

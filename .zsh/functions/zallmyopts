@@ -1,0 +1,17 @@
+### vim:ft=zsh:foldmethod=marker
+###
+### zallmyopts()  show all options covered by my options file
+
+setopt localoptions extendedglob
+local file=${~ZRC_SOURCE_DIR}/zshrc.d/options
+
+[[ ! -f ${file} ]] && printf 'options file not available (%s)\n' ${file} && return 1
+grep --color=never '^[# ]*setopt' ${file} \
+    | sed -e 's,^  *,,'         \
+          -e '/^##/d'           \
+          -e 's,^#,,'           \
+          -e 's,setopt  *,,'    \
+          -e 's,  *.*,,'        \
+          -e 's,^no_,,'         \
+          -e 's,_,,g'           \
+    | sort

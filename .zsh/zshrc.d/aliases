@@ -1,0 +1,123 @@
+#zdep zshrc.d/zfunct
+### vim:ft=zsh:foldmethod=marker
+###
+### zsh aliases
+###
+### Frank Terbeck <ft@bewatermyfriend.org>
+### Updated by:
+### Lee Hinman <lee at writequit dot org>
+###
+### URI: <http://ft.bewatermyfriend.org/comp/zsh.html>
+###
+
+### normal user aliases {{{
+###   Note: normally aliases that redefine well-known commands are
+###         not considered to be good practice, since other users might
+###         get confused by changed environments. These ls- and grep-aliases
+###         should be okay, since '--color=auto' only adds color sequences,
+###         when the output goes to a terminal. ...smart little helpers, indeed. :-)
+###
+if [[ $(ls --version 2> /dev/null) == ((*GNU*)|(*fileutils*)|(*coreutils*)) ]] ; then
+    alias ls='ls --color=auto'
+    alias lsc='ls --color=always'
+elif [[ -x $(which gls) ]] && [[ $(gls --version) == ((*GNU*)|(*fileutils*)|(*coreutils*)) ]] ; then
+    alias ls='gls --color=auto'
+    alias lsc='gls --color=always'
+else
+    xalias ls='ls -F'
+fi
+if echo zsh | grep --color=auto zsh > /dev/null 2>&1 ; then
+    alias grep='egrep -i --color=auto'
+    alias grepc='egrep -i --color=always'
+fi
+[[ -f ${HOME}/etc/x/aliasX ]] && \
+    alias X='exec startx >& ${HOME}/.Xlog'
+
+### a fresh zsh, please.
+alias fzsh='PS1="zsh%# " zsh -f'
+
+### generic aliases (ie. no special checks needed, using xalias().
+xalias gpw="makepasswd --chars 12 --string 'abcdefghijklmnopqrrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+*%_-=.,!|/~'"
+xalias gpwns="makepasswd --chars 12 --string 'abcdefghijklmnopqrrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-'"
+xalias rot13='tr A-Za-z N-ZA-Mn-za-m'
+
+alias  stat='command stat'
+alias zstat='builtin stat'
+
+### the run-help alias is not defined in older versions
+unalias run-help &> /dev/null
+
+### }}}
+### sudo aliases {{{
+
+### reboot/halt/suspend
+salias -c -o reboot='/sbin/reboot'
+salias -c -o shutdown='/sbin/shutdown'
+salias -c -o halt='/sbin/halt'
+salias -c -o hibernate='/usr/sbin/hibernate'
+
+### process control
+salias -c -o kill='kill'
+salias -c -o killall='killall'
+
+### debian tools
+if [[ -f /etc/debian_version ]] ; then
+    salias -c -o aptitude='aptitude'
+    salias -c -o apt-get='apt-get'
+    salias -c -o apt-cache='apt-cache'
+    salias -c -o apt-file='apt-file'
+    salias -c -o apt-key='apt-key'
+    salias -c -o apt-secure='apt-secure'
+    salias -c -o ifup='/sbin/ifup'
+    salias -c -o ifdown='/sbin/ifdown'
+    salias -c -o pon='pon'
+    salias -c -o poff='poff'
+    salias -c -o plog='plog'
+fi
+
+alias mv='nocorrect mv'       # no spelling correction on mv
+alias cp='nocorrect cp'
+alias mkdir='nocorrect mkdir'
+alias j=jobs
+alias l.='ls -d .*'
+alias ll='ls -lh'
+alias la='ls -alh'
+alias lr='ls -lR'
+alias less='less -FRX'
+alias grep='egrep -i --color=auto'
+alias cd..='cd ..'
+alias ..='cd ..'
+alias nsmc='cd ~/src/ruby/nsm-console'
+alias serv='cat /etc/services | grep'
+alias pg='ps aux | grep'
+alias nl='sudo netstat -tunapl'
+alias dmesg='sudo dmesg'
+alias remhex='ssh -i ~/.ssh/id_rawpacket dakrone@localhost -p 6666'
+alias remblack='ssh -i ~/.ssh/id_rawpacket hinmanm@localhost -p 7777'
+alias scsetup='sudo socat -d -d TCP4-listen:6666,fork OPENSSL:hexbit:443,cert=host.pem,verify=0'
+alias scsetup2='sudo socat -d -d TCP4-listen:7777,fork OPENSSL:blackex:443,cert=host.pem,verify=0'
+alias blackexprox='ssh -i ~/.ssh/id_rawpacket -ND 9999 hinmanm@localhost -p 7777'
+alias blackprox='ssh -i ~/.ssh/id_rawpacket -ND 9999 hinmanm@black'
+alias tcpdump='tcpdump -ttttnnn'
+alias vless=/usr/share/vim/vim72/macros/less.sh
+alias week='remind -c+1 ~/.reminders'
+alias month='remind -c ~/.reminders'
+alias flacsync='rsync -av --delete --ignore-existing ~/Music/FLAC/ /media/ALTHALUS/FLAC/'
+alias musicsync='rsync -av --delete --ignore-existing ~/Music/Library/ /media/ALTHALUS/Library/'
+
+### }}}
+### names for certain directories {{{
+###   you can do 'cd ~audio' to cd to ~/Music, for example
+###
+
+xhashd audio=${HOME}/Music
+xhashd dotfiles=${HOME}/src/dotfiles-dakrone
+xhashd nsmc=${HOME}/src/ruby/nsm-console
+xhashd music=${HOME}/Music
+xhashd cmus=${HOME}/src/cmus-unofficial
+xhashd newsbeuter=${HOME}/src/c++/newsbeuter
+xhashd src=${HOME}/src
+xhashd zdir=${${${(M)fpath:#*/zsh/${ZSH_VERSION}/*}[1]}%${ZSH_VERSION}*}${ZSH_VERSION}
+xhashd zsh=${ZRC_SOURCE_DIR}
+
+### }}}

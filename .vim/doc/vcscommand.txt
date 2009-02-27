@@ -438,6 +438,7 @@ The following variables are available:
 |VCSCommandSVNDiffExt|
 |VCSCommandSVNDiffOpt|
 |VCSCommandSVNExec|
+|VCSCommandVCSTypeOverride|
 
 VCSCommandCommitOnWrite				*VCSCommandCommitOnWrite*
 
@@ -561,6 +562,15 @@ VCSCommandSVNExec				*VCSCommandSVNExec*
 
 This variable controls the executable used for all SVN commands  If not set,
 it defaults to "svn".
+
+VCSCommandVCSTypeOverride			*VCSCommandVCSTypeOverride*
+
+This variable allows the VCS type detection to be overridden on a path-by-path
+basis.  The value of this variable is expected to be a List of Lists.  Each
+item in the high-level List is a List containing two elements.  The first
+element is a regular expression that will be matched against the full file
+name of a given buffer.  If it matches, the second element will be used as the
+VCS type.
 
 5.2 VCSCommand events				*vcscommand-events*
 

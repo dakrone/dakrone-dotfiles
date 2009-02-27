@@ -1,0 +1,27 @@
+#compdef reb
+### vim:ft=zsh:foldmethod=marker
+### completion for reb function
+###
+### Frank Terbeck <ft@bewatermyfriend.org>
+### Last-Modified: Wed Dec 26 14:37:30 2007
+###
+### URI: <http://ft.bewatermyfriend.org/comp/zsh.html>
+###
+
+_reb_files() {
+    local i
+    local -a exts
+    exts=($(DEBUG_REB=0 reb -L))
+    for i in ${exts} ; do
+        _path_files -g '*'${i}
+    done
+    _path_files -g '*(/)'
+}
+
+_arguments -s                                                                           \
+    '-l[list available extensions (human readable)]:'                                   \
+    '-L[list available extensions (machine readable)]:'                                 \
+    '-n[do not disown processes]:'                                                      \
+    '-o[do not put processes into background (one-by-one processing)]:'                 \
+    '-B[force background processes (even if more than $MAX_BG files are specified)]:'   \
+    '*:eBook files:_reb_files'

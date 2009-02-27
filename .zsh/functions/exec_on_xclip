@@ -1,0 +1,323 @@
+# vim:ft=zsh:fdm=marker
+###
+### widget that executes a command on the current
+### X11 selection. Uses zstyle ':exec_on_xclip:*' context.
+###
+### Frank Terbeck <ft@bewatermyfriend.org>
+### Last-Modified: Wed Sep  3 03:17:13 2008
+###
+### URI: <http://ft.bewatermyfriend.org/comp/zsh.html>
+###
+
+emulate -L zsh
+setopt extendedglob noksharrays
+
+[[ -z ${WIDGET} ]] && printf 'widgets can only be called when ZLE is active\n' && return 1
+
+#{{{ variables
+
+local buf xclip opts pre post presp postsp i context
+local usage pager stages c op clearterm singlestage
+local -A contexts
+
+zstyle -s ":exec_on_xclip:*" pager pager || pager=${PAGER:-more}
+
+#{{{ usage text
+usage='
+NAME
+      exec_on_xclip - call commands based on the current X11 selection.
+
+DESCRIPTION
+      exec_on_xclip is a zle widget, that looks at the current state
+      of the X11 selection buffer, looks up an appropriate action for
+      it and calls the given command with the selection as the
+      argument for the command.
+
+      That way, you can start browsers on selected URIs, for example.
+
+INVOCATION
+      exec_on_xclip looks at the current commandline buffer, to
+      determine, if it should do something special.
+
+      Recognized strings:
+        '\''help'\''
+            Displays this help text.
+
+        '\''conf'\''
+            Dumps the current exec_on_xclip configuration.
+
+        If a commandline buffer starting with help or conf ends
+        with '\'\|\'', the text that would be printed, will be
+        displayed in the configured pager (%s).
+
+        Additionally, if exec_on_xclip sees a stagename in the
+        commandline buffer, it will lookup an action exclusively from
+        that stage instead of checking all stages.
+
+SETUP
+      To get exec_on_xclip running a few simple steps are required:
+
+        1. copy the function file into your $fpath.
+        2. call: autoload -U exec_on_xclip
+        3. make it known to zle: zle -N exec_on_xclip
+        4. bind it to a key:
+            bindkey '\''^xb'\''   exec_on_xclip
+            bindkey '\''^x^b'\''  exec_on_xclip
+
+CONFIGURATION
+      exec_on_xclip is configured via zsh'\''s zstyle system.
+      It uses the obvious namespace '\'':exec_on_xclip:*'\''.
+
+      Global styles:
+        For some styles, it does not make sense to define them
+        in a fine-grained context, as they are only looked up
+        in '\'':exec_on_xclip:*'\''; these are:
+
+        + xclip
+            The X11 selection tool to use.
+            (default: xclip)
+
+        + options
+            Options for the X11 selection tool to print the selection
+            buffer to stdout. (default: -o)
+
+        + pager
+            This help text, as well as the configuration dumping
+            function of exec_on_xclip may output more text than
+            fits on your screen, to improve usability, the texts
+            may be viewed in a pager (see above). This style sets up
+            the pager that will be used. (default: %s)
+
+        + stages
+            Stages are used to group applications together (for
+            example apps that open a new window in X11 and others,
+            that work directly in the current terminal window).
+
+            This style takes a list of stage names, that will
+            be gone through one after another, until a matching
+            application was found. The names have a special format,
+            that must be followed:
+              "number:name"
+
+            The number is used to define the order the stages are used.
+            "0:foo" is used earlier then "1:bar".
+
+            Stage names, starting with x11 have a special effect:
+            The command, that will be called is put into the background
+            and is disowned.
+
+            The default value for stages is: '\''0:x11'\'' '\''1:nox'\''.
+
+        + contexts
+            The contexts, exec_on_xclip are completely user definable.
+            Its value is an associative array, that maps names to
+            patterns. These patterns are used to match the current
+            X11 selection buffer. If a pattern matches the buffer,
+            the context is set to the name that corresponds to the
+            pattern (minus the priority expression).
+
+            The format of a name pattern pair is as follows:
+              "number:name"   "pattern"
+
+            The "number:" part is what I refered to as "priority
+            expression" above. Is serves the same reason as the
+            similar part in stage names (see above).
+
+            The contexts style is empty be default.
+
+      Other styles:
+        These styles control the way exec_on_xclip acts in various
+        contexts.
+
+        + app
+            This is (beside contexts) the most important style, that
+            you must set. It configures the application, that should
+            be used in a given context.
+
+            The app style is simply a string, that must contain the
+            substring '\''_eoxc_'\'', because that is the position
+            where the X11 selection is filled in.
+
+            No applications are defined by default.
+
+        + clearterm
+            If this boolean style is set in the current context, the
+            terminal screen will be cleared by zle after the called
+            application exits. (default: false)
+
+        + operate
+            This boolean style is an addition to the app style.
+            If set to '\''false'\'', it let'\''s you disable complete
+            contexts (useful to disable complete stages, if you
+            temporarily want to disable apps, that open new windows,
+            for example). (default: true)
+
+EXAMPLES
+      To give you an idea, of how the configuration described above
+      may be put together, here is a working example:
+
+    zstyle '\'':exec_on_xclip:*'\''             contexts                      \
+                                              "0:uri_http"  '\''http://*'\''  \
+                                              "1:file_gz"   '\''(/|~)*.gz'\'' \
+                                              "2:file"      '\''(/|~)*'\''
+
+    zstyle '\'':exec_on_xclip:*'\''             stages '\''0:nox'\'' '\''1:x11'\''
+    zstyle '\'':exec_on_xclip:*'\''             xclip "xclip"
+    zstyle '\'':exec_on_xclip:*'\''             options "-o"
+    zstyle '\'':exec_on_xclip:*'\''             pager "less -Mr"
+    zstyle '\'':exec_on_xclip:x11:*'\''         operate false
+    zstyle '\'':exec_on_xclip:nox:*'\''         clearterm true
+  if   [[ -x $(which opera) ]] ; then
+    zstyle '\'':exec_on_xclip:x11:uri_http'\''  app '\''opera -remote openURL(_eoxc_)'\''
+  elif [[ -x $(which firefox) ]] ; then
+    zstyle '\'':exec_on_xclip:x11:uri_http'\''  app '\''firefox -new-tab _eoxc_'\''
+  else
+    zstyle '\'':exec_on_xclip:x11:uri_http'\''  app false
+  fi
+    zstyle '\'':exec_on_xclip:*:uri_http'\''    app "${BROWSER:-w3m} _eoxc_"
+    zstyle '\'':exec_on_xclip:*:file_gz'\''     app "zless _eoxc_"
+    zstyle '\'':exec_on_xclip:*:file'\''        app "less _eoxc_"
+
+
+BUGS
+      Redrawing multi-line prompts may be broken.
+      I do not think it is worth working around that.
+      If you feel disturbed by that, set clearterm.
+
+AUTHOR
+      Frank Terbeck <ft@bewatermyfriend.org>
+      (c) 2007
+      Permission to use, copy, modify, and distribute this software
+      for any purpose with or without fee is hereby granted,
+      provided that the above copyright notice and this permission
+      notice appear in all copies.
+
+      THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL
+      WARRANTIES WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED
+      WARRANTIES OF MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL
+      THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT, INDIRECT, OR
+      CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING
+      FROM LOSS OF MIND, USE, DATA OR PROFITS, WHETHER IN AN ACTION
+      OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+      OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+
+
+  (If this scrolls off your screen, try '\''help|'\'' instead of '\''help'\'').
+' #}}}
+
+#}}}
+#{{{ options
+
+if [[ ${BUFFER} == help* ]] ; then
+    print -n ${POSTEDIT}
+    if [[ ${BUFFER} == *\| ]] ; then
+        printf $usage "${pager}" "${PAGER:-more}" | ${=pager}
+    else
+        printf $usage "${pager}" "${PAGER:-more}"
+    fi
+    BUFFER=''
+    zle accept-line
+    return 0
+elif [[ ${BUFFER} == conf* ]] ; then
+    print -n ${POSTEDIT}
+    if [[ ${BUFFER} == *\| ]] ; then
+        ( printf '\nConfiguration:\n\n' ; zstyle -L ':exec_on_xclip:*' ) | ${=pager}
+    else
+        printf '\nConfiguration:\n\n' ; zstyle -L ':exec_on_xclip:*'
+    fi
+    BUFFER=''
+    zle accept-line
+    return 0
+fi
+
+#}}}
+#{{{ setting up X11 selection app
+
+if ! zstyle -s ":exec_on_xclip:*" xclip xclip ; then
+    xclip="xclip"
+    opts="-o"
+elif ! zstyle -s ":exec_on_xclip:*" options opts ; then
+    opts=""
+fi
+
+if [[ ! -x $(which ${xclip}) ]] ; then
+    printf 'X11 selection program (%s) could not be found. ABORT.' "${xclip}"
+    return 1
+fi
+
+#}}}
+#{{{ setting up contexts and stages
+
+if ! zstyle -a ":exec_on_xclip:*" contexts contexts ; then
+    printf '\nNo context configuration found for exec_on_xclip.\n'
+    printf 'Enter '\''help'\'' and call me again for usage information.\n'
+    print -nP ${POSTEDIT}${PS1}${BUFFER}
+    return 1
+fi
+
+zstyle -a ":exec_on_xclip:*" stages stages || stages=("0:x11" "1:nox")
+for i in {1..${#stages}} ; do stages[$i]="${${stages[$i]}#<->:}" ; done
+
+#}}}
+
+buf=$(${xclip} ${opts})
+
+#{{{ setting up $context
+
+context=""
+for c in ${(on)${(k)contexts}} ; do
+    if [[ ${buf} == ${~${contexts[$c]}} ]] ; then
+        context=${c#<->:}
+        break
+    fi
+done
+
+if [[ -z ${context} ]] ; then
+    printf '\nSorry, no context to handle X11 selection.\n(%s)\n' "${buf}"
+    print -nP ${POSTEDIT}${PS1}${BUFFER}
+    return 0
+fi
+
+#}}}
+#{{{ main()
+
+singlestage=''
+[[ -n ${BUFFER} ]] && [[ -n ${(M)stages:#${BUFFER}} ]] && singlestage=${BUFFER}
+
+for stage in ${stages} ; do
+    [[ -n ${singlestage} ]] && [[ ${stage} != ${singlestage} ]] && continue
+    zstyle -s ":exec_on_xclip:${stage}:${context}" app app
+    op='yes'        ; zstyle -T ":exec_on_xclip:${stage}:${context}" operate || op='no'
+    clearterm='no'  ; zstyle -t ":exec_on_xclip:${stage}:${context}" clearterm && clearterm='yes'
+    [[ ${op} == 'no' ]] || [[ ${app} == 'false' ]] && continue
+
+    if [[ ${app} == (#b)(*)_eoxc_(*) ]] ; then
+        pre=${match[1]} ; post=${match[2]}
+        [[ ${pre}  == *[[:space:]] ]] && presp=' '  || presp=''
+        [[ ${post} == [[:space:]]* ]] && postsp=' ' || postsp=''
+
+        if [[ ${stage} == (#i)x11 ]] ; then
+            ${(z)pre}${=presp}${buf}${=postsp}${(z)post} &!
+            printf '\r'
+        else
+            ${(z)pre}${=presp}${buf}${=postsp}${(z)post}
+        fi
+        if [[ ${clearterm} == 'yes' ]] ; then
+            zle clear-screen
+        else
+            true; print -nP ${POSTEDIT}${PS1}${BUFFER}
+        fi
+        return 0
+    fi
+done
+
+if [[ -n ${singlestage} ]] ; then
+    printf '\nSorry, no valid action to handle X11 selection in stage "%s".\n(%s)\n' "${singlestage}" "${buf}"
+else
+    printf '\nSorry, no valid action to handle X11 selection.\n(%s)\n' "${buf}"
+fi
+
+true; print -nP ${POSTEDIT}${PS1}${BUFFER}
+return 0
+
+#}}}

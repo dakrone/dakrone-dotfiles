@@ -1,0 +1,20 @@
+#zdep __end__
+### vim:ft=zsh:foldmethod=marker
+###
+### Frank Terbeck <ft@bewatermyfriend.org>
+### Last-Modified: Fri Dec 12 11:16:29 2008
+###
+### URI: <http://ft.bewatermyfriend.org/comp/zsh.html>
+###
+
+if [[ -n ${ZRC_PLEASE_GOTO} ]] ; then
+    if [[ -d ${ZRC_PLEASE_GOTO} ]] ; then
+        zprintf 1 'Changing directory: %s\n' ${ZRC_PLEASE_GOTO}
+        cd ${ZRC_PLEASE_GOTO}
+    else
+        zprintf 1 'Could not change directory, as you requested.\n'
+        zprintf 1 'The directory does not exist: %s\n' ${ZRC_PLEASE_GOTO}
+    fi
+else
+    zprintf 1 'Staying where we are: %s\n' ${PWD}
+fi

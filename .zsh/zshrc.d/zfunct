@@ -1,0 +1,36 @@
+#zdep zshrc.d/options,zshrc.d/vars
+### vim:ft=zsh:foldmethod=marker
+###
+### zfunct - chpwd/precmd/preexec etc.
+###
+### Frank Terbeck <ft@bewatermyfriend.org>
+### Updated by:
+### Lee Hinman <lee at writequit dot org>
+###
+### URI: <http://ft.bewatermyfriend.org/comp/zsh.html>
+###
+
+precmd () {
+    ### put the current program into screen's hardstatus
+    if [[ "$TERM" == screen* ]]; then
+        if [[ -n ${SSH_CLIENT} ]] ; then
+            print -nP "\ek%m: zsh\e\\"
+        else
+            print -nP "\ekzsh\e\\"
+        fi
+    fi
+}
+
+preexec () {
+    setopt localoptions extendedglob
+
+    if [[ "$TERM" == screen* ]]; then
+        local CMD=${1[(wr)^(*=*|sudo|-*)]}
+        if [[ -n ${SSH_CLIENT} ]] ; then
+            print -nP "\ek%m: $CMD\e\\"
+        else
+            print -nP "\ek$CMD\e\\"
+        fi
+    fi
+
+}

@@ -1,0 +1,7 @@
+### vim:ft=zsh:foldmethod=marker
+###
+### do hexdumps and diff -u those
+
+check_com_print diff || return 1
+
+command diff -u <(hexdump $1) <(hexdump $2)

@@ -1,0 +1,52 @@
+#compdef arename
+
+# Written by Frank Terbeck <ft@bewatermyfriend.org>.
+#
+# Distributed with arename <http://ft.bewatermyfriend.org/comp/arename.html>,
+# under the same terms as arename itself (2-clause BSD); See the LICENCE file
+# which is included in the arename distribution.
+
+local arguments
+local -a supported_extensions
+
+supported_extensions=( 'mp3' 'ogg' 'flac' )
+
+function _arename_files() {
+    _path_files -g "(#i)*.(${(j:|:)supported_extensions})" -g "*(-/)"
+}
+
+function _arename_profiles() {
+    local expl
+    local -a already
+
+    compset -P '*,'
+    already=(${(s<,>)IPREFIX})
+    _wanted list expl 'profile(s)' compadd -S, -F already -q ${expl} -- ${(f)"$(arename -S)"}
+}
+
+arguments=(
+    '-p[define a directory prefix for destination file(s)]:directory prefix:_path_files -g '\''*(-/)'\'
+    '-P[force the use of certain profile(s)]:profile(s):_arename_profiles'
+    '-T[define a compilation template]:compilation template:'
+    '-t[define a generic template]:template:'
+    '-c[read a file instead of ~/.arenamerc]:config file:_files'
+    '-C[read a file in addition to ~/.arenamerc]:config file:_files'
+    '-f[overwrite file(s) if needed]'
+    '-H[disable all hooks]'
+    '-L[list current configuration]:'
+    '-M[compare versions of script and module]'
+    '-l[read local config file]'
+    '-d[go into dry-run mode]'
+    '-q[enable quiet output]'
+    '-s[read filenames from stdin]'
+    '-v[enable verbose output]'
+    '-N[disable all profiles]'
+    '-D[enable debugging mode]'
+    '-Q[do not display skips in quiet mode]'
+    '-h[display help information]:'
+    '-S[print all profile names defined in the active configuration]'
+    '-V[display version infomation]:'
+    '*:audio files:_arename_files'
+)
+
+_arguments -s $arguments

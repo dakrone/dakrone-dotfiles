@@ -1,0 +1,440 @@
+### vim:ft=zsh:foldmethod=marker
+### tagging functions for mp3, ogg vorbis as well as flac audio files
+### these depend on id3v2, vorbiscomment and metaflac respectively.
+### To import tags of a certain file into shell variables, ataglist.pl
+### from arename >= v0.8 is needed.
+###
+### Frank Terbeck <ft@bewatermyfriend.org>
+### Last-Modified: Sat Sep  6 23:15:05 2008
+###
+### URI: <http://ft.bewatermyfriend.org/comp/zsh.html>
+###
+
+emulate -L zsh
+setopt extendedglob
+setopt nullglob
+setopt noksharrays
+
+# variables {{{
+local flactag mp3tag oggvtag taglist
+local -A arguments
+local -A mp3_opts
+local -A oggv_opts
+local -a oggv_args
+local -a flac_list_opts
+local -a flac_args
+local file usage
+local -i force dryrun
+
+flactag='metaflac'
+mp3tag='id3v2'
+oggvtag='vorbiscomment'
+if [[ -x $(which ataglist.pl) ]] ; then
+    taglist='ataglist.pl'
+else
+    taglist='ataglist'
+fi
+
+flac_list_opts=(
+    --no-utf8-convert
+    --list --block-type="VORBIS_COMMENT"
+)
+
+flac_args=(
+    --no-utf8-convert
+)
+
+mp3_opts=(
+    album       "-A"
+    artist      "-a"
+    tracktitle  "-t"
+    tracknumber "-T"
+    year        "-y"
+    compilation "--TPE2"
+    genre       "--TCON"
+)
+
+oggv_opts=(     # used for flac, too.
+    album       "ALBUM"
+    artist      "ARTIST"
+    tracktitle  "TITLE"
+    tracknumber "TRACKNUMBER"
+    year        "DATE"
+    compilation "ALBUMARTIST"
+    genre       "GENRE"
+)
+
+oggv_args=(-w)
+#}}}
+function available() { #{{{
+    local com=$1 ; shift
+
+    if [[ -x $(which ${com}) ]] ; then
+        return 0
+    fi
+
+    printf 'Sorry, %s is not available. Cannot handle file.\n' "$com"
+    return 1
+}
+#}}}
+function flactag() { #{{{
+    # except for listing, this one is pretty straight forward.
+    local file tag ret__=0
+
+    file="$1"
+    shift
+
+    if (( ${#arguments} == 0 && force == 0 )) ; then
+        (( dryrun == 0 )) && \
+        print -l \
+          ${${(M)${(f)"$(command $flactag $flac_list_opts $file)"}:#[ $'\t']##comment\[[0-9]##\]: *}/#[ $'\t']##comment\[[0-9]##\]: /}
+        return 0
+    fi
+
+    for tag in ${(k)arguments} ; do
+        flac_args+=("--remove-tag=${oggv_opts[$tag]}" "--set-tag=${oggv_opts[$tag]}=${arguments[$tag]}")
+    done
+
+    if (( force > 0 )) ; then
+        print -- $flactag --remove-all-tags ${(qqq)file}
+        (( dryrun == 0 )) && \
+        command  $flactag --remove-all-tags $file
+    fi
+    if (( ${#flac_args} > 1 )) ; then
+        print -- $flactag "${(@qqq)flac_args}" ${(qqq)file}
+        if (( dryrun == 0 )) ; then
+            command  $flactag "${(@)flac_args}" $file
+            ret__=$?
+        fi
+    fi
+
+    return ${ret__}
+}
+#}}}
+function listexterns() { #{{{
+    cat << __EOF__
+id3v2 - a command line id3v2 tag editor
+    debian package: id3v2
+    website: <http://id3v2.sourceforge.net/>
+
+vorbiscomment - a command line ogg comment editor
+    debian package: vorbis-tools
+    website: <http://xiph.org/downloads/>
+
+metaflac - a commandline flac comment editor
+    debian package: flac
+    website: <http://flac.sourceforge.net/download.html>
+
+ataglist.pl
+    debian package: -none-
+    website: <http://ft.bewatermyfriend.org/comp/arename.html>
+__EOF__
+    return 0
+}
+#}}}
+function mp3tag() { #{{{
+    # This is pretty straight forward, as id3v2 overwrites given tags
+    # by default and adds tags if the given tag isn't there yet.
+    local -a options
+    local key file ret__=0
+
+    file="$1"
+    shift
+
+    if (( ${#arguments} == 0 && force == 0 )) ; then
+        command $mp3tag -R $file
+        return 0
+    fi
+
+    for key in ${(k)arguments} ; do
+        options+=( $mp3_opts[$key] "${arguments[$key]}" )
+    done
+
+    if (( force > 0 )) ; then
+        print -- $mp3tag -D ${(qqq)file}
+        (( dryrun == 0 )) && \
+        command  $mp3tag -D $file
+    fi
+    if (( ${#options} > 0 )) ; then
+        print -- $mp3tag -2 "${(@qqq)options}" ${(qqq)file}
+        if (( dryrun == 0 )) ; then
+            command  $mp3tag -2 "${(@)options}" $file
+            ret__=$?
+        fi
+    fi
+
+    return ${ret__}
+}
+#}}}
+function oggvtag() { #{{{
+    # This one is a little more complicated, as we need to read
+    # the currently set tags before being able to get the same
+    # behaviour as id3v2.
+    local -A tags
+    local file tag val oifs ret__=0
+    local nil=$'\0'
+    local nl=$'\n'
+
+    file="$1"
+    shift
+
+    # no arguments? Just list the current tags of $file
+    if (( ${#arguments} == 0 && force == 0 )) ; then
+        (( dryrun == 0 )) && \
+        command $oggvtag -l $file
+        return 0
+    fi
+
+    tags=()
+    if (( force == 0 )) ; then
+        # reading the tags that are set in the given file.
+        # save them to the $tags hash.
+        oifs=$IFS
+        IFS=$nil
+        tags=(${="${(@)${(0)${${"$(command $oggvtag -l $file)"}/(#s)(#e)/empty=}//$nl/$nil}/(#b)([^=]##)=(*)/${(U)match[1]}$nil${match[2]}}"})
+        IFS=$oifs
+    fi
+
+    # merging the already set tags with the command line arguments.
+    for tag in ${(k)arguments} ; do
+        val="${arguments[$tag]}"
+        tags[${oggv_opts[$tag]}]="$val"
+    done
+
+    # 'FOO=' arguments should just remove the FOO tag
+    for tag in ${(k)tags[(R)()]} ; do
+        unset "tags[$tag]"
+    done
+
+    # assemble the arguments array for our tagging command.
+    for tag in ${(k)tags} ; do
+        oggv_args+=("-t" "$tag=${tags[$tag]}")
+    done
+
+    if (( force > 0 )) ; then
+        print -- $oggvtag -w ${(qqq)file}
+        (( dryrun == 0 )) && \
+        : | command $oggvtag -w $file
+    fi
+    if (( ${#oggv_args} > 1 )) ; then
+        print -- $oggvtag "${(@qqq)oggv_args}" ${(qqq)file}
+        if (( dryrun == 0 )) ; then
+            command  $oggvtag "${(@)oggv_args}" $file
+            ret__=$?
+        fi
+    fi
+
+    return ${ret__}
+}
+#}}}
+function showfeatures() { #{{{
+    local com
+    local -A features
+
+    features=(
+        ${mp3tag}
+            'Reading and setting tags in mp3 files.'
+        ${oggvtag}
+            'Reading and setting tags in oggvorbis files.'
+        ${flactag}
+            'Reading and setting tags in flac files.'
+        ${taglist}
+            'Unified way to read tags in *all* filetypes.::This is only used for the '\''-e'\'' option.'
+    )
+
+    printf 'atag() requires a number of external programs to implement its features.\n'
+    printf 'The following is a list of programs and features that depend on it:\n\n'
+
+    for com in ${(k)features} ; do
+        printf '    '${${features[$com]}//::/\\n    }'\n'
+        printf '      checking for %s...\n' ${com}
+        if [[ -x $(which ${com}) ]] ; then
+            printf '        installed as %s; okay.\n\n' ${commands[$com]}
+        else
+            printf '        not found. Feature missing!\n\n'
+        fi
+    done
+
+    return 0
+}
+#}}}
+function tag_setenv() { #{{{
+    local -A tags mapping
+    local -a readtags
+    local tag file=$1 ; shift
+
+    mapping=(
+        tracktitle  tt
+        tracknumber tn
+        album       al
+        artist      ar
+        year        yr
+        compilation comp
+        genre       gr
+    )
+    # hard reset
+    for tag in ${(k)mapping} ; do typeset -g _${mapping[$tag]}='' ; done
+    typeset -g _af=''
+
+    readtags=(${(f)"$($taglist $file)"})
+    if (( ( ${#readtags} % 2 ) == 0 )) ; then
+        tags=(${readtags})
+    else
+        printf 'Reading tags failed. Fix them manually for this file (%s).\n' ${file}
+        return 1
+    fi
+
+    typeset -g _af=$file
+    for tag in ${(k)tags} ; do
+        [[ -z ${mapping[$tag]} ]] && continue
+        typeset -g _${mapping[$tag]}=${tags[$tag]}
+    done
+    if [[ -n ${tags[tracknumber]} ]] ; then
+        typeset -g _tnp=${(l:2::0::0:)${${tags[tracknumber]}/\/*/}}
+    else
+        unset _tnp
+    fi
+} #}}}
+# function main() {{{
+
+# usage text {{{
+usage='atag [-F|-L] <file> [-d,-e,-f] <tag-definition(s)>
+  Where <file> is either *.mp3, *.ogg or *.flac.
+  The following set of common tags are supported:
+    + al(bum)
+    + ar(tist)
+    + tn|tracknumber
+    + tt|tracktitle
+    + y(ear)
+    + comp(ilation)
+    + g(enre)
+
+  Example:
+    atag foo.ogg album='\''Bar Baz'\'' ar='\''Fearless Fo'\''
+
+  If atag is called *only* with the '\''-F'\'' option, a list of
+  features, that depend on external programs is printed, along with
+  a test if the program is installed.
+  Similarly, if '\''-L'\'' is the only option, you get a list, that
+  provides information about where the required external programs
+  can be found.
+
+  If the '\''-f'\'' option is given, all tags will be removed, then
+  the tags given on the command line will be added to the file.
+
+  If the '\''-d'\'' options is given, the real commands are really run.
+
+  if '\''-e'\'' is given, atag sets a few shell variables to the tag
+  values in the given file. This *requires* the ataglist.pl script,
+  included in arename.pl >= v0.8; This option overwrites all other
+  options.
+
+    the file name -> $_af
+    tracknumber   -> $_tn
+                     $_tnp
+                        a postprocessed version of the tracknumber;
+                        padded to two digits and the /Y portion of
+                        x/Y removed. Thus 5 becomes 05, 10 stays 10
+                        and 07/15 becomes 07.
+    tracktitle    -> $_tt
+    album         -> $_al
+    artist        -> $_ar
+    year          -> $_yr
+    compilation   -> $_comp
+    genre         -> $_gr
+
+        Expample:
+            %% atag foo.ogg -f ar="Zappa, Frank"
+            %% atag foo.ogg -e
+            %% atag foo.ogg atag foo.ogg \
+                   ar=${_ar/(#b)(*), (*)/${match[2]} ${match[1]}}
+
+    The example requires '\''extendedglob'\'' on and '\''ksharrays'\'' off.
+
+' #}}}
+
+(( setenv = 0 ))
+(( force  = 0 ))
+(( dryrun = 0 ))
+
+case ${1} in
+    (-F)
+        showfeatures
+        return 0
+        ;;
+    (-L)
+        listexterns
+        return 0
+        ;;
+esac
+
+[[ -n $1 ]] && { file="${1}" ; shift ; }
+while [[ $1 == -* ]] ; do
+    case $1 in
+        (-d)
+            dryrun=1   ; shift;;
+        (-e)
+            setenv=1   ; shift;;
+        (-f)
+            force=1    ; shift;;
+        (*)
+            printf "unknown option %s\n\n" "$1"
+            printf "${usage}"
+            return 1;;
+    esac
+done
+
+if (( setenv > 0 )) ; then
+    available $taglist || return 1
+    tag_setenv ${file}
+    return $?
+fi
+
+while [[ -n "$1" ]] ; do
+    case $1 in
+        ((#b)ar(|tist)=(*))
+            arguments[artist]="$match[2]"       ;;
+        ((#b)al(|bum)=(*))
+            arguments[album]="$match[2]"        ;;
+        ((#b)(tt|tracktitle)=(*))
+            arguments[tracktitle]="$match[2]"   ;;
+        ((#b)(tn|tracknumber)=(*))
+            arguments[tracknumber]="$match[2]"  ;;
+        ((#b)y(|ear)=(*))
+            arguments[year]="$match[2]"         ;;
+        ((#b)comp(|ilation)=(*))
+            arguments[compilation]="$match[2]"  ;;
+        ((#b)g(|enre)=(*))
+            arguments[genre]="$match[2]"  ;;
+        (*)
+            printf 'unknown argument "%s"\n' "$1"
+            return 1
+            ;;
+    esac
+    shift
+done
+
+if [[ -n ${file} ]] && [[ ! -e ${file} ]] ; then
+    printf 'Cannot open "%s": file does not exist.\n' "$file"
+    return 1
+fi
+
+case ${file} in
+    ((#i)*.ogg)
+        available $oggvtag || return 1
+        oggvtag "$file"
+        ;;
+    ((#i)*.mp3)
+        available $mp3tag  || return 1
+        mp3tag "$file"
+        ;;
+    ((#i)*.flac)
+        available $flactag || return 1
+        flactag "$file"
+        ;;
+    (*)
+        [[ -n ${file} ]] && printf 'Unknown filetype (%s)\n\n' "${file}"
+        printf "${usage}"
+        ;;
+esac
+#}}}

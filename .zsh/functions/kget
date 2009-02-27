@@ -1,0 +1,99 @@
+### vim:ft=zsh:fdm=marker
+###
+### kget - fetch linux kernel tarballs/patches/incremental-patches
+### uses  ${FTP_KERNEL_ORG}
+###       ${FTP_KERNEL_ORG_DL}
+###
+### Frank Terbeck <ft@bewatermyfriend.org>
+### Last-Modified: Wed Dec 26 14:38:13 2007
+###
+### URI: <http://ft.bewatermyfriend.org/comp/zsh.html>
+###
+
+emulate -L zsh
+setopt extendedglob
+
+if [[ $1 == '-c' ]] ; then
+    print 'GET /kdist/finger_banner HTTP1.0\n\n' | nc www.kernel.org 80 | grep --color=never latest
+    return 0
+fi
+
+local server dl_dir file_tar file_sign base old inc lastopt pu
+
+server=${FTP_KERNEL_ORG:-ftp://ftp.kernel.org}
+dl_dir=${FTP_KERNEL_ORG_DL:-.}
+
+if [[ ! -d $dl_dir ]] ; then
+    dl_dir='.'
+fi
+
+while getopts "pist" param; do
+    case ${param} in
+        (p)
+            lastopt='p'
+            shift
+            print "kget() getting kernel patch $1.$2.$3"
+            file_tar="${server}/pub/linux/kernel/v$1.$2/patch-$1.$2.$3.bz2"
+            file_sign="${file_tar}.sign"
+            ;;
+        (i)
+            lastopt='i'
+            shift
+            inc=${3:e}
+            base=${3:r}
+            old=$((inc - 1))
+            print "kget() getting incremental kernel patch $1.$2.${base}.${old}-${inc}"
+            file_tar="${server}/pub/linux/kernel/v$1.$2/incr/patch-$1.$2.${base}.${old}-${inc}.bz2"
+            file_sign="${file_tar}.sign"
+            ;;
+        (s)
+            lastopt='s'
+            shift
+            base=${3:r}
+            print "kget() getting kernel patch (snapshot) $1.$2.${base}"
+            file_tar="${server}/pub/linux/kernel/v$1.$2/snapshots/patch-$1.$2.${base}.bz2"
+            file_sign="${file_tar}.sign"
+            ;;
+        (t)
+            lastopt='t'
+            shift lastopt
+            print "kget() getting kernel tarball $1.$2.$3"
+            file_tar="${server}/pub/linux/kernel/v$1.$2/linux-$1.$2.$3.tar.bz2"
+            file_sign="${file_tar}.sign"
+            ;;
+        (*)
+            pu=1
+            ;;
+    esac
+done
+
+if [[ ${pu} != 1 && -z ${lastopt} ]] ; then
+    print "kget() getting kernel tarball $1.$2.$3"
+    file_tar="${server}/pub/linux/kernel/v$1.$2/linux-$1.$2.$3.tar.bz2"
+    file_sign="${file_tar}.sign"
+fi
+
+if [[ -z $3 || ${pu} == 1 ]] ; then
+    print "kget() usage:"
+    print "  $0 [-c] major minor patchlevel [-p|-i]"
+    print "    [[[ eg.: $0 2 6 14.2 ]]]\n"
+    print "    -p gets the patch file"
+    print "    -i gets the incremental patch (eg. 2.6.11.4 => 2.6.11.5)"
+    print "  if '-c' is the first argument of kget, check for lastest kernel versions"
+    return 1
+fi
+
+print -- "-  downloads go to: ${dl_dir}"
+print -- "-  downloading files from ${server}"
+print -- "-  ${file_tar}"
+
+cd ${dl_dir}
+
+wget -c ${file_tar}
+wget -c ${file_sign}
+file_tar=${file_tar:t}
+file_sign=${file_sign:t}
+
+print -- "-  verifying download with signature file"
+gpg --verify ${file_sign} ${file_tar}
+cd - > /dev/null 2>&1

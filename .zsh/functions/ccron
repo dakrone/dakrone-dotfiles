@@ -1,0 +1,36 @@
+### vim:ft=zsh:foldmethod=marker
+###
+### change the state file of cron wrapper
+
+setopt localoptions extendedglob
+local sf="${HOME}/var/run/nocron"
+
+if [[ ! -d ${HOME}/var/run ]] ; then
+    printf '%s does not exist. Giving up.\n' "${HOME}/var/run"
+fi
+
+case $1 in
+((#i)on)
+    if [[ -e ${sf} ]] ; then
+        printf 'enabling cronjobs\n'
+        rm -f ${sf}
+    else
+        printf 'cronjobs enabled already.\n'
+    fi
+    ;;
+((#i)off)
+    if [[ ! -e ${sf} ]] ; then
+        printf 'disabling cronjobs\n'
+        touch ${sf}
+    else
+        printf 'cronjobs disabled already.\n'
+    fi
+    ;;
+(*)
+    if [[ -e ${HOME}/var/run/nocron ]] ; then
+        printf 'cronjobs disabled\n'
+    else
+        printf 'cronjobs enabled\n'
+    fi
+    ;;
+esac

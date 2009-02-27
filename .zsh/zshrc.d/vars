@@ -1,0 +1,129 @@
+#zdep zshrc.d/modules
+### vim:ft=zsh:foldmethod=marker
+###
+### zsh variables
+###   only exporting vars, that are needed in my environment
+###
+### Frank Terbeck <ft@bewatermyfriend.org>
+### Updated by:
+### Lee Hinman <lee at writequit dot org>
+###
+### URI: <http://ft.bewatermyfriend.org/comp/zsh.html>
+###
+
+### $hosts/$sudo_hosts {{{
+
+hosts=(
+    ### ftp sites
+    ftp.kernel.org
+    ftp.2600.com
+    ftp.ccc.de
+    ftp.idsoftware.com
+    sunsite.rwth-aachen.de
+    ftp.{free,net,open}bsd.org
+    ### http
+    www.dawi.net
+    www.schopppe.de
+    www.bewatermyfriend.org
+    www.rwth-aachen.de
+    ### other
+    finger.kernel.org
+    ### dyndns
+    hawk3ye.is-a-geek.org
+    ### loopback
+    127.0.0.1
+    ### lan
+    192.168.110.1
+    192.168.110.4
+    192.168.110.10
+    192.168.110.100
+    192.168.110.120
+    192.168.110.127
+    192.168.110.128
+)
+
+### hosts where I normally got sudo privileges. (see 'aliases')
+### format: comma-seperated-user-list@hostname
+sudo_hosts=( magnum,hawk,ft@fhm hawk@fsst magnum@earthbound )
+
+### }}}
+### prompts {{{
+
+### right-prompt; tell me where I am, if I'm on a remote machine
+if [[ -n ${SSH_CLIENT} ]] ; then
+    RPROMPT="${Pfg[red]}"'['"${Pfg[cy]}%n${PNC}@${Pfg[cy]}%m${Pfg[red]}"']'"${Pfg[cy]}"
+fi
+
+### spelling-correction prompt
+P_WRONG=\'"${Pfg[ye]}%R${PNC}"\'
+P_CORRECTED=\'"${Pfg[ma]}%r${PNC}"\'
+P_CHOICES="${Pfg[ye]}Y${Pfg[ma]}N${Pfg[grn]}E${Pfg[red]}A${PNC}"
+(( ZHAVE_COLORS > 0 )) && \
+    SPROMPT="zsh: correct ${P_WRONG} to ${P_CORRECTED}? (${P_CHOICES}) "
+
+### }}}
+### $VARIABLES {{{
+
+### if the execution of a command takes longer than
+### REPORTTIME (in seconds), time statistics are printed
+REPORTTIME=4
+
+### setup history
+HISTSIZE=9999
+HISTFILE="${HOME}/.zhistory"
+SAVEHIST=6000
+
+### dirstack
+DIRSTACKSIZE=30
+
+### pager
+export PAGER="less"
+
+### browser
+export BROWSER="w3m"
+
+### editor and visual editor settings
+export EDITOR='vim'
+export VISUAL='vim'
+
+### character type
+#export LC_CTYPE=de_DE@euro
+#export LC_CTYPE=de_DE.UTF-8
+
+### nullcommands
+NULLCMD="cat"
+READNULLCMD=${PAGER:-more}
+
+### run-help
+HELPDIR="${ZRC_SOURCE_DIR}/help"
+
+### various apps support $TMPDIR to use someting else than '/tmp'
+export TMPDIR="/tmp"
+
+### }}}
+### variables for some tools {{{
+
+### man
+export MANWIDTH=80
+
+### less
+export LESS_TERMCAP_mb="${fg[cyan]}"
+export LESS_TERMCAP_md="${fg_bold[blue]}"
+export LESS_TERMCAP_me="${reset_color}"
+export LESS_TERMCAP_se="${reset_color}"
+export LESS_TERMCAP_so="${fg[yellow]}${bg[blue]}"
+export LESS_TERMCAP_ue="${reset_color}"
+export LESS_TERMCAP_us="${fg[magenta]}"
+
+
+### these are used by my kget() function
+FTP_KERNEL_ORG="ftp://ftp.kernel.org"
+FTP_KERNEL_ORG_DL="${HOME}/src/tars"
+
+### lookup()
+X_BROWSER_REMOTE="mozilla-firefox"
+
+### linux's make menuconfig supports colorthemes
+export MENUCONFIG_COLOR=mono
+
+### }}}

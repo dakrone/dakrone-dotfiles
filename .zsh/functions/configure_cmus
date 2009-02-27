@@ -1,0 +1,50 @@
+### vim:ft=zsh:foldmethod=marker
+###
+### Frank Terbeck <ft@bewatermyfriend.org>
+### Last-Modified: Wed Dec 26 14:37:57 2007
+###
+### URI: <http://ft.bewatermyfriend.org/comp/zsh.html>
+###
+emulate zsh
+setopt extended_glob
+local features prefix debug fstring i
+declare -A features
+
+prefix='/usr/local'
+debug=2
+
+features=(
+    # input
+    aac         y
+    ffmpeg      n
+    flac        y
+    mad         y
+    mikmod      y
+    modplug     y
+    mp4         y
+    mpc         y
+    vorbis      y
+    wav         y
+    waveout     n
+    wavpack     y
+    # output
+    alsa        y
+    ao          y
+    arts        n
+    oss         y
+    sun         n
+    # other
+    tremor      n
+)
+
+for i in ${(k)features} ; do
+    if [[ -n $fstring ]] ; then
+        fstring+=" CONFIG_${(U)i}=${features[${i}]}"
+    else
+        fstring="CONFIG_${(U)i}=${features[${i}]}"
+    fi
+done
+print -l ${(z)fstring}
+./configure DEBUG=${debug}      \
+            prefix=${prefix}    \
+            ${(z)fstring}

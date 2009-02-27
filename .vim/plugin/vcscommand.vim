@@ -3,8 +3,8 @@
 " Vim plugin to assist in working with files under control of various Version
 " Control Systems, such as CVS, SVN, SVK, and git.
 "
-" Version:	Beta 28
-" Maintainer:	Bob Hiestand <bob.hiestand@gmail.com>
+" Maintainer:    Bob Hiestand <bob.hiestand@gmail.com>
+" Version:       Beta 29
 " License:
 " Copyright (c) 2008 Bob Hiestand
 "
@@ -250,6 +250,14 @@
 "   one another.  If set to 'vertical', the resulting windows will be
 "   side-by-side.  If not set, it defaults to 'horizontal' for all but
 "   VCSVimDiff windows.
+"
+" VCSCommandVCSTypeOverride
+"   This variable allows the VCS type detection to be overridden on a
+"   path-by-path basis.  The value of this variable is expected to be a List
+"   of Lists.  Each high-level List item is a List containing two elements.
+"   The first element is a regular expression that will be matched against the
+"   full file name of a given buffer.  If it matches, the second element will
+"   be used as the VCS type.
 "
 " Event documentation {{{2
 "   For additional customization, VCSCommand.vim uses User event autocommand
@@ -902,6 +910,15 @@ function! VCSCommandGetVCSType(buffer)
 	let vcsType = getbufvar(a:buffer, 'VCSCommandVCSType')
 	if strlen(vcsType) > 0
 		return vcsType
+	endif
+	if exists("g:VCSCommandVCSTypeOverride")
+		let fullpath = fnamemodify(bufname(a:buffer), ':p')
+		for [path, vcsType] in g:VCSCommandVCSTypeOverride
+			if match(fullpath, path) > -1
+				call setbufvar(a:buffer, 'VCSCommandVCSType', vcsType)
+				return vcsType
+			endif
+		endfor
 	endif
 	let matches = []
 	for vcsType in keys(s:plugins)

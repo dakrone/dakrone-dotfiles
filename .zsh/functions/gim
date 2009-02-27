@@ -1,0 +1,4 @@
+### vim:ft=zsh:foldmethod=marker
+
+check_com_print gvim || return 1
+vim_backend "gvim" "$@"

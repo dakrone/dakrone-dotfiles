@@ -4,7 +4,10 @@ echo "Gathering dotfiles"
 
 cp -f -v ~/.vimrc .
 cp -f -v ~/.zshrc .
+mkdir -p .zsh
+cp -f -rv ~/.zsh/ .
 cp -f -v ~/.screenrc .
+mkdir -p .vim
 cp -f -rv ~/.vim .
 mkdir -p .ssh
 cp -f -v ~/.ssh/config .ssh/

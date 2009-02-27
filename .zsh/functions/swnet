@@ -1,0 +1,172 @@
+### vim:ft=zsh:foldmethod=marker
+### (sw)itch(net)work configuration
+### for use with debian if{up,down}
+###
+### Frank Terbeck <ft@bewatermyfriend.org>
+### Last-Modified: Wed Dec 26 14:38:28 2007
+###
+### URI: <http://ft.bewatermyfriend.org/comp/zsh.html>
+###
+
+  # Documentation {{{
+  #   I use this function on my laptop. Together with _swnet (an
+  #   appropriate compsys function); This makes it easy to switch
+  #   between network setups manually. I don't like automation in
+  #   this field.
+  #
+  #   Example:
+  #     % swnet eth0 home
+  #   This enables the home profile on my eth0 adapter.
+  #
+  #   For this to work, I'm adding a few comments into
+  #   /etc/network/interfaces that this function is able to
+  #   parse:
+  #
+  #   [snip]
+  #   ### ziface eth0 home ac
+  #   ### ziface eth1 fhac
+  #   [snap]
+  #
+  #   This makes eth0 and eth1 known interfaces to swnet. It also
+  #   associates the profiles 'home' and 'ac' with eth0 and 'fhac'
+  #   with eth1.
+  #
+  #   If an interface is already configured, it is brought down before
+  #   reconfiguring the interface with the new profile. For this to
+  #   work /etc/network/ifstate must be readable.
+  #
+  #   A profile in /etc/network/interfaces may look like this:
+  #
+  #   [snip]
+  #   iface home inet static
+  #     address 192.168.110.128
+  #     network 192.168.110.0
+  #     netmask 255.255.255.0
+  #     gateway 192.168.110.1
+  #   [snap]
+  #
+  #   options recognized:
+  #     --help | -h ...... prints a quickstart screen
+  #     --list | -l ...... lists all known interfaces and profiles
+  #     --version | -v ... prints version information
+  # }}}
+### options, variables etc. {{{
+emulate zsh
+setopt localoptions
+setopt nullglob
+setopt extendedglob
+
+local cifs ifs names i j found profs sudo ifup ifdown version
+
+version='0.9'
+### }}}
+### global setup {{{
+(( EUID != 0 )) && sudo='sudo'
+ifup='/sbin/ifup'
+ifdown='/sbin/ifdown'
+### }}}
+### input magic {{{
+ifs=( ${${(M)${(f)"$( </etc/network/interfaces )"}\
+:#\###[ $'\t']#ziface[ $'\t']##*}//(#b)*ziface[ $'\t']##([^ $'\t']##)[ $'\t']##*/${match[1]}} )
+
+names=( ${${(M)${(f)"$( </etc/network/interfaces )"}\
+:#\###[ $'\t']#ziface[ $'\t']##*}//(#b)*ziface[ $'\t']##([^ $'\t']##)[ $'\t']##(*)/${match[1]} ${match[2]}} )
+
+cifs=( ${${(f)"$(</etc/network/ifstate)"}/\=*(#e)/} )
+### }}}
+### code {{{
+[[ -z $1 ]] \
+    && printf "%s\n" "usage: $0 [-hlv] interface profile" \
+    && return 1
+
+case $1 in
+### -v --version {{{
+    (-v|--version)
+        printf "swnet version: %s\n" ${version}
+        ;;
+### }}}
+### -h --help {{{
+    (-h|--help)
+        cat << __EOF__
+swnet quickstart: (additional info in the function file itself)
+
+Example:
+  % swnet eth0 home
+This enables the 'home' profile on my eth0 adapter.
+
+For this to work, I am adding a few comments into
+/etc/network/interfaces that this function is able to
+parse:
+
+[snip]
+### ziface eth0 home ac
+### ziface eth1 fhac
+[snap]
+
+This makes eth0 and eth1 known interfaces to swnet. It also
+associates the profiles 'home' and 'ac' with eth0 and 'fhac'
+with eth1.
+
+If an interface is already configured, it is brought down before
+reconfiguring the interface with the new profile. For this to
+work /etc/network/ifstate must be readable.
+__EOF__
+        ;;
+### }}}
+### -l --list {{{
+    (-l|--list)
+        if [[ -z $2 ]] ; then
+            ### print all interfaces and profiles
+            for i in $ifs ; do
+                printf "available profiles for %s:\n" "$i"
+                profs=( ${=${${(M)names:#(#b)(#s)$i (*)}/*/$match[1]}} )
+                for j in ${profs} ; do
+                    printf "  %s\n" "$j"
+                done
+            done
+        else
+        ### print profiles for interface given in argv[2]
+        printf "available profiles for %s:\n" "$2"
+        profs=( ${=${${(M)names:#(#b)(#s)$2 (*)}/*/$match[1]}} )
+        for i in ${profs} ; do
+            printf "  %s\n" "$i"
+        done
+        fi
+        ;;
+### }}}
+### work it done here {{{
+    (*)
+        [[ -z $2 ]] \
+            && printf "%s\n" "usage: $0 [-hlv] interface profile" \
+            && return 1
+        ### check if argv[1] is a valid interface
+        for i in ${ifs} ; do
+            [[ $i == $1 ]] && found=1
+        done
+        (( found == 0 )) \
+            && printf "%s is not a valid interface name\n" "$1" \
+            && return 1
+        ### check if argv[2] is a valid profile for interface in argv[1]
+        found=0
+        profs=( ${=${${(M)names:#(#b)(#s)$1 (*)}/*/$match[1]}} )
+        profs=( off $profs )
+        for i in ${profs} ; do
+            [[ $i == $2 ]] && found=1
+        done
+        (( found == 0 )) \
+            && printf "%s is not a valid interface name\n" "$1" \
+            && return 1
+        ### interface and profile are valid, GO!
+        if [[ -n ${(M)cifs:#(#s)$1(#e)} ]] ; then
+            printf "bringing down %s\n" "$1"
+            $sudo $ifdown $1
+            [[ $2 == 'off' ]] && return 0
+            sleep 1
+        fi
+        [[ $2 == 'off' ]] && return 0
+        printf "bringing up %s (with profile %s)\n" "$1" "$2"
+        $sudo $ifup "$1=$2"
+        ;;
+### }}}
+esac
+### }}}

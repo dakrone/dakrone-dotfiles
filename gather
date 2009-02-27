@@ -19,4 +19,5 @@ cp -f -v ~/.gitconfig .
 cp -f -v ~/.irbrc .
 cp -f -v ~/.config/fish/config.fish .config/fish/
 cp -f -v ~/.newsbeuter/config .newsbeuter/config
+cp -f -v ~/bin/putenv .
 

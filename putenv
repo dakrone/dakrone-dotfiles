@@ -1,0 +1,34 @@
+#!/bin/sh
+KEY="$HOME/.ssh/id_rawpacket.pub"
+if [ ! -f $KEY ];then
+      echo "private key not found at $KEY"
+      echo "* please create it with "ssh-keygen -t rsa" *"
+      echo "* to login to the remote host without a password don't give the key you create with ssh-keygen a password! *"
+      exit
+fi
+
+if [ -z $1 ];then
+      echo "Please specify user@host.tld as the first switch to this script"
+      exit
+fi
+
+echo "Putting your environment on $1... "
+
+# Skip key as this causes some problems with Avamar machines
+#KEYCODE=`cat $KEY`
+#ssh -q $1 "bash -c 'mkdir ~/.ssh 2>/dev/null; echo "$KEYCODE" >> ~/.ssh/authorized_keys'"
+cd ~ && tar czvf vimstuff.tgz .vimrc .vim/
+scp ~/vimstuff.tgz $1:~/
+echo "Untaring vimstuff..."
+ssh -q $1 "bash -c 'mkdir -p ~/.backup; cd; tar zxf vimstuff.tgz'"
+
+cd ~ && tar czvf zshstuff.tgz .zshrc .zsh/
+scp ~/zshstuff.tgz $1:~/
+echo "Untaring zshstuff..."
+ssh -q $1 "bash -c 'cd; tar zxf zshstuff.tgz'"
+
+ssh -q $1 "bash -c 'mkdir -p ~/.config/fish'"
+scp ~/.config/fish/config.fish $1:~/.config/fish/
+scp ~/.screenrc $1:~/
+
+echo "done!"

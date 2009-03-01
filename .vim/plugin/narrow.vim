@@ -1,121 +1,41 @@
-" ****************************************************************************
-" File:             narrow.vim
-" Author:           Jonas Kramer
-" Version:          0.1
-" Last Modified:    2008-11-17
-" Copyright:        Copyright (C) 2008 by Jonas Kramer. Published under the
-"                   terms of the Artistic License 2.0.
-" ****************************************************************************
-" Installation: Copy this script into your plugin folder.
-" Usage: Call the command :Narrow with a range to zoom into the range area.
-" Call :Widen to zoom out again.
-" WARNING! Be careful when doing undo operations in a narrowed buffer. If you
-" undo the :Narrow action, :Widen will fail miserable and you'll probably have
-" the hidden parts doubled in your buffer. The 'u' key is remapped to a save
-" undo function, but you can still mess this plugin up with :earlier, g- etc.
-" Also make sure that you don't mess with the buffers autocmd BufWriteCmd
-" hook, as it is set to a function that allows saving of the whole buffer
-" instead of only the narrowed region in narrowed mode. Otherwise, when saving
-" in a narrowed buffer, only the region you zoomed into would be saved.
-" ****************************************************************************
+" narrow - Emulate Emacs' narrowing feature
+" Version: 0.2
+" Copyright (C) 2007 kana <http://whileimautomaton.net/>
+" License: MIT license  {{{
+"     Permission is hereby granted, free of charge, to any person obtaining
+"     a copy of this software and associated documentation files (the
+"     "Software"), to deal in the Software without restriction, including
+"     without limitation the rights to use, copy, modify, merge, publish,
+"     distribute, sublicense, and/or sell copies of the Software, and to
+"     permit persons to whom the Software is furnished to do so, subject to
+"     the following conditions:
+"
+"     The above copyright notice and this permission notice shall be included
+"     in all copies or substantial portions of the Software.
+"
+"     THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+"     OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+"     MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+"     IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+"     CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+"     TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+"     SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+" }}}
 
-let s:NarrowP = {}
-
-
-fu! narrow#Narrow(rb, re)
-	let n = bufnr("%")
-
-	if has_key(s:NarrowP, n)
-		echo "Buffer is already narrowed. Widen first, then select a new region."
-	else
-		" Save modified state.
-		let modified = getbufvar(n, "&modified")
-
-		let prr = getline(1, a:rb - 1)
-		let por = getline(a:re + 1, "$")
-		let s:NarrowP[n] = { "pre": prr, "post": por, "rb": a:rb, "re": a:re }
-
-		exe "silent " . (a:re + 1) . ",$d"
-		exe "silent 1," . (a:rb - 1) . "d"
-
-		let s:NarrowP[n]["ch"] = changenr()
-
-		au BufWriteCmd <buffer> call narrow#Save()
-
-		" If buffer wasn't modify, unset modified flag.
-		if !modified
-			set nomodified
-		en
-
-		echo "Narrowed. Be careful with undo/time travelling. " . changenr()
-	endi
-endf
+if exists('g:loaded_narrow')
+  finish
+endif
 
 
-fu! narrow#Widen()
-	let n = bufnr("%")
-
-	if has_key(s:NarrowP, n)
-		" Save modified state.
-		let modified = getbufvar(n, "&modified")
-
-		let text = remove(s:NarrowP, n)
-
-		let content = copy(text["pre"])
-		let content = extend(content, copy(getline(1, "$")))
-		let content = extend(content, copy(text["post"]))
-
-		call setline(1, content)
-
-		au! BufWriteCmd <buffer>
-
-		" If buffer wasn't modify, unset modified flag.
-		if !modified
-			set nomodified
-		en
-
-		echo "Widened. " . changenr()
-	endi
-endf
 
 
-fu! narrow#Save()
-	let n = bufnr("%")
-	let name = bufname("%")
-
-	if has_key(s:NarrowP, n)
-		let text = s:NarrowP[n]
-
-		let content = copy(text["pre"])
-		let content = extend(content, copy(getline(1, "$")))
-		let content = extend(content, copy(text["post"]))
-
-		call writefile(content, name)
-		set nomodified
-		echo "Saved something, not sure if it worked."
-	endi
-endf
+command -bar -range Narrow  call narrow#Narrow(<line1>, <line2>)
+command -bar Widen  call narrow#Widen()
 
 
-fu! narrow#SaveUndo()
-	let n = bufnr("%")
-
-	if has_key(s:NarrowP, n)
-		let pos = getpos(".")
-
-		silent undo
-		if changenr() < s:NarrowP[n]["ch"]
-			silent redo
-			echo "I said, be careful with undo! Widen first. " . changenr()
-			call setpos(".", pos)
-		en
-	else
-		undo
-	en
-endf
 
 
-command! -bar -range Narrow call narrow#Narrow(<line1>, <line2>)
-command! -bar Widen call narrow#Widen()
+let g:loaded_narrow = 1
 
-map u :call narrow#SaveUndo()<Cr>
+" __END__
+" vim: foldmethod=marker

@@ -111,12 +111,13 @@ alias musicsync='rsync -av --delete --ignore-existing ~/Music/Library/ /media/AL
 ###
 
 xhashd audio=${HOME}/Music
-xhashd dotfiles=${HOME}/src/dotfiles-dakrone
+xhashd dotfiles=${HOME}/src/dakrone-dotfiles
 xhashd nsmc=${HOME}/src/ruby/nsm-console
 xhashd music=${HOME}/Music
 xhashd cmus=${HOME}/src/cmus-unofficial
 xhashd newsbeuter=${HOME}/src/c++/newsbeuter
 xhashd src=${HOME}/src
+xhashd www=/var/www
 xhashd zdir=${${${(M)fpath:#*/zsh/${ZSH_VERSION}/*}[1]}%${ZSH_VERSION}*}${ZSH_VERSION}
 xhashd zsh=${ZRC_SOURCE_DIR}
 

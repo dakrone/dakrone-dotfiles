@@ -111,7 +111,7 @@ setopt        append_history                ### when exiting, append history ent
 #setopt       hist_append                   ### alias for append_history
 setopt        bang_hist                     ### enable '!' history expansion
 #setopt       hist_expand                   ### alias for bang_hist
-setopt     no_extended_history              ### additional info in $HISTFILE
+setopt        extended_history              ### additional info in $HISTFILE
 setopt     no_hist_allow_clobber            ### add '|' to output redirections in the history.
 setopt     no_hist_beep                     ### beep? beep yourself!eleven!!
 setopt        hist_ignore_dups              ### don't add entered command to history, if it's a dup of the previous event.

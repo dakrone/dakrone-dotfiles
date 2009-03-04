@@ -22,29 +22,25 @@ hosts=(
     sunsite.rwth-aachen.de
     ftp.{free,net,open}bsd.org
     ### http
-    www.dawi.net
-    www.schopppe.de
-    www.bewatermyfriend.org
-    www.rwth-aachen.de
+    www.writequit.org
     ### other
-    finger.kernel.org
+    dagger
+    black
+    altblack
+    hexbit.csc.gatech.edu
+    hexbit
+    althexbit
     ### dyndns
-    hawk3ye.is-a-geek.org
     ### loopback
     127.0.0.1
     ### lan
-    192.168.110.1
-    192.168.110.4
-    192.168.110.10
-    192.168.110.100
-    192.168.110.120
-    192.168.110.127
-    192.168.110.128
+    192.168.1.1
+    10.5.140.163
 )
 
 ### hosts where I normally got sudo privileges. (see 'aliases')
 ### format: comma-seperated-user-list@hostname
-sudo_hosts=( magnum,hawk,ft@fhm hawk@fsst magnum@earthbound )
+sudo_hosts=( hinmanm@dagger dakrone@hexbit hinmanm@altblack hinmanm@black hinmanm@althexbit )
 
 ### }}}
 ### prompts {{{
@@ -118,7 +114,7 @@ export LESS_TERMCAP_us="${fg[magenta]}"
 
 ### these are used by my kget() function
 FTP_KERNEL_ORG="ftp://ftp.kernel.org"
-FTP_KERNEL_ORG_DL="${HOME}/src/tars"
+FTP_KERNEL_ORG_DL="${HOME}/src/kernel"
 
 ### lookup()
 X_BROWSER_REMOTE="mozilla-firefox"

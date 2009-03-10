@@ -131,7 +131,7 @@ if zis_316 "atleast" ; then
     setopt    hist_ignore_all_dups          ### if the entered command is a dup, remove the old one from history.
     setopt    hist_save_no_dups             ### don't write dups to $HISTFILE
     setopt no_inc_append_history            ### append every single command to $HISTFILE immediately after hitting ENTER.
-    setopt no_share_history                 ### always import new commands from $HISTFILE (see 'inc_append_history')
+    setopt    share_history                 ### always import new commands from $HISTFILE (see 'inc_append_history')
 fi
 if zis_43 "atleast" ; then
     setopt    hist_save_by_copy             ### when saving history: DATA => $HISTFILE.new; mv $HISTFILE.new $HISTFILE

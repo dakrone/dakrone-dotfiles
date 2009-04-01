@@ -2,12 +2,12 @@
 " TwitVim - Post to Twitter from Vim
 " Based on Twitter Vim script by Travis Jeffery <eatsleepgolf@gmail.com>
 "
-" Version: 0.4.0
+" Version: 0.4.1
 " License: Vim license. See :help license
 " Language: Vim script
 " Maintainer: Po Shan Cheah <morton@mortonfox.com>
 " Created: March 28, 2008
-" Last updated: March 9, 2009
+" Last updated: March 30, 2009
 "
 " GetLatestVimScripts: 2204 1 twitvim.vim
 " ==============================================================
@@ -1699,10 +1699,10 @@ if !exists(":PublicTwitter")
     command PublicTwitter :call <SID>get_timeline("public", '', 1)
 endif
 if !exists(":FriendsTwitter")
-    command -count=1 -nargs=? FriendsTwitter :call <SID>get_timeline("friends", <q-args>, <count>)
+    command -range=1 -nargs=? FriendsTwitter :call <SID>get_timeline("friends", <q-args>, <count>)
 endif
 if !exists(":UserTwitter")
-    command -count=1 -nargs=? UserTwitter :call <SID>get_timeline("user", <q-args>, <count>)
+    command -range=1 -nargs=? UserTwitter :call <SID>get_timeline("user", <q-args>, <count>)
 endif
 if !exists(":RepliesTwitter")
     command -count=1 RepliesTwitter :call <SID>get_timeline("replies", '', <count>)
@@ -2358,10 +2358,10 @@ function! s:Summize(query, page)
 endfunction
 
 if !exists(":Summize")
-    command -count=1 -nargs=? Summize :call <SID>Summize(<q-args>, <count>)
+    command -range=1 -nargs=? Summize :call <SID>Summize(<q-args>, <count>)
 endif
 if !exists(":SearchTwitter")
-    command -count=1 -nargs=? SearchTwitter :call <SID>Summize(<q-args>, <count>)
+    command -range=1 -nargs=? SearchTwitter :call <SID>Summize(<q-args>, <count>)
 endif
 
 let &cpo = s:save_cpo

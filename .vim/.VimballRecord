@@ -4,3 +4,4 @@ twitvim-0.3.4.vba: call delete('/home/hinmanm/.vim/plugin/twitvim.vim')|call del
 netrw.vba: call delete('/home/hinmanm/.vim/plugin/netrwPlugin.vim')|call delete('/home/hinmanm/.vim/autoload/netrw.vim')|call delete('/home/hinmanm/.vim/autoload/netrwFileHandlers.vim')|call delete('/home/hinmanm/.vim/autoload/netrwSettings.vim')|call delete('/home/hinmanm/.vim/doc/pi_netrw.txt')|call delete('/home/hinmanm/.vim/syntax/netrw.vim')
 twitvim-0.3.5.vba: call delete('/home/hinmanm/.vim/plugin/twitvim.vim')|call delete('/home/hinmanm/.vim/doc/twitvim.txt')
 twitvim-0.4.0.vba: call delete('/home/hinmanm/.vim/plugin/twitvim.vim')|call delete('/home/hinmanm/.vim/doc/twitvim.txt')
+twitvim-0.4.1.vba: call delete('/home/hinmanm/.vim/plugin/twitvim.vim')|call delete('/home/hinmanm/.vim/doc/twitvim.txt')

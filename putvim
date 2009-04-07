@@ -1,0 +1,9 @@
+#!/bin/sh
+echo "Putting your VIM environment on $1... "
+
+cd ~ && tar czvf vimstuff.tgz .vimrc .vim/
+scp ~/vimstuff.tgz $1:~/
+echo "Untaring vimstuff..."
+ssh -q $1 "bash -c 'mkdir -p ~/.backup; cd; tar zxf vimstuff.tgz'"
+
+echo "done!"

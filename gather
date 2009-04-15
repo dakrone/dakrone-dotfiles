@@ -23,4 +23,5 @@ cp -f -v ~/bin/putenv .
 cp -f -v ~/bin/putvim .
 cp -f -v ~/bin/putzsh .
 cp -f -v ~/bin/clj .
+cp -f -v ~/.clojure.conf .
 

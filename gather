@@ -25,3 +25,7 @@ cp -f -v ~/bin/putzsh .
 cp -f -v ~/bin/clj .
 cp -f -v ~/.clojure.conf .
 
+mkdir -p .irssi
+cp -f -v ~/.irssi/config .irssi/
+cp -f -v ~/.irssi/default.theme .irssi/
+cp -f -v ~/.irssi/tzu.theme .irssi/

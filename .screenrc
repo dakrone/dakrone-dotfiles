@@ -16,6 +16,7 @@ shell zsh
 attrcolor b ".I"
 # tell screen how to set colors. AB = background, AF=foreground
 termcapinfo xterm-color "Co#256:AB=\E[48;5;%dm:AF=\E[38;5;%dm"
+termcapinfo screen-bce "Co#256:AB=\E[48;5;%dm:AF=\E[38;5;%dm"
 # erase background with current bg color
 defbce "on"
 

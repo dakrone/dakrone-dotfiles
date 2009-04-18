@@ -1,8 +1,0 @@
-### vim:ft=zsh:foldmethod=marker
-###
-### create a directory and cd into it
-
-[[ -z $1 ]] && printf "usage: mkcd NEW-DIRECTORY" && return 1
-[[ -d $1 ]] && printf "mkcd: Directory %s already exists; cd-ing" $1
-command mkdir -p -- $1
-builtin cd -- $1

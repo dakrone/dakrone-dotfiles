@@ -1,5 +1,0 @@
-### vim:ft=zsh:foldmethod=marker
-###
-### zallopts()    show all options this zsh knows
-
-print -l ${(ko)options}

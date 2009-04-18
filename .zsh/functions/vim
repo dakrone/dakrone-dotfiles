@@ -1,6 +1,0 @@
-### vim:ft=zsh:foldmethod=marker
-###
-### wrapper for the best edi... oh well, for vim.
-
-check_com_print vim || return 1
-vim_backend "vim" "$@"

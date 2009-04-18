@@ -1,7 +1,0 @@
-### vim:ft=zsh:foldmethod=marker
-###
-### call dch with changed $DEBEMAIL
-
-check_com_print dch || return 1
-
-DEBEMAIL=${GRMLEMAIL} dch --no-auto-nmu "$@"

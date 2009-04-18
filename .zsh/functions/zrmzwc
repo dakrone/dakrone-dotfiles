@@ -1,9 +1,0 @@
-### vim:ft=zsh:foldmethod=marker
-###
-### remove *.zwc files
-
-local i
-for i in ${ZRC_SOURCE_DIR}/**/*.zwc(N) ; do
-    printf "Removing $i\n"
-    rm -f $i
-done

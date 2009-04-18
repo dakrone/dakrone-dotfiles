@@ -260,6 +260,8 @@ endfunction
 nmap <LocalLeader>tl :set list!<cr>
 " toggle paste mode
 nmap <LocalLeader>pp :set paste!<cr>
+" toggle wrapping
+nmap <LocalLeader>ww :set wrap!<cr>
 " change directory to that of current file
 nmap <LocalLeader>cd :cd%:p:h<cr>
 " change local directory to that of current file

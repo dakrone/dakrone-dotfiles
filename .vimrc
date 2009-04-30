@@ -134,6 +134,10 @@ let php_htmlInStrings=1
 let php_noShortTags=1
 let php_folding=1
 
+" Ri settings
+let ri_split_orientation='vertical'
+let ri_prompt_complete='on'
+
 " ---------------------------------------------------------------------------
 "  configure autoclose
 "  default to off, I'll turn it on if I want to
@@ -157,42 +161,42 @@ nmap <LocalLeader>ft :FuzzyFinderTag<CR>
 " status line 
 set laststatus=2
 if has('statusline')
-        " Status line detail: (from Rafael Garcia-Suarez)
-        " %f		file path
-        " %y		file type between braces (if defined)
-        " %([%R%M]%)	read-only, modified and modifiable flags between braces
-        " %{'!'[&ff=='default_file_format']}
-        "			shows a '!' if the file format is not the platform
-        "			default
-        " %{'$'[!&list]}	shows a '*' if in list mode
-        " %{'~'[&pm=='']}	shows a '~' if in patchmode
-        " (%{synIDattr(synID(line('.'),col('.'),0),'name')})
-        "			only for debug : display the current syntax item name
-        " %=		right-align following items
-        " #%n		buffer number
-        " %l/%L,%c%V	line number, total number of lines, and column number
+      " Status line detail: (from Rafael Garcia-Suarez)
+      " %f		file path
+      " %y		file type between braces (if defined)
+      " %([%R%M]%)	read-only, modified and modifiable flags between braces
+      " %{'!'[&ff=='default_file_format']}
+      "			shows a '!' if the file format is not the platform
+      "			default
+      " %{'$'[!&list]}	shows a '*' if in list mode
+      " %{'~'[&pm=='']}	shows a '~' if in patchmode
+      " (%{synIDattr(synID(line('.'),col('.'),0),'name')})
+      "			only for debug : display the current syntax item name
+      " %=		right-align following items
+      " #%n		buffer number
+      " %l/%L,%c%V	line number, total number of lines, and column number
 
-        function! SetStatusLineStyle()
-                "let &stl="%f %y "                       .
-                        "\"%([%R%M]%)"                   .
-                        "\"%#StatusLineNC#%{&ff=='unix'?'':&ff.'\ format'}%*" .
-                        "\"%{'$'[!&list]}"               .
-                        "\"%{'~'[&pm=='']}"              .
-                        "\"%="                           .
-                        "\"#%n %l/%L,%c%V "              .
-                        "\""
-                 "      \"%#StatusLineNC#%{GitBranchInfoString()}%* " .
-              let &stl="%F%m%r%h%w\ [%{&ff}]\ [%Y]\ %P\ %=[a=\%03.3b]\ [h=\%02.2B]\ [%l,%v]"
-        endfunc
-        " Not using it at the moment, using a different one
-        call SetStatusLineStyle()
+      function! SetStatusLineStyle()
+            "let &stl="%f %y "                       .
+            "\"%([%R%M]%)"                   .
+            "\"%#StatusLineNC#%{&ff=='unix'?'':&ff.'\ format'}%*" .
+            "\"%{'$'[!&list]}"               .
+            "\"%{'~'[&pm=='']}"              .
+            "\"%="                           .
+            "\"#%n %l/%L,%c%V "              .
+            "\""
+            "      \"%#StatusLineNC#%{GitBranchInfoString()}%* " .
+            let &stl="%F%m%r%h%w\ [%{&ff}]\ [%Y]\ %P\ %=[a=\%03.3b]\ [h=\%02.2B]\ [%l,%v]"
+      endfunc
+      " Not using it at the moment, using a different one
+      call SetStatusLineStyle()
 
-        if has('title')
-                set titlestring=%t%(\ [%R%M]%)
-        endif
+      if has('title')
+            set titlestring=%t%(\ [%R%M]%)
+      endif
 
-        "highlight StatusLine    ctermfg=White ctermbg=DarkBlue cterm=bold
-        "highlight StatusLineNC  ctermfg=White ctermbg=DarkBlue cterm=NONE
+      "highlight StatusLine    ctermfg=White ctermbg=DarkBlue cterm=bold
+      "highlight StatusLineNC  ctermfg=White ctermbg=DarkBlue cterm=NONE
 endif
 
 " ---------------------------------------------------------------------------
@@ -224,8 +228,8 @@ set history=200
 " spelling...
 if v:version >= 700
 
-  setlocal spell spelllang=en
-  nmap <LocalLeader>ss :set spell!<CR>
+      setlocal spell spelllang=en
+      nmap <LocalLeader>ss :set spell!<CR>
 
 endif
 " default to no spelling
@@ -254,7 +258,7 @@ inoremap <C-k> <C-x><C-u>
 map Y y$
 " for yankring to work with previous mapping:
 function! YRRunAfterMaps()
-    nnoremap Y   :<C-U>YRYankCount 'y$'<CR>
+      nnoremap Y   :<C-U>YRYankCount 'y$'<CR>
 endfunction
 " toggle list mode
 nmap <LocalLeader>tl :set list!<cr>

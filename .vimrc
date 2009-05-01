@@ -247,6 +247,9 @@ autocmd FileType c set omnifunc=ccomplete#Complete
 autocmd FileType ruby,eruby set omnifunc=rubycomplete#Complete
 autocmd FileType ruby,eruby let g:rubycomplete_rails = 1  " Rails support
 
+" I want Ri access *all* the time.
+source ~/.vim/ftplugin/ri.vim
+
 
 " ---------------------------------------------------------------------------
 " some useful mappings

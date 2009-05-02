@@ -7,7 +7,7 @@ compinit
 promptinit
 
 # path
-export PATH=~/bin:$PATH:/usr/local/sbin:/usr/local/bin:/usr/local/sbin:/usr/libexec:/opt/local/bin:/opt/local/sbin:/usr/local/mysql/bin
+export PATH=~/bin:/opt/local/bin:/opt/local/sbin:$PATH:/usr/local/sbin:/usr/local/bin:/usr/local/sbin:/usr/libexec:/usr/local/mysql/bin
 # Path for Matasano's blackbag
 export PATH=/usr/local/bin/blackbag:$PATH
 # Path for git
@@ -25,6 +25,9 @@ export PAGER=less
 # CVS for HeX
 export CVSROOT=:ext:dakrone@cvsup.rawpacket.org:/home/project/rawpacket/cvs
 
+# term settings
+#export TERM=xterm-color
+
 # set aliases
 alias mv='nocorrect mv'       # no spelling correction on mv
 alias cp='nocorrect cp'
@@ -33,7 +36,7 @@ alias j=jobs
 if ls -F --color=auto >&/dev/null; then
   alias ls="ls --color=auto -F"
 else
-  alias ls="ls -F"
+  alias ls="ls -GF"
 fi
 alias l.='ls -d .*'
 alias ll='ls -lh'

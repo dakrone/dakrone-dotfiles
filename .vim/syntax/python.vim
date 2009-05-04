@@ -1,34 +1,65 @@
 " Vim syntax file
 " Language:	Python
-" Maintainer:	Samuel Hoffstaetter <samuel@hoffstaetter.com>
-" Updated:	2006-10-15
-"		Added Python 2.4 features 2006 May 4 (Dmitry Vasiliev)
+" Maintainer:	Dmitry Vasiliev <dima@hlabs.spb.ru>
+" URL:		http://www.hlabs.spb.ru/vim/python.vim
+" Last Change:	2008-09-29
+" Filenames:	*.py
+" Version:	2.6.4
 "
-" Derived from python.vim by Neil Schemenauer <nas@python.ca>
+" Based on python.vim (from Vim 6.1 distribution)
+" by Neil Schemenauer <nas@python.ca>
 "
-" Options to control Python syntax highlighting:
+" Thanks:
 "
-" For highlighted numbers:
+"    Jeroen Ruigrok van der Werven
+"        for the idea to highlight erroneous operators
+"    Pedro Algarvio
+"        for the patch to enable spell checking only for the right spots
+"        (strings and comments)
+"    John Eikenberry
+"        for the patch fixing small typo
+
 "
-"    let python_highlight_numbers = 1
+" Options:
 "
-" For highlighted builtin functions:
+"    For set option do: let OPTION_NAME = 1
+"    For clear option do: let OPTION_NAME = 0
 "
-"    let python_highlight_builtins = 1
+" Option names:
 "
-" For highlighted standard exceptions:
+"    For highlight builtin functions:
+"       python_highlight_builtins
 "
-"    let python_highlight_exceptions = 1
+"    For highlight standard exceptions:
+"       python_highlight_exceptions
 "
-" Highlight erroneous whitespace:
+"    For highlight string formatting:
+"       python_highlight_string_formatting
 "
-"    let python_highlight_space_errors = 1
+"    For highlight str.format syntax:
+"       python_highlight_string_format
 "
-" If you want all possible Python highlighting (the same as setting the
-" preceding options):
+"    For highlight string.Template syntax:
+"       python_highlight_string_templates
 "
-"    let python_highlight_all = 1
+"    For highlight indentation errors:
+"       python_highlight_indent_errors
 "
+"    For highlight trailing spaces:
+"       python_highlight_space_errors
+"
+"    For highlight doc-tests:
+"       python_highlight_doctests
+"
+"    If you want all Python highlightings above:
+"       python_highlight_all
+"    (This option not override previously set options)
+"
+"    For fast machines:
+"       python_slow_sync
+"
+"    For "print" builtin as function:
+"       python_print_as_function
 
 " For version 5.x: Clear all syntax items
 " For version 6.x: Quit when a syntax file was already loaded
@@ -38,119 +69,222 @@ elseif exists("b:current_syntax")
   finish
 endif
 
-setlocal foldmethod=syntax
+if exists("python_highlight_all") && python_highlight_all != 0
+  " Not override previously set options
+  if !exists("python_highlight_builtins")
+    let python_highlight_builtins = 1
+  endif
+  if !exists("python_highlight_exceptions")
+    let python_highlight_exceptions = 1
+  endif
+  if !exists("python_highlight_string_formatting")
+    let python_highlight_string_formatting = 1
+  endif
+  if !exists("python_highlight_string_format")
+    let python_highlight_string_format = 1
+  endif
+  if !exists("python_highlight_string_templates")
+    let python_highlight_string_templates = 1
+  endif
+  if !exists("python_highlight_indent_errors")
+    let python_highlight_indent_errors = 1
+  endif
+  if !exists("python_highlight_space_errors")
+    let python_highlight_space_errors = 1
+  endif
+  if !exists("python_highlight_doctests")
+    let python_highlight_doctests = 1
+  endif
+endif
 
+" Keywords
 syn keyword pythonStatement	break continue del
-syn keyword pythonStatement	except exec finally
-syn keyword pythonStatement	pass print raise
-syn keyword pythonStatement	return try with
+syn keyword pythonStatement	exec return
+syn keyword pythonStatement	pass raise
 syn keyword pythonStatement	global assert
 syn keyword pythonStatement	lambda yield
-
-syn match   pythonDefStatement	/^\s*\%(def\|class\)/
-  \ nextgroup=pythonFunction skipwhite
-syn region  pythonFunctionFold	start="^\z(\s*\)\%(def\|class\)\>"
-  \ end="\ze\%(\s*\n\)\+\%(\z1\s\)\@!." fold transparent
-syn match   pythonFunction	"[a-zA-Z_][a-zA-Z0-9_]*" contained
-
-syn match   pythonComment /#\%(.\%({{{\|}}}\)\@!\)*$/
-  \ contains=pythonTodo,@Spell
-syn region  pythonFold matchgroup=pythonComment
-  \ start='#.*{{{.*$' end='#.*}}}.*$' fold transparent
-
+syn keyword pythonStatement	with
+syn keyword pythonStatement	def class nextgroup=pythonFunction skipwhite
+syn match   pythonFunction	"[a-zA-Z_][a-zA-Z0-9_]*" display contained
 syn keyword pythonRepeat	for while
 syn keyword pythonConditional	if elif else
-syn keyword pythonOperator	and in is not or
-" AS will be a keyword in Python 3
 syn keyword pythonPreCondit	import from as
-syn keyword pythonTodo		TODO FIXME XXX contained
+syn keyword pythonException	try except finally
+syn keyword pythonOperator	and in is not or
+
+if !exists("python_print_as_function") || python_print_as_function == 0
+  syn keyword pythonStatement print
+endif
 
 " Decorators (new in Python 2.4)
 syn match   pythonDecorator	"@" display nextgroup=pythonFunction skipwhite
 
-" strings
-syn region pythonString		start=+[uU]\='+ end=+'+ skip=+\\\\\|\\'+ contains=pythonEscape,@Spell
-syn region pythonString		start=+[uU]\="+ end=+"+ skip=+\\\\\|\\"+ contains=pythonEscape,@Spell
-syn region pythonString		start=+[uU]\="""+ end=+"""+ contains=pythonEscape,@Spell
-syn region pythonString		start=+[uU]\='''+ end=+'''+ contains=pythonEscape,@Spell
-syn region pythonRawString	start=+[uU]\=[rR]'+ end=+'+ skip=+\\\\\|\\'+ contains=@Spell
-syn region pythonRawString	start=+[uU]\=[rR]"+ end=+"+ skip=+\\\\\|\\"+ contains=@Spell
-syn region pythonRawString	start=+[uU]\=[rR]"""+ end=+"""+ contains=@Spell
-syn region pythonRawString	start=+[uU]\=[rR]'''+ end=+'''+ contains=@Spell
-syn match  pythonEscape		+\\[abfnrtv'"\\]+ contained
-syn match  pythonEscape		"\\\o\{1,3}" contained
-syn match  pythonEscape		"\\x\x\{2}" contained
-syn match  pythonEscape		"\(\\u\x\{4}\|\\U\x\{8}\)" contained
+" Comments
+syn match   pythonComment	"#.*$" display contains=pythonTodo,@Spell
+syn match   pythonRun		"\%^#!.*$"
+syn match   pythonCoding	"\%^.*\(\n.*\)\?#.*coding[:=]\s*[0-9A-Za-z-_.]\+.*$"
+syn keyword pythonTodo		TODO FIXME XXX contained
+
+" Errors
+syn match pythonError		"\<\d\+\D\+\>" display
+syn match pythonError		"[$?]" display
+syn match pythonError		"[&|]\{2,}" display
+syn match pythonError		"[=]\{3,}" display
+
+" TODO: Mixing spaces and tabs also may be used for pretty formatting multiline
+" statements. For now I don't know how to work around this.
+if exists("python_highlight_indent_errors") && python_highlight_indent_errors != 0
+  syn match pythonIndentError	"^\s*\( \t\|\t \)\s*\S"me=e-1 display
+endif
+
+" Trailing space errors
+if exists("python_highlight_space_errors") && python_highlight_space_errors != 0
+  syn match pythonSpaceError	"\s\+$" display
+endif
+
+" Strings
+syn region pythonString		start=+[bB]\='+ skip=+\\\\\|\\'\|\\$+ excludenl end=+'+ end=+$+ keepend contains=pythonEscape,pythonEscapeError,@Spell
+syn region pythonString		start=+[bB]\="+ skip=+\\\\\|\\"\|\\$+ excludenl end=+"+ end=+$+ keepend contains=pythonEscape,pythonEscapeError,@Spell
+syn region pythonString		start=+[bB]\="""+ end=+"""+ keepend contains=pythonEscape,pythonEscapeError,pythonDocTest2,pythonSpaceError,@Spell
+syn region pythonString		start=+[bB]\='''+ end=+'''+ keepend contains=pythonEscape,pythonEscapeError,pythonDocTest,pythonSpaceError,@Spell
+
+syn match  pythonEscape		+\\[abfnrtv'"\\]+ display contained
+syn match  pythonEscape		"\\\o\o\=\o\=" display contained
+syn match  pythonEscapeError	"\\\o\{,2}[89]" display contained
+syn match  pythonEscape		"\\x\x\{2}" display contained
+syn match  pythonEscapeError	"\\x\x\=\X" display contained
 syn match  pythonEscape		"\\$"
 
-if exists("python_highlight_all")
-  let python_highlight_numbers = 1
-  let python_highlight_builtins = 1
-  let python_highlight_exceptions = 1
-  let python_highlight_space_errors = 1
+" Unicode strings
+syn region pythonUniString	start=+[uU]'+ skip=+\\\\\|\\'\|\\$+ excludenl end=+'+ end=+$+ keepend contains=pythonEscape,pythonUniEscape,pythonEscapeError,pythonUniEscapeError,@Spell
+syn region pythonUniString	start=+[uU]"+ skip=+\\\\\|\\"\|\\$+ excludenl end=+"+ end=+$+ keepend contains=pythonEscape,pythonUniEscape,pythonEscapeError,pythonUniEscapeError,@Spell
+syn region pythonUniString	start=+[uU]"""+ end=+"""+ keepend contains=pythonEscape,pythonUniEscape,pythonEscapeError,pythonUniEscapeError,pythonDocTest2,pythonSpaceError,@Spell
+syn region pythonUniString	start=+[uU]'''+ end=+'''+ keepend contains=pythonEscape,pythonUniEscape,pythonEscapeError,pythonUniEscapeError,pythonDocTest,pythonSpaceError,@Spell
+
+syn match  pythonUniEscape	"\\u\x\{4}" display contained
+syn match  pythonUniEscapeError	"\\u\x\{,3}\X" display contained
+syn match  pythonUniEscape	"\\U\x\{8}" display contained
+syn match  pythonUniEscapeError	"\\U\x\{,7}\X" display contained
+syn match  pythonUniEscape	"\\N{[A-Z ]\+}" display contained
+syn match  pythonUniEscapeError	"\\N{[^A-Z ]\+}" display contained
+
+" Raw strings
+syn region pythonRawString	start=+[rR]'+ skip=+\\\\\|\\'\|\\$+ excludenl end=+'+ end=+$+ keepend contains=pythonRawEscape,@Spell
+syn region pythonRawString	start=+[rR]"+ skip=+\\\\\|\\"\|\\$+ excludenl end=+"+ end=+$+ keepend contains=pythonRawEscape,@Spell
+syn region pythonRawString	start=+[rR]"""+ end=+"""+ keepend contains=pythonDocTest2,pythonSpaceError,@Spell
+syn region pythonRawString	start=+[rR]'''+ end=+'''+ keepend contains=pythonDocTest,pythonSpaceError,@Spell
+
+syn match pythonRawEscape	+\\['"]+ display transparent contained
+
+" Unicode raw strings
+syn region pythonUniRawString	start=+[uU][rR]'+ skip=+\\\\\|\\'\|\\$+ excludenl end=+'+ end=+$+ keepend contains=pythonRawEscape,pythonUniRawEscape,pythonUniRawEscapeError,@Spell
+syn region pythonUniRawString	start=+[uU][rR]"+ skip=+\\\\\|\\"\|\\$+ excludenl end=+"+ end=+$+ keepend contains=pythonRawEscape,pythonUniRawEscape,pythonUniRawEscapeError,@Spell
+syn region pythonUniRawString	start=+[uU][rR]"""+ end=+"""+ keepend contains=pythonUniRawEscape,pythonUniRawEscapeError,pythonDocTest2,pythonSpaceError,@Spell
+syn region pythonUniRawString	start=+[uU][rR]'''+ end=+'''+ keepend contains=pythonUniRawEscape,pythonUniRawEscapeError,pythonDocTest,pythonSpaceError,@Spell
+
+syn match  pythonUniRawEscape		"\([^\\]\(\\\\\)*\)\@<=\\u\x\{4}" display contained
+syn match  pythonUniRawEscapeError	"\([^\\]\(\\\\\)*\)\@<=\\u\x\{,3}\X" display contained
+
+if exists("python_highlight_string_formatting") && python_highlight_string_formatting != 0
+  " String formatting
+  syn match pythonStrFormatting	"%\(([^)]\+)\)\=[-#0 +]*\d*\(\.\d\+\)\=[hlL]\=[diouxXeEfFgGcrs%]" contained containedin=pythonString,pythonUniString,pythonRawString,pythonUniRawString
+  syn match pythonStrFormatting	"%[-#0 +]*\(\*\|\d\+\)\=\(\.\(\*\|\d\+\)\)\=[hlL]\=[diouxXeEfFgGcrs%]" contained containedin=pythonString,pythonUniString,pythonRawString,pythonUniRawString
 endif
 
-if exists("python_highlight_numbers")
-  " numbers (including longs and complex)
-  syn match   pythonNumber	"\<0x\x\+[Ll]\=\>"
-  syn match   pythonNumber	"\<\d\+[LljJ]\=\>"
-  syn match   pythonNumber	"\.\d\+\([eE][+-]\=\d\+\)\=[jJ]\=\>"
-  syn match   pythonNumber	"\<\d\+\.\([eE][+-]\=\d\+\)\=[jJ]\=\>"
-  syn match   pythonNumber	"\<\d\+\.\d\+\([eE][+-]\=\d\+\)\=[jJ]\=\>"
+if exists("python_highlight_string_format") && python_highlight_string_format != 0
+  " str.format syntax
+  syn match pythonStrFormat "{{\|}}" contained containedin=pythonString,pythonUniString,pythonRawString,pythonUniRawString
+  syn match pythonStrFormat	"{\([a-zA-Z_][a-zA-Z0-9_]*\|\d\+\)\(\.[a-zA-Z_][a-zA-Z0-9_]*\|\[\(\d\+\|[^!:\}]\+\)\]\)*\(![rs]\)\=\(:\({\([a-zA-Z_][a-zA-Z0-9_]*\|\d\+\)}\|\([^}]\=[<>=^]\)\=[ +-]\=#\=0\=\d*\(\.\d\+\)\=[bcdeEfFgGnoxX%]\=\)\=\)\=}" contained containedin=pythonString,pythonUniString,pythonRawString,pythonUniRawString
 endif
 
-if exists("python_highlight_builtins")
-  " builtin functions, types and objects, not really part of the syntax
-  syn keyword pythonBuiltin	True False bool enumerate set frozenset help
-  syn keyword pythonBuiltin	reversed sorted sum
-  syn keyword pythonBuiltin	Ellipsis None NotImplemented __import__ abs
-  syn keyword pythonBuiltin	apply buffer callable chr classmethod cmp
-  syn keyword pythonBuiltin	coerce compile complex delattr dict dir divmod
-  syn keyword pythonBuiltin	eval execfile file filter float getattr globals
-  syn keyword pythonBuiltin	hasattr hash hex id input int intern isinstance
-  syn keyword pythonBuiltin	issubclass iter len list locals long map max
-  syn keyword pythonBuiltin	min object oct open ord pow property range
-  syn keyword pythonBuiltin	raw_input reduce reload repr round setattr
-  syn keyword pythonBuiltin	slice staticmethod str super tuple type unichr
-  syn keyword pythonBuiltin	unicode vars xrange zip
+if exists("python_highlight_string_templates") && python_highlight_string_templates != 0
+  " String templates
+  syn match pythonStrTemplate	"\$\$" contained containedin=pythonString,pythonUniString,pythonRawString,pythonUniRawString
+  syn match pythonStrTemplate	"\${[a-zA-Z_][a-zA-Z0-9_]*}" contained containedin=pythonString,pythonUniString,pythonRawString,pythonUniRawString
+  syn match pythonStrTemplate	"\$[a-zA-Z_][a-zA-Z0-9_]*" contained containedin=pythonString,pythonUniString,pythonRawString,pythonUniRawString
 endif
 
-if exists("python_highlight_exceptions")
-  " builtin exceptions and warnings
-  syn keyword pythonException	ArithmeticError AssertionError AttributeError
-  syn keyword pythonException	DeprecationWarning EOFError EnvironmentError
-  syn keyword pythonException	Exception FloatingPointError IOError
-  syn keyword pythonException	ImportError IndentationError IndexError
-  syn keyword pythonException	KeyError KeyboardInterrupt LookupError
-  syn keyword pythonException	MemoryError NameError NotImplementedError
-  syn keyword pythonException	OSError OverflowError OverflowWarning
-  syn keyword pythonException	ReferenceError RuntimeError RuntimeWarning
-  syn keyword pythonException	StandardError StopIteration SyntaxError
-  syn keyword pythonException	SyntaxWarning SystemError SystemExit TabError
-  syn keyword pythonException	TypeError UnboundLocalError UnicodeError
-  syn keyword pythonException	UnicodeEncodeError UnicodeDecodeError
-  syn keyword pythonException	UnicodeTranslateError
-  syn keyword pythonException	UserWarning ValueError Warning WindowsError
-  syn keyword pythonException	ZeroDivisionError
+if exists("python_highlight_doctests") && python_highlight_doctests != 0
+  " DocTests
+  syn region pythonDocTest	start="^\s*>>>" end=+'''+he=s-1 end="^\s*$" contained
+  syn region pythonDocTest2	start="^\s*>>>" end=+"""+he=s-1 end="^\s*$" contained
 endif
 
-if exists("python_highlight_space_errors")
-  " trailing whitespace
-  syn match   pythonSpaceError   display excludenl "\S\s\+$"ms=s+1
-  " mixed tabs and spaces
-  syn match   pythonSpaceError   display " \+\t"
-  syn match   pythonSpaceError   display "\t\+ "
+" Numbers (ints, longs, floats, complex)
+syn match   pythonHexError	"\<0[xX]\x*[g-zG-Z]\x*[lL]\=\>" display
+
+syn match   pythonHexNumber	"\<0[xX]\x\+[lL]\=\>" display
+syn match   pythonOctNumber "\<0[oO]\o\+[lL]\=\>" display
+syn match   pythonBinNumber "\<0[bB][01]\+[lL]\=\>" display
+
+syn match   pythonNumber	"\<\d\+[lLjJ]\=\>" display
+
+syn match   pythonFloat		"\.\d\+\([eE][+-]\=\d\+\)\=[jJ]\=\>" display
+syn match   pythonFloat		"\<\d\+[eE][+-]\=\d\+[jJ]\=\>" display
+syn match   pythonFloat		"\<\d\+\.\d*\([eE][+-]\=\d\+\)\=[jJ]\=" display
+
+syn match   pythonOctError	"\<0[oO]\=\o*[8-9]\d*[lL]\=\>" display
+syn match   pythonBinError	"\<0[bB][01]*[2-9]\d*[lL]\=\>" display
+
+if exists("python_highlight_builtins") && python_highlight_builtins != 0
+  " Builtin functions, types and objects
+  syn keyword pythonBuiltinObj	True False Ellipsis None NotImplemented
+  syn keyword pythonBuiltinObj	__debug__ __doc__ __file__ __name__ __package__
+
+  syn keyword pythonBuiltinFunc	__import__ abs all any apply
+  syn keyword pythonBuiltinFunc	basestring bin bool buffer bytearray bytes callable
+  syn keyword pythonBuiltinFunc	chr classmethod cmp coerce compile complex
+  syn keyword pythonBuiltinFunc	delattr dict dir divmod enumerate eval
+  syn keyword pythonBuiltinFunc	execfile file filter float format frozenset getattr
+  syn keyword pythonBuiltinFunc	globals hasattr hash help hex id 
+  syn keyword pythonBuiltinFunc	input int intern isinstance
+  syn keyword pythonBuiltinFunc	issubclass iter len list locals long map max
+  syn keyword pythonBuiltinFunc	min next object oct open ord
+  syn keyword pythonBuiltinFunc	pow property range
+  syn keyword pythonBuiltinFunc	raw_input reduce reload repr
+  syn keyword pythonBuiltinFunc	reversed round set setattr
+  syn keyword pythonBuiltinFunc	slice sorted staticmethod str sum super tuple
+  syn keyword pythonBuiltinFunc	type unichr unicode vars xrange zip
+
+  if exists("python_print_as_function") && python_print_as_function != 0
+      syn keyword pythonBuiltinFunc	print
+  endif
 endif
 
-" This is fast but code inside triple quoted strings screws it up. It
-" is impossible to fix because the only way to know if you are inside a
-" triple quoted string is to start from the beginning of the file. If
-" you have a fast machine you can try uncommenting the "sync minlines"
-" and commenting out the rest.
-"syn sync match pythonSync grouphere NONE "):$"
-"syn sync maxlines=200
-syn sync minlines=2000
-syn sync linebreaks=1
+if exists("python_highlight_exceptions") && python_highlight_exceptions != 0
+  " Builtin exceptions and warnings
+  syn keyword pythonExClass	BaseException
+  syn keyword pythonExClass	Exception StandardError ArithmeticError
+  syn keyword pythonExClass	LookupError EnvironmentError
+
+  syn keyword pythonExClass	AssertionError AttributeError BufferError EOFError
+  syn keyword pythonExClass	FloatingPointError GeneratorExit IOError
+  syn keyword pythonExClass	ImportError IndexError KeyError
+  syn keyword pythonExClass	KeyboardInterrupt MemoryError NameError
+  syn keyword pythonExClass	NotImplementedError OSError OverflowError
+  syn keyword pythonExClass	ReferenceError RuntimeError StopIteration
+  syn keyword pythonExClass	SyntaxError IndentationError TabError
+  syn keyword pythonExClass	SystemError SystemExit TypeError
+  syn keyword pythonExClass	UnboundLocalError UnicodeError
+  syn keyword pythonExClass	UnicodeEncodeError UnicodeDecodeError
+  syn keyword pythonExClass	UnicodeTranslateError ValueError VMSError
+  syn keyword pythonExClass	WindowsError ZeroDivisionError
+
+  syn keyword pythonExClass	Warning UserWarning BytesWarning DeprecationWarning
+  syn keyword pythonExClass	PendingDepricationWarning SyntaxWarning
+  syn keyword pythonExClass	RuntimeWarning FutureWarning
+  syn keyword pythonExClass	ImportWarning UnicodeWarning
+endif
+
+if exists("python_slow_sync") && python_slow_sync != 0
+  syn sync minlines=2000
+else
+  " This is fast but code inside triple quoted strings screws it up. It
+  " is impossible to fix because the only way to know if you are inside a
+  " triple quoted string is to start from the beginning of the file.
+  syn sync match pythonSync grouphere NONE "):$"
+  syn sync maxlines=200
+endif
 
 if version >= 508 || !exists("did_python_syn_inits")
   if version <= 508
@@ -160,36 +294,59 @@ if version >= 508 || !exists("did_python_syn_inits")
     command -nargs=+ HiLink hi def link <args>
   endif
 
-  " The default methods for highlighting.  Can be overridden later
   HiLink pythonStatement	Statement
-  HiLink pythonDefStatement	Statement
+  HiLink pythonPreCondit	Statement
   HiLink pythonFunction		Function
   HiLink pythonConditional	Conditional
   HiLink pythonRepeat		Repeat
-  HiLink pythonString		String
-  HiLink pythonRawString	String
-  HiLink pythonEscape		Special
+  HiLink pythonException	Exception
   HiLink pythonOperator		Operator
-  HiLink pythonPreCondit	PreCondit
-  HiLink pythonComment		Comment
-  HiLink pythonTodo		Todo
+
   HiLink pythonDecorator	Define
-  if exists("python_highlight_numbers")
-    HiLink pythonNumber	Number
-  endif
-  if exists("python_highlight_builtins")
-    HiLink pythonBuiltin	Function
-  endif
-  if exists("python_highlight_exceptions")
-    HiLink pythonException	Exception
-  endif
-  if exists("python_highlight_space_errors")
-    HiLink pythonSpaceError	Error
-  endif
+
+  HiLink pythonComment		Comment
+  HiLink pythonCoding		Special
+  HiLink pythonRun		Special
+  HiLink pythonTodo		Todo
+
+  HiLink pythonError		Error
+  HiLink pythonIndentError	Error
+  HiLink pythonSpaceError	Error
+
+  HiLink pythonString		String
+  HiLink pythonUniString	String
+  HiLink pythonRawString	String
+  HiLink pythonUniRawString	String
+
+  HiLink pythonEscape			Special
+  HiLink pythonEscapeError		Error
+  HiLink pythonUniEscape		Special
+  HiLink pythonUniEscapeError		Error
+  HiLink pythonUniRawEscape		Special
+  HiLink pythonUniRawEscapeError	Error
+
+  HiLink pythonStrFormatting	Special
+  HiLink pythonStrFormat    	Special
+  HiLink pythonStrTemplate	    Special
+
+  HiLink pythonDocTest		Special
+  HiLink pythonDocTest2		Special
+
+  HiLink pythonNumber		Number
+  HiLink pythonHexNumber	Number
+  HiLink pythonOctNumber	Number
+  HiLink pythonBinNumber	Number
+  HiLink pythonFloat		Float
+  HiLink pythonOctError	    Error
+  HiLink pythonHexError		Error
+  HiLink pythonBinError		Error
+
+  HiLink pythonBuiltinObj	Structure
+  HiLink pythonBuiltinFunc	Function
+
+  HiLink pythonExClass	Structure
 
   delcommand HiLink
 endif
 
 let b:current_syntax = "python"
-
-" vim: ts=8

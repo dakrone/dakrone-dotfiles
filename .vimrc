@@ -45,7 +45,7 @@ set wildignore+=*.o,*~,.lo    " ignore object files
 set wildmenu                  " menu has tab completion
 let maplocalleader=','        " all my macros start with ,
 set foldmethod=syntax         " fold on syntax automagically, always
-set foldcolumn=3              " 3 lines of column for fold showing, always
+set foldcolumn=5              " 3 lines of column for fold showing, always
 set whichwrap+=<,>,h,l        " backspaces and cursor keys wrap to
 set magic                     " Enable the "magic"
 set visualbell t_vb=          " Disable ALL bells
@@ -67,6 +67,7 @@ if !has("gui_running")
       " colors:
       " (http://www.culater.net/software/TerminalColors/TerminalColors.php)
       " to change the really hard-to-read dark blue into a lighter shade.
+      " Or; Use iterm with Tango colors
       colorscheme ir_black_new " only when I can change certain colors
 end
 if has("gui_running")
@@ -75,8 +76,8 @@ if has("gui_running")
       set noantialias          " If I use ir_black_new, no antialiasing
       set guioptions-=T        " no toolbar
       set lines=65
-      set columns=140
-      "set gfn=Monaco:h9
+      set columns=120
+      set gfn=Monaco:h9       " Monaco, 9pt font
 end
 
 if exists('&t_SI')
@@ -137,6 +138,24 @@ let php_folding=1
 " Ri settings
 let ri_split_orientation='vertical'
 let ri_prompt_complete='on'
+
+" Supertab settings
+" supertab + eclim == java win
+let g:SuperTabDefaultCompletionTypeDiscovery = [
+                  \ "&completefunc:<c-x><c-u>",
+                  \ "&omnifunc:<c-x><c-o>",
+                  \ ]
+let g:SuperTabLongestHighlight = 1
+
+" Eclim settings
+" ,i imports whatever is needed for current line
+nnoremap <silent> <buffer> <LocalLeader>i :JavaImport<cr>
+" ,d opens javadoc for statement in browser
+nnoremap <silent> <buffer> <LocalLeader>d :JavaDocSearch -x declarations<cr>
+" ,<enter> searches context for statement
+nnoremap <silent> <buffer> <LocalLeader><cr> :JavaSearchContext<cr>
+" 'open' on OSX will open the url in the default browser without issue
+let g:EclimBrowser='open'
 
 " ---------------------------------------------------------------------------
 "  configure autoclose

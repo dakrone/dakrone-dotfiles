@@ -25,8 +25,13 @@ export PAGER=less
 # CVS for HeX
 export CVSROOT=:ext:dakrone@cvsup.rawpacket.org:/home/project/rawpacket/cvs
 
-# term settings
-#export TERM=xterm-color
+# Term settings, if we exist as a screen term, use xterm-color instead of screen-bce.
+# Otherwise, leave the TERM var alone, because we need it to set terminal titles correctly
+case $TERM in
+      screen*)
+            export TERM=xterm-color
+      ;;
+esac
 
 # set aliases
 alias mv='nocorrect mv'       # no spelling correction on mv
@@ -104,6 +109,9 @@ function title() {
 
   case $TERM in
   screen*)
+    print -Pn "\ek$a:$3\e\\"      # screen title (in ^A")
+    ;;
+  xterm-color*)
     print -Pn "\ek$a:$3\e\\"      # screen title (in ^A")
     ;;
   xterm*|rxvt)

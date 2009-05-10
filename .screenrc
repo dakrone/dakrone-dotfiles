@@ -22,6 +22,3 @@ defbce "on"
 
 # Keep our layout, restore on reattach
 layout new default
-
-# Matrix screensaver
-#idle 420 eval "screen cmatrix -u 10" "idle 0"

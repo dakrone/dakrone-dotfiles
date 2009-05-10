@@ -350,8 +350,10 @@ endif
 map <LocalLeader>tc :tabnew %<cr>    " create a new tab       
 map <LocalLeader>td :tabclose<cr>    " close a tab
 map <LocalLeader>tn :tabnext<cr>     " next tab
+map <LocalLeader>n :tabnext<cr>     " next tab
 map <silent><m-Right> :tabnext<cr>           " next tab
 map <LocalLeader>tp :tabprev<cr>     " previous tab
+map <LocalLeader>p :tabprev<cr>     " previous tab
 map <silent><m-Left> :tabprev<cr>            " previous tab
 map <LocalLeader>tm :tabmove         " move a tab to a new location
 

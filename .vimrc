@@ -149,15 +149,15 @@ let g:SuperTabLongestHighlight = 1
 
 " Eclim settings
 " ,i imports whatever is needed for current line
-nnoremap <silent> <buffer> <LocalLeader>i :JavaImport<cr>
+nnoremap <silent> <LocalLeader>i :JavaImport<cr>
 " ,d opens javadoc for statement in browser
-nnoremap <silent> <buffer> <LocalLeader>d :JavaDocSearch -x declarations<cr>
+nnoremap <silent> <LocalLeader>d :JavaDocSearch -x declarations<cr>
 " ,<enter> searches context for statement
-nnoremap <silent> <buffer> <LocalLeader><cr> :JavaSearchContext<cr>
+nnoremap <silent> <LocalLeader><cr> :JavaSearchContext<cr>
 " ,jv validates current java file
-nnoremap <silent> <buffer> <LocalLeader>jv :Validate<cr>
+nnoremap <silent> <LocalLeader>jv :Validate<cr>
 " ,jc shows corrections for the current line of java
-nnoremap <silent> <buffer> <LocalLeader>jc :JavaCorrect<cr>
+nnoremap <silent> <LocalLeader>jc :JavaCorrect<cr>
 " 'open' on OSX will open the url in the default browser without issue
 let g:EclimBrowser='open'
 

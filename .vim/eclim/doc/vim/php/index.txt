@@ -1,0 +1,18 @@
+*vim-php-index*
+
+
+Php
+***
+
+- PDT Build Path (|vim-php-buildpath|)
+
+- Php Code Completion (|vim-php-complete|)
+
+- Php Validation (|vim-php-validate|)
+
+- Php Search (|vim-php-search|)
+
+Note: These features depends on the eclipse pdt which should be installed
+  for you when choosing php support in the eclim installer.
+
+vim:ft=eclimhelp

@@ -1,0 +1,27 @@
+*vim-python-complete*
+
+
+Python Code Completion
+**********************
+
+Python code completion uses the standard Vim code completion mechanism
+(|vim-code-completion|) like so:
+
+>
+
+   class Test (object):
+     def testMethod (self):
+       pass
+
+   t = Test()
+   t.te<C-X><C-U>
+   t.testMethod
+
+<
+
+
+Note: Code completion support is provided via eclim's integration with
+  rope (|vim-python-rope|).Please see the rope (|vim-python-rope|)
+  docs for more information.
+
+vim:ft=eclimhelp

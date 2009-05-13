@@ -1,0 +1,11 @@
+*vim-css-index*
+
+
+Css
+***
+
+- Css Code Completion (|vim-css-complete|)
+
+- Css Validation (|vim-css-validate|)
+
+vim:ft=eclimhelp

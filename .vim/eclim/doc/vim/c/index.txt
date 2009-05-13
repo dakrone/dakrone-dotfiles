@@ -1,0 +1,18 @@
+*vim-c-index*
+
+
+C/C++
+*****
+
+- C/C++ Project Configuration (|vim-c-project|)
+
+- C/C++ Code Completion (|vim-c-complete|)
+
+- C/C++ Validation (|vim-c-validate|)
+
+- C/C++ Search (|vim-c-search|)
+
+Note: These features depends on the eclipse cdt which should be installed
+  for you when choosing c/c++ support in the eclim installer.
+
+vim:ft=eclimhelp

@@ -1,0 +1,30 @@
+*vim-java-ant-complete*
+
+
+Ant Code Completion
+*******************
+
+Ant code completion uses the standard Vim code completion mechanism
+(|vim-code-completion|) like so:
+
+>
+
+   <ja<Ctrl-X><Ctrl-U>
+   <jar de<Ctrl-X><Ctrl-U>
+   <jar destfile="${bas<Ctrl-X><Ctrl-U>
+   <jar destfile="${basdir
+   ...
+
+<
+
+
+Screenshot of completion in action:
+
+[image]
+
+Warning: If your ant file has a lot of imports, then the code completion may
+  be slow as Eclipse parses all the imports when creating the ant
+  model.  You will notice the same slow behavior when using Eclipse
+  directly.
+
+vim:ft=eclimhelp

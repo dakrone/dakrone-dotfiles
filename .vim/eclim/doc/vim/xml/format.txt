@@ -1,0 +1,28 @@
+*vim-xml-format* *:XmlFormat*
+
+
+Xml Format
+**********
+
+On occasion you may encounter some xml content that is unformatted
+(like raw content from a web service).
+
+>
+
+   <blah><foo>one</foo><bar>two</bar></blah>
+
+<
+
+
+Executing :XmlFormat will reformat the current xml file like so:
+
+>
+
+   <blah>
+     <foo>one</foo>
+     <bar>two</bar>
+   </blah>
+
+<
+
+vim:ft=eclimhelp

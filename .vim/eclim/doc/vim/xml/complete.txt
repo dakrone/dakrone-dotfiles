@@ -1,0 +1,56 @@
+*vim-xml-complete*
+
+
+Xml Code Completion
+*******************
+
+Xml code completion uses the standard Vim code completion mechanism
+(|vim-code-completion|) like so:
+
+>
+
+   <ser<Ctrl-X><Ctrl-U>
+
+   <servlet>
+     <ser<Ctrl-X><Ctrl-U>
+
+   <servlet>
+     <servlet-name>
+   ...
+
+<
+
+
+Note: Requires a valid dtd or xsd to determine possible completions.
+
+In addition to the standard code completion, eclim also supports auto
+completion of end tags. When you type '</' eclim will attempt to
+determine which element you are closing and complete it for you.  If
+you wish to disable this feature you can simply set
+g:EclimSgmlCompleteEndTag to 0.
+
+
+Configuration
+=============
+
+Vim Variables
+
+*g:EclimSgmlCompleteEndTag*
+
+- g:EclimSgmlCompleteEndTag - If set to 0, disables auto completion of
+  end tags.
+
+*g:EclimSgmlCompleteEndTagIgnore*
+
+- b:EclimSgmlCompleteEndTagIgnore - Buffer local variable that can be
+  set to a list of tags to ignore when searching for the start tag to
+  complete.
+
+  Example that can be added to an html ftplugin file:
+
+  >
+     let b:EclimSgmlCompleteEndTagIgnore = ['br', 'input']
+
+  <
+
+vim:ft=eclimhelp

@@ -1,0 +1,11 @@
+*vim-vim-index*
+
+
+Vim
+***
+
+- Vim Find (|vim-vim-find|)
+
+- Vim Doc (|vim-vim-doc|)
+
+vim:ft=eclimhelp

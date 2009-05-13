@@ -1,0 +1,85 @@
+*vim-java-index*
+
+
+Java
+****
+
+
+Ant
+===
+
+- Ant Execution (|vim-java-ant-execute|)
+
+- Ant Code Completion (|vim-java-ant-complete|)
+
+- Ant File Validation (|vim-java-ant-validate|)
+
+- Ant Documentation Lookup (|vim-java-ant-doc|)
+
+
+Maven
+=====
+
+- Maven Execution (|vim-java-maven-execute|)
+
+- Maven Dependencies (|vim-java-maven-dependencies|)
+
+
+Log4j
+=====
+
+- Log4j File Validation (|vim-java-log4j-validate|)
+
+
+web.xml
+=======
+
+- WEB-INF/web.xml Validation (|vim-java-webxml-validate|)
+
+
+Java
+====
+
+- Eclipse Classpath Editing (|vim-java-classpath|)
+
+- Java Validation (|vim-java-validate|)
+
+- Java Search (|vim-java-search|)
+
+- Java / Javac Support (|vim-java-java|)
+
+- Javadoc Support (|vim-java-javadoc|)
+
+- Automated Imports (|vim-java-import|)
+
+- Java Code Completion (|vim-java-complete|)
+
+- Java Code Correction (|vim-java-correct|)
+
+- Class Constructor Generation (|vim-java-constructor|)
+
+- Method Override / Impl (|vim-java-impl|)
+
+- Delegate Methods (|vim-java-delegate|)
+
+- Java Bean Functionality (|vim-java-bean|)
+
+- Class / Interface Hierarchy (|vim-java-hierarchy|)
+
+- Java Source Code Formatting (|vim-java-format|)
+
+- Checkstyle (|vim-java-checkstyle|)
+
+- JUnit (|vim-java-junit|)
+
+- TestNG (|vim-java-testng|)
+
+- Logging (|vim-java-logging|)
+
+- Abbreviations (|vim-java-abbreviations|)
+
+- Regex Testing (|vim-java-regex|)
+
+- Java Tools Integration (|vim-java-tools|)
+
+vim:ft=eclimhelp

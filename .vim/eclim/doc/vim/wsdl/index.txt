@@ -1,0 +1,9 @@
+*vim-wsdl-index*
+
+
+Wsdl
+****
+
+- Wsdl Validation (|vim-wsdl-validate|)
+
+vim:ft=eclimhelp

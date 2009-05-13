@@ -1,0 +1,58 @@
+*vim-java-constructor*
+
+
+Class Constructor Generation
+****************************
+
+*:JavaConstructor*
+
+:JavaConstructor is a command that will create either an empty
+constructor, or one that takes any selected fields as arguments.
+
+For example if you have the following class:
+
+>
+
+   public class Foo
+   {
+     private int id;
+     private String name;
+   }
+
+<
+
+
+If you were to select the range containing the 'id' and 'name' fields
+and issue :JavaConstructor, then you would end up with the following
+code.
+
+>
+
+   public class Foo
+   {
+     private int id;
+     private String name;
+
+     /**
+      * Constructs a new instance.
+      *
+      * @param id The id for this instance.
+      * @param name The name for this instance.
+      */
+     public Foo (int id, String name)
+     {
+       this.id = id;
+       this.name = name;
+     }
+   }
+
+<
+
+
+If you issue the command with no fields selected, then a default empty
+constructor is created.
+
+Note: The insertion of constructors is done externally with Eclipse and
+  with that comes a couple caveats (|vim-issues|).
+
+vim:ft=eclimhelp

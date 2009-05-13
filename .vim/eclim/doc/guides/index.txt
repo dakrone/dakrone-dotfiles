@@ -1,0 +1,47 @@
+*guides*
+
+
+Guides
+******
+
+
+Installing / Upgrading / Troubleshooting
+========================================
+
+- Installing / Upgrading (|guides-install|)
+
+- Uninstalling (|guides-uninstall|)
+
+- Troubleshooting (|guides-troubleshoot|)
+
+
+Java
+====
+
+- Creating A Java Project (|guides-java-project|)
+
+- Ivy: Maintain Classpath (|guides-java-ivy-classpath|)
+
+- Maven: Maintain Classpath (|guides-java-maven-maven-classpath|)
+
+- Mvn: Maintain Classpath (|guides-java-maven-mvn-classpath|)
+
+
+Php
+===
+
+- Creating A Php Project (|guides-php-project|)
+
+
+Python
+======
+
+- Creating A Python Project (|guides-python-project|)
+
+
+Eclim Developers
+================
+
+- Eclim Developers Guide (|guides-development|)
+
+vim:ft=eclimhelp

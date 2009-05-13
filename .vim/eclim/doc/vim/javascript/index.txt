@@ -1,0 +1,9 @@
+*vim-javascript-index*
+
+
+Javascript
+**********
+
+- Javascript Validation (|vim-javascript-validate|)
+
+vim:ft=eclimhelp

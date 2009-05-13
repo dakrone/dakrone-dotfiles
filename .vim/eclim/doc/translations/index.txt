@@ -1,0 +1,9 @@
+*translations-index*
+
+
+Translations
+************
+
+- Traditional Chinese (|translations-zh-tw-index|)
+
+vim:ft=eclimhelp

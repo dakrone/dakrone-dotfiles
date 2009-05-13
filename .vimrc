@@ -160,6 +160,8 @@ nnoremap <silent> <LocalLeader>jv :Validate<cr>
 nnoremap <silent> <LocalLeader>jc :JavaCorrect<cr>
 " 'open' on OSX will open the url in the default browser without issue
 let g:EclimBrowser='open'
+" Disable Eclim's taglisttoo because I use the regular taglist plugin
+let g:taglisttoo_disabled = 1
 
 " ---------------------------------------------------------------------------
 "  configure autoclose

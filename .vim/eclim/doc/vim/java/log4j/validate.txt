@@ -1,0 +1,35 @@
+*vim-java-log4j-validate*
+
+
+Log4j File Validation
+*********************
+
+When editing a log4j xml file eclim will default to validating the
+file when it is written.  Any errors will be added to the current
+window's location list (:help location-list) and their corresponding
+line number noted via Vim's sign functionality.
+
+Eclim also combines the above validation with xml validation
+(|vim-xml-validate|) to validate that the file is well formed.
+
+If you do not want your log4j files validated automatically when
+saved, you can set the |g:EclimLog4jValidate| variable described in
+the configuration section below.
+
+*:Validate_log4j*
+
+Whether or not auto validation has been enabled, eclim also exposes
+the command :Validate to manually execute the validation of the file.
+
+
+Configuration
+=============
+
+Vim Variables
+
+*g:EclimLog4jValidate*
+
+- g:EclimLog4jValidate (Default: 1) - If set to 0, disables validation
+  when saving the file.
+
+vim:ft=eclimhelp

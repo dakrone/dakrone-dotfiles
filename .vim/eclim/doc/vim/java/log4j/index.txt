@@ -1,0 +1,9 @@
+*vim-java-log4j-index*
+
+
+Log4j
+*****
+
+- Log4j File Validation (|vim-java-log4j-validate|)
+
+vim:ft=eclimhelp

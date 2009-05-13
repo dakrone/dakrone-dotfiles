@@ -1,0 +1,11 @@
+*vim-java-maven-index*
+
+
+Maven
+*****
+
+- Maven Execution (|vim-java-maven-execute|)
+
+- Maven Dependencies (|vim-java-maven-dependencies|)
+
+vim:ft=eclimhelp

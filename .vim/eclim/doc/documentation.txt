@@ -1,0 +1,46 @@
+Documentation
+*************
+
+- Introduction (|vim-index|)
+
+- Eclimd (|eclimd|)
+
+- Settings (|vim-settings|)
+
+- Issues / Quirks (|vim-issues|)
+
+- Code Completion (|vim-code-completion|)
+
+- Suggested Vim Mappings (|vim-mappings|)
+
+- Cheatsheet (|vim-cheatsheet|)
+
+- FAQ (|vim-faq|)
+
+- Common (|vim-common-index|)
+
+- C/C++ (|vim-c-index|)
+
+- Css (|vim-css-index|)
+
+- Dtd (|vim-dtd-index|)
+
+- Html (|vim-html-index|)
+
+- Java (|vim-java-index|)
+
+- Javascript (|vim-javascript-index|)
+
+- Php (|vim-php-index|)
+
+- Python (|vim-python-index|)
+
+- Vim (|vim-vim-index|)
+
+- Wsdl (|vim-wsdl-index|)
+
+- Xml (|vim-xml-index|)
+
+- Xsd (|vim-xsd-index|)
+
+vim:ft=eclimhelp

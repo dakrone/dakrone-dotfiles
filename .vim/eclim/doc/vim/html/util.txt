@@ -1,0 +1,14 @@
+*vim-html-util*
+
+
+Html File Utils
+***************
+
+When editing html files eclim provides some utilility commands for
+your convience.
+
+*:BrowserOpen*
+
+:BrowserOpen - Opens the current html file in your configured browser.
+
+vim:ft=eclimhelp

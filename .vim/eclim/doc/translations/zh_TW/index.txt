@@ -1,0 +1,9 @@
+*translations-zh_TW-index*
+
+
+Traditional Chinese
+*******************
+
+- Eclim Vim 指令參考 (|translations-zh-tw-vim-cheatsheet|)
+
+vim:ft=eclimhelp

@@ -1,0 +1,23 @@
+*vim-common-index*
+
+
+Common
+******
+
+- Eclipse Projects (|vim-common-project|)
+
+- Eclim & Taglist (|vim-common-taglist|)
+
+- Utility Commands (|vim-common-util|)
+
+- Version Control System Commands (|vim-common-vcs|)
+
+- Local History (|vim-common-history|)
+
+- Web Lookup Commands (|vim-common-web|)
+
+- Window Maximize / Minimize (|vim-common-maximize|)
+
+- Archive Viewer (|vim-common-archive|)
+
+vim:ft=eclimhelp

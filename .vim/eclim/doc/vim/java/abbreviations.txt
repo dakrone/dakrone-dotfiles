@@ -1,0 +1,80 @@
+*vim-java-abbreviations*
+
+
+Abbreviations
+*************
+
+Eclim provides the following Vim abbreviations:
+
+- fori
+
+  >
+     for (int ii = 0; ii < ${array}.length; ii++){
+     }
+
+  <
+
+- forI
+
+  >
+     for (Iterator ii = ${col}.iterator(); ii.hasNext();){
+     }
+
+  <
+
+- fore
+
+  >
+     for (${object} ${var} : ${col}){
+     }
+
+  <
+
+When editing a java source file simply enter the abbreviation while in
+insert mode, followed by a space or <ESC> and the corresponding code
+above will be added for you.
+
+You will also notice that the code above has replacement variables in
+the form of ${variable}.  When the abbreviation is expanded, eclim
+will remove the first variable and position the cursor at that
+position so that you can fill in the appropriate value.  Additional
+values, if any, can be replaced by using the FillTemplate funtion
+(please see the suggested mappings (|javamappings|) for more
+information). The variable will be removed and the cursor placed in
+its position for you to again enter the appropriate value in its
+place.
+
+For example, to use the for each (or enhanced for) abbreviation above
+to iterate over an array of Date objects stored in a variable "dates",
+you would simply (assuming you mapped the template replacement to
+<Tab>):
+
+1. Enter insert mode.</li>
+
+2. Type "fore" followed by a space.</li>
+
+3. Type "Date", then <ESC>.</li>
+
+4. Hit <Tab>.</li>
+
+5. Type "date", then <ESC>.</li>
+
+6. Hit <Tab> again.</li>
+
+7. Type "dates", then <ESC>.</li>
+
+After that sequence you would have the following code.
+
+>
+
+   for (Date date : dates){
+   }
+
+<
+
+
+With the for each example you will only save yourself a few
+keystrokes, but with the other for loop abbreviations you can save
+many more.
+
+vim:ft=eclimhelp

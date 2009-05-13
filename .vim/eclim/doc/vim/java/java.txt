@@ -1,0 +1,55 @@
+*vim-java-java*
+
+
+Java / Javac Support
+********************
+
+*:Java*
+
+
+Executing java
+==============
+
+To run the configured main class for your project, you may use the
+:Java command, which executes java and displays the results in a
+temporary buffer.
+
+Note: Please note that this command is not intended to be a full
+  replacement for the more advance support provided by eclipse, ant,
+  or maven.
+
+
+Configuration
+=============
+
+Eclim Settings
+
+- org.eclim.java.run.mainclass - Fully qualified name of the class
+  containing the main method.
+
+*:Javac*
+
+
+Executing javac
+===============
+
+To run the javac command on your source code, you may use the :Javac
+command, which executes javac against all your source code.
+
+Note: Please note that this command is not intended to be a full
+  replacement for javac support provided by more comprehensive build
+  tools like ant or maven.
+
+
+Configuration
+=============
+
+Eclim Settings
+
+- org.eclim.java.compile.sourcepath - The project relative source
+  paths to be compiled by javac.  This should be a space separated
+  list of project relative source directories which you want javac to
+  be executed against.  When unset, all your configured source
+  directories will be used.
+
+vim:ft=eclimhelp

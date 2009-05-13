@@ -1,0 +1,15 @@
+*vim-java-ant-index*
+
+
+Ant
+***
+
+- Ant Execution (|vim-java-ant-execute|)
+
+- Ant Code Completion (|vim-java-ant-complete|)
+
+- Ant File Validation (|vim-java-ant-validate|)
+
+- Ant Documentation Lookup (|vim-java-ant-doc|)
+
+vim:ft=eclimhelp

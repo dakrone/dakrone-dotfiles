@@ -1,0 +1,80 @@
+*vim-vim-find*
+
+
+Vim Find
+********
+
+When working on Vim scripts, eclim provides a set of commands for
+finding user defined commands, functions, and global variables.
+
+*:FindCommandDef*
+
+- :FindCommandDef [command] - Finds the definition of the supplied
+  command name or command name under the cursor.
+
+*:FindCommandRef*
+
+- :FindCommandRef [command] - Finds references of the supplied command
+  name or command name under the cursor.
+
+*:FindFunctionDef*
+
+- :FindFunctionDef [function] - Finds the definition of the supplied
+  function name or function name under the cursor.
+
+*:FindFunctionRef*
+
+- :FindFunctionRef [function] - Finds references of the supplied
+  function name or function name under the cursor.
+
+*:FindVariableDef*
+
+- :FindVariableDef [variable] - Finds the definition of the supplied
+  global variable name or variable name under the cursor.
+
+*:FindVariableRef*
+
+- :FindVariableRef [variable] - Finds references of the supplied
+  global variable name or variable name under the cursor.
+
+*:FindByContext*
+
+- :FindByContext - Performs the appropriate search for the element
+  under the cursor based on its context.  If the cursor is on a
+  command, function, or variable definition, then this command will
+  search for references of that command, function, or variable.  If
+  the cursor is on a reference of a command, function, or variable,
+  then this command will search for the definition of the command,
+  function, or variable.
+
+All of the above commands support ! which can be used to prevent
+jumping to the first of mulitple results found.  In the case of a
+single result, you can set the g:EclimVimFindSingleResult variable to
+determine the action to take, as described below.
+
+
+Configuration
+=============
+
+Vim Variables
+
+*g:EclimVimFindSingleResult*
+
+- g:EclimVimFindSingleResult (Default: 'split') - Determines what
+  action to take when a only a single result is found.
+
+  Possible values include:
+
+  - 'split' - open the result in a new window via "split".
+
+  - 'edit' - open the result in the current window.
+
+  - 'lopen' - open the location list to display the result.
+
+*g:EclimVimPaths*
+
+- g:EclimVimPaths (Default: &runtimepath) - Comma seperated list of
+  paths to recursively search.  Defaults to your systems 'runtimepath'
+  option which should be suitable for most users.
+
+vim:ft=eclimhelp

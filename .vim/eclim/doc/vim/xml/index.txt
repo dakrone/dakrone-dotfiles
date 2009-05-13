@@ -1,0 +1,15 @@
+*vim-xml-index*
+
+
+Xml
+***
+
+- Xml Code Completion (|vim-xml-complete|)
+
+- Xml Definition Lookup (|vim-xml-definition|)
+
+- Xml Validation (|vim-xml-validate|)
+
+- Xml Format (|vim-xml-format|)
+
+vim:ft=eclimhelp

@@ -1,0 +1,56 @@
+*guides-java-maven-mvn-classpath*
+
+
+Mvn: Maintain Classpath
+***********************
+
+Maven 2.x comes bundled with an Eclipse plugin that allows you to
+easily maintain your .classpath file based on your pom.xml.  This
+guide will walk you through the steps of setting this up for the first
+time and continual usage there after.
+
+Note: For additional information on the Eclipse plugin from maven, you may
+  visit their online documentation.
+
+*:MvnRepo*
+
+
+Initial Setup
+=============
+
+To initialize maven's support for updating the eclipse classpath you
+first need to set the M2_REPO variable in the Eclipse workspace by
+executing the following command which is made available when editing
+the pom.xml file in vim:
+
+>
+
+   :MvnRepo
+
+<
+
+
+
+Updating .classpath
+===================
+
+Once you have performed the initial setup, updating the Eclipse
+.classpath file is as easy as executing the following at a command
+line:
+
+>
+
+   mvn eclipse:eclipse
+
+<
+
+
+or in Vim:
+
+>
+
+   :Mvn eclipse:eclipse
+
+<
+
+vim:ft=eclimhelp

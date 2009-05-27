@@ -1,6 +1,8 @@
 let g:netrw_dirhistmax  =10
-let g:netrw_dirhist_cnt =4
+let g:netrw_dirhist_cnt =6
 let g:netrw_dirhist_1='/etc/apt'
 let g:netrw_dirhist_2='/home/hinmanm/.vim'
 let g:netrw_dirhist_3='/home/hinmanm/src/ruby/twitter/lib/twitter/cli'
 let g:netrw_dirhist_4='/Users/hinmanm/.vimperator'
+let g:netrw_dirhist_5='scp://root@10.5.141.31//opt/EMC/IMF/apache-tomcat/imf/'
+let g:netrw_dirhist_6='scp://root@10.5.141.31//opt/EMC/IMF/apache-tomcat/imf/securityeventviewer/'

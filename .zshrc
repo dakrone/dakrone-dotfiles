@@ -14,6 +14,11 @@ export PATH=/usr/local/bin/blackbag:$PATH
 export PATH=$PATH:/usr/local/git/bin
 # Path for ruby gems
 export PATH=$PATH:/var/lib/gems/1.8/bin
+# Path for jruby
+export PATH=$PATH:~/src/ruby/jruby/bin
+
+# I'm using java 1.6 on OSX
+export JAVA_HOME=/System/Library/Frameworks/JavaVM.framework/Versions/1.6/Home
 
 # manpath
 export MANPATH=$MANPATH:/usr/local/man:/opt/local/share/man
@@ -69,6 +74,7 @@ alias week='remind -c+1 ~/.reminders'
 alias month='remind -c ~/.reminders'
 alias flacsync='rsync -av --delete --ignore-existing ~/Music/FLAC/ /media/ALTHALUS/FLAC/'
 alias musicsync='rsync -av --delete --ignore-existing ~/Music/Library/ /media/ALTHALUS/Library/'
+alias gps='geektool-ps'
 
 # history
 HISTFILE=$HOME/.zsh-history

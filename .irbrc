@@ -1,8 +1,12 @@
 require 'rubygems'
 require 'wirble'
 require 'pp'
+require 'sketches'
 Wirble.init
 Wirble.colorize
+
+# Use gvim as our sketches editor
+Sketches.config :editor => 'gvim'
 
 # Easily print methods local to an object's class
 class Object

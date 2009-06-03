@@ -45,7 +45,7 @@ set wildignore+=*.o,*~,.lo    " ignore object files
 set wildmenu                  " menu has tab completion
 let maplocalleader=','        " all my macros start with ,
 set foldmethod=syntax         " fold on syntax automagically, always
-set foldcolumn=5              " 3 lines of column for fold showing, always
+set foldcolumn=6              " 3 lines of column for fold showing, always
 set whichwrap+=<,>,h,l        " backspaces and cursor keys wrap to
 set magic                     " Enable the "magic"
 set visualbell t_vb=          " Disable ALL bells
@@ -68,16 +68,22 @@ if !has("gui_running")
       " (http://www.culater.net/software/TerminalColors/TerminalColors.php)
       " to change the really hard-to-read dark blue into a lighter shade.
       " Or; Use iterm with Tango colors
-      colorscheme ir_black_new " only when I can change certain colors
+      "colorscheme ir_black_new     " only when I can change certain colors
+      colorscheme soso " only when I can change certain colors
 end
 if has("gui_running")
-      "colorscheme macvim      " macvim == win
-      colorscheme ir_black_new     " only when I can change certain colors
-      set noantialias          " If I use ir_black_new, no antialiasing
+      "colorscheme ir_black_new     " only when I can change certain colors
+      colorscheme lightcolors
+      set background=light
+      "set noantialias          " If I use ir_black_new, no antialiasing
+      set antialias
       set guioptions-=T        " no toolbar
-      set lines=65
-      set columns=120
-      set gfn=Monaco:h9       " Monaco, 9pt font
+      set guioptions-=l        " no left scrollbar
+      set guioptions-=L        " no left scrollbar
+      set guioptions-=r        " no right scrollbar
+      set lines=60
+      set columns=130
+      set gfn=Consolas:h11.0
 end
 
 if exists('&t_SI')
@@ -90,6 +96,10 @@ if $SHELL =~ 'bin/fish'
       set shell=/usr/bin/zsh
 endif
 
+
+" Settings for NERD_Tree
+let NERDTreeWinPos="left"
+let NERDTreeWinSize=30
 
 " Settings for taglist.vim
 let Tlist_Use_Right_Window=1
@@ -309,7 +319,7 @@ nmap <LocalLeader>fc  :%foldclose!<cr>
 " ,tt will toggle taglist on and off
 nmap <LocalLeader>tt :Tlist<cr>
 " ,nn will toggle NERDTree on and off
-nmap <LocalLeader>nn :NERDTreeToggle<cr>
+nmap <LocalLeader>n :NERDTreeToggle<cr>
 " When I'm pretty sure that the first suggestion is correct
 map <LocalLeader>r 1z=
 " q: sucks
@@ -356,10 +366,8 @@ endif
 map <LocalLeader>tc :tabnew %<cr>    " create a new tab       
 map <LocalLeader>td :tabclose<cr>    " close a tab
 map <LocalLeader>tn :tabnext<cr>     " next tab
-map <LocalLeader>n :tabnext<cr>     " next tab
 map <silent><m-Right> :tabnext<cr>           " next tab
 map <LocalLeader>tp :tabprev<cr>     " previous tab
-map <LocalLeader>p :tabprev<cr>     " previous tab
 map <silent><m-Left> :tabprev<cr>            " previous tab
 map <LocalLeader>tm :tabmove         " move a tab to a new location
 

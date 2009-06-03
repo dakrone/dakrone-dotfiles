@@ -92,6 +92,13 @@ pc() { awk "{print \$$1}" }
 rot13 () { tr "[a-m][n-z][A-M][N-Z]" "[n-z][a-m][N-Z][A-M]" }
 function maxhead() { head -n `echo $LINES - 5|bc` ; }
 function maxtail() { tail -n `echo $LINES - 5|bc` ; }
+function git_dirty_flag() {
+  git status 2> /dev/null | grep -c : | awk '{if ($1 > 0) print "⚡"}'
+}
+function parse_git_branch() {
+  git branch --no-color 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/ (\1)/'
+}
+
 
 # prompt (if running screen, show window #)
 if [ x$WINDOW != x ]; then
@@ -127,6 +134,14 @@ function title() {
 # precmd is called just before the prompt is printed
 function precmd() {
   title "zsh" "$USER@%m" "%55<...<%~"
+
+  # Print the regular prompt, or the lightning bolt if uncommitted git files
+  #flag=`git_dirty_flag`
+  #if [ -n "$flag" ]; then
+    #export PS1="$PS1`git_dirty_flag`"
+  #else
+    #export PS1="$PS1%# "
+  #fi
 }
 
 # preexec is called just before any command line is executed

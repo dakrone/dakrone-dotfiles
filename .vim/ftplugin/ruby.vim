@@ -17,7 +17,7 @@ endif
 let b:did_ftplugin = 1
 
 " Set foldcolumn to be 7 minimum, Ruby has a lot of folds
-set foldcolumn=7
+"set foldcolumn=7
 " tabs to 2 spaces
 set ts=2
 set sw=2

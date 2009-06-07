@@ -44,14 +44,16 @@ set wildmode=longest:full
 set wildignore+=*.o,*~,.lo    " ignore object files
 set wildmenu                  " menu has tab completion
 let maplocalleader=','        " all my macros start with ,
-set foldmethod=syntax         " fold on syntax automagically, always
-set foldcolumn=5              " 3 lines of column for fold showing, always
+" Deprecated, using SimpleFold with '\f' now. ,sf to revert
+"set foldmethod=syntax         " fold on syntax automagically, always
+set foldcolumn=2              " 2 lines of column for fold showing, always
 set whichwrap+=<,>,h,l        " backspaces and cursor keys wrap to
 set magic                     " Enable the "magic"
 set visualbell t_vb=          " Disable ALL bells
 set cursorline                " show the cursor line
 set matchpairs+=<:>           " add < and > to match pairs
 set tags=tags;/               " search recursively up for tags
+
 
 " highlight over 80 columns
 "highlight OverLength ctermbg=darkred ctermfg=white guibg=#FFD9D9
@@ -330,9 +332,12 @@ cmap w!! %!sudo tee > /dev/null %
 inoremap # X<BS>#
 " When I forget I'm in Insert mode, how often do you type 'jj' anyway?:
 imap jj <Esc>
+" When I use ,sf - return to syntax folding with a big foldcolumn
+nmap <LocalLeader>sf :set foldcolumn=6 foldmethod=syntax<cr>
 " ruby helpers
 iab rbang #!/usr/bin/env ruby<cr>
 iab idef def initialize
+iab sopl System.out.println(
 
 " Ack helpers
 function! Ack(args)
@@ -400,4 +405,6 @@ if has('autocmd')
       " improved formatting for markdown
       " http://plasticboy.com/markdown-vim-mode/
       autocmd BufRead *.mkd  set ai formatoptions=tcroqn2 comments=n:>
+
+      "autocmd BufRead * <Leader>f
 endif

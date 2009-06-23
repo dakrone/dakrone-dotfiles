@@ -17,6 +17,11 @@ export PATH=$PATH:/var/lib/gems/1.8/bin
 # Path for jruby
 export PATH=$PATH:~/src/ruby/jruby/bin
 
+# Chris' ruby stuff
+export RUBYLIB=~/src/chrisbin/ruby
+export RUBYOPT=rubygems
+export PATH=$PATH:~/src/chrisbin:~/src/chrisbin/ruby
+
 # I'm using java 1.6 on OSX
 export JAVA_HOME=/System/Library/Frameworks/JavaVM.framework/Versions/1.6/Home
 

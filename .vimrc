@@ -83,8 +83,8 @@ if has("gui_running")
       set guioptions-=l        " no left scrollbar
       set guioptions-=L        " no left scrollbar
       set guioptions-=r        " no right scrollbar
-      set lines=60
-      set columns=130
+      set lines=49
+      set columns=150
       set gfn=Consolas:h11.0
 end
 
@@ -340,15 +340,16 @@ iab idef def initialize
 iab sopl System.out.println(
 
 " Ack helpers
-function! Ack(args)
-      let grepprg_bak=&grepprg
-      set grepprg=ack\ -H\ --nocolor\ --nogroup
-      execute "silent! grep " . a:args
-      botright copen
-      let &grepprg=grepprg_bak
-endfunction
+" replaced by this vimscript: http://www.vim.org/scripts/script.php?script_id=2572
+"function! Ack(args)
+      "let grepprg_bak=&grepprg
+      "set grepprg=ack\ -H\ --nocolor\ --nogroup
+      "execute "silent! grep " . a:args
+      "botright copen
+      "let &grepprg=grepprg_bak
+"endfunction
 
-command! -nargs=* -complete=file Ack call Ack(<q-args>)
+"command! -nargs=* -complete=file Ack call Ack(<q-args>)
 
 
 " ---------------------------------------------------------------------------

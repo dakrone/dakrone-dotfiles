@@ -5,6 +5,7 @@
 [core]
       pager = less -FRSX
       editor = vim
+      excludesfile = /Users/hinmanm/.gitignore
 
 [color]
       ui = auto

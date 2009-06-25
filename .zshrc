@@ -35,6 +35,9 @@ export PAGER=less
 # CVS for HeX
 export CVSROOT=:ext:dakrone@cvsup.rawpacket.org:/home/project/rawpacket/cvs
 
+# Source j.sh
+source ~/bin/j.sh
+
 # Term settings, if we exist as a screen term, use xterm-color instead of screen-bce.
 # Otherwise, leave the TERM var alone, because we need it to set terminal titles correctly
 case $TERM in
@@ -47,7 +50,7 @@ esac
 alias mv='nocorrect mv'       # no spelling correction on mv
 alias cp='nocorrect cp'
 alias mkdir='nocorrect mkdir'
-alias j=jobs
+#alias j=jobs
 if ls -F --color=auto >&/dev/null; then
   alias ls="ls --color=auto -F"
 else
@@ -58,7 +61,8 @@ alias ll='ls -lh'
 alias la='ls -alh'
 alias lr='ls -lR'
 alias less='less -FRX'
-alias grep='egrep -i --color=auto'
+alias grep='grep -i --color=auto'
+alias egrep='egrep -i --color=auto'
 alias cd..='cd ..'
 alias ..='cd ..'
 alias nsmc='cd ~/src/ruby/nsm-console'
@@ -80,6 +84,10 @@ alias month='remind -c ~/.reminders'
 alias flacsync='rsync -av --delete --ignore-existing ~/Music/FLAC/ /media/ALTHALUS/FLAC/'
 alias musicsync='rsync -av --delete --ignore-existing ~/Music/Library/ /media/ALTHALUS/Library/'
 alias gps='geektool-ps'
+alias jl='j --l'
+alias jr='j --r'
+alias js='j --s'
+
 
 # history
 HISTFILE=$HOME/.zsh-history
@@ -88,6 +96,7 @@ SAVEHIST=1000
 setopt appendhistory autocd extendedglob
 setopt share_history
 function history-all { history -E 1 }
+
 
 # functions
 mdc() { mkdir -p "$1" && cd "$1" }

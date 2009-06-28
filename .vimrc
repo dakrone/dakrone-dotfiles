@@ -141,6 +141,11 @@ map <LocalLeader>tw :PosttoTwitter<cr>
 map <LocalLeader>N :Narrow<cr>
 map <LocalLeader>W :Widen<cr>
 
+" Bindings for ctk
+nnoremap <LocalLeader>cc :CC<cr>
+" I don't like having xterm open.
+let g:ctk_execprg=''
+
 " PHP settings
 let php_sql_query=1
 let php_htmlInStrings=1

@@ -1,0 +1,85 @@
+" compiler infomation file
+" Maintainer: StarWing
+" Last Change: 2009-05-10 13:41:26
+" need ctk {{{1
+
+if !exists('g:loaded_ctk')
+    finish
+endif
+let s:cpo_save = &cpo
+set cpo&vim
+
+function! ctk:split_open(fname) " {{{1
+    if !bufexists(a:fname)
+	if exists('*fnameescape')
+	    let fname = fnameescape(a:fname)
+	else
+	    let fname = escape(a:fname, ' \|')
+	endif
+	redir => l:null
+	silent exec "sp " . fname
+	redir END
+    endif
+    exec bufwinnr(a:fname).'wincmd w'
+    let ar_save = &ar
+    set ar
+    checktime
+    let &ar = ar_save
+endfunction
+
+" Common default info {{{1
+
+au FileType c,cpp SetDefaultInfo
+    	\ cmd='!$cc $input $flags -o $output'
+    	\ run='!$output' input='%:.' output='%:t:r'
+    	\ asm_run=":call ctk:split_open(${q-output})"
+	\ asm_output='$output.asm'
+    	\ debug_run='!gdb -q $output'
+
+" filetype C {{{1
+
+au FileType c let b:{g:ctk_ext_var} = 'c'
+au FileType c SetCompilerInfo gcc
+    	\ title='GNU C Compiler'
+    	\ cc='gcc' flags='-Wall' cmdmap='<m-c>' runmap='<m-1> <f5>'
+    	\ asm_title='GCC to ASM' asm_flags='-S $flags'
+    	\ debug_title='GCC with debug' debug_flags='-ggdb $flags'
+
+au FileType c SetCompilerInfo vc6  
+    	\ title='Microsoft Visual C'
+    	\ cc='cl' flags='-W4' runmap='<m-2> <f6>'
+    	\ asm_title='Microsoft VC to ASM' asm_flags='/FAs $flags'
+
+" filetype C++ {{{1
+
+au FileType cpp let b:{g:ctk_ext_var} = 'cpp'
+au FileType cpp SetCompilerInfo g++
+    	\ title='GNU Compiler Collection - C++'
+    	\ cc='g++' flags='-Wall' cmdmap='<m-c>' runmap='<m-1> <f5>'
+    	\ asm_title='G++ to ASM' asm_flags='-S $flags'
+    	\ debug_title='G++ with debug' debug_flags='-ggdb $flags'
+
+au FileType cpp SetCompilerInfo vc++
+    	\ title='Microsoft Visual C++'
+    	\ cc='cl' flags='-W4' runmap='<m-2> <f6>'
+    	\ asm_title='Microsoft VC++ to ASM'
+    	\ asm_flags='/FAs $flags'
+
+" }}}1
+
+
+" filetype Ruby {{{1
+
+au FileType ruby let b:{g:ctk_ext_var} = 'rb'
+"au FileType ruby SetCompilerInfo ruby
+            "\ title='Ruby 1.9.1 - Matz'
+            "\ cc='ruby' flags='-w' cmdmap='<m-c>' runmap='<m-1> <f5>'
+            "\ debug_title='Ruby with debug' debug_flags='-rdebug $flags'
+au FileType ruby SetCompilerInfo ruby title='Ruby 1.9.1 - Matz' cmd='ruby $flags $input' run='ruby $input' flags='-w' debug_flags='-rdebug $flags'
+
+" }}}1
+
+" terminational works {{{1
+let &cpo = s:cpo_save
+unlet s:cpo_save " }}}1
+" vim: ff=unix ft=vim fdm=marker sw=4 ts=8 sta

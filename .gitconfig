@@ -1,18 +1,18 @@
 [user]
-	name = dakrone
-      email = lee-at-writequit.org
+  name = dakrone
+  email = lee@writequit.org
 
 [core]
-      pager = less -FRSX
-      editor = vim
-      excludesfile = /Users/hinmanm/.gitignore
+  pager = less -FRSX
+  editor = vim
+  excludesfile = /Users/hinmanm/.gitignore
 
 [color]
-      ui = auto
+  ui = auto
 
 [merge]
-      tool = vimdiff
+  tool = vimdiff
 
 [alias]
-      st = status
-      stat = status
+  st = status
+  stat = status

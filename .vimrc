@@ -142,7 +142,7 @@ map <LocalLeader>N :Narrow<cr>
 map <LocalLeader>W :Widen<cr>
 
 " Bindings for ctk
-nnoremap <LocalLeader>cc :CC<cr>
+nnoremap <LocalLeader>C :CC<cr>
 " I don't like having xterm open.
 let g:ctk_execprg=''
 

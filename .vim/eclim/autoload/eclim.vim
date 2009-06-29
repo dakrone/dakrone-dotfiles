@@ -36,7 +36,7 @@
 
   if !exists("g:EclimHome")
     " set via installer
-    let g:EclimHome = '/Applications/Eclipse/plugins/org.eclim_1.4.7'
+    let g:EclimHome = '/Applications/Eclipse//plugins/org.eclim_1.5.0'
   endif
 " }}}
 

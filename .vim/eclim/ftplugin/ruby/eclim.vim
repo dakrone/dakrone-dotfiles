@@ -1,6 +1,7 @@
 " Author:  Eric Van Dewoestine
 "
 " Description: {{{
+"   see http://eclim.sourceforge.net/vim/ruby/index.html
 "
 " License:
 "
@@ -21,36 +22,46 @@
 "
 " }}}
 
-runtime ftplugin/xml.vim
-runtime indent/xml.vim
-
 " Global Variables {{{
 
-if !exists("g:EclimWsdlValidate")
-  let g:EclimWsdlValidate = 1
+if !exists("g:EclimRubyValidate")
+  let g:EclimRubyValidate = 1
 endif
 
 " }}}
 
-" Autocmd {{{
+" Options {{{
 
-if g:EclimWsdlValidate
-  augroup eclim_wsdl_validate
-    autocmd!
-    autocmd BufWritePost *.wsdl call eclim#lang#Validate('wsdl', 1)
-  augroup END
-endif
+setlocal completefunc=eclim#ruby#complete#CodeComplete
 
-" disable plain xml validation.
-augroup eclim_xml
-  autocmd! BufWritePost <buffer>
+" }}}
+
+" Autocmds {{{
+
+augroup eclim_ruby
+  autocmd!
+  autocmd BufWritePost <buffer>
+    \ call eclim#lang#UpdateSrcFile('ruby', g:EclimRubyValidate)
 augroup END
 
 " }}}
 
 " Command Declarations {{{
 
-command! -nargs=0 -buffer Validate :call eclim#lang#Validate('wsdl', 0)
+command! -nargs=0 -buffer Validate :call eclim#lang#UpdateSrcFile('ruby', 1)
+
+if !exists(":RubyFindDefinition")
+  command -buffer RubyFindDefinition
+    \ :call eclim#ruby#search#FindDefinition('declarations')
+endif
+if !exists(":RubySearch")
+  command -buffer -nargs=*
+    \ -complete=customlist,eclim#ruby#search#CommandCompleteRubySearch
+    \ RubySearch :call eclim#ruby#search#Search('<args>')
+endif
+if !exists(":RubySearchContext")
+  command -buffer RubySearchContext :call eclim#ruby#search#SearchContext()
+endif
 
 " }}}
 

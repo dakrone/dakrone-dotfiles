@@ -36,6 +36,7 @@ let s:command_create = '-command project_create -f "<folder>"'
 let s:command_create_name = ' -p "<name>"'
 let s:command_create_natures = ' -n <natures>'
 let s:command_create_depends = ' -d <depends>'
+let s:command_import = '-command project_import -f "<folder>"'
 let s:command_delete = '-command project_delete -p "<project>"'
 let s:command_refresh = '-command project_refresh -p "<project>"'
 let s:command_refresh_file =
@@ -43,7 +44,7 @@ let s:command_refresh_file =
 let s:command_projects = '-command project_list'
 let s:command_project_info = '-command project_info -p "<project>"'
 let s:command_project_settings = '-command project_settings -p "<project>"'
-let s:command_project_setting = s:command_project_settings . ' -s <setting>'
+let s:command_project_setting = '-command project_setting -p "<project>" -s <setting>'
 let s:command_project_update = '-command project_update -p "<project>"'
 let s:command_update = '-command project_update -p "<project>" -s "<settings>"'
 let s:command_open = '-command project_open -p "<project>"'
@@ -104,6 +105,20 @@ function! eclim#project#util#ProjectCreate(args)
     let depends = substitute(depends, '\s\+', ',', 'g')
     let command .= substitute(s:command_create_depends, '<depends>', depends, '')
   endif
+
+  let result = eclim#ExecuteEclim(command)
+  if result != '0'
+    call eclim#util#Echo(result)
+    call eclim#project#util#ClearProjectsCache()
+  endif
+endfunction " }}}
+
+" ProjectImport(arg) {{{
+" Import a project from the supplied folder
+function! eclim#project#util#ProjectImport(arg)
+  let folder = fnamemodify(expand(a:arg), ':p')
+  let folder = substitute(folder, '\', '/', 'g')
+  let command = substitute(s:command_import, '<folder>', folder, '')
 
   let result = eclim#ExecuteEclim(command)
   if result != '0'
@@ -581,19 +596,15 @@ function! eclim#project#util#GetProjectSetting(setting)
   let command = substitute(command, '<project>', project, '')
   let command = substitute(command, '<setting>', a:setting, '')
 
-  let result = split(eclim#ExecuteEclim(command), '\n')
-  if len(result) == 1 && result[0] == '0'
-    return result[0]
+  let result = eclim#ExecuteEclim(command)
+  if result == '0'
+    return result
   endif
 
-  call filter(result, 'v:val !~ "^\\s*#"')
-
-  if len(result) == 0
+  if result == ''
     call eclim#util#EchoWarning("Setting '" . a:setting . "' does not exist.")
-    return ''
   endif
-
-  return substitute(result[0], '.\{-}=\(.*\)', '\1', '')
+  return result
 endfunction " }}}
 
 " IsCurrentFileInProject(...) {{{

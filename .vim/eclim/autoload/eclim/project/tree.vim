@@ -79,6 +79,9 @@ function! eclim#project#tree#ProjectTree(...)
   endfor
   let names = names_copy
 
+  " for session reload
+  let g:Eclim_project_tree_names = join(names, '|')
+
   if len(dirs) == 0
     "call eclim#util#Echo('ProjectTree: No directories found for requested projects.')
     return
@@ -87,26 +90,43 @@ function! eclim#project#tree#ProjectTree(...)
   let dir_list = string(dirs)
 
   call s:CloseTreeWindow()
-
-  if bufwinnr(s:GetTreeTitle()) == -1
-    call eclim#display#window#VerticalToolWindowOpen(s:GetTreeTitle(), 9)
-    " command used to navigate to a content window before executing a command.
-    if !exists('g:EclimProjectTreeContentWincmd')
-      if g:VerticalToolWindowSide == 'right'
-        let g:EclimProjectTreeContentWincmd = 'winc h'
-      else
-        let g:EclimProjectTreeContentWincmd = 'winc l'
-      endif
-    endif
-  endif
-
   call s:OpenTree(names, dirs)
   normal! zs
 
   call s:Mappings()
 endfunction " }}}
 
-" CloseTreeWindow() " {{{
+" Restore() " {{{
+function! eclim#project#tree#Restore()
+  if exists('t:project_tree_restoring')
+    return
+  endif
+  let t:project_tree_restoring = 1
+
+  " prevent auto open from firing after session is loaded.
+  augroup project_tree_autoopen
+    autocmd!
+  augroup END
+
+  let title = s:GetTreeTitle()
+  let winnum = bufwinnr(title)
+  if winnum != -1
+    if exists('g:Eclim_project_tree_names')
+      let projects = split(g:Eclim_project_tree_names, '|')
+      call map(projects, 'escape(v:val, " ")')
+      let names = join(projects, ' ')
+      call eclim#util#DelayedCommand(
+        \ 'let bufnum = bufnr("%") | ' .
+        \ 'exec "ProjectTree ' . names . '" | ' .
+        \ 'exec bufwinnr(bufnum) . "winc w" | ' .
+        \ 'unlet t:project_tree_restoring')
+    else
+      exec 'bd ' . bufnr(title)
+    endif
+  endif
+endfunction " }}}
+
+" s:CloseTreeWindow() " {{{
 function! s:CloseTreeWindow()
   let winnr = bufwinnr(s:GetTreeTitle())
   if winnr != -1
@@ -115,14 +135,23 @@ function! s:CloseTreeWindow()
   endif
 endfunction " }}}
 
-" Mappings() " {{{
+" s:GetTreeTitle() {{{
+function! s:GetTreeTitle()
+  if !exists('t:project_tree_id')
+    let t:project_tree_id = s:project_tree_ids + 1
+    let s:project_tree_ids += 1
+  endif
+  return g:EclimProjectTreeTitle . t:project_tree_id
+endfunction " }}}
+
+" s:Mappings() " {{{
 function! s:Mappings()
   nnoremap <buffer> E :call <SID>OpenFile('edit')<cr>
   nnoremap <buffer> S :call <SID>OpenFile('split')<cr>
   nnoremap <buffer> T :call <SID>OpenFile('tablast \| tabnew')<cr>
 endfunction " }}}
 
-" OpenFile(action) " {{{
+" s:OpenFile(action) " {{{
 function! s:OpenFile(action)
   let path = eclim#tree#GetPath()
   if path !~ '/$'
@@ -136,8 +165,23 @@ function! s:OpenFile(action)
   endif
 endfunction " }}}
 
-" OpenTree(names, dirs) " {{{
+" s:OpenTree(names, dirs) " {{{
 function! s:OpenTree(names, dirs)
+  let expandDir = ''
+  if g:EclimProjectTreeExpandPathOnOpen
+    let expandDir = substitute(expand('%:p:h'), '\', '/', 'g')
+  endif
+
+  call eclim#display#window#VerticalToolWindowOpen(s:GetTreeTitle(), 9)
+  " command used to navigate to a content window before executing a command.
+  if !exists('g:EclimProjectTreeContentWincmd')
+    if g:VerticalToolWindowSide == 'right'
+      let g:EclimProjectTreeContentWincmd = 'winc h'
+    else
+      let g:EclimProjectTreeContentWincmd = 'winc l'
+    endif
+  endif
+
   if !s:project_tree_loaded
     " remove any settings related to usage of tree as an external filesystem
     " explorer.
@@ -146,7 +190,8 @@ function! s:OpenTree(names, dirs)
     endif
   endif
 
-  call eclim#tree#Tree(s:GetTreeTitle(), a:dirs, a:names, len(a:dirs) == 1, [])
+  let expand = len(a:dirs) == 1
+  call eclim#tree#Tree(s:GetTreeTitle(), a:dirs, a:names, expand, [])
 
   if !s:project_tree_loaded
     for action in g:EclimProjectTreeActions
@@ -158,6 +203,11 @@ function! s:OpenTree(names, dirs)
   endif
 
   setlocal bufhidden=hide
+
+  if expand && expandDir != ''
+    call eclim#util#DelayedCommand(
+      \ 'call eclim#tree#ExpandPath("' . s:GetTreeTitle() . '", "' . expandDir . '")')
+  endif
 endfunction " }}}
 
 " OpenProjectFile(cmd, cwd, file) {{{
@@ -186,15 +236,6 @@ function! eclim#project#tree#HorizontalContentWindow()
   if exists('g:TagList_title') && bufname(bufnr('%')) == g:TagList_title
     winc k
   endif
-endfunction " }}}
-
-" GetTreeTitle() {{{
-function! s:GetTreeTitle()
-  if !exists('t:project_tree_id')
-    let t:project_tree_id = s:project_tree_ids + 1
-    let s:project_tree_ids += 1
-  endif
-  return g:EclimProjectTreeTitle . t:project_tree_id
 endfunction " }}}
 
 " vim:ft=vim:fdm=marker

@@ -75,7 +75,7 @@ au FileType ruby let b:{g:ctk_ext_var} = 'rb'
             "\ title='Ruby 1.9.1 - Matz'
             "\ cc='ruby' flags='-w' cmdmap='<m-c>' runmap='<m-1> <f5>'
             "\ debug_title='Ruby with debug' debug_flags='-rdebug $flags'
-au FileType ruby SetCompilerInfo ruby title='Ruby 1.9.1 - Matz' cmd='ruby $flags $input' run='ruby $input' flags='-w' debug_flags='-rdebug $flags'
+au FileType ruby SetCompilerInfo ruby title='Ruby 1.9.1 - Matz' cmd='ruby $flags $input' run='ruby $input' flags='-wc' debug_flags='-rdebug $flags'
 
 " }}}1
 

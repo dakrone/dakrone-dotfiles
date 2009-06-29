@@ -41,7 +41,7 @@
     \ '-command <search> -n "<project>" -f "<file>" ' .
     \ '-o <offset> -e <encoding> -l <length> <args>'
   let s:search_pattern = '-command <search> -n "<project>" -f "<file>" <args>'
-  let s:options = ['-p', '-t', '-x', '-s']
+  let s:options = ['-p', '-t', '-x', '-s', '-i']
   let s:contexts = ['all', 'declarations', 'implementors', 'references']
   let s:scopes = ['all', 'project', 'type']
   let s:types = [
@@ -283,7 +283,6 @@ function! eclim#java#search#SearchAndDisplay(type, args)
   endif
   if !empty(results)
     if a:type == 'java_search'
-      let g:EclimLastProject = eclim#project#util#GetCurrentProjectName()
       call eclim#util#SetLocationList(eclim#util#ParseLocationEntries(results))
       " if only one result and it's for the current file, just jump to it.
       " note: on windows the expand result must be escaped
@@ -297,6 +296,8 @@ function! eclim#java#search#SearchAndDisplay(type, args)
         let entry = getloclist(0)[0]
         let name = substitute(bufname(entry.bufnr), '\', '/', 'g')
         call eclim#util#GoToBufferWindowOrOpen(name, g:EclimJavaSearchSingleResult)
+        call eclim#util#SetLocationList(eclim#util#ParseLocationEntries(results))
+        call eclim#display#signs#Update()
         call cursor(entry.lnum, entry.col)
       else
         lopen

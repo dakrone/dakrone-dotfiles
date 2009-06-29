@@ -340,7 +340,7 @@ imap jj <Esc>
 " When I use ,sf - return to syntax folding with a big foldcolumn
 nmap <LocalLeader>sf :set foldcolumn=6 foldmethod=syntax<cr>
 " ruby helpers
-iab rbang #!/usr/bin/env ruby<cr>
+iab rbang #!/usr/bin/env ruby<cr># vim: set ts=2 sw=2 filetype=Ruby<cr>
 iab idef def initialize
 iab sopl System.out.println(
 

@@ -95,6 +95,7 @@ function eclim#tree#Tree(name, roots, aliases, expand, filters)
   setlocal modifiable
 
   let roots = s:NormalizeDirs(a:roots)
+  let b:roots = copy(roots)
   let b:filters = a:filters
   let b:view_hidden = 0
 
@@ -133,6 +134,7 @@ function eclim#tree#Tree(name, roots, aliases, expand, filters)
   setlocal nobuflisted
   setlocal buftype=nofile
   setlocal bufhidden=delete
+  setlocal foldmethod=manual
   setlocal foldtext=getline(v:foldstart)
   setlocal nomodifiable
 
@@ -719,6 +721,57 @@ function eclim#tree#ExpandDir()
   call eclim#tree#WriteContents(dir, dirs, files)
 endfunction " }}}
 
+" ExpandPath(name, path) {{{
+" Given the buffer name of a tree and a full path in that tree, either with an
+" alias or real root path at the beginning, expand the tree node to reveal
+" that path.
+function! eclim#tree#ExpandPath(name, path)
+  let winnr = winnr()
+  let treewin = bufwinnr(a:name)
+  if treewin == -1
+    return
+  endif
+
+  exec treewin . 'winc w'
+
+  let path = a:path
+  let root = ''
+  for r in b:roots
+    let r = substitute(r, '/$', '', '')
+    if path =~ '^' . r . '\>'
+      let root = r
+      break
+    endif
+  endfor
+
+  " try aliases
+  if root == ''
+    let path = substitute(path, '^/', '', '')
+    for r in keys(b:aliases)
+      if path =~ '^' . r . '\>'
+        let root = r
+        break
+      endif
+    endfor
+  endif
+
+  if root != ''
+    let path = substitute(path, '^' . root, '', '')
+
+    for dir in split(path, '/')
+      let line = search('+ \<' . dir . '\>/', 'n')
+      if line
+        call eclim#tree#Cursor(line)
+        call eclim#tree#Execute(1)
+      else
+        break
+      endif
+    endfor
+  endif
+
+  exec winnr . 'winc w'
+endfunction " }}}
+
 " WriteContents(dir, dirs, files) {{{
 function eclim#tree#WriteContents(dir, dirs, files)
   let dirs = a:dirs
@@ -913,7 +966,13 @@ endfunction " }}}
 " DisplayActionChooser(file, actions) {{{
 function s:DisplayActionChooser(file, actions)
   new
-  exec "resize " . (len(a:actions) + 1)
+  let height = len(a:actions) + 1
+
+  " for maximize.vim
+  let b:eclim_temp_window = 1
+  let b:eclim_temp_window_height = height
+
+  exec 'resize ' . height
 
   setlocal noreadonly modifiable
   let b:actions = a:actions

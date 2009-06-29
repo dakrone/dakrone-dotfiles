@@ -45,12 +45,12 @@
 " Handles java code completion.
 function! eclim#java#complete#CodeComplete(findstart, base)
   if a:findstart
+    " update the file before vim makes any changes.
+    call eclim#java#util#SilentUpdate()
+
     if !eclim#project#util#IsCurrentFileInProject(0) || !filereadable(expand('%'))
       return -1
     endif
-
-    " update the file before vim makes any changes.
-    call eclim#java#util#SilentUpdate()
 
     " locate the start of the word
     let line = getline('.')
@@ -153,16 +153,5 @@ function! eclim#java#complete#CodeComplete(findstart, base)
     return completions
   endif
 endfunction " }}}
-
-" CompletionFilter(filter) {{{
-" Filter current completions.
-"function! eclim#java#complete#CompletionFilter(filter)
-"  let start = JavaCodeComplete(1, "")
-"  while col('.') > start + 1
-"    normal! <BS>
-"  endwhile
-"  echom " #### filter = " . a:filter . " start = " . start
-"  return "\<C-X>\<C-U>"
-"endfunction " }}}
 
 " vim:ft=vim:fdm=marker

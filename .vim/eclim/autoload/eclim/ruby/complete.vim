@@ -1,6 +1,7 @@
 " Author:  Eric Van Dewoestine
 "
 " Description: {{{
+"   see http://eclim.sourceforge.net/vim/ruby/complete.html
 "
 " License:
 "
@@ -21,37 +22,15 @@
 "
 " }}}
 
-runtime ftplugin/xml.vim
-runtime indent/xml.vim
-
-" Global Variables {{{
-
-if !exists("g:EclimWsdlValidate")
-  let g:EclimWsdlValidate = 1
-endif
-
+" Script Varables {{{
+  let s:complete_command =
+    \ '-command ruby_complete -p "<project>" -f "<file>" -o <offset> -e <encoding>'
 " }}}
 
-" Autocmd {{{
-
-if g:EclimWsdlValidate
-  augroup eclim_wsdl_validate
-    autocmd!
-    autocmd BufWritePost *.wsdl call eclim#lang#Validate('wsdl', 1)
-  augroup END
-endif
-
-" disable plain xml validation.
-augroup eclim_xml
-  autocmd! BufWritePost <buffer>
-augroup END
-
-" }}}
-
-" Command Declarations {{{
-
-command! -nargs=0 -buffer Validate :call eclim#lang#Validate('wsdl', 0)
-
-" }}}
+" CodeComplete(findstart, base) {{{
+" Handles code completion.
+function! eclim#ruby#complete#CodeComplete(findstart, base)
+  return eclim#lang#CodeComplete(s:complete_command, a:findstart, a:base)
+endfunction " }}}
 
 " vim:ft=vim:fdm=marker

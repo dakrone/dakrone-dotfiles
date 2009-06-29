@@ -439,8 +439,10 @@ function! eclim#taglist#taglisttoo#Taglist(...)
   if action == -1 || action == 0
     let winnum = bufwinnr(g:TagList_title)
     if winnum != -1
+      let prevbuf = bufnr('%')
       exe winnum . 'wincmd w'
       call s:CloseTaglist()
+      exec bufwinnr(prevbuf) . 'wincmd w'
       return
     endif
   endif
@@ -455,6 +457,28 @@ function! eclim#taglist#taglisttoo#Taglist(...)
       autocmd CursorHold * call s:ShowCurrentTag()
     augroup END
   endif
+endfunction " }}}
+
+" Restore() {{{
+" Restore the taglist, typically after loading from a session file.
+function! eclim#taglist#taglisttoo#Restore()
+  if exists('t:taglistoo_restoring')
+    return
+  endif
+  let t:taglistoo_restoring = 1
+
+  " prevent auto open from firing after session is loaded.
+  augroup taglisttoo_autoopen
+    autocmd!
+  augroup END
+
+  call eclim#util#DelayedCommand(
+    \ 'let winnum = bufwinnr(g:TagList_title) | ' .
+    \ 'if winnum != -1 | ' .
+    \ '  exec "TlistToo" | ' .
+    \ '  exec "TlistToo" | ' .
+    \ '  unlet t:taglistoo_restoring | ' .
+    \ 'endif')
 endfunction " }}}
 
 " s:StartAutocmds() {{{
@@ -510,10 +534,11 @@ endfunction " }}}
 
 " s:ProcessTags() {{{
 function! s:ProcessTags()
-  let file = expand('%')
-  if file =~ s:taglisttoo_ignore || file == ''
+  let filename = expand('%')
+  if filename =~ s:taglisttoo_ignore || filename == ''
     return
   endif
+  let filewin = winnr()
 
   let tags = []
   if s:FileSupported(expand('%:p'), &ft)
@@ -526,21 +551,36 @@ function! s:ProcessTags()
     endif
 
     let file = substitute(expand('%:p'), '\', '/', 'g')
-    let command = g:Tlist_Ctags_Cmd . ' -f - --format=2 --excmd=pattern ' .
-        \ '--fields=nks --sort=no --language-force=<lang> ' .
-        \ '--<lang>-types=<types> "<file>"'
-    let command = substitute(command, '<lang>', settings.lang, 'g')
-    let command = substitute(command, '<types>', types, 'g')
-    let command = substitute(command, '<file>', file, '')
 
-    if command =~ '^-command'
-      let response = eclim#ExecuteEclim(command)
-    else
-      let response = eclim#util#System(command)
-      if v:shell_error
-        call eclim#util#EchoError('taglist failed with error code: ' . v:shell_error)
-        return
+    " support generated file contents (like viewing a .class file via jad)
+    let tempfile = ''
+    if !filereadable(file) || &buftype == 'nofile'
+      let tempfile = g:EclimTempDir . '/' . fnamemodify(file, ':t')
+      if tolower(file) != tolower(tempfile)
+        let tempfile = escape(tempfile, ' ')
+        exec 'write! ' . tempfile
+        let file = tempfile
       endif
+    endif
+
+    try
+      let command = g:Tlist_Ctags_Cmd . ' -f - --format=2 --excmd=pattern ' .
+          \ '--fields=nks --sort=no --language-force=<lang> ' .
+          \ '--<lang>-types=<types> "<file>"'
+      let command = substitute(command, '<lang>', settings.lang, 'g')
+      let command = substitute(command, '<types>', types, 'g')
+      let command = substitute(command, '<file>', file, '')
+
+      let response = eclim#util#System(command)
+    finally
+      if tempfile != ''
+        call delete(tempfile)
+      endif
+    endtry
+
+    if v:shell_error
+      call eclim#util#EchoError('taglist failed with error code: ' . v:shell_error)
+      return
     endif
 
     let results = split(response, '\n')
@@ -603,11 +643,20 @@ function! s:ProcessTags()
       call append(line('$'), 'Warning: taglist truncated.')
       setlocal nomodifiable
     endif
+
+    " if the file buffer is not longer in the same window it was, then find
+    " its new location.  Occurs when taglist first opens.
+    if winbufnr(filewin) != bufnr(filename)
+      let filewin = bufwinnr(filename)
+    endif
+
+    if filewin != -1
+      exec filewin . 'winc w'
+    endif
   else
     call s:Window({}, tags, [[],[]])
+    winc p
   endif
-
-  winc p
 
   call s:ShowCurrentTag()
 endfunction " }}}

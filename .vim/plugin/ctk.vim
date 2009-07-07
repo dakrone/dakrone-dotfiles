@@ -199,18 +199,18 @@ endif
 " }}}1
 " some inner variables {{{1
 
-" escape chars in filename {{{3
+" escape chars in filename {{{2
 let s:fname_escape_chars = " \t\n*?[{`$\\%#'\"|!<"
 
-" buffer-variable names {{{3
+" buffer-variable names {{{2
 let s:ci = 'compiler_info'
 let s:ci_name = 'b:'.s:ci
 
-" some default attr {{{3
+" some default attr {{{2
 let s:def_attr = {'cmd': ':echo "Done Nothing"', 'run': ':echo "Done Nothing"',
             \ 'input': '%:.', 'output': '%:t:r'}
 
-" patterns {{{3
+" patterns {{{2
 
 let s:pat_cmdtag = '$\(\l\+\)'
 let s:pat_cmdtag_quote = '${q-\(\l\+\)}'
@@ -228,19 +228,19 @@ let s:pat_info_var = '\v(\w+)\s*(\+)=\=\s*(\S)(.{-})\3'
 let s:pat_modeline = '\v<cc%(-([^:]*))=:\s*(.*)'
 let s:pat_shellcmdtitle = '^!\=\zs.\{-}\ze\(\s\|$\)'
 
-" }}}3
+" }}}2
 
 " ============================================================
 " utility functions {{{1
 
-" tricks to get command-style arglist {{{3
+" tricks to get command-style arglist {{{2
 command! -nargs=* CTKGetEscapedList let l:args = [<f-args>]
 function! s:get_escaped_list(str)
     exec 'CTKGetEscapedList '.a:str
     return args
 endfunction
 
-function! s:question(msg) " {{{3
+function! s:question(msg) " {{{2
     redraw
     echohl Question
     echo a:msg
@@ -251,13 +251,13 @@ function! s:question(msg) " {{{3
     return ch
 endfunction
 
-function! s:echoerr(msg) " {{{3
+function! s:echoerr(msg) " {{{2
     echohl ErrorMsg
     echomsg 's: '.a:msg
     echohl NONE
 endfunction
 
-function! s:get_idx(info) " {{{3
+function! s:get_idx(info) " {{{2
     let idx = 0
     for info in b:{s:ci}.list
         if info is a:info
@@ -268,7 +268,7 @@ function! s:get_idx(info) " {{{3
     return -1
 endfunction
 
-function! s:get_entry_val(entry, key, default) " {{{3
+function! s:get_entry_val(entry, key, default) " {{{2
     let key = (a:entry == '' ? a:key : a:entry.'_'.a:key)
 
     if has_key(b:{s:ci}, 'default')
@@ -287,7 +287,7 @@ function! s:get_entry_val(entry, key, default) " {{{3
     endif
 endfunction
 
-function! s:get_info(name) " {{{3
+function! s:get_info(name) " {{{2
 "    call Dfunc('s:get_info(name = '.a:name.')')
 "    call Decho('info_list = '.string(b:{s:ci}.list))
     for info in b:{s:ci}.list
@@ -300,7 +300,7 @@ function! s:get_info(name) " {{{3
     return {}
 endfunction
 
-function! s:sub_info(info) " {{{3
+function! s:sub_info(info) " {{{2
 "    call Decho('let '.get(a:info, 'name', 'cur_info').'['.submatch(1).'] '.
                 \ submatch(2).'= "'.submatch(4).'"')
 
@@ -309,7 +309,7 @@ function! s:sub_info(info) " {{{3
     let a:info[submatch(1)] = val.submatch(4)
 endfunction
 
-function! s:expand_fname(fname, mode) " {{{3
+function! s:expand_fname(fname, mode) " {{{2
 "    call Dfunc('s:expand_fname(fname = '.a:fname.', mode = '.a:mode.')')
     let fname = expand(a:fname)
 
@@ -324,7 +324,7 @@ function! s:expand_fname(fname, mode) " {{{3
 
 "    call Dret('s:expand_fname : '.fname)
     return fname
-endfunction " }}}3
+endfunction " }}}2
 
 " ============================================================
 function! Set_compiler_info(cmdarg, bang) " {{{1
@@ -462,7 +462,7 @@ function! s:compile(count, entry, bang) " {{{1
             cgetfile | exec v:shell_error == 0 ? 'cwindow' : 
                         \ (res == '' ? 'cclose' : 'copen')
 
-            echo 'Compile' (v:shell_error ? 'Fail' : 'Successd')
+            echo 'Compile' (v:shell_error ? 'Fail' : 'Successful')
         catch
             call s:echoerr('error when write error log: '.v:exception)
         endtry
@@ -501,11 +501,15 @@ function! s:run(count, entry, bang) " {{{1
 
     let res = s:exec_cmd(cmd)
 
-    if res !~ '^\_s*$'
+    if res !~ '^\_s*$' && !has('gui_running')
         redraw
         for line in split(res, '\n\|\r\|\r\n')
             echomsg line
         endfor
+    endif
+
+    " TODO: sometimes there are two hit-enter notify, but term linux only one.
+    if &term != 'linux'
         redraw!
     endif
 

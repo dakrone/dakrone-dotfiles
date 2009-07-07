@@ -70,9 +70,21 @@ endf
 
 fun s:ConvertMethod(method)
 	if stridx(a:method, ':') == -1 | return a:method | endif
+	" let method = s:SplitNewline(a:method)
 	let snippet = substitute(a:method, '\v\k+:\zs.{-}\ze(\s*\k+:|$)', '${0:&}', 'g')
 	return s:OrderSnippet(snippet)
 endf
+
+" fun s:SplitNewline(snippet)
+" 	let snippet = a:snippet
+" 	let sniplen = len(snippet)
+" 	let linelen = 80
+" 	while linelen < sniplen
+" 		let snippet = snippet[:(linelen)]."_".snippet[(linelen + 1):]
+" 		let linelen += 80
+" 	endw
+" 	return snippet
+" endf
 
 " Converts "${0} foo ${0} bar ..." to "${1} foo ${2} bar", etc.
 fun s:OrderSnippet(snippet)

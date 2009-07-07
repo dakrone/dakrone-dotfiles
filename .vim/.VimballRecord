@@ -8,3 +8,4 @@ twitvim-0.4.1.vba: call delete('/home/hinmanm/.vim/plugin/twitvim.vim')|call del
 colourscheme_bandit.vba: call delete('/Users/hinmanm/.vim/colors/bandit.vim')|call delete('/Users/hinmanm/.vim/syntax/colours_bandit.vim')
 rainbow.vba: call delete('/Users/hinmanm/.vim/after/syntax/c/rainbow.vim')
 ctk.vba: call delete('/Users/hinmanm/.vim/plugin/ctk.vim')|call delete('/Users/hinmanm/.vim/doc/ctk.txt')|call delete('/Users/hinmanm/.vim/.compiler_info')
+ctk(2).vba: call delete('/Users/hinmanm/.vim/plugin/ctk.vim')|call delete('/Users/hinmanm/.vim/doc/ctk.txt')|call delete('/Users/hinmanm/.vim/.compiler_info')

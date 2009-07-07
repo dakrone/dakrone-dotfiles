@@ -66,19 +66,6 @@ au FileType cpp SetCompilerInfo vc++
     	\ asm_flags='/FAs $flags'
 
 " }}}1
-
-
-" filetype Ruby {{{1
-
-au FileType ruby let b:{g:ctk_ext_var} = 'rb'
-"au FileType ruby SetCompilerInfo ruby
-            "\ title='Ruby 1.9.1 - Matz'
-            "\ cc='ruby' flags='-w' cmdmap='<m-c>' runmap='<m-1> <f5>'
-            "\ debug_title='Ruby with debug' debug_flags='-rdebug $flags'
-au FileType ruby SetCompilerInfo ruby title='Ruby 1.9.1 - Matz' cmd='ruby $flags $input' run='ruby $input' flags='-wc' debug_flags='-rdebug $flags'
-
-" }}}1
-
 " terminational works {{{1
 let &cpo = s:cpo_save
 unlet s:cpo_save " }}}1

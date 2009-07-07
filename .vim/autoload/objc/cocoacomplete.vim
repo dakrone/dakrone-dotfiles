@@ -1,6 +1,6 @@
 " File:         cocoacomplete.vim (part of the cocoa.vim plugin)
 " Author:       Michael Sanders (msanders42 [at] gmail [dot] com)
-" Last Updated: June 12, 2009
+" Last Updated: June 30, 2009
 " Description:  An omni-completion plugin for Cocoa/Objective-C.
 
 let s:lib_dir = fnameescape($HOME.'/.vim/lib/')
@@ -51,14 +51,16 @@ endf
 
 fun s:GetCompleteType(lnum, col)
 	let scopelist = map(synstack(a:lnum, a:col), 'synIDattr(v:val, "name")')
-	if empty(scopelist) | return '' | endif
+	if empty(scopelist) | return 'types' | endif
 
 	let current_scope = scopelist[-1]
 	let beforeCursor = strpart(getline(a:lnum), 0, a:col)
 
 	" Completing a function name:
-	if match(getline(a:lnum), '\%'.(a:col + 1).'c\s*(') != -1
+	if getline(a:lnum) =~ '\%'.(a:col + 1).'c\s*('
 		return 'functions'
+	elseif current_scope == 'objcSuperclass'
+		return 'classes'
 	" Inside brackets "[ ... ]":
 	elseif index(scopelist, 'objcMessage') != -1
 		return beforeCursor =~ '\[\k*$' ? 'classes' : 'methods'
@@ -72,10 +74,12 @@ fun s:GetCompleteType(lnum, col)
 			return 'classes.types.constants.function_params'
 		endif
 	" Inside braces "{ ... }" or after equals "=":
-	elseif current_scope == 'cBlock' || current_scope == 'objcAssign'
+	elseif current_scope == 'cBlock' || current_scope == 'objcAssign' || current_scope == ''
 		let type = current_scope == 'cBlock' ? 'types.constants.' : ''
 		let type = 'classes.'.type.'function_params'
-		return beforeCursor =~ '\(^\|[{};=)]\)\s*\k*$' ? type : 'methods'
+
+		if beforeCursor =~ 'IBOutlet' | return 'classes' | endif
+		return beforeCursor =~ '\v(^|[{};=\])]|return)\s*\k*$'? type : 'methods'
 	" Directly inside "@implementation ... @end" or "@interface ... @end"
 	elseif current_scope == 'objcImp' || current_scope  == 'objcHeader'
 		" TODO: Complete delegate/subclass methods
@@ -102,8 +106,7 @@ fun s:CompleteMethod(lnum, col, method)
 	let class = s:GetCocoaClass(a:lnum, a:col)
 	if class == ''
 		let object = matchstr(getline(a:lnum), '\%'.a:col.'c\k\+')
-		let [var_lnum, var_col] = s:GetDeclPos(object)
-		let class = s:GetCocoaClass(var_lnum, var_col)
+		let class = s:GetDeclWord(object)
 		if class == '' | return [] | endif
 	endif
 	let method = s:GetMethodName(a:lnum, a:col, a:method)
@@ -139,12 +142,37 @@ fun s:GetCocoaClass(lnum, col)
 	              \ ? class : '' " Use grep as a fallback.
 endf
 
-" Returns position of the word before a variable declaration.
-fun s:GetDeclPos(var)
+" Returns the word before a variable declaration.
+fun s:GetDeclWord(var)
 	let startpos = [line('.'), col('.')]
 	let line_found = searchdecl(a:var) != 0 ? 0 : line('.')
 	call cursor(startpos)
-	return [line_found, match(getline(line_found), '\k*\s*\*\s*'.a:var) + 1]
+	let matchstr = '\v(IBOutlet\s+)=\zs\k+\s*\ze\**\s*'
+
+	" If the declaration was not found in the implementation file, check
+	" the header.
+	if !line_found && expand('%:e') == 'm'
+		let header_path = expand('%:p:r').'.h'
+		if filereadable(header_path)
+			for line in readfile(header_path)
+				if line =~ '^\s*\(IBOutlet\)\=\s*\k*\s*\ze\**\s*'.a:var.'\s*'
+					return matchstr(line, matchstr)
+				endif
+			endfor
+			return ''
+		endif
+	endif
+
+	return matchstr(getline(line_found), matchstr.a:var)
+endf
+
+fun s:SearchList(list, regex)
+	for line in a:list
+		if line =~ a:regex
+			return line
+		endif
+	endfor
+	return ''
 endf
 
 " Returns the method name, ready to be searched by grep.
@@ -158,7 +186,7 @@ fun s:GetMethodName(lnum, col, base)
 		let method = matchstr(line, '\%'.col.'c.\{-}\ze]').base
 		return substitute(method, '\v\k+:\zs.{-}\ze(\s*\k+:|'.base.'$)', '[^:]*', 'g')
 	else
-		return matchstr(line, '\%'.col.'c\k\+\s*').a:base
+		return a:base
 	endif
 endf
 

@@ -1,5 +1,7 @@
 " File: cocoa.vim
 " Author: Michael Sanders msanders [at] gmail [dot] com
+" Version: 0.2
+
 if exists('s:did_cocoa') || &cp || version < 700
 	finish
 endif
@@ -12,5 +14,5 @@ au FileType objc ru after/syntax/objc_enhanced.vim
 			\| let b:match_words = '@\(implementation\|interface\):@end'
 			\| setl inc=^\s*#\s*import omnifunc=objc#cocoacomplete#Complete
 			\| if globpath(expand('<afile>:p:h'), '*.xcodeproj') != '' |
-			\  setl makeprg=open\ -a\ xcode\ &&\ osascript\ -e\ 'tell\ app\ \"Xcode\"\ to\ build'
+				\  setl makeprg=open\ -a\ xcode\ &&\ osascript\ -e\ 'tell\ app\ \"Xcode\"'\ -e\ 'build'\ -e\ 'launch'\ -e\ 'end\ tell'
 			\| endif

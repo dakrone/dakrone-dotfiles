@@ -1,7 +1,9 @@
 " File:         objc#man.vim (part of the cocoa.vim plugin)
 " Author:       Michael Sanders (msanders42 [at] gmail [dot] com)
 " Description:  Allows you to look up Cocoa API docs in Vim.
-" Last Updated: June 12, 2009
+" Last Updated: June 30, 2009
+" NOTE:         See http://mymacinations.com/2008/02/06/changing-the-systems-default-settings-for-html-files-safe/
+"               for removing the annoying security alert in Leopard.
 
 " Return all matches in for ":CocoaDoc <tab>" sorted by length.
 fun objc#man#Completion(ArgLead, CmdLine, CursorPos)
@@ -20,7 +22,7 @@ endfor
 let s:docset_cmd = '/Developer/usr/bin/docsetutil search -skip-text -query '
 
 fun s:OpenFile(file)
-	if a:file =~ '/usr/.\{-}/man/'
+	if a:file =~ '/.*/man/'
 		exe ':!'.substitute(&kp, '^man -s', 'man', '').' '.a:file
 	else
 		" /usr/bin/open strips the #fragments in file:// URLs, which we need,
@@ -30,7 +32,13 @@ fun s:OpenFile(file)
 endf
 
 fun objc#man#ShowDoc(...)
-	let word = a:0 ? a:1 : expand('<cword>')
+	let word = a:0 ? a:1 : matchstr(getline('.'), '\<\w*\%'.col('.').'c\w\+:\=')
+
+	" Look up the whole method if it takes multiple arguments.
+	if !a:0 && word[len(word) - 1] == ':'
+		let word = s:GetMethodName()
+	endif
+
 	if word == ''
 		if !a:0 " Mimic K if using it as such
 			echoh ErrorMsg
@@ -72,6 +80,7 @@ fun objc#man#ShowDoc(...)
 	if len(references) == 1
 		return s:OpenFile(keys(references)[0])
 	elseif !empty(references)
+		echoh ModeMsg | echo word | echoh None
 		return s:ChooseFrom(references)
 	else
 		echoh WarningMsg
@@ -106,5 +115,46 @@ fun AllKeysEqual(list, key, item)
 		endif
 	endfor
 	return 1
+endf
+
+fun s:GetMethodName()
+	let pos = [line('.'), col('.')]
+	let startpos = searchpos('\v^\s*-.{-}\w+:|\[\s*\w+\s+\w+:|\]\s*\w+:', 'cbW')
+
+	" Method declaration (- (foo) bar:)
+	if getline(startpos[0]) =~ '^\s*-.\{-}\w\+:'
+		let endpos = searchpos('{', 'W')
+	" Message inside brackets ([foo bar: baz])
+	else
+		let endpos = searchpairpos('\[', '', '\]', 'W')
+	endif
+	call cursor(pos)
+
+	if startpos[0] == 0 || endpos[0] == 0 | return '' | endif
+	let lines = getline(startpos[0], endpos[0])
+
+	let lines[0] = strpart(lines[0], startpos[1] - 1)
+	let lines[-1] = strpart(lines[-1], 0, endpos[1])
+
+	" Ignore outer brackets
+	let message = substitute(join(lines), '^\[\|\]$', '', '')
+	" Ignore nested messages [...]
+	let message = substitute(message, '\[.\{-}\]', '', 'g')
+	" Ignore strings (could contain colons)
+	let message = substitute(message, '".\{-}"', '', 'g')
+	" Ignore @selector(...)
+	let message = substitute(message, '@selector(.\{-})', '', 'g')
+
+	return s:MatchAll(message, '\w\+:')
+endf
+
+fun s:MatchAll(haystack, needle)
+    let matches = matchstr(a:haystack, a:needle)
+    let index = matchend(a:haystack, a:needle)
+    while index != -1
+		let matches .= matchstr(a:haystack, a:needle, index + 1)
+        let index = matchend(a:haystack, a:needle, index + 1)
+    endw
+    return matches
 endf
 " vim:noet:sw=4:ts=4:ft=vim

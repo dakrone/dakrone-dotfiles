@@ -2,7 +2,7 @@
 map!  
 " ---------------------------------------------------------------------------
 " first the disabled features due to security concerns
-set modelines=0               " no modelines [http://www.guninski.com/vim1.html]
+set modelines=0                  " no modelines [http://www.guninski.com/vim1.html]
 let g:secure_modelines_verbose=0 " securemodelines vimscript
 let g:secure_modelines_modelines = 15 " 15 available modelines
 
@@ -16,20 +16,20 @@ set number                    " line numbers
 set hidden                    " allow edit buffers to be hidden
 set noautowrite               " don't automagically write on :next
 set lazyredraw                " don't redraw when don't have to
-set showmode
+set showmode                  " show the mode all the time
 set showcmd                   " Show us the command we're typing
 set nocompatible              " vim, not vi
 set autoindent smartindent    " auto/smart indent
 set expandtab                 " expand tabs to spaces
 set smarttab                  " tab and backspace are smart
 set tabstop=6                 " 6 spaces
-set shiftwidth=6
+set shiftwidth=6              " shift width
 set scrolloff=3               " keep at least 3 lines above/below
 set sidescrolloff=5           " keep at least 5 lines left/right
-set backspace=indent,eol,start
+set backspace=indent,eol,start  " backspace over all kinds of things
 set showfulltag               " show full completion tags
 set noerrorbells              " no error bells please
-set linebreak
+set linebreak                 " wrap at 'breakat' instead of last char
 set tw=500                    " default textwidth is a max of 500
 set cmdheight=2               " command line two lines high
 set undolevels=1000           " 1000 undos
@@ -40,7 +40,7 @@ filetype on                   " Enable filetype detection
 filetype indent on            " Enable filetype-specific indenting
 filetype plugin on            " Enable filetype-specific plugins
 compiler ruby                 " Enable compiler support for ruby
-set wildmode=longest:full
+set wildmode=longest:full     " *wild* mode
 set wildignore+=*.o,*~,.lo    " ignore object files
 set wildmenu                  " menu has tab completion
 let maplocalleader=','        " all my macros start with ,
@@ -71,21 +71,24 @@ if !has("gui_running")
       " to change the really hard-to-read dark blue into a lighter shade.
       " Or; Use iterm with Tango colors
       "colorscheme ir_black_new     " only when I can change certain colors
-      colorscheme soso " only when I can change certain colors
+      colorscheme rdark
 end
 if has("gui_running")
       "colorscheme ir_black_new     " only when I can change certain colors
-      colorscheme lightcolors
-      set background=light
+      colorscheme rdark
+      let rdark_current_line=1  " highlight current line
+      set background=dark
       "set noantialias          " If I use ir_black_new, no antialiasing
-      set antialias
+      set noantialias
       set guioptions-=T        " no toolbar
       set guioptions-=l        " no left scrollbar
       set guioptions-=L        " no left scrollbar
       set guioptions-=r        " no right scrollbar
+      set guioptions-=R        " no right scrollbar
       set lines=49
       set columns=150
-      set gfn=Consolas:h11.0
+      set transparency=2       " 2% transparency
+      set gfn=Monaco:h9.0
 end
 
 if exists('&t_SI')
@@ -180,14 +183,6 @@ let g:EclimBrowser='open'
 " Disable Eclim's taglisttoo because I use the regular taglist plugin
 let g:taglisttoo_disabled = 1
 
-" ---------------------------------------------------------------------------
-"  configure autoclose
-"  default to off, I'll turn it on if I want to
-let g:AutoCloseOn = 0
-"  default: {'(': ')', '{': '}', '[': ']', '"': '"', "'": "'"}
-"  but completing ' makes typing lisp really suck, so I take it out of the defaults
-let g:AutoClosePairs = {'(': ')', '{': '}', '[': ']', '"': '"'}
-
 
 " ---------------------------------------------------------------------------
 "  configuration for fuzzyfinder
@@ -248,7 +243,7 @@ set ignorecase                " search ignoring case
 set smartcase                 " Ignore case when searching lowercase
 set hlsearch                  " highlight the search
 set showmatch                 " show matching bracket
-set diffopt=filler,iwhite       " ignore all whitespace and sync
+set diffopt=filler,iwhite     " ignore all whitespace and sync
 
 " ---------------------------------------------------------------------------
 "  mouse stuffs
@@ -288,6 +283,8 @@ autocmd FileType php set omnifunc=phpcomplete#CompletePHP
 autocmd FileType c set omnifunc=ccomplete#Complete
 autocmd FileType ruby,eruby set omnifunc=rubycomplete#Complete
 autocmd FileType ruby,eruby let g:rubycomplete_rails = 1  " Rails support
+au FileType ruby let g:ctk_ext_var = 'rb'
+au FileType ruby SetCompilerInfo ruby title='Ruby 1.9.1 - Matz' cmd='ruby $flags $input' run='ruby $input' flags='-wc' debug_flags='-rdebug $flags'
 
 " I want Ri access *all* the time.
 source ~/.vim/ftplugin/ri.vim
@@ -328,7 +325,7 @@ nmap <LocalLeader>tt :Tlist<cr>
 " ,nn will toggle NERDTree on and off
 nmap <LocalLeader>n :NERDTreeToggle<cr>
 " When I'm pretty sure that the first suggestion is correct
-map <LocalLeader>r 1z=
+map <LocalLeader>sr 1z=
 " q: sucks
 nmap q: :q
 " If I forgot to sudo vim a file, do that with :w!!
@@ -340,9 +337,57 @@ imap jj <Esc>
 " When I use ,sf - return to syntax folding with a big foldcolumn
 nmap <LocalLeader>sf :set foldcolumn=6 foldmethod=syntax<cr>
 " ruby helpers
-iab rbang #!/usr/bin/env ruby<cr># vim: set ts=2 sw=2 filetype=Ruby<cr>
-iab idef def initialize
-iab sopl System.out.println(
+iab rbang #!/usr/bin/env ruby -w<cr> encoding: UTF-8<cr>
+
+" Remove the '# => ' lines that xmpfilter adds
+function! RemoveRubyEval() range
+  let begv = a:firstline
+  let endv = a:lastline
+  normal Hmt
+  set lz
+  execute ":" . begv . "," . endv . 's/\s*# \(=>\|!!\).*$//e'
+  normal 'tzt`s
+  set nolz
+  redraw
+endfunction
+
+" Compile Ruby code after writing (show warnings/errors)
+function! Compile()
+  " don't compile if it's an Rspec file (extra warnings)
+  let name = expand('<afile>')
+  if name !~ 'spec'
+    CC
+  endif
+endfunction
+"autocmd BufWritePost *.rb call Compile()
+
+" Add # => markers
+" ,m for "Add mark"
+vmap <silent> <LocalLeader>m !xmpfilter -m<cr>
+nmap <silent> <LocalLeader>m V<Leader>e
+
+" Remove # => markers
+" ,r for "Remove mark"
+vmap <silent> <LocalLeader>r ms:call RemoveRubyEval()<CR>
+nmap <silent> <LocalLeader>r V<LocalLeader>r
+
+" plain annotations
+" ,e for "Eval marks"
+map <silent> <LocalLeader>e !xmpfilter -a<cr>
+nmap <silent> <LocalLeader>e V<LocalLeader>e
+
+" Test::Unit assertions; use -s to generate RSpec expectations instead
+" ,s for "Spec generation"
+map <silent> <LocalLeader>s !xmpfilter -s<cr>
+nmap <silent> <LocalLeader>s V<LocalLeader>s
+
+" Annotate the full buffer
+" I actually prefer ggVG to %; it's a sort of poor man's visual bell 
+" ,fe for "Full Eval"
+nmap <silent> <LocalLeader>fe mzggVG!xmpfilter -a<cr>'z
+
+" assertions
+nmap <silent> <S-F11> mzggVG!xmpfilter -u<cr>'z
 
 " Ack helpers
 " replaced by this vimscript: http://www.vim.org/scripts/script.php?script_id=2572
@@ -355,6 +400,8 @@ iab sopl System.out.println(
 "endfunction
 
 "command! -nargs=* -complete=file Ack call Ack(<q-args>)
+
+
 
 
 " ---------------------------------------------------------------------------
@@ -411,6 +458,4 @@ if has('autocmd')
       " improved formatting for markdown
       " http://plasticboy.com/markdown-vim-mode/
       autocmd BufRead *.mkd  set ai formatoptions=tcroqn2 comments=n:>
-
-      "autocmd BufRead * <Leader>f
 endif

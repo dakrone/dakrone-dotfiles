@@ -2,6 +2,8 @@ require 'rubygems'
 require 'wirble'
 require 'pp'
 require 'sketches'
+require 'looksee/shortcuts'
+
 Wirble.init
 Wirble.colorize
 

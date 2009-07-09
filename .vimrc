@@ -161,6 +161,7 @@ let ri_prompt_complete='on'
 
 " Supertab settings
 " supertab + eclim == java win
+let g:SuperTabDefaultCompletionType = "<c-x><c-i>"
 let g:SuperTabDefaultCompletionTypeDiscovery = [
                   \ "&completefunc:<c-x><c-u>",
                   \ "&omnifunc:<c-x><c-o>",
@@ -186,12 +187,14 @@ let g:taglisttoo_disabled = 1
 
 " ---------------------------------------------------------------------------
 "  configuration for fuzzyfinder
-" find in buffer is ,fb
-nmap <LocalLeader>fb :FuzzyFinderBuffer<CR>
-" find in file is ,ff
-nmap <LocalLeader>ff :FuzzyFinderFile<CR>
-" find in tag is ,ft
-nmap <LocalLeader>ft :FuzzyFinderTag<CR>
+" find in buffer is ,b
+nmap <LocalLeader>b :FuzzyFinderBuffer<CR>
+" see: http://github.com/viperinthought/fuzzyfinder_textmate/
+nmap <LocalLeader>f :FuzzyFinderTextMate<CR>
+" find in file is ,F
+nmap <LocalLeader>F :FuzzyFinderFile<CR>
+" find in tag is ,t
+nmap <LocalLeader>t :FuzzyFinderTag<CR>
 
 
 " ---------------------------------------------------------------------------

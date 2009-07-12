@@ -286,8 +286,9 @@ autocmd FileType php set omnifunc=phpcomplete#CompletePHP
 autocmd FileType c set omnifunc=ccomplete#Complete
 autocmd FileType ruby,eruby set omnifunc=rubycomplete#Complete
 autocmd FileType ruby,eruby let g:rubycomplete_rails = 1  " Rails support
-au FileType ruby let g:ctk_ext_var = 'rb'
-au FileType ruby SetCompilerInfo ruby title='Ruby 1.9.1 - Matz' cmd='ruby $flags $input' run='ruby $input' flags='-wc' debug_flags='-rdebug $flags'
+" put these lines in ~/.vim/.compiler_info
+"au FileType ruby let b:{g:ctk_ext_var} = 'rb'
+"au FileType ruby SetCompilerInfo ruby title='Ruby 1.9.1 - Matz' cmd='ruby $flags $input' run='ruby $input' flags='-wc' debug_flags='-rdebug $flags'
 
 " I want Ri access *all* the time.
 source ~/.vim/ftplugin/ri.vim
@@ -362,7 +363,7 @@ function! Compile()
     CC
   endif
 endfunction
-"autocmd BufWritePost *.rb call Compile()
+autocmd BufWritePost *.rb call Compile()
 
 " Add # => markers
 " ,m for "Add mark"

@@ -526,7 +526,6 @@ csupport.txt	csupport.txt	/*csupport.txt*
 ctk	ctk.txt	/*ctk*
 ctk-auto-rename	ctk.txt	/*ctk-auto-rename*
 ctk-autofname	ctk.txt	/*ctk-autofname*
-ctk-child-tag	ctk.txt	/*ctk-child-tag*
 ctk-cinfo-file	ctk.txt	/*ctk-cinfo-file*
 ctk-cinfo-tag	ctk.txt	/*ctk-cinfo-tag*
 ctk-cmd-type	ctk.txt	/*ctk-cmd-type*
@@ -545,6 +544,7 @@ ctk-modeline	ctk.txt	/*ctk-modeline*
 ctk-modeline-format	ctk.txt	/*ctk-modeline-format*
 ctk-name-tag	ctk.txt	/*ctk-name-tag*
 ctk-options	ctk.txt	/*ctk-options*
+ctk-placeholder	ctk.txt	/*ctk-placeholder*
 ctk-title-tag	ctk.txt	/*ctk-title-tag*
 ctk-usage	ctk.txt	/*ctk-usage*
 ctk.txt	ctk.txt	/*ctk.txt*

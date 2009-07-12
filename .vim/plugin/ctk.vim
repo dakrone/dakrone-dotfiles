@@ -43,28 +43,31 @@ if !exists('g:loaded_ctk')
     delfunc s:defopt
 
     " commands {{{2
-    command! -bar StartCTK call s:start_ctk()
+    command! -bar -bang StartCTK call s:start_ctk('<bang>')
+    command! -bar RefreshCTK call s:stop_ctk() | call s:start_ctk('!')
     command! -bar StopCTK call s:stop_ctk()
     command! -bar EditCompilerInfo exec 'drop '.globpath(&rtp, g:ctk_cinfo_file)
 
-    command! -nargs=* -complete=customlist,s:info_name_complete -bar -count=0 
-	    \ ListCompiler call s:ctk_call('s:list_compiler', [<q-args>, <count>])
+    command! -bar -nargs=1 SetExtensionName let b:{g:ctk_ext_var} = <q-args>
     command! -nargs=* -complete=custom,s:info_item_complete -bang
-	    \ SetCompilerInfo call Set_compiler_info(<q-args>, '<bang>')
-    command! -nargs=+ -complete=custom,s:info_item_complete
-            \ SetDefaultInfo call Set_default_info(<q-args>)
+	    \ SetCompilerInfo call s:call('s:set_compiler_info', [<q-args>, '<bang>'])
+    command! -nargs=+ -complete=custom,s:info_item_complete -bang
+            \ SetDefaultInfo call s:call('s:set_default_info', [<q-args>, '<bang>'])
+
+    command! -nargs=* -complete=customlist,s:info_name_complete -bar -count=0 
+	    \ ListCompiler call s:find_and_call('s:list_compiler', [<q-args>, <count>])
     command! -nargs=+ -complete=custom,s:info_item_complete -count=0
-	    \ AddFlags call s:ctk_call('s:add_flags', [<q-args>, <count>])
+	    \ AddFlags call s:find_and_call('s:add_flags', [<q-args>, <count>])
 
-    command! -nargs=? -bar -bang -count=0 CC call s:ctk_call('s:compile',
+    command! -nargs=? -bar -bang -count=0 CC call s:find_and_call('s:compile',
                 \ [<count>, <q-args>, <q-bang>])
-    command! -nargs=? -bar -bang -count=0 RUN call s:ctk_call('s:run',
+    command! -nargs=? -bar -bang -count=0 RUN call s:find_and_call('s:run',
                 \ [<count>, <q-args>, <q-bang>])
 
-    map <silent> <Plug>CTK_compile :<C-U>exec v:count.'CC'<CR>
-    imap <silent> <Plug>CTK_compile <ESC>:<C-U>exec v:count.'CC'<CR>
-    map <silent> <Plug>CTK_run :<C-U>exec v:count.'RUN'<CR>
-    imap <silent> <Plug>CTK_run <ESC>:<C-U>exec v:count.'RUN'<CR>
+    map <silent> <Plug>CTK_compile :<C-U>exec v:count.'CC!'<CR>
+    imap <silent> <Plug>CTK_compile <ESC>:<C-U>exec v:count.'CC!'<CR>
+    map <silent> <Plug>CTK_run :<C-U>exec v:count.'RUN!'<CR>
+    imap <silent> <Plug>CTK_run <ESC>:<C-U>exec v:count.'RUN!'<CR>
 
     " menus {{{2
 
@@ -79,7 +82,7 @@ if !exists('g:loaded_ctk')
     " small functions {{{2
     let s:sfile = expand('<sfile>')
 
-    function! s:start_ctk() " {{{3
+    function! s:start_ctk(bang) " {{{3
         augroup ctk_autocmds
             au!
 
@@ -89,89 +92,85 @@ if !exists('g:loaded_ctk')
             au FileType * call s:delete_ci()
             exec 'run '.g:ctk_cinfo_file
             au FileType * call s:set_fname()
-
-            au FuncUndefined Set_compiler_info,Set_default_info
-                        \ exec 'so '.s:sfile
         augroup END
+
         map gc <Plug>CTK_compile
         map gC <Plug>CTK_run
+
+        if a:bang == '!'
+            unlet! b:ctk_fname
+            filetype detect
+        endif
     endfunction
+
     function! s:stop_ctk() " {{{3
+        unlet! b:ctk_fname
         call s:delete_ci()
-        unlet! b:ctk_fname b:{ctk_ext_var}
         au! ctk_autocmd
         unmap gc
         unmap gC
     endfunction
-    function! s:ctk_call(funcname, args) " {{{3
-        if s:find_source()
-            call call(a:funcname, a:args)
-        else
-            echohl Error
-            echom "command can't use, because ctk isn't avaliable"
-            echohl None
+
+    function! s:call(funcname, args) " {{{3
+        if !exists('s:load_all') || !s:load_all
+            exec 'so '.s:sfile
         endif
+
+        return call(a:funcname, a:args)
     endfunction
-    function! s:need_update() " {{{3
-        return !exists('b:ctk_fname') || b:ctk_fname[1] != &ft
+
+    function! s:find_and_call(funcname, args) " {{{3
+        let cur_winnr = winnr()
+
+        while 1
+            if exists('b:compiler_info') 
+                return s:call(a:funcname, a:args)
+            endif
+            silent! wincmd w
+            if winnr() == cur_winnr | break | endif
+        endwhile
+
+        echohl Error
+        echom "command can't use, because ctk isn't avaliable"
+        echohl None
     endfunction
+
     function! s:delete_ci() " {{{3
-        if s:need_update()
-            unlet! b:{g:ctk_ext_var}
-            if exists('b:compiler_info')
-                for info in get(b:compiler_info, 'list', [])
-                    silent! exec info.unmap
-                endfor
-                unlet b:compiler_info
-            endif
+        unlet! b:{g:ctk_ext_var}
+        if exists('b:compiler_info')
+            for info in get(b:compiler_info, 'list', [])
+                silent! exec info.unmap
+            endfor
+            unlet b:compiler_info
         endif
     endfunction
+
     function! s:set_fname() " {{{3
-        if g:ctk_autofname == ''
-            return
-        endif
-
-        if exists('b:ctk_fname')
-            " if the name is autocreated and now we don't have a filetype,
-            " delete the name
-            if !b:ctk_fname[2] && (&ft == '' || !exists('b:compiler_info'))
-                silent! noau 0file | unlet b:ctk_fname
-
-            " if we have a filename and it isn't same as ctk_fname, set it to
-            " user-defined (that is, the name is chnanged by user)
-            elseif b:ctk_fname[0] != expand('%:p') || b:ctk_fname[2]
-                let b:ctk_fname = [expand('%:p'), &ft, 1]
-
-            " otherwise, call set_filename to set autocreated name
-            elseif &ft !=? 'decho' && b:ctk_fname[1] != &ft
-                call s:set_filename()
-            endif
-            return
-        endif
+        if g:ctk_autofname == '' | return | endif
 
         " if we really have a filetype and this type isn't our debug window's
         " and we don't have a filename, and we have a compiler info, set auto
         " name.
-        if &ft != '' && &ft !=? 'decho' && expand('%') == ''
-                    \ && exists('b:compiler_info')
+        if !exists('b:ctk_fname')
+            return &ft != '' && &ft !=? 'decho' && expand('%') == ''
+                    \ && exists('b:compiler_info') ? s:set_filename() : 0
+        endif
+
+        " if the name is autocreated and now we don't have a filetype,
+        " delete the name
+        if !b:ctk_fname[2] && (&ft == '' || !exists('b:compiler_info'))
+            silent! noau 0file | unlet b:ctk_fname
+
+        " if we have a filename and it isn't same as ctk_fname, set it to
+        " user-defined (that is, the name is chnanged by user)
+        elseif b:ctk_fname[0] != expand('%:p') || b:ctk_fname[2]
+            let b:ctk_fname = [expand('%:p'), &ft, 1]
+
+        " otherwise, call set_filename to set autocreated name
+        elseif &ft !=? 'decho' && b:ctk_fname[1] != &ft
             call s:set_filename()
         endif
     endfunction
-function! s:find_source() " {{{3
-"    call Dfunc('s:find_source()')
-    let cur_winnr = winnr()
-
-    while 1
-        if exists(s:ci_name) 
-"            call Dret('s:find_source : success')
-            return 1 
-        endif
-        wincmd w
-        if winnr() == cur_winnr | break | endif
-    endwhile
-    call s:echoerr("Can't Find Source Window!")
-"    call Dret('s:find_source : fail')
-endfunction
 
 function! s:info_name_complete(A, L, P) " {{{3
     if !exists(s:ci_name) | return [] | endif
@@ -183,6 +182,7 @@ function! s:info_name_complete(A, L, P) " {{{3
     return sort(filter(list + ['all', 'default', 'current'],
                 \ 'v:val =~ '.pat))
 endfunction
+
 function! s:info_item_complete(A, L, P) " {{{3
     return "asm_\ncc\ncmd\ndebug_\nflags\n".
                 \ "input\noutput\nrun\ntitle"
@@ -195,6 +195,8 @@ endfunction " }}}3
     unlet s:cpo_save
     finish
 endif
+
+let s:load_all = 1
 
 " }}}1
 " some inner variables {{{1
@@ -212,8 +214,7 @@ let s:def_attr = {'cmd': ':echo "Done Nothing"', 'run': ':echo "Done Nothing"',
 
 " patterns {{{2
 
-let s:pat_cmdtag = '$\(\l\+\)'
-let s:pat_cmdtag_quote = '${q-\(\l\+\)}'
+let s:pat_cmdtag = '\v\$(\l+)|\$\{(q-)=(\l+)}'
 let s:pat_com = ':\zs[^,]\+'
 let s:pat_com_begin = 's.\=:\zs[^,]\+\ze'
 let s:pat_com_end = 'e.\=:\zs[^,]\+\ze'
@@ -227,8 +228,6 @@ let s:pat_info ='\v^\s*(.{-})%(\s+(.{-})\s*)=$'
 let s:pat_info_var = '\v(\w+)\s*(\+)=\=\s*(\S)(.{-})\3'
 let s:pat_modeline = '\v<cc%(-([^:]*))=:\s*(.*)'
 let s:pat_shellcmdtitle = '^!\=\zs.\{-}\ze\(\s\|$\)'
-
-" }}}2
 
 " ============================================================
 " utility functions {{{1
@@ -309,6 +308,22 @@ function! s:sub_info(info) " {{{2
     let a:info[submatch(1)] = val.submatch(4)
 endfunction
 
+    function! s:need_update() " {{{2
+        return !exists('b:ctk_fname') || b:ctk_fname[1] != &ft
+    endfunction
+
+function! s:expand_var(entry, default) " {{{2
+    let key = submatch(1) == '' ? submatch(3) : submatch(1)
+    let val = s:get_entry_val(a:default ? '' : a:entry, key, submatch(0))
+
+    if submatch(2) == 'q-'
+        let escape_val = escape(val, '\"')
+        return a:default ? escape_val : '"'.escape_val.'"'
+    endif
+
+    return val
+endfunction
+
 function! s:expand_fname(fname, mode) " {{{2
 "    call Dfunc('s:expand_fname(fname = '.a:fname.', mode = '.a:mode.')')
     let fname = expand(a:fname)
@@ -324,10 +339,26 @@ function! s:expand_fname(fname, mode) " {{{2
 
 "    call Dret('s:expand_fname : '.fname)
     return fname
+endfunction
+
+function! s:process_placeholder(cmd, entry) " {{{2
+"    call Dfunc('s:process_placeholder(cmd = '.a:cmd.', entry = '.a:entry.')')
+    let cmd = a:cmd
+
+    if a:entry != ''
+        let cmd = substitute(cmd, s:pat_cmdtag, '\=s:expand_var(a:entry, 0)', 'g')
+    endif
+    let cmd = substitute(cmd, s:pat_cmdtag, '\=s:expand_var(a:entry, 1)', 'g')
+    let cmd = substitute(cmd, s:pat_filespec_nonescape,
+                \ '\=s:expand_fname(submatch(0), cmd[0])', 'g')
+    let cmd = substitute(cmd, s:pat_filespec_escape, '', 'g')
+
+"    call Dret('s:process_placeholder : '.cmd)
+    return cmd
 endfunction " }}}2
 
 " ============================================================
-function! Set_compiler_info(cmdarg, bang) " {{{1
+function! s:set_compiler_info(cmdarg, bang) " {{{1
     if !s:need_update() | return | endif
 "    call Dfunc('s:set_compiler_info(cmdarg = "'.a:cmdarg.'")')
     if !exists(s:ci_name)
@@ -403,14 +434,16 @@ function! Set_compiler_info(cmdarg, bang) " {{{1
 "    call Dret('s:set_compiler_info')
 endfunction
 
-function! Set_default_info(cmdarg) " {{{1
+function! s:set_default_info(cmdarg, bang) " {{{1
     if !s:need_update() | return | endif
 "    call Dfunc('s:set_default_info(cmdarg = "'.a:cmdarg.'")')
-    let def_info = {}
     if !exists(s:ci_name)
         let b:{s:ci} = {}
     endif
-    let b:{s:ci}.default = def_info
+    if a:bang == '!' || !has_key(b:{s:ci}, 'default')
+        let b:{s:ci}.default = {}
+    endif
+    let def_info = b:{s:ci}.default
 
     call substitute(a:cmdarg, s:pat_info_var, '\=s:sub_info(def_info)', 'g')
 
@@ -425,8 +458,9 @@ endfunction
 function! s:compile(count, entry, bang) " {{{1
     " find source buffer, and save it. if failed (return nonzero), echo
     " message and return 1 (failed, no use in this version)
-    if !s:find_source() || !s:save_source() ||
-                \ a:count < 0 || a:count > len(b:{s:ci}.list)
+    " NOTE: we find source in s:find_and_call() function, so we needn't find source
+    " again. 
+    if !s:save_source() || a:count < 0 || a:count > len(b:{s:ci}.list)
         redraw | echo 'Nothing Done'
         return 1
     endif
@@ -435,7 +469,7 @@ function! s:compile(count, entry, bang) " {{{1
 
     " init variables, and make "cur_info" dict.
     let ci = b:{s:ci}
-    if a:bang | silent! unlet ci.cur_idx ci.cur_entry | endif
+    if a:bang == '!' | silent! unlet ci.cur_idx ci.cur_entry | endif
     let ci.cur_idx = a:count == 0 ? get(ci, 'cur_idx', 0) : a:count - 1
     let ci.cur_entry = a:entry == '' ? get(ci, 'cur_entry', '') : a:entry
     call s:make_cur_info(ci.list[ci.cur_idx])
@@ -447,7 +481,7 @@ function! s:compile(count, entry, bang) " {{{1
     let msg = 'Compiling... using '.
                 \ s:get_entry_val(ci.cur_entry, 'title', ci.cur_info.name)
     let cmd = s:get_entry_val(ci.cur_entry, 'cmd', '')
-    let cmd = s:make_cmd(cmd, ci.cur_entry)
+    let cmd = s:make_cmd(cmd, ci.cur_entry, 1)
     let res = s:exec_cmd(cmd)
     let cfile = [msg, cmd, ''] + split(res, "\<NL>")
 
@@ -477,19 +511,34 @@ function! s:compile(count, entry, bang) " {{{1
 endfunction
 
 function! s:run(count, entry, bang) " {{{1
-    if !s:find_source() | return | endif
     let bufnr = bufnr('%')
-    if (a:bang || &modified || !has_key(b:{s:ci}, 'cur_info')
-                \ || b:{s:ci}.cur_idx != (a:count - 1)
-                \ ) && s:compile(a:count, a:entry, a:bang)
-        return 1
+
+    " if the saved index and entry is incorrect. and we lack cur_info or
+    " cur_stat, and the source code file is newer than program file.  do
+    " compiling work.
+    if (a:bang == '!' && &mod)
+                \ || !has_key(b:{s:ci}, 'cur_entry')
+                \ || !has_key(b:{s:ci}, 'cur_idx')
+                \ || !has_key(b:{s:ci}, 'cur_info')
+                \ || !has_key(b:{s:ci}, 'cur_stat')
+                \ 
+                \ || (a:count != 0 && b:{s:ci}.cur_idx != a:count - 1)
+                \ || b:{s:ci}.cur_entry != a:entry
+                \
+                \ || (getftime(b:{s:ci}.cur_stat.input)
+                \ > getftime(b:{s:ci}.cur_stat.output))
+
+"        call Decho('>> s:run need re-compile...')
+"        call Decho('>> '.string(filter(copy(b:{s:ci}), 'v:key =~ "^cur_"')))
+        if s:compile(a:count, a:entry, a:bang) | return 1 | endif
+"    else | call Decho(">> s:run needn't re-compile.")
     endif
 "    call Dfunc('s:run(count = '.a:count.', entry = '.a:entry.
                 \ ', bang = '.a:bang.')')
 
     exec bufwinnr(bufnr).'wincmd w'
 
-    let cmd = s:make_cmd(s:get_entry_val(a:entry, 'run', ''), a:entry)
+    let cmd = s:make_cmd(s:get_entry_val(a:entry, 'run', ''), a:entry, 0)
     if cmd[0] != ':'
         let cmd = cmd[0] == '!' ? cmd[1:] : cmd
         if g:ctk_execprg != ''
@@ -517,8 +566,6 @@ function! s:run(count, entry, bang) " {{{1
 endfunction
 
 function! s:add_flags(flags, count) " {{{1
-    if !s:find_source() | return | endif
-
     if a:count > 0 && a:count <= len(b:{s:ci}.list)
         let compiler = '-'.b:ctk.info[a:count - 1].name
     else
@@ -543,7 +590,9 @@ function! s:set_filename() " {{{1
     if exists('b:'.g:ctk_ext_var) | let ext = b:{g:ctk_ext_var}
     elseif &sua != '' | let ext = &sua[1:]
     elseif &ft != '' | let ext = &ft
-    else | return
+    else 
+        let b:ctk_fname = [expand('%:p'), &ft, 0] 
+        return
     endif
 
 "    call Decho('ext = "'.ext.'"')
@@ -584,7 +633,6 @@ function! s:set_filename() " {{{1
 endfunction
 
 function! s:list_compiler(name, idx) " {{{1
-    if !s:find_source() | return | endif
     " offer index, just show the speciafied info
     if a:0 != 0 && a:1 != 0
         call s:show_list(b:{s:ci}.list[a:1])
@@ -656,7 +704,10 @@ function! s:make_cur_info(info) " {{{1
     for var in ['cmd', 'run', 'un']
         silent! unlet! cur_info[var.'map']
     endfor
+
+    " now make cur_info and cur_stat (it's for s:run)
     let b:{s:ci}.cur_info = cur_info
+    let b:{s:ci}.cur_stat = {}
 
     if exists('b:ctk_fname') && !b:ctk_fname[2]
 "        call Decho('filename is an autogenerated name, use defoutput')
@@ -678,31 +729,28 @@ function! s:make_cur_info(info) " {{{1
 "    call Dret('s:set_cur_info : '.string(cur_info))
 endfunction
 
-function! s:make_cmd(cmd, entry) " {{{1
+function! s:make_cmd(cmd, entry, for_compile) " {{{1
     if !has_key(b:{s:ci}, 'cur_info') | return | endif
-"    call Dfunc('s:make_cmd(cmd = "'.a:cmd.'", entry = "'.a:entry.'"')
+"    call Dfunc('s:make_cmd(cmd = "'.a:cmd.'", entry = "'.a:entry.'")')
 
-    let cmd_get_entry = 's:get_entry_val(a:entry, submatch(1), submatch(0))'
-    let cmd_get_default = 's:get_entry_val("", submatch(1), submatch(0))'
-    " replace cmdtags and filename
-    let cmd = substitute(a:cmd, s:pat_cmdtag, '\='.cmd_get_entry, 'g')
-    let cmd = substitute(cmd, s:pat_cmdtag, '\='.cmd_get_default, 'g')
-    let cmd = substitute(cmd, s:pat_cmdtag_quote, "\\='\"'.escape(".
-                \ cmd_get_entry.", '\\\"').'\"'", 'g')
-    let cmd = substitute(cmd, s:pat_cmdtag, '\=escape('.
-                \ cmd_get_default.', ''\"'')', 'g')
-    let cmd = substitute(cmd, s:pat_filespec_nonescape,
-                \ '\=s:expand_fname(submatch(0), cmd[0])', 'g')
-    let cmd = substitute(cmd, s:pat_filespec_escape, '', 'g')
+    let cmd = s:process_placeholder(a:cmd, a:entry)
 
-    if cmd[0] !~ ':'
+    " prepare input and output for s:run()
+    if a:for_compile
+        for var in ['input', 'output']
+            let b:{s:ci}.cur_stat[var] = s:process_placeholder(s:get_entry_val(
+                        \ a:entry, var, ''), '')
+        endfor
+
+    " this is just for run
+    elseif cmd[0] !~ ':'
 "        call Decho('this is a executable cmd')
         let exe = matchstr(cmd, s:pat_shellcmdtitle)
 "        call Decho('cmd = '.cmd.', exe = '.exe)
 
         " on unix, the program must has "./" prefix if it's at current folder
-        if has('unix') && glob(exe) != '' && !executable(exe)
-                    \ && executable('./'.exe)
+        if has('unix') && exe[:1] != './'
+                    \ && glob(exe) != '' && executable('./'.exe)
             let cmd = './'.(cmd[0] == '!' ? cmd[1:] : cmd)
         endif
 

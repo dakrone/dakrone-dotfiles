@@ -10,24 +10,15 @@ let s:cpo_save = &cpo
 set cpo&vim
 
 function! ctk:split_open(fname) " {{{1
-    if bufwinnr(a:fname) == -1
+    if !bufexists(a:fname)
 	if exists('*fnameescape')
 	    let fname = fnameescape(a:fname)
 	else
 	    let fname = escape(a:fname, ' \|')
 	endif
-
-	" for redir in s:exec_cmd()
-	let output=''
-	redir END
+	redir => l:null
 	silent exec "sp " . fname
-	
-	" fix MiniBufExplorer bug
-	let nr = bufnr('^-MiniBufExplorer-$')
-
-	if nr != -1
-	    call setbufvar(nr, '&wfh', 1)
-	endif
+	redir END
     endif
     exec bufwinnr(a:fname).'wincmd w'
     let ar_save = &ar
@@ -38,19 +29,12 @@ endfunction
 
 " Common default info {{{1
 
-    au FileType c,cpp SetDefaultInfo
-	    \ cmd='!$cc $input $flags -o $output'
-	    \ run='!$output' input='%:.' output='%:t:r'
-	    \ asm_run=":call ctk:split_open(${q-output})"
-	    \ asm_output='$output.s'
-	    \ debug_run='!gdb -q $output'
-
-if has('unix')
-    au FileType c,cpp SetDefaultInfo asm_output='$output.s'
-else
-    au FileType c,cpp SetDefaultInfo asm_output='$output.asm'
-endif
-
+au FileType c,cpp SetDefaultInfo
+    	\ cmd='!$cc $input $flags -o $output'
+    	\ run='!$output' input='%:.' output='%:t:r'
+    	\ asm_run=":call ctk:split_open(${q-output})"
+	\ asm_output='$output.asm'
+    	\ debug_run='!gdb -q $output'
 
 " filetype C {{{1
 
@@ -81,16 +65,10 @@ au FileType cpp SetCompilerInfo vc++
     	\ asm_title='Microsoft VC++ to ASM'
     	\ asm_flags='/FAs $flags'
 
+au FileType ruby let b:{g:ctk_ext_var} = 'rb'
+au FileType ruby SetCompilerInfo ruby title='Ruby 1.9.1 - Matz' cmd='ruby $flags $input' run='ruby $input' flags='-wc' debug_flags='-rdebug $flags'
+
 " }}}1
-" filetype ruby {{{1
-
-au FileType ruby let g:{ctk_ext_var} = 'rb'
-au FileType ruby SetCompilerInfo ruby
-	    \ title='Ruby 1.9.1 - Matz'
-	    \ cmd='ruby $flags $input'
-	    \ run='ruby $input'
-	    \ flags='-wc' debug_flags='-rdebug $flags'
-
 " terminational works {{{1
 let &cpo = s:cpo_save
 unlet s:cpo_save " }}}1

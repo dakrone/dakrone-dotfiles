@@ -13,7 +13,7 @@ set ruler                     " show the line number on the bar
 set more                      " use more prompt
 set autoread                  " watch for file changes
 set number                    " line numbers
-set hidden                    " allow edit buffers to be hidden
+set nohidden                  " close the buffer when I close a tab (I use tabs more than buffers)
 set noautowrite               " don't automagically write on :next
 set lazyredraw                " don't redraw when don't have to
 set showmode                  " show the mode all the time
@@ -85,8 +85,8 @@ if has("gui_running")
       set guioptions-=L        " no left scrollbar
       set guioptions-=r        " no right scrollbar
       set guioptions-=R        " no right scrollbar
-      set lines=49
-      set columns=150
+      set lines=64
+      set columns=128
       set transparency=2       " 2% transparency
       set gfn=Monaco:h9.0
 end
@@ -368,7 +368,7 @@ autocmd BufWritePost *.rb call Compile()
 " Add # => markers
 " ,m for "Add mark"
 vmap <silent> <LocalLeader>m !xmpfilter -m<cr>
-nmap <silent> <LocalLeader>m V<Leader>e
+nmap <silent> <LocalLeader>m V<LocalLeader>e
 
 " Remove # => markers
 " ,r for "Remove mark"

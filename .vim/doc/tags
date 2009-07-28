@@ -76,7 +76,6 @@
 :BackTwitter	twitvim.txt	/*:BackTwitter*
 :BitLy	twitvim.txt	/*:BitLy*
 :BuildMethods	cocoa.txt	/*:BuildMethods*
-:CC	ctk.txt	/*:CC*
 :CPosttoTwitter	twitvim.txt	/*:CPosttoTwitter*
 :CVSEdit	vcscommand.txt	/*:CVSEdit*
 :CVSEditors	vcscommand.txt	/*:CVSEditors*
@@ -158,6 +157,7 @@
 :SendDMTwitter	twitvim.txt	/*:SendDMTwitter*
 :SetCompilerInfo	ctk.txt	/*:SetCompilerInfo*
 :SetDefaultInfo	ctk.txt	/*:SetDefaultInfo*
+:SetExtensionName	ctk.txt	/*:SetExtensionName*
 :Snipurl	twitvim.txt	/*:Snipurl*
 :StartCTK	ctk.txt	/*:StartCTK*
 :StopCTK	ctk.txt	/*:StopCTK*

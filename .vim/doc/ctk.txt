@@ -53,12 +53,14 @@ CTK commands		   					*ctk-commands*
 
 								   *:StartCTK*
 								    *:StopCTK*
-:StartCTK
+:StartCTK[!]
 :StopCTK
 		start to use CTK, or stop CTK. or you can use StartCTK to
 		refresh your cinfo file after you modified it.
 
-									 *:CC*
+		with '!', StartCTK will also reload and refresh current
+		compiler info.
+
 :[N]CC[!] {entry}
 		this command is used to invoke specified compiler. [N] is your
 		compiler index. you can see it in :ListCompiler command
@@ -70,10 +72,9 @@ CTK commands		   					*ctk-commands*
 		quickfix window will open if compiler return nonzero.
 		otherwise, the compiler output will display, if any.
 
-		if it has a bang and doesn't have an entry, it uses a empty
-		entry, that is, invoke "cmd" tag in your info line. if it
-		doesn't have a bang, it will invoke the entry you used last
-		time.
+		With [!] and you doesn't have an entry, it uses a empty entry,
+		that is, invoke "cmd" tag in your info line. and it invokes
+		the entry you used last time without [!].
 
 									*:RUN*
 :[N]RUN[!] {entry}
@@ -82,12 +83,15 @@ CTK commands		   					*ctk-commands*
 		the same with the ones when you invoke compiler, the compiler
 		will be invoked first to compile your code again.
 
+		[!] will pass to :CC, if need.
+
 			NOTE: if the compiler command is ":foobar" (that is,
 			      exec a Vim command) and it has some output, the
 			      Run command will be not executed. you should run
 			      :RUN again. if you don't want this side-effect.
 			      just use ':silent ....' in your compiler
 			      command.
+
 
 								   *:AddFlags*
 :AddFlags {flags}
@@ -108,20 +112,54 @@ CTK commands		   					*ctk-commands*
 :EditCompilerInfo
 		edit your cinfo file.
 
-							     *:SetDefaultInfo*
-:SetDefaultInfo {attr}="value" {attr2}=!value2! ...
+							   *:SetExtensionName*
+:SetExtensionName {name}
+		set the default extension name for specified filetype. ctk.vim
+		uses this to generate name for new buffer. put it into your
+		cinfo file. (with autocmd, e.g.: >
 
-		set default info for this file. add this command in your cinfo
-		file if this is your default value, or it will be dropped
+		    autocmd ruby SetExtensionName rb
+<
+		this will set ruby program's default extension name to 'rb',
+		so ctk.vim will generate name "noname.rb" for ruby file,
+		instead of "noname.ruby" (that's default, use 'filetype' as
+		extension name).
+
+
+							     *:SetDefaultInfo*
+:SetDefaultInfo[!] {attr}="value" {attr2}=!value2! ...
+
+		set default info for this filetype. add this command in your
+		cinfo file if this is your default value, or it won't be saved
 		after you leave Vim!
 
 		you can use anything to replace '"' or '!' to around values.
 
-							    *:SetCompilerInfo*
-:SetCompilerInfo {name} {attr}="value" {attr2}=!value2|
+		With [!] it delete the old default value of this buffer.
+		Without [!] it just modify (add or edit) the tags in current
+		default values.
 
+							    *:SetCompilerInfo*
+:SetCompilerInfo
+		just like :ListCompiler all, list all info lines of current
+		buffer.
+
+:SetCompilerInfo!
+		delete all info lines of current buffer.
+
+:SetCompilerInfo {name}
+		list compiler info of {name}, just like :ListCompiler {name}.
+
+:SetCompilerInfo! {name}
+		delete specified name from current buffer.
+
+:SetCompilerInfo {name} {attr}="value" {attr2}=!value2|
 		same as SetDefaultInfo. but this is for setting attributes for
 		specified compiler. see |ctk-set-compiler-info|
+
+:SetCompilerInfo! {name} {attr}="value" {attr2}=!value2|
+		same as SetCompilerInfo without [!] above, but delete the
+		specified compiler info first.
 
 
 							     *ctk-auto-rename*
@@ -139,6 +177,15 @@ current folder is $VIM, in this case program will be dropped to temporary
 folder).  the executable program will be named to the value of g:ctk_defoutput
 |ctk_defoutput|.
 
+ctk.vim will use several way to detect the extension name of your source.
+first it read the value of variable b:{g:ctk_ext_var}  |curly-braces-names|
+you can set this variable manually, or drop it into your cinfo file: >
+ autocmd FileType ruby let b:{g:ctk_ext_var} = 'rb'
+>
+or simply use SetExtensionName command (in cinfo file or manually): >
+ autocmd FileType ruby SetExtensionName rb
+<
+see |ctk-fileext-define| for details.
 
 								*ctk-modeline*
 
@@ -154,10 +201,10 @@ info line |:SetCompilerInfo|. you can use anything to replace "'", just like
 in SetCompilerInfo. |ctk-info-format|
 
 							 *ctk-modeline-format*
-the format of modeline is:
+the format of modeline is: >
 
- com-start cc[-compiler_name]: <tag> [+]= ?any thing? com-end ~
-
+ com-start cc[-compiler_name]: <tag> [+]= ?any thing? com-end
+<
 where com-start and com-end are the comment start sign and end sign, they can
 be empty. 'cc' is the signature of modeline, compiler_name is a specified
 compiler info line name. it's optional, and if you offer it, this modeline
@@ -215,35 +262,51 @@ before define your own compiler info in a new filetype, maybe you need add a
 "let" sentence (|:let|) to define the ext-name of your source code (e.g. "c"
 for c code, "cpp" for c++ code, and hs for haskell code, etc.):
 >
-		autocmd c let b:ft_ext = "c"
+		autocmd FileType c let b:ft_ext = "c"
 <
 ft_ext is the value of option ctk_ext_var. the better way is:
 >
-		autocmd c let b{g:ctk_ext_var} = "c"
+		autocmd FileType c let b{g:ctk_ext_var} = "c"
 <
-see |curly-braces-names|.
+or the best way: >
+		autocmd FileType c SetExtensionName c
+<
 
 							       *ctk-info-line*
+
 that file is combined with several autocmds |autocmd|. you can add a new
 compile setting in these steps: >
 
 	-- add the infomation for the extension name of specified program
-	    files. (*.c, for example) see |ctk_ext_var|
-		let b:{g:ctk_ext_var} = 'c'
+	    files. (*.c, for example) see |ctk-fileext-define|
+		autocmd FileType c SetExtensionName c
 
-	-- add a new SetDefaultInfo sentence in a new section:
-		" C compilers {{{1
-		autocmd c SetDefaultInfo cmd='...' run='...'
+	-- add a new SetDefaultInfo sentence in a new section, [!] for delete
+	   the old ones:
+
+		autocmd FileType c SetDefaultInfo! cmd='...' run='...'
+
+	-- maybe some platform settings, use if...else... and SetDefaultInfo
+	   to modify current default value:
+
+		if has('win32')
+		    autocmd FileType c SetDefaultInfo ....
+		elseif has('unix')
+		    autocmd FileType c SetDefaultInfo ....
+		else
+		    autocmd FileType c SetDefaultInfo ....
+		endif
 
 	-- add a new SetCompilerInfo after it:
-		autocmd c SetCompilerInfo gcc title='...'
+
+		autocmd FileType c SetCompilerInfo gcc title='...'
 
 all autocmds are in the group "ctk_autocmds". and all lines need add to the
 cinfo file |ctk-cinfo-file|.
 
 the format of a info line is: >
 
- autocmd <filetype> SetCompilerInfo <compiler_name> tags...
+ autocmd FileType <filetype> SetCompilerInfo <compiler_name> tags...
 <
 where filetype is the filetype you want to add compiler info in. compiler_name
 is the name of this compiler, this name can be used in modeline.
@@ -345,16 +408,16 @@ use space to separate each attributes.
 
 a example: (you can find this in the default cinfo file)
 >
- au FileType c let b:{g:ctk_ext_var} = "c"
+ au FileType c SetExtensionName c
 
- au FileType c SetDefaultInfo
+ au FileType c SetDefaultInfo!
     	\ cmd='!$cc $input $flags -o $output'
     	\ run='!$output' input='%:.' output='%:t:r'
-    	\ asm_run=':if bufname('^$output$') == '' | sp +drop $output | endif | checkt'
+    	\ asm_run=':pedit $output.asm'
 	\ asm_output='$output.asm'
     	\ debug_run='!gdb -q $output'
 
- au FileType c SetCompilerInfo gcc
+ au FileType c SetCompilerInfo! gcc
     	\ title='GNU C Compiler'
     	\ cc='gcc' flags='-Wall' cmdmap='<m-c>' runmap='<m-1> <f5>'
     	\ asm_title='GCC to ASM' asm_flags='-S $flags'
@@ -364,10 +427,11 @@ a example: (you can find this in the default cinfo file)
 
 the first line tells ctk.txt c language file's extension name is "c", some
 times the 'filetype' option's value is the extension name, but sometimes not.
-in this case, you can also put this sentence into SetDefaultInfo: >
- aut FileType c SetDefaultInfo ft_ext='c'
+instead of use SetExtensionName, you can also put this sentence into
+SetDefaultInfo: >
+
+ aut FileType c SetDefaultInfo extname='c'
 <
-in this case, you can't use g:ctk_ext_var, just use its default value.
 
 the second line is the default line, if ctk.vim can't find infomations in
 current info line (e.g. cmd), it will find the current default line. so you

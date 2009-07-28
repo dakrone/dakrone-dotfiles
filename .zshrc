@@ -16,6 +16,8 @@ export PATH=$PATH:/usr/local/git/bin
 export PATH=$PATH:/var/lib/gems/1.8/bin
 # Path for jruby
 export PATH=$PATH:~/src/ruby/jruby/bin
+# Path for postgres
+export PATH=$PATH:/opt/local/lib/postgresql84/bin
 
 # Chris' ruby stuff
 export RUBYLIB=~/src/chrisbin/ruby

@@ -86,8 +86,8 @@ if has("gui_running")
       set guioptions-=r        " no right scrollbar
       set guioptions-=R        " no right scrollbar
       set lines=64
-      set columns=128
-      set transparency=2       " 2% transparency
+      set columns=135
+      set transparency=3
       set gfn=Monaco:h9.0
 end
 
@@ -104,7 +104,7 @@ endif
 
 " Settings for NERD_Tree
 let NERDTreeWinPos="left"
-let NERDTreeWinSize=30
+let NERDTreeWinSize=25
 
 " Settings for taglist.vim
 let Tlist_Use_Right_Window=1
@@ -365,6 +365,17 @@ function! Compile()
 endfunction
 autocmd BufWritePost *.rb call Compile()
 
+" Diff with saved version of the file
+function! s:DiffWithSaved()
+  let filetype=&ft
+  diffthis
+  vnew | r # | normal! 1Gdd
+  diffthis
+  exe "setlocal bt=nofile bh=wipe nobl noswf ro ft=" . filetype
+endfunction
+com! DiffSaved call s:DiffWithSaved()
+
+
 " Add # => markers
 " ,m for "Add mark"
 vmap <silent> <LocalLeader>m !xmpfilter -m<cr>
@@ -395,16 +406,6 @@ nmap <silent> <S-F11> mzggVG!xmpfilter -u<cr>'z
 
 " Ack helpers
 " replaced by this vimscript: http://www.vim.org/scripts/script.php?script_id=2572
-"function! Ack(args)
-      "let grepprg_bak=&grepprg
-      "set grepprg=ack\ -H\ --nocolor\ --nogroup
-      "execute "silent! grep " . a:args
-      "botright copen
-      "let &grepprg=grepprg_bak
-"endfunction
-
-"command! -nargs=* -complete=file Ack call Ack(<q-args>)
-
 
 
 
@@ -421,6 +422,7 @@ elseif $TERM =~ '^linux'
 else
       set t_Co=16
 endif
+
 
 " ---------------------------------------------------------------------------
 " tabs

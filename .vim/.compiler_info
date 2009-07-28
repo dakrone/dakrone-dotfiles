@@ -9,41 +9,14 @@ endif
 let s:cpo_save = &cpo
 set cpo&vim
 
-function! ctk:split_open(fname) " {{{1
-    if bufwinnr(a:fname) == -1
-	if exists('*fnameescape')
-	    let fname = fnameescape(a:fname)
-	else
-	    let fname = escape(a:fname, ' \|')
-	endif
-
-	" for redir in s:exec_cmd()
-	let output=''
-	redir END
-	silent exec "sp " . fname
-	
-	" fix MiniBufExplorer bug
-	let nr = bufnr('^-MiniBufExplorer-$')
-
-	if nr != -1
-	    call setbufvar(nr, '&wfh', 1)
-	endif
-    endif
-    exec bufwinnr(a:fname).'wincmd w'
-    let ar_save = &ar
-    set ar
-    checktime
-    let &ar = ar_save
-endfunction
-
 " Common default info {{{1
 
-    au FileType c,cpp SetDefaultInfo
-	    \ cmd='!$cc $input $flags -o $output'
-	    \ run='!$output' input='%:.' output='%:t:r'
-	    \ asm_run=":call ctk:split_open(${q-output})"
-	    \ asm_output='$output.s'
-	    \ debug_run='!gdb -q $output'
+au FileType c,cpp SetDefaultInfo!
+	\ cmd='!$cc $input $flags -o $output'
+	\ run='!$output' input='%:.' output='%:t:r'
+	\ asm_run=":pedit $output"
+	\ asm_output='$output.s'
+	\ debug_run='!gdb -q $output'
 
 if has('unix')
     au FileType c,cpp SetDefaultInfo asm_output='$output.s'
@@ -54,28 +27,28 @@ endif
 
 " filetype C {{{1
 
-au FileType c let b:{g:ctk_ext_var} = 'c'
-au FileType c SetCompilerInfo gcc
+au FileType c SetExtensionName c
+au FileType c SetCompilerInfo! gcc
     	\ title='GNU C Compiler'
     	\ cc='gcc' flags='-Wall' cmdmap='<m-c>' runmap='<m-1> <f5>'
     	\ asm_title='GCC to ASM' asm_flags='-S $flags'
     	\ debug_title='GCC with debug' debug_flags='-ggdb $flags'
 
-au FileType c SetCompilerInfo vc6  
+au FileType c SetCompilerInfo! vc6  
     	\ title='Microsoft Visual C'
     	\ cc='cl' flags='-W4' runmap='<m-2> <f6>'
     	\ asm_title='Microsoft VC to ASM' asm_flags='/FAs $flags'
 
 " filetype C++ {{{1
 
-au FileType cpp let b:{g:ctk_ext_var} = 'cpp'
-au FileType cpp SetCompilerInfo g++
+au FileType cpp SetExtensionName cpp
+au FileType cpp SetCompilerInfo! g++
     	\ title='GNU Compiler Collection - C++'
     	\ cc='g++' flags='-Wall' cmdmap='<m-c>' runmap='<m-1> <f5>'
     	\ asm_title='G++ to ASM' asm_flags='-S $flags'
     	\ debug_title='G++ with debug' debug_flags='-ggdb $flags'
 
-au FileType cpp SetCompilerInfo vc++
+au FileType cpp SetCompilerInfo! vc++
     	\ title='Microsoft Visual C++'
     	\ cc='cl' flags='-W4' runmap='<m-2> <f6>'
     	\ asm_title='Microsoft VC++ to ASM'
@@ -84,8 +57,8 @@ au FileType cpp SetCompilerInfo vc++
 " }}}1
 " filetype ruby {{{1
 
-au FileType ruby let g:{ctk_ext_var} = 'rb'
-au FileType ruby SetCompilerInfo ruby
+au FileType ruby SetExtensionName rb
+au FileType ruby SetCompilerInfo! ruby
 	    \ title='Ruby 1.9.1 - Matz'
 	    \ cmd='ruby $flags $input'
 	    \ run='ruby $input'

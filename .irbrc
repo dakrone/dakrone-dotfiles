@@ -7,3 +7,6 @@
 end
 
 MyIRB.start
+
+# Enable purdy hirb output for ActiveRecord things
+Hirb::View.enable if rails?

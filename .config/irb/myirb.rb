@@ -18,7 +18,8 @@ module MyIRB
     rubygems map_by_method what_methods
     english/array english/inflect ruby2ruby
     hpricot stringio mechanize stored_hash
-    looksee/shortcuts duration highline wirble ]
+    looksee/shortcuts duration highline wirble
+    hirb]
 
   def catch_stdout
     verbose  = $VERBOSE

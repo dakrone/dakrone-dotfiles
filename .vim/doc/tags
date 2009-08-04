@@ -549,7 +549,9 @@ ctk-title-tag	ctk.txt	/*ctk-title-tag*
 ctk-usage	ctk.txt	/*ctk-usage*
 ctk.txt	ctk.txt	/*ctk.txt*
 ctk_autofname	ctk.txt	/*ctk_autofname*
+ctk_autostart	ctk.txt	/*ctk_autostart*
 ctk_cinfo_file	ctk.txt	/*ctk_cinfo_file*
+ctk_cmdenc	ctk.txt	/*ctk_cmdenc*
 ctk_defoutput	ctk.txt	/*ctk_defoutput*
 ctk_execprg	ctk.txt	/*ctk_execprg*
 ctk_ext_var	ctk.txt	/*ctk_ext_var*

@@ -25,9 +25,10 @@ if !exists('g:loaded_ctk')
 	if !exists(a:opt) | let {a:opt} = a:val | endif
     endfunction
 
-    call s:defopt('g:ctk_autostart', 1)
     call s:defopt('g:ctk_autofname', 'strftime("%Y-%m-%d")."-".idx')
+    call s:defopt('g:ctk_autostart', 1)
     call s:defopt('g:ctk_cinfo_file', '.compiler_info')
+    call s:defopt('g:ctk_cmdenc', 'cp936')
     call s:defopt('g:ctk_defoutput', './output')
     call s:defopt('g:ctk_ext_var', 'ft_ext')
     call s:defopt('g:ctk_tempdir', './noname')
@@ -213,6 +214,11 @@ function! s:get_escaped_list(str)
     return args
 endfunction
 
+" command to unmap info {{{2
+command! -nargs=1 CTKUnMapCompilerInfo
+            \ exec join(map(<args>.unmap,
+            \ 'v:val[0]."unmap ".v:val[1:]'), '|')
+
 function! s:question(msg) " {{{2
     redraw
     echohl Question
@@ -269,7 +275,7 @@ function! s:delete_ci() " {{{2
     unlet! b:{g:ctk_ext_var}
     if exists('b:compiler_info')
         for info in get(b:compiler_info, 'list', [])
-            silent! exec info.unmap
+            CTKUnMapCompilerInfo info
         endfor
         unlet b:compiler_info
     endif
@@ -290,7 +296,7 @@ function! s:expand_var(entry, default) " {{{2
     let key = submatch(1) == '' ? submatch(3) : submatch(1)
     let val = s:get_entry_val(a:default ? '' : a:entry, key, submatch(0))
 
-    if submatch(2) == 'q-'
+    if submatch(2) ==? 'q-'
         let escape_val = escape(val, '\"')
         return a:default ? escape_val : '"'.escape_val.'"'
     endif
@@ -469,12 +475,15 @@ function! s:make_info(info) " {{{2
     " analyze the modeline to modifie the info
     if &modeline && &mls != 0
         let last = line('$')
+        let old_info = get(b:{s:ci}.status, 'info', {})
+        let b:{s:ci}.status.info = {}
         if last <= &mls * 2
             call s:read_modeline(cur_info, 1, last)
         else
             call s:read_modeline(cur_info, 0, &mls)
             call s:read_modeline(cur_info, last - &mls, last)
         endif
+        let b:{s:ci}.status.info = old_info
     endif
 
 "     call Dret('s:make_info : '.string(cur_info))
@@ -520,15 +529,21 @@ endfunction
 function! s:exec_cmd(cmdarg) " {{{2
 "    call Dfunc('s:exec_cmd(cmdarg = '.a:cmdarg.')')
 
-    if a:cmdarg[0] == ':'
+    let cmd = a:cmdarg
+    if has('win32') && &enc != g:ctk_cmdenc && exists('*iconv')
+                \ && cmd =~ '^:!\|^:silent !\|^[^:]'
+        let cmd = iconv(cmd, &enc, g:ctk_cmdenc)
+    endif
+
+    if cmd[0] == ':'
         " XXX: if you use redir or silent in cmdarg, remember below steps:
         "       redir END
         "       silent! command_need_silent_executed
         "       redir =>> g:ctk_redir
-        redir => g:ctk_redir | silent! exec a:cmdarg | redir END
+        redir => g:ctk_redir | silent! exec cmd | redir END
         let output = g:ctk_redir
     else
-        silent! let output = system(a:cmdarg[0] == '!' ? a:cmdarg[1:] : a:cmdarg)
+        silent! let output = system(cmd[0] == '!' ? cmd[1:] : cmd)
     endif
 
     let output = matchstr(output, s:pat_execoutput)
@@ -575,10 +590,10 @@ function! s:process_placeholder(cmd, entry) " {{{2
 "    call Dfunc('s:process_placeholder(cmd = '.a:cmd.', entry = '.a:entry.')')
     let cmd = a:cmd
 
+    let cmd = substitute(cmd, s:pat_cmdtag, '\=s:expand_var(a:entry, 0)', 'g')
     if a:entry != ''
-        let cmd = substitute(cmd, s:pat_cmdtag, '\=s:expand_var(a:entry, 0)', 'g')
+        let cmd = substitute(cmd, s:pat_cmdtag, '\=s:expand_var(a:entry, 1)', 'g')
     endif
-    let cmd = substitute(cmd, s:pat_cmdtag, '\=s:expand_var(a:entry, 1)', 'g')
     let cmd = substitute(cmd, s:pat_filespec_nonescape,
                 \ '\=s:expand_fname(submatch(0), cmd[0])', 'g')
     let cmd = substitute(cmd, s:pat_filespec_escape, '', 'g')
@@ -692,14 +707,14 @@ function! s:set_compiler_info(cmdarg, bang) " {{{1
             call add(b:{s:ci}.list, info)
         else
 "            call Decho('clear old info: '.string(info))
-            silent! exec info.unmap
+            CTKUnMapCompilerInfo info
             call filter(info, 0)
         endif
 
         let info.name = mlist[1]
         call substitute(mlist[2], s:pat_info_var, '\=s:sub_info(info)', 'g')
 
-        let info.unmap = ''
+        let info.unmap = []
         let idx = s:get_idx(info)
         let dict = {'cmdmap': 'CC', 'runmap': 'RUN'}
         for key in keys(dict)
@@ -711,7 +726,7 @@ function! s:set_compiler_info(cmdarg, bang) " {{{1
                 for mode in split(cpos <= 0 ? 'nvi' : mkey[:cpos - 1], '\zs')
                     try | exec mode.'noremap <silent><unique> '.mkey[cpos+1:].
                                 \ ' <C-\><C-N>:'.(idx+1).dict[key].'!<CR><C-\><C-G>'
-                        let info.unmap .= mode.'unmap '.mkey[cpos+1:].'|'
+                        call add(info.unmap, mode.mkey[cpos+1:])
                         let {key} .= mode.'map:'.mkey[cpos+1:].' '
                     catch | endtry
                 endfor
@@ -725,8 +740,8 @@ function! s:set_compiler_info(cmdarg, bang) " {{{1
         let info = s:get_info(mlist[1])
 
         if !empty(info)
-            silent! exec info.unmap
-            call remove(b:{s:ci}, s:get_idx(info))
+            CTKUnMapCompilerInfo info
+            call remove(b:{s:ci}.list, s:get_idx(info))
         endif
 
     " list a info
@@ -788,19 +803,18 @@ function! s:compile(count, entry, bang) " {{{1
     endif
 
     let res = s:exec_cmd(cmd)
-    let cfile = [msg, cmd, ''] + split(res, "\<NL>")
 
     redraw
     if cmd[0] != ':'
 "        call Decho('A shell command')
         let ret_val = v:shell_error
-        let cfile += [stat.info.name.' returned '.ret_val]
 
-        if has('win32') && &enc != 'cp936' && exists('*iconv')
-            call map(cfile, 'iconv(v:val, "cp936", &enc)')
+        if has('win32') && &enc != g:ctk_cmdenc && exists('*iconv')
+            let res = iconv(res, g:ctk_cmdenc, &enc)
         endif
 
-        cgetexpr cfile
+        cgetexpr [msg, cmd, ''] + split(res, "\<NL>")
+                    \ + [stat.info.name.' returned '.ret_val]
         exec v:shell_error == 0 ? 'cwindow' : 
                     \ (res == '' ? 'cclose' : 'copen')
 
@@ -808,7 +822,7 @@ function! s:compile(count, entry, bang) " {{{1
 
     elseif res != ''
 "        call Decho('A exec command')
-        echo join(cfile, "\n")
+        echo msg."\n".cmd."\n\n".res
     endif
 
 "    call Dret('s:compile : '.ret_val)

@@ -348,6 +348,21 @@ a line in vim |:echo|.
 in run='!$output' or run='$output', the run tag is a shell-command tag. it
 will be run in a shell.
 
+if you use |:redirect| or |:silent| in cmd or run, you must close ctk's
+redirect first. just like this:
+>
+    function! Foobar()				    
+	redir END
+	silent! foobar
+	redir g:ctk_redir
+    endfunction
+
+    autocmd FileType foobar SetCompilerInfo foo cmd=':call Foobar()'
+
+<
+this example is useless, but it shows how to use silent/redir command in cmd
+or run tags.
+
 							     *ctk-placeholder*
 
 the $output in run tag is a placeholder. it will be replaced by the value of
@@ -507,12 +522,29 @@ your .vimrc file |.vimrc| to modified ctk.
 
 				let g:ctk_autofname = ''
 <
+							       *ctk_autostart*
+>
+ let g:ctk_autostart = 1
+<
+			if you don't want CTK auto start when you enter Vim,
+			set it to 0, it's default 1, means auto start.
+
 							      *ctk_cinfo_file*
 >
  let g:ctk_cinfo_file = '.compiler_info'
 <			this is the default cinfo file path, based on
 			'runtimepath'. it will be loaded when you start the
 			ctk |StartCTK|.
+
+								  *ctk_cmdenc*
+>
+ let g:ctk_cmdenc = "cp936"
+<
+			this option is avaliable in win32 only. because the
+			encoding of win32 console is not utf-8, if you use
+			utf-8 for 'encoding'. the command line you invoke will
+			incorrect. set this to the encoding of win32 console
+			to solve this problem.
 
 							       *ctk_defoutput*
 >

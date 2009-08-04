@@ -64,6 +64,15 @@ au FileType ruby SetCompilerInfo! ruby
 	    \ run='ruby $input'
 	    \ flags='-wc' debug_flags='-rdebug $flags'
 
+" filetype python {{{1
+
+au FileType python SetExtensionName py
+au FileType python SetCompilerInfo! python
+	    \ title='Python' input='%:.' output='%:.o'
+	    \ cmd="python $flags -c 'import py_compile; exit(py_compile.main([${q-input}]))'"
+	    \ run="python $flags $output"
+	    \ flags='-O' debug_flags='-d'
+
 " terminational works {{{1
 let &cpo = s:cpo_save
 unlet s:cpo_save " }}}1

@@ -37,6 +37,9 @@ export PAGER=less
 # CVS for HeX
 export CVSROOT=:ext:dakrone@cvsup.rawpacket.org:/home/project/rawpacket/cvs
 
+# RSPEC for autotest
+export RSPEC=true
+
 # Source j.sh
 source ~/bin/j.sh
 

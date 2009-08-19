@@ -175,6 +175,28 @@ function zg () {
   eval cd `zg.rb $1`
 }
 
+# Make w/growl support
+function gmake () {
+  DIR=`pwd`
+  make $1 $2 $3 $4 $5 $6 $7 $8 $9
+  if [[ $? == 0 ]]; then
+    growlnotify -m "'make $1' successful in $DIR" 
+  else
+    growlnotify -m "'make $1' failed in $DIR" 
+  fi
+}
+
+# Configure w/growl support
+function gconf () {
+  DIR=`pwd`
+  ./configure $1 $2 $3 $4 $5 $6 $7 $8 $9 
+  if [[ $? == 0 ]]; then
+    growlnotify -m "'configure' successful in $DIR" 
+  else
+    growlnotify -m "'configure' failed in $DIR" 
+  fi
+}
+
 # colorful listings
 zmodload -i zsh/complist
 zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}

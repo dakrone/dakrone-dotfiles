@@ -87,7 +87,7 @@ if has("gui_running")
       set guioptions-=R        " no right scrollbar
       set lines=64
       set columns=135
-      set transparency=3
+      set transparency=0
       set gfn=Monaco:h9.0
 end
 

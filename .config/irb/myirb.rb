@@ -14,7 +14,7 @@ module MyIRB
 
   libs = %w[
     irb/completion irb/ext/save-history thread
-    yaml English fileutils date open-uri pp monitor
+    yaml fileutils date open-uri pp monitor
     rubygems map_by_method what_methods
     english/array english/inflect ruby2ruby
     hpricot stringio mechanize stored_hash

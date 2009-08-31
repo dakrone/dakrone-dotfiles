@@ -60,6 +60,19 @@ may use Vim's command line completion to complete the project name.
 
   <
 
+*:ProjectImport*
+
+- :ProjectImport <folder>
+
+  If you have an existing eclipse project folder which does not exist
+  as a project in your current workspace, you can import that project
+  using this command:
+
+  >
+     :ProjectImport ~/workspace/some_project
+
+  <
+
 *:ProjectList*
 
 - :ProjectList
@@ -88,6 +101,43 @@ may use Vim's command line completion to complete the project name.
 - :ProjectDelete <project>
 
   Deletes the project with the specified name.
+
+*:ProjectRename*
+
+- :ProjectRename [<project>] <name>
+
+  Renames a project.  If two arguments are supplied then the first
+  argument is interpreted as the name of the project to rename and the
+  second argument as the new name for the project.  When only a single
+  argument is supplied, then that argument is used as the new name for
+  the project which the current file belongs to.
+
+*:ProjectMove*
+
+- :ProjectMove [<project>] <dir>
+
+  Moves a project to the specified directory.  If two arguments are
+  supplied then the first argument is interpreted as the name of the
+  project to move and the second argument as the directory to move the
+  project to.  When only a single argument is supplied, then that
+  argument is used as the directory to move the current project to.
+
+Warning: :ProjectMove, and possibly :ProjectRename, will result in the
+  renaming of your project's directory in the underlying file system.
+  Eclim will do its best to reload any files that have moved as a
+  result of the directory renaming and adjust your current working
+  directory if necessary, but only for the current vim session.  If
+  you have other vim sessions open with files from the project, then
+  eclim will be unable to reload those files in those sessions for
+  you, so you will have to do so manually.  A best practice would be
+  to close any other vim sessions that might be affected by the moving
+  or renaming of a project.
+
+Note: When open files have moved as a result of :ProjectMove or
+  :ProjectRename, eclim will reload those files in the current
+  session, but it must do so via an :edit, which means that vim's undo
+  tree will be lost. However, you will still have access to the
+  eclipse history (|vim-common-history|).
 
 *:ProjectRefresh*
 
@@ -145,6 +195,23 @@ may use Vim's command line completion to complete the project name.
 
   Removes one or more natures from a project. Supports command line
   completion of nature names.
+
+*:ProjectProblems*
+
+- :ProjectProblems [<project>] Populates vim's quickfix with a list of
+  all eclipse build errors and warnings for the current, or specifice
+  project, and all related projects.  Very similar to eclipse's
+  "Problems" view.  By default, if the current quickfix list
+  represents a problems list, then as you save source files this list
+  will be updated accordingly.
+
+  Note: Problems are only reported for those projects that have an
+    associated builder in their .project file.  If a project is not
+    reporting errors, first check that a proper builder is present in
+    the .project file.  For java projects created via eclim prior to
+    eclim 1.5.2, the java builder may be missing, so you'll need to
+    recreate the project, at which time eclim will add the java
+    builder.
 
 *:ProjectCD*
 
@@ -272,6 +339,21 @@ Configuration
 
 Vim Settings
 
+*g:EclimProblemsQuickFixOpen*
+
+- g:EclimProblemsQuickFixOpen (Default: 'botright copen')
+
+  Specified the command used to open the quickfix window when
+  executing the :ref`:ProjectProblems` command.
+
+*g:EclimProjectProblemsUpdateOnSave*
+
+- g:EclimProjectProblemsUpdateOnSave (Default: 1)
+
+  When non 0, indicates that the problems list should be updated when
+  saving source files, but only if the quickfix list currently
+  represents a problems list.
+
 *g:EclimProjectTreeAutoOpen*
 
 - g:EclimProjectTreeAutoOpen (Default: 0)
@@ -307,6 +389,13 @@ Vim Settings
   List of mappings which link file patterns to the available actions
   for opening files that match those patterns.  Note that the first
   mapping is the list is used as the default (<cr>).
+
+*g:EclimProjectTreeExpandPathOnOpen*
+
+- g:EclimProjectTreeExpandPathOnOpen (Default: 0)
+
+  When non 0, the path of the current file will be expanded in the
+  project tree when the project tree window is opened.
 
 *g:EclimTodoSearchPattern*
 

@@ -13,7 +13,7 @@ following requirements.
 
 - Java Development Kit 1.5 or greater
 
-- Eclipse SDK 3.4.x
+- Eclipse 3.5.x (Galileo)
 
 - Vim 7.1.x
 
@@ -56,7 +56,7 @@ Eclim Graphical Installer
 Step 1: Download the eclim installer for your platform.
 -------------------------------------------------------
 
-- Linux (and other unix based systems): eclim_version.sh
+- Linux / Mac / BSD (and other unix based systems): eclim_version.sh
 
 - Windows: eclim_version.exe
 
@@ -67,9 +67,9 @@ Step 2: Run the installer.
 Note: If you have eclipse running, please close it prior to starting the
   installation procedure.
 
-- Linux (and other unix based systems): You can start the installer by
-  running the script you downloaded (note: you may have to make it
-  executable first).
+- Linux / Mac / BSD (and other unix based systems): You can start the
+  installer by running the script you downloaded (note: you may have
+  to make it executable first).
 
   >
      $ chmod 755 eclim_version.sh
@@ -77,8 +77,32 @@ Note: If you have eclipse running, please close it prior to starting the
 
   <
 
+  If you are behind a proxy, you may need to run the installer like so
+  (be sure to take a look at the related faq (|eclim-proxy|) as well):
+
+  >
+     $ FORMIC_OPTS="-Dhttp.proxyHost=my.proxy -Dhttp.proxyPort=8080" ./eclim_version.sh
+
+  <
+
+  If your proxy requires authentication, you'll need to supply the
+  -Dhttp.proxyUser and -Dhttp.proxyPassword properties as well.
+
 - Windows: On Windows systems, simply double click the
   eclim_version.exe file you downloaded.
+
+  If you are behind a proxy, you may need to run the installer from a
+  dos prompt like so (be sure to take a look at the related faq
+  (|eclim-proxy|) as well):
+
+  >
+     C:\...> set FORMIC_OPTS="-Dhttp.proxyHost=my.proxy -Dhttp.proxyPort=8080"
+     C:\...> eclim_version.exe
+
+  <
+
+  If your proxy requires authentication, you'll need to supply the
+  -Dhttp.proxyUser and -Dhttp.proxyPassword properties as well.
 
 After the installer starts up, simply follow the steps in the wizard
 to install the application.
@@ -144,8 +168,9 @@ If you plan on using eclim without the eclipse gui, then:
 
 - start the eclimd server.
 
-  - Linux:  To start eclimd from linux, simply execute the eclimd
-    script found in your eclipse root directory:
+  - Linux / Mac / BSD (and other unix based systems): To start eclimd
+    from linux, simply execute the eclimd script found in your eclipse
+    root directory:
 
     >
        $ $ECLIPSE_HOME/eclimd
@@ -159,7 +184,7 @@ If you plan on using eclim without the eclipse gui, then:
 Once you have the eclim daemon (headed or headless) running, you can
 then test eclim:
 
-- open a vim window and issuing the command, |:PingEclim|.  The result
+- open a vim window and issue the command, |:PingEclim|.  The result
   of executing this command should be the eclim and eclipse version
   echoed to the bottom of your Vim window.  If however, you receive
   unable to connect to eclimd - connect: Connection refused, or
@@ -167,8 +192,9 @@ then test eclim:
   something is preventing eclim from connecting to it.  If you receive
   this or any other errors you can start by first examining the eclimd
   output to see if it gives any info as to what went wrong.  If at
-  this point you are unsure how to proceed, feel free to post your
-  issue on the eclim user mailing list.
+  this point you are unsure how to proceed you can view the
+  troubleshooting guide (|guides-troubleshoot|) or feel free to post
+  your issue on the eclim user mailing list.
 
      Example of successful ping:
 
@@ -210,19 +236,11 @@ Upgrading
 =========
 
 The upgrading procedure is the same as the installation procedure but
-there are a couple things worth noting.
-
-- The installer will remove the previous version of eclim and install
-  the new one.  This includes all the files in the eclim eclipse
-  plugins and the files eclim adds to your .vim or vimfiles directory.
-  So if you made any alterations to any of these files, be sure to
-  back them up prior to upgrading.
-
-- Since the previous version is removed any time you run the
-  installer, whether upgrading or reinstalling the current version,
-  you will need to always select the features you want installed
-  regardless of whether they are already installed.  In a future
-  version, the installer will attempt to auto select them for you.
+please be aware that the installer will remove the previous version of
+eclim prior to installing the new one.  The installer will delete all
+the files in the eclim eclipse plugins and the files eclim adds to
+your .vim or vimfiles directory. So if you made any alterations to any
+of these files, be sure to back them up prior to upgrading.
 
 
 Building from source

@@ -43,6 +43,10 @@ export RSPEC=true
 # Source j.sh
 source ~/bin/j.sh
 
+# rvm stuff:
+if [ -s ~/.rvm/scripts/rvm ] ; then source ~/.rvm/scripts/rvm ; fi
+
+
 # Term settings, if we exist as a screen term, use xterm-color instead of screen-bce.
 # Otherwise, leave the TERM var alone, because we need it to set terminal titles correctly
 case $TERM in

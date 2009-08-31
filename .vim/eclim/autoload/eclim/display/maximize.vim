@@ -24,8 +24,13 @@
 
 " Global Variables {{{
   if !exists('g:MaximizeExcludes')
-    let g:MaximizeExcludes =
-      \ '\(ProjectTree_*\|' . g:TagList_title . '\|-MiniBufExplorer-\|command-line\)'
+    let g:MaximizeExcludes = '\(' .
+      \ 'ProjectTree_*\|' .
+      \ '^[\[]\|' .
+      \ (exists('g:TagList_title') ? g:TagList_title . '\|' : '') .
+      \ '-MiniBufExplorer-\|' .
+      \ 'command-line' .
+    \ '\)'
   endif
   if !exists('g:MaximizeMinWinHeight')
     let g:MaximizeMinWinHeight = 0
@@ -97,13 +102,15 @@ function! eclim#display#maximize#MinimizeWindow(...)
 
   " first loop through and mark the buffers
   for winnum in args
-    let val = getwinvar(winnum, 'minimized')
-    let minimized = type(val) == 0 ? !val : 1
-    if !minimized
-      call setwinvar(winnum, '&winfixheight', 0)
-      call setwinvar(winnum, '&winfixwidth', 0)
+    if bufname(winbufnr(winnum)) !~ g:MaximizeExcludes
+      let val = getwinvar(winnum, 'minimized')
+      let minimized = type(val) == 0 ? !val : 1
+      if !minimized
+        call setwinvar(winnum, '&winfixheight', 0)
+        call setwinvar(winnum, '&winfixwidth', 0)
+      endif
+      call setwinvar(winnum, 'minimized', minimized)
     endif
-    call setwinvar(winnum, 'minimized', minimized)
   endfor
 
   call eclim#util#ExecWithoutAutocmds('call eclim#display#maximize#Reminimize()')
@@ -112,7 +119,9 @@ endfunction " }}}
 
 " MaximizeUpdate() {{{
 function! eclim#display#maximize#MaximizeUpdate()
-  if expand('%') !~ g:MaximizeExcludes && !exists('b:eclim_temp_window') && &ft != 'qf'
+  if expand('%') !~ g:MaximizeExcludes &&
+   \ !exists('b:eclim_temp_window') &&
+   \ &ft != 'qf'
     call s:DisableMaximizeAutoCommands()
 
     let w:maximized = 1
@@ -169,9 +178,11 @@ function! eclim#display#maximize#ResetMinimized()
   let winend = winnr('$')
   let winnum = 1
   while winnum <= winend
-    call setwinvar(winnum, "minimized", 0)
-    call setwinvar(winnum, "&winfixheight", 0)
-    call setwinvar(winnum, "&winfixwidth", 0)
+    if bufname(winbufnr(winnum)) !~ g:MaximizeExcludes
+      call setwinvar(winnum, "minimized", 0)
+      call setwinvar(winnum, "&winfixheight", 0)
+      call setwinvar(winnum, "&winfixwidth", 0)
+    endif
     let winnum = winnum + 1
   endwhile
 endfunction " }}}

@@ -142,6 +142,16 @@ Python Integration
 - Validation via python compiler, pyflakes, and pylint.
 
 
+Ruby Integration
+================
+
+- Context sensitive code completion.
+
+- Searching.
+
+- Source code validation.
+
+
 Vim Script Integration
 ======================
 

@@ -31,12 +31,12 @@ if !exists("g:EclimLogLevel")
   let g:EclimLogLevel = 4
 endif
 
-if !exists("g:EclimSignLevel")
-  if has("signs")
+if has("signs")
+  if !exists("g:EclimSignLevel")
     let g:EclimSignLevel = 5
-  else
-    let g:EclimSignLevel = 0
   endif
+else
+  let g:EclimSignLevel = 0
 endif
 
 if !exists("g:EclimShowCurrentError")
@@ -45,6 +45,10 @@ endif
 
 if !exists("g:EclimShowCurrentErrorBalloon")
   let g:EclimShowCurrentErrorBalloon = 1
+endif
+
+if !exists("g:EclimValidateSortResults")
+  let g:EclimValidateSortResults = 'occurrence'
 endif
 
 if !exists("g:EclimMakeLCD")
@@ -144,10 +148,10 @@ endif
 
 " Auto Commands{{{
 
-if g:EclimShowCurrentError && has('signs')
+if g:EclimShowCurrentError
   augroup eclim_show_error
     autocmd!
-    autocmd CursorHold * call eclim#util#ShowCurrentError()
+    autocmd CursorMoved * call eclim#util#ShowCurrentError()
   augroup END
 endif
 
@@ -178,18 +182,21 @@ if g:EclimMakeQfFilter
   augroup END
 endif
 
-augroup eclim_qf
-  autocmd QuickFixCmdPost *make* call eclim#display#signs#Show('', 'qf')
-  autocmd QuickFixCmdPost grep*,vimgrep* call eclim#display#signs#Show('i', 'qf')
-  autocmd QuickFixCmdPost lgrep*,lvimgrep* call eclim#display#signs#Show('i', 'loc')
-  autocmd BufWinEnter * call eclim#display#signs#Update()
-augroup END
+if g:EclimSignLevel
+  augroup eclim_qf
+    autocmd QuickFixCmdPost *make* call eclim#display#signs#Show('', 'qf')
+    autocmd QuickFixCmdPost grep*,vimgrep* call eclim#display#signs#Show('i', 'qf')
+    autocmd QuickFixCmdPost lgrep*,lvimgrep* call eclim#display#signs#Show('i', 'loc')
+    autocmd BufWinEnter * call eclim#display#signs#Update()
+  augroup END
+endif
 
 if has('netbeans_intg')
   augroup eclim_vimplugin
-    " autocommand used to work around the fact that the "unmodified" event
-    " in vim's netbean support is commentted out for some reason.
+    " autocommands used to work around the fact that the "unmodified" event in
+    " vim's netbean support is commentted out for some reason.
     autocmd BufWritePost * call eclim#vimplugin#BufferWritten()
+    autocmd CursorHold * call eclim#vimplugin#BufferUnmodified()
   augroup END
 endif
 " }}}

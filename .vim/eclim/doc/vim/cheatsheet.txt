@@ -30,13 +30,20 @@ Project Commands
 ================
 
 - |:ProjectCreate| <folder> [-p <project_name>] -n <nature> ... [-d
-  <project_dependency> ...] Create a new project.
+  <project_dependency> ...] - Create a new project.
+
+- |:ProjectImport| <folder> - Import a project from an existing
+  eclipse project folder.
 
 - |:ProjectList| - List current projects.
 
 - |:ProjectSettings| [<project>] - View / edit project settings.
 
 - |:ProjectDelete| <project> - Delete a project.
+
+- |:ProjectRename| [<project>] <name> - Rename a project.
+
+- |:ProjectMove| [<project>] <dir> - Move a project.
 
 - |:ProjectRefresh| [<project> <project> ...] - Refresh supplied list
   of projects against the current files on disk.  If no project names
@@ -59,6 +66,10 @@ Project Commands
 
 - |:ProjectNatureRemove| <project> [<nature> ...] - Remove one or more
   natures from a project.
+
+- |:ProjectProblems| [<project>] - Populates vim's quickfix with all
+  eclipse build errors and warnings for the current, or specified
+  project, and all related projects.
 
 - |:ProjectCD| - Changes the global current working directory to the
   root directory of the current file's project (executes a :cd).
@@ -110,10 +121,8 @@ C/C++ Commands
 
 - :Validate (|validate-c|) - Validate the current file.
 
-- |:CSearch| -p <pattern> -t <type> [-s <scope> -x <context>] - Search
+- |:CSearch| [-p <pattern> -t <type> -s <scope> -x <context>] - Search
   for classes, functions, methods, macros, etc.
-
-- |:CFindDefinition| - Find the element under the cursor.
 
 - |:CSearchContext| - Find the element under the cursor based on its
   context.
@@ -203,6 +212,8 @@ Java Commands
 - |:JavaDocComment| - Adds or updates the comments for the element
   under the cursor.
 
+- |:JavaRename| [new_name] - Rename the element under the cursor.
+
 - |:Java| - Executes the java using your project's main class.
 
 - |:Javac| - Executes the javac utility against all source files.
@@ -283,10 +294,8 @@ Maven Commands
 Php Commands
 ============
 
-- |:PhpSearch| -p <pattern> -t <type> [-s <scope>] - Search for
-  classes, methods, and constants.
-
-- |:PhpFindDefinition| - Find the element under the cursor.
+- |:PhpSearch| [-p <pattern> -t <type> -s <scope> -x <context>] -
+  Search for classes, methods, and constants.
 
 - |:PhpSearchContext| - Find the element under the cursor based on its
   context.
@@ -294,29 +303,13 @@ Php Commands
 - :Validate (|validate-php|) - Manually runs source code validation.
 
 
-Php .projectOption Commands
-===========================
-
-- |:NewLibEntry| <file> [<file> ...] - Add a lib entry referencing an
-  external folder.
-
-- |:NewProjectEntry| <project> [<project> ...] - Add a new project
-  entry.
-
-- |:NewVarEntry| <VAR/file> [<VAR/file> ...] - Add a new var entry.
-
-- |:VariableList| List available include path variables and their
-  corresponding values.
-
-- |:VariableCreate| <name> <path> - Creates or updates the variable
-  with the supplied name.
-
-- |:VariableDelete| <name> - Deletes the variable with the supplied
-  name.
-
-
 Python Commands
 ===============
+
+- |:PythonFindDefinition| - Find the element under the cursor.
+
+- |:PythonSearchContext| - Find the element under the cursor based on
+  its context.
 
 - :Validate (|validate-python|) - Validates the current file using
   pyflakes.
@@ -341,8 +334,20 @@ Python Commands
 
 - |:DjangoContextOpen| - Available when editing a python file.
   Executes :DjangoViewOpen, :DjangoTemplateOpen, or
-  :PythonFindDefinition depending on the context of the text under the
+  :PythonSearchContext depending on the context of the text under the
   cursor.
+
+
+Ruby Commands
+=============
+
+- |:RubySearch| [-p <pattern> -t <type> -s <scope> -x <context>] -
+  Search for modules, classes, methods, etc.
+
+- |:RubySearchContext| - Find the element under the cursor based on
+  its context.
+
+- :Validate (|validate-ruby|) - Manually runs source code validation.
 
 
 Vim Commands
@@ -441,22 +446,6 @@ Note: Currently cvs, subversion, mercurial, and git are supported by the
   app.
 
 
-Web Lookup Commands
-===================
-
-- |:OpenUrl| [url] - Opens a url in your configured web browser.
-
-- |:Google| [word ...] - Looks up a word or phrase with google.
-
-- |:Clusty| [word ...] - Looks up a word or phrase with clusty.
-
-- |:Wikipedia| [word ...] - Looks up a word or phrase on wikipedia.
-
-- |:Dictionary| [word] - Looks up a word on dictionary.reference.com.
-
-- |:Thesaurus| [word] - Looks up a word on thesaurus.reference.com.
-
-
 Misc. Commands
 ==============
 
@@ -551,5 +540,16 @@ Misc. Commands
   except open the file in a new tab.
 
 - |:History| - View the local history entries for the current file.
+
+- |:HistoryClear| - Clear the local history entries for the current
+  file.
+
+- |:HistoryDiffNext| - Diff the current file against the next entry in
+  the history stack.
+
+- |:HistoryDiffPrev| - Diff the current file against the previous
+  entry in the history stack.
+
+- |:OpenUrl| [url] - Opens a url in your configured web browser.
 
 vim:ft=eclimhelp

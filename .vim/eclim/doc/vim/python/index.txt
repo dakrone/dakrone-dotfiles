@@ -8,7 +8,7 @@ Python
 
 - Python Code Completion (|vim-python-complete|)
 
-- Python Search (|vim-python-find|)
+- Python Search (|vim-python-search|)
 
 - Python Regex Testing (|vim-python-regex|)
 
@@ -37,12 +37,14 @@ Minimum Requirements:
      Warning: Windows Users: gvim for windows does have python support, but
        at the time of this writing, it is compiled against python 2.4.
        So if you want to leverage eclim's rope support, you will need
-       to recompile gvim against python 2.5 or higher.
+       to recompile gvim against python 2.5 or higher or find a site
+       which provides a pre-compiled version for you.  Here are is one
+       such site providing binaries for python 2.5 and 2.6: gooli.org
 
 Functionality Utilizing Rope
    - code completion (|vim-python-complete|)
 
-   - find element definition (|vim-python-find|)
+   - find element definition (|vim-python-search|)
 
    - |:PyLint|
 

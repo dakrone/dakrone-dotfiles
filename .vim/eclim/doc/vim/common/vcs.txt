@@ -187,10 +187,23 @@ Vcs Editor Support
 Subversion, mercurial, git, and cvs all support using vim as the
 default editor for composing commit messages.  When composing this
 message they all also include a list of files to be committed.  Eclim
-provides a plugin allowing you to hit <enter> on one of the files to
-view a diff of the version to be committed against the last committed
-version.
+allows you to hit <enter> on one of the files to view a diff of the
+version to be committed against the last committed version, or in the
+case of newly added files, view the file to be added.
 
 [image]
+
+Note: Git users: Issuing a git commit from any directory other than the
+  root of your working copy may lead to errors when attempting to view
+  a diff or file in the editor.  This is due to git changing the
+  working directory to the root but leaving the displayed file paths
+  as relative, preventing eclim from being able to determine where
+  those files reside.  To resolve this issue you will need to run the
+  following to configure git to always display the full path (like
+  mercurial does by default):>
+
+     $ git config --global status.relativePaths false
+
+  <
 
 vim:ft=eclimhelp

@@ -39,6 +39,12 @@ Python
 - Creating A Python Project (|guides-python-project|)
 
 
+Ruby
+====
+
+- Creating A Ruby Project (|guides-ruby-project|)
+
+
 Eclim Developers
 ================
 

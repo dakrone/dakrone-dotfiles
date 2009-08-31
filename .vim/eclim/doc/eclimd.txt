@@ -22,8 +22,9 @@ Warning: While the headless server is running, opening an eclipse gui is
 
 Starting eclimd
 
-Linux:  To start eclimd from linux, simply execute the eclimd script
-found in your eclipse root directory: $ECLIPSE_HOME/eclimd
+Linux / Mac / BSD (and other unix based systems): To start eclimd from
+linux, simply execute the eclimd script found in your eclipse root
+directory: $ECLIPSE_HOME/eclimd
 
 Windows: The easiest way to start eclimd in windows is to double click
 on the eclimd.bat file found in your eclipse root directory:
@@ -87,6 +88,10 @@ The view will be opened in a new tab in the same pane as the
 
 [image]
 
+Note: By default, if you open an instance of gvim from within eclipse, the
+  eclimd view will be opened for you if necessary.  This behavior is
+  configurable via the Vimplugin preferences.
+
 Stopping eclimd
 
 As long as the eclimd tab is open then the eclim daemon will be
@@ -126,36 +131,76 @@ vimplugin preferences located under the Windows menu at:
 Note: If you have vimplugin installed you should remove it prior to using
   the eclim version.
 
-Eclipse key shortcuts in embedded gvim
+Eclipse/Vim key shortcuts in embedded gvim
 
-While the embedded gvim has focus, all the eclipse keyboard shortcuts
-you would normally use to perform eclipse specific commands will be
-intercepted by gvim. Since gvim has its own set of key bindings, the
-eclipse ones will be either ignored or perform whatever action they
-have been mapped to in gvim.
+Depending on your OS and windowing system, when the embedded gvim has
+focus, you will fall into one of two groups:
 
-To remedy this situation, eclim provides a means to map eclipse
-shortcuts inside of gvim.  To register a shortcut, simply add your
-mappings to your vimrc, gvimrc, or other standard gvim file like so:
+1. In the first group of users, all key presses are received by
+   eclipse prior to sending them to gvim.
+
+   For this group, when typing a possible key shortcut (ctrl-n for
+   example), eclipse will first evaluate that key stroke to see if
+   there are any eclipse key bindings registered.  If there are, then
+   eclipse will run the associated command and the key stroke is never
+   sent to gvim.  If no key binding is found, then eclipse will pass
+   the key stroke through to gvim.  What this means for you is that
+   for any gvim key mappings that you use that have an eclipse key
+   binding, they will not be evaluated inside of gvim.  So, if you
+   encounter this issue, you'll need to remap the keys in vim or
+   eclipse.  To remove the key binding from the eclipse side, simply
+   open the "Keys" preferences page:
 
    >
 
-      " maps Ctrl-F6 to eclipse's Ctrl-F6 key binding (switch editors)
-      nmap <silent> <c-f6> :call eclim#vimplugin#FeedKeys('Ctrl+F6')<cr>
-
-      " maps Ctrl-F7 to eclipse's Ctrl-F7 key binding (switch views)
-      nmap <silent> <c-f7> :call eclim#vimplugin#FeedKeys('Ctrl+F7')<cr>
-
-      " maps Ctrl-F to eclipse's Ctrl-Shift-R key binding (find resource)
-      nmap <silent> <c-f> :call eclim#vimplugin#FeedKeys('Ctrl+Shift+R')<cr>
+      Window -> Preferences -> General -> Keys
 
    <
 
 
-The value supplied to the FeedKeys function must be an eclipse
-compatible key binding string as found in:
+   Then find the entry in the list that corresponds with the key
+   binding you want to remove, select it, and hit the "Unbind Command"
+   button.
 
-   Windows -> Preferences -> General -> Keys
+   Note: By default eclim will auto-remove a couple of the standard
+     eclipse bindings whenever an embedded gvim editor has focus and
+     then restore them with a non-gvim editor gains focus:
+
+     - Ctrl+W: in eclipse this closes a tab, but in gvim this is
+       needed to switch windows (ex. ctrl-w j).
+
+     - Ctrl+U: in eclipse this run "Execute", but in gvim this is
+       needed to run code completion (ex. ctrl-x ctrl-u).
+
+1. In the second group, all key presses are received by gvim and not
+   evaluated at all by eclipse.
+
+   For this group of users, you may have an eclipse key shortcut that
+   you like to use (Shift+Ctrl+R for example), but when you hit that
+   key combination, it will be evaluated by gvim instead of eclipse.
+   To remedy this situation, eclim provides a means to map eclipse
+   shortcuts inside of gvim.  To register a shortcut, simply add your
+   mappings to your vimrc, gvimrc, or other standard gvim file like
+   so:
+
+      >
+
+         " maps Ctrl-F6 to eclipse's Ctrl-F6 key binding (switch editors)
+         nmap <silent> <c-f6> :call eclim#vimplugin#FeedKeys('Ctrl+F6')<cr>
+
+         " maps Ctrl-F7 to eclipse's Ctrl-F7 key binding (switch views)
+         nmap <silent> <c-f7> :call eclim#vimplugin#FeedKeys('Ctrl+F7')<cr>
+
+         " maps Ctrl-F to eclipse's Ctrl-Shift-R key binding (find resource)
+         nmap <silent> <c-f> :call eclim#vimplugin#FeedKeys('Ctrl+Shift+R')<cr>
+
+      <
+
+
+   The value supplied to the FeedKeys function must be an eclipse
+   compatible key binding string as found in:
+
+      Windows -> Preferences -> General -> Keys
 
 
 ~/.eclimrc
@@ -172,7 +217,7 @@ Ex.
 
 >
 
-   # Specifies the port that nailgun / eclim listens on for client requests.
+   # Specifies the port that nailgun / eclimd listens on for client requests.
    nailgun.server.port=10012
 
    # Specifies the workspace directory to use
@@ -205,5 +250,41 @@ $ECLIPSE_HOME/plugins/org.eclim_version/log4j.xml file.
 
 By default, eclimd writes all logging info to both the console and
 $ECLIPSE_HOME/plugins/org.eclim_<version>/log/eclimd.log.
+
+*eclimd_extdir*
+
+
+Hosting third party nailgun apps in eclimd
+==========================================
+
+Since nailgun provides a simple way to alleviate the startup cost of
+the jvm, other projects utilize it as well.  However, running several
+nailgun servers isn't ideal, so eclim supports hosting other nailgun
+apps via an ext dir where you can drop in jar files which will be made
+available to eclim's nailgun server.
+
+The ext dir that eclim reads from is located in your vim files
+directory:
+
+Linux / BSD / OSX:
+
+   >
+
+      ~/.vim/eclim/resources/ext
+
+   <
+
+
+Windows:
+
+   >
+
+      $HOME/vimfiles/eclim/resources/ext
+
+   <
+
+
+For an example of utilizing the ext dir, please take a look at the
+VimClojure (|guides-clojure-vimclojure|) guide.
 
 vim:ft=eclimhelp

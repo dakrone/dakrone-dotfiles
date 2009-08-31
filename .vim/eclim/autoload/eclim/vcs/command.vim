@@ -126,6 +126,10 @@ function! eclim#vcs#command#ChangeSet(path, revision)
         return
       endif
       let info = ChangeSet(revision)
+    catch /E117:.*/
+      let type = eclim#vcs#util#GetVcsType()
+      call eclim#util#EchoError('This function is not supported by "' . type . '".')
+      return
     finally
       exec 'lcd ' . escape(cwd, ' ')
     endtry
@@ -179,19 +183,16 @@ function! eclim#vcs#command#Diff(path, revision)
   augroup vcs_diff
     autocmd! BufWinLeave <buffer>
     call eclim#util#GoToBufferWindowRegister(b:filename)
-    autocmd BufWinLeave <buffer> diffoff |
-      \ call eclim#util#DelayedCommand('call eclim#display#maximize#RestoreWindows(0)')
+    autocmd BufWinLeave <buffer> diffoff
   augroup END
 
-  exec bufwinnr(buf1) . 'winc w'
+  call eclim#util#GoToBufferWindow(buf1)
   diffthis
-
-  call eclim#display#maximize#RestoreWindows(0)
 endfunction " }}}
 
 " Info() {{{
 " Retrieves and echos info on the current file.
-function eclim#vcs#command#Info()
+function! eclim#vcs#command#Info()
   let cwd = getcwd()
   let dir = expand('%:p:h')
   exec 'lcd ' . escape(dir, ' ')
@@ -414,7 +415,7 @@ function! s:ApplyAnnotations(annotations)
       continue
     endif
 
-    let user = substitute(annotation, '^.\{-})\s\+\(.*\)', '\1', '')
+    let user = substitute(annotation, '^.\{-})\s\+\(.\{-}\)\s*$', '\1', '')
     let user_abbrv = user[:1]
     let sign_name = 'vcs_annotate_' . substitute(user[:5], ' ', '_', 'g')
     if index(defined, sign_name) == -1
@@ -424,11 +425,13 @@ function! s:ApplyAnnotations(annotations)
     call eclim#display#signs#Place(sign_name, index)
     let index += 1
   endfor
+
   let b:vcs_annotations = a:annotations
+  call s:AnnotateInfo()
 
   augroup vcs_annotate
     autocmd!
-    autocmd CursorHold <buffer> call <SID>AnnotateInfo()
+    autocmd CursorMoved <buffer> call <SID>AnnotateInfo()
     autocmd BufWritePost <buffer>
       \ if !eclim#util#WillWrittenBufferClose() |
       \   if exists('b:vcs_annotations') |
@@ -451,7 +454,7 @@ function! s:AnnotateOff()
   if exists('b:vcs_annotations')
     let defined = eclim#display#signs#GetDefined()
     for annotation in b:vcs_annotations
-      let user = substitute(annotation, '^.*)\s\+\(.\{-}\)\s*$', '\1', '')
+      let user = substitute(annotation, '^.\{-})\s\+\(.\{-}\)\s*$', '\1', '')
       let sign_name = 'vcs_annotate_' . substitute(user[:5], ' ', '_', 'g')
       if index(defined, sign_name) != -1
         let signs = eclim#display#signs#GetExisting(sign_name)
@@ -527,9 +530,8 @@ function! s:FollowLink()
         let orien = g:EclimVcsDiffOrientation == 'horizontal' ? '' : 'vertical'
         call eclim#vcs#command#ViewFileRevision(file, r2, 'bel ' . orien . ' split')
         diffthis
-        exec bufwinnr(buf1) . 'winc w'
+        call eclim#util#GoToBufferWindow(buf1)
         diffthis
-        call eclim#display#maximize#RestoreWindows(0)
       elseif link !~ '^\s*$'
         call eclim#vcs#command#Log(link)
       endif
@@ -562,9 +564,8 @@ function! s:FollowLink()
       let orien = g:EclimVcsDiffOrientation == 'horizontal' ? '' : 'vertical'
       call eclim#vcs#command#ViewFileRevision(file, r2, 'bel ' . orien . ' split')
       diffthis
-      exec bufwinnr(buf1) . 'winc w'
+      call eclim#util#GoToBufferWindow(buf1)
       diffthis
-      call eclim#display#maximize#RestoreWindows(0)
 
     " link to diff against working copy
     elseif link == 'working copy'
@@ -581,13 +582,11 @@ function! s:FollowLink()
       augroup vcs_diff
         autocmd! BufWinLeave <buffer>
         call eclim#util#GoToBufferWindowRegister(b:filename)
-        autocmd BufWinLeave <buffer> diffoff |
-          \ call eclim#util#DelayedCommand('call eclim#display#maximize#RestoreWindows(0)')
+        autocmd BufWinLeave <buffer> diffoff
       augroup END
 
       call eclim#util#GoToBufferWindow(filename)
       diffthis
-      call eclim#display#maximize#RestoreWindows(0)
 
     " link to bug / feature report
     elseif link =~ '^' . s:trackerIdPattern . '$'

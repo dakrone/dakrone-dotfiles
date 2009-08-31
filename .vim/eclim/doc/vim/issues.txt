@@ -42,7 +42,18 @@ issues, it does have its drawbacks:
   encounter times when Eclipse will insert the code with no
   indentation.
 
-  To resolve this you will need to edit some settings in Eclipse:
+  To resolve this you will need to edit some eclipse settings:
+
+  Using vim:
+
+  1. Open the eclim settings (global: |:EclimSettings| or project
+     level: |:ProjectSettings|)
+
+  2. Edit the indentation settings to match your vim options:
+
+     JDT -> org.eclipse.jdt.core.formatter.*
+
+  Using Eclipse:
 
   1. Shutdown eclimd.
 

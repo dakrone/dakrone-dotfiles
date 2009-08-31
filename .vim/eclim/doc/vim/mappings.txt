@@ -23,7 +23,7 @@ C/C++ Mappings
 ==============
 
 Here are some mappings for the c/c++ funtionality provided by eclim.
-To make use of these mappings, simply create a ftplugin file for ant
+To make use of these mappings, simply create a ftplugin file for c/cpp
 and place your mappings there (:help ftplugin-name).
 
 - The following mapping allows you to simply hit <enter> on an element
@@ -61,15 +61,6 @@ Java Mappings
 Here are some mappings for the java funtionality provided by eclim.
 To make use of these mappings, simply create a ftplugin file for java
 and place your mappings there (:help ftplugin-name).
-
-- This mapping can be used to allow quick replacement of template
-  variables when utilizing the java abbreviations
-  (|vim-java-abbreviations|).
-
-  >
-     nnoremap <silent> <buffer> <tab> :call eclim#util#FillTemplate("${", "}")<cr>
-
-  <
 
 - Import the class under the cursor with <leader>i.
 
@@ -123,10 +114,11 @@ To make use of these mappings, simply create a ftplugin file for
 python and place your mappings there (:help ftplugin-name).
 
 - The following mapping allows you to simply hit <enter> on an element
-  to perform a search to find its definition.
+  to perform a search to find its definition or occurrences depending
+  on the context.
 
   >
-     nnoremap <silent> <buffer> <cr> :PythonFindDefinition<cr>
+     nnoremap <silent> <buffer> <cr> :PythonSearchContext<cr>
 
   <
 
@@ -164,7 +156,7 @@ for Vim and place your mappings there (:help ftplugin-name).
 
   >
      " avoid overwriting <cr> mapping in 'command-line' buffer (:h cmdwin).
-     if bufname('%') != 'command-line'
+     if bufname('%') !~ '^\(command-line\|\[Command Line\]\)$'
        nnoremap <silent> <buffer> <cr> :FindByContext<cr>
      endif
 

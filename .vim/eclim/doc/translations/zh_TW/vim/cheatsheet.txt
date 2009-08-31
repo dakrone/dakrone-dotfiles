@@ -247,22 +247,6 @@ Note: 目前這項指令集只支援 CVS 及 subversion 兩種系統.
 - |:VcsAnnotate| - 使用 vim 簽名對目前版本檔案作注釋.
 
 
-網際網路搜尋指令集
-=========
-
-- OpenUrl (|openurl|) [超連結] - 以定義好的瀏覽器開啟超連結.
-
-- |:Google| [關鍵字 ...] - 在 Google 搜尋關鍵字.
-
-- |:Clusty| [關鍵字 ...] - 在 Clusty 搜尋關鍵字.
-
-- |:Wikipedia| [關鍵字 ...] - 在 wikipedia 搜尋關鍵字.
-
-- |:Dictionary| [word] - 在 dictionary.reference.com 尋找字典內容.
-
-- |:Thesaurus| [word] - 在 thesaurus.reference.com 尋找內容.
-
-
 其他指令集
 =====
 
@@ -303,5 +287,7 @@ Note: 目前這項指令集只支援 CVS 及 subversion 兩種系統.
 - |:QuickFixClear| - 移除所有 QuickFix 視窗的連接點.
 
 - |:LocationListClear| - 移除所有在位置視窗的連接點.
+
+- OpenUrl (|openurl|) [超連結] - 以定義好的瀏覽器開啟超連結.
 
 vim:ft=eclimhelp

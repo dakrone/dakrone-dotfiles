@@ -1,0 +1,14 @@
+*vim-dltk-index*
+
+
+Dltk (Dynamic Languages Toolkit)
+********************************
+
+The dltk plugin in eclipse is used to provide shared functionality for
+those languages which eclim supports that are based on the dltk
+platform.  Currently, these languages include Php (|vim-php-index|)
+and Ruby (|vim-ruby-index|).
+
+- Dltk Build Path (|vim-dltk-buildpath|)
+
+vim:ft=eclimhelp

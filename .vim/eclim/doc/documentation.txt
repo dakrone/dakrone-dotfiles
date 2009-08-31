@@ -23,6 +23,8 @@ Documentation
 
 - Css (|vim-css-index|)
 
+- Dltk (Dynamic Languages Toolkit) (|vim-dltk-index|)
+
 - Dtd (|vim-dtd-index|)
 
 - Html (|vim-html-index|)
@@ -34,6 +36,8 @@ Documentation
 - Php (|vim-php-index|)
 
 - Python (|vim-python-index|)
+
+- Ruby (|vim-ruby-index|)
 
 - Vim (|vim-vim-index|)
 

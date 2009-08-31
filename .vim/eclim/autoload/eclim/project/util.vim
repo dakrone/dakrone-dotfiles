@@ -38,10 +38,14 @@ let s:command_create_natures = ' -n <natures>'
 let s:command_create_depends = ' -d <depends>'
 let s:command_import = '-command project_import -f "<folder>"'
 let s:command_delete = '-command project_delete -p "<project>"'
+let s:command_rename = '-command project_rename -p "<project>" -n "<name>"'
+let s:command_move = '-command project_move -p "<project>" -d "<dir>"'
 let s:command_refresh = '-command project_refresh -p "<project>"'
 let s:command_refresh_file =
   \ '-command project_refresh_file -p "<project>" -f "<file>"'
 let s:command_projects = '-command project_list'
+let s:command_project_link_resource = '-command project_link_resource -f "<file>"'
+let s:command_project_by_resource = '-command project_by_resource -f "<file>"'
 let s:command_project_info = '-command project_info -p "<project>"'
 let s:command_project_settings = '-command project_settings -p "<project>"'
 let s:command_project_setting = '-command project_setting -p "<project>" -s <setting>'
@@ -94,9 +98,11 @@ function! eclim#project#util#ProjectCreate(args)
     let command .= substitute(s:command_create_name, '<name>', name, '')
   endif
 
+  let natureIds = []
   let natures = substitute(a:args, '.* -n\s\+\(.\{-}\)\(\s\+-\(d\|p\)\>.*\|$\)', '\1', '')
   if natures != a:args
     let natures = substitute(natures, '\s\+', ',', 'g')
+    let natureIds = split(natures, ',')
     let command .= substitute(s:command_create_natures, '<natures>', natures, '')
   endif
 
@@ -106,11 +112,34 @@ function! eclim#project#util#ProjectCreate(args)
     let command .= substitute(s:command_create_depends, '<depends>', depends, '')
   endif
 
+  " execute any pre-project creation hooks
+  for nature in natureIds
+    exec 'runtime autoload/eclim/' . nature . '/project.vim'
+    try
+      let ProjectPre = function('eclim#' . nature . '#project#ProjectCreatePre')
+      if !ProjectPre(folder)
+        return
+      endif
+    catch /E\(117\|700\):.*/
+      " ignore
+    endtry
+  endfor
+
   let result = eclim#ExecuteEclim(command)
   if result != '0'
     call eclim#util#Echo(result)
     call eclim#project#util#ClearProjectsCache()
   endif
+
+  " execute any post-project creation hooks
+  for nature in natureIds
+    try
+      let ProjectPost = function('eclim#' . nature . '#project#ProjectCreatePost')
+      call ProjectPost(folder)
+    catch /E\(117\|700\):.*/
+      " ignore
+    endtry
+  endfor
 endfunction " }}}
 
 " ProjectImport(arg) {{{
@@ -136,6 +165,148 @@ function! eclim#project#util#ProjectDelete(name)
     call eclim#util#Echo(result)
     call eclim#project#util#ClearProjectsCache()
   endif
+endfunction " }}}
+
+" ProjectRename(args) {{{
+" Renames a project.
+function! eclim#project#util#ProjectRename(args)
+  let args = eclim#util#ParseCmdLine(a:args)
+  if len(args) == 1
+    if !eclim#project#util#IsCurrentFileInProject()
+      return
+    endif
+    let project = eclim#project#util#GetCurrentProjectName()
+    let name = args[0]
+  else
+    let project = args[0]
+    let name = args[1]
+  endif
+
+  if exists('g:EclimProjectRenamePrompt') && !g:EclimProjectRenamePrompt
+    let response = 1
+  else
+    let response = eclim#util#PromptConfirm(
+      \ printf("Rename project '%s' to '%s'", project, name),
+      \ g:EclimInfoHighlight)
+  endif
+
+  if response == 1
+    let command = s:command_rename
+    let command = substitute(command, '<project>', project, '')
+    let command = substitute(command, '<name>', name, '')
+    call s:ProjectMove(project, name, command)
+  endif
+endfunction " }}}
+
+" ProjectMove(args) {{{
+" Moves a project.
+function! eclim#project#util#ProjectMove(args)
+  let args = eclim#util#ParseCmdLine(a:args)
+  if len(args) == 1
+    if !eclim#project#util#IsCurrentFileInProject()
+      return
+    endif
+    let project = eclim#project#util#GetCurrentProjectName()
+    let dir = args[0]
+  else
+    let project = args[0]
+    let dir = args[1]
+  endif
+  let dir = expand(dir)
+  let dir = substitute(fnamemodify(dir, ':p'), '\', '/', 'g')
+
+  if exists('g:EclimProjectMovePrompt') && !g:EclimProjectMovePrompt
+    let response = 1
+  else
+    let response = eclim#util#PromptConfirm(
+      \ printf("Move project '%s' to '%s'", project, dir),
+      \ g:EclimInfoHighlight)
+  endif
+
+  if response == 1
+    let command = s:command_move
+    let command = substitute(command, '<project>', project, '')
+    let command = substitute(command, '<dir>', dir, '')
+    call s:ProjectMove(project, project, command)
+  endif
+endfunction " }}}
+
+" s:ProjectMove(oldname, newname, command) {{{
+function! s:ProjectMove(oldname, newname, command)
+  let cwd = substitute(getcwd(), '\', '/', 'g')
+  let cwd_return = 1
+  let oldpath = eclim#project#util#GetProjectRoot(a:oldname)
+
+  let curwin = winnr()
+  try
+    " cd to home to avoid folder renaming issues on windows.
+    cd ~
+
+    " turn off swap files temporarily to avoid issues with folder renaming.
+    let bufend = bufnr('$')
+    let bufnum = 1
+    while bufnum <= bufend
+      if bufexists(bufnum)
+        call setbufvar(bufnum, 'save_swapfile', getbufvar(bufnum, '&swapfile'))
+        call setbufvar(bufnum, '&swapfile', 0)
+      endif
+      let bufnum = bufnum + 1
+    endwhile
+
+    " write all changes before moving
+    wall
+
+    let result = eclim#ExecuteEclim(a:command)
+    if result == "0"
+      return
+    endif
+    call eclim#project#util#ClearProjectsCache()
+    let newpath = eclim#project#util#GetProjectRoot(a:newname)
+    if cwd =~ '^' . oldpath
+      exec 'cd ' . substitute(cwd, oldpath, newpath, '')
+      let cwd_return = 0
+    endif
+
+    " reload files affected by the project renaming
+    let bufnum = 1
+    while bufnum <= bufend
+      if buflisted(bufnum)
+        let path = substitute(fnamemodify(bufname(bufnum), ':p'), '\', '/', 'g')
+        if path =~ '^' . oldpath
+          let path = substitute(path, oldpath, newpath, '')
+          if filereadable(path)
+            let winnr = bufwinnr(bufnum)
+            if winnr != -1
+              exec winnr . 'winc w'
+              exec 'edit ' . eclim#util#Simplify(path)
+            endif
+            exec 'bdelete ' . bufnum
+          endif
+        endif
+      endif
+      let bufnum = bufnum + 1
+    endwhile
+
+  finally
+    exec curwin 'winc w'
+    if cwd_return
+      exec 'cd ' . escape(cwd, ' ')
+    endif
+
+    " re-enable swap files
+    let bufnum = 1
+    while bufnum <= bufend
+      if bufexists(bufnum)
+        let save_swapfile = getbufvar(bufnum, 'save_swapfile')
+        if save_swapfile != ''
+          call setbufvar(bufnum, '&swapfile', save_swapfile)
+        endif
+      endif
+      let bufnum = bufnum + 1
+    endwhile
+  endtry
+
+  call eclim#util#Echo(result)
 endfunction " }}}
 
 " ProjectRefreshAll() {{{
@@ -321,7 +492,8 @@ function! eclim#project#util#ProjectUpdate()
 
   let result = eclim#ExecuteEclim(command)
   if result =~ '|'
-    let errors = eclim#util#ParseLocationEntries(split(result, '\n'))
+    let errors = eclim#util#ParseLocationEntries(
+      \ split(result, '\n'), g:EclimValidateSortResults)
     call eclim#util#SetLocationList(errors)
   else
     call eclim#util#ClearLocationList()
@@ -408,27 +580,7 @@ endfunction " }}}
 
 " SaveSettings() {{{
 function! s:SaveSettings()
-  " don't check modified since undo seems to not set the modified flag
-  "if &modified
-    let tempfile = substitute(tempname(), '\', '/', 'g')
-    silent exec 'write! ' . escape(tempfile, ' ')
-    let command = s:command_update
-    let command = substitute(command, '<project>', b:project, '')
-    let command = substitute(command, '<settings>', tempfile, '')
-
-    let result = eclim#ExecuteEclim(command)
-    if result =~ '|'
-      call eclim#util#EchoError
-        \ ("Operation contained errors.  See quickfix for details.")
-      call eclim#util#SetLocationList
-        \ (eclim#util#ParseLocationEntries(split(result, '\n')))
-    else
-      call eclim#util#ClearLocationList()
-      call eclim#util#Echo(result)
-    endif
-
-    setlocal nomodified
-  "endif
+  call eclim#SaveSettings(s:command_update, b:project)
 endfunction " }}}
 
 " GetCurrentProjectName() {{{
@@ -449,11 +601,22 @@ endfunction " }}}
 " Gets the project relative path for the given file.
 function! eclim#project#util#GetProjectRelativeFilePath(file)
   let file = substitute(a:file, '\', '/', 'g')
-  let pattern = eclim#project#util#GetCurrentProjectRoot()
+  let pattern = eclim#project#util#GetCurrentProjectRoot() . '\>'
   if has('win32') || has('win64')
     let pattern .= '\c'
   endif
   let result = substitute(file, pattern, '', '')
+
+  " handle file in linked folder
+  if result == file
+    let command = s:command_project_link_resource
+    let command = substitute(command, '<file>', file, '')
+    let result = eclim#ExecuteEclim(command)
+    if result != '0'
+      return result
+    endif
+  endif
+
   if result != file && result =~ '^/'
     let result = result[1:]
   endif
@@ -480,6 +643,7 @@ function! eclim#project#util#GetProjects(...)
           if len(lines) > 0
             let name = fnamemodify(dir, ':t')
             let dir = substitute(lines[0], '.*file:\(.\{-}\)[[:cntrl:]].*', '\1', '')
+            let dir = substitute(dir, '%20', ' ', 'g')
             if dir =~ '^/[A-Z]:'
               let dir = dir[1:]
             endif
@@ -501,7 +665,7 @@ function! eclim#project#util#GetProjects(...)
     else
       let result = split(eclim#ExecuteEclim(s:command_projects), '\n')
       if len(result) == 1 && result[0] == '0'
-        return []
+        return {}
       endif
 
       for line in result
@@ -515,12 +679,25 @@ function! eclim#project#util#GetProjects(...)
   endif
 
   if len(a:000) == 1
-    let dir = substitute(fnamemodify(a:000[0], ':p:h'), '\', '/', 'g')
+    let path = substitute(fnamemodify(a:000[0], ':p'), '\', '/', 'g')
+    let dir = fnamemodify(path, ':h')
     let pattern = '\(/\|$\)'
     if has('win32') || has('win64')
       let pattern .= '\c'
     endif
-    return filter(copy(s:projects), 'dir =~ "^" . v:val . pattern')
+    let projects = filter(copy(s:projects), 'dir =~ "^" . v:val . pattern')
+
+    " file may be in a linked folder in the project
+    if len(projects) == 0
+      let command = s:command_project_by_resource
+      let command = substitute(command, '<file>', path, '')
+      let result = eclim#ExecuteEclim(command)
+      if result != '0'
+        let projects = filter(copy(s:projects), 'v:key == result')
+      endif
+    endif
+
+    return projects
   endif
 
   return s:projects
@@ -579,7 +756,7 @@ endfunction " }}}
 " GetProjectRoot(project) {{{
 " Gets the project root dir for the supplied project name.
 function! eclim#project#util#GetProjectRoot(project)
-  return eclim#project#util#GetProjects()[a:project]
+  return get(eclim#project#util#GetProjects(), a:project, '')
 endfunction " }}}
 
 " GetProjectSetting(setting) {{{
@@ -748,6 +925,32 @@ function! s:CommandCompleteProjectCreateOptions(argLead, cmdLine, cursorPos)
     call remove(options, index(options, '-p'))
   endif
   return options
+endfunction " }}}
+
+" CommandCompleteProjectMove(argLead, cmdLine, cursorPos) {{{
+" Custom command completion for ProjectMove
+function! eclim#project#util#CommandCompleteProjectMove(argLead, cmdLine, cursorPos)
+  let cmdLine = strpart(a:cmdLine, 0, a:cursorPos)
+  let args = eclim#util#ParseCmdLine(cmdLine)
+  let argLead = cmdLine =~ '\s$' ? '' : args[len(args) - 1]
+
+  " complete dirs for second arg if first arg is a project name
+  if len(args) > 1 && eclim#project#util#GetProjectRoot(args[1]) != '' &&
+   \ cmdLine =~ '^' . args[0] . '\s\+' . args[1] . '\s\+' . escape(argLead, '~.\') . '$'
+    return eclim#util#CommandCompleteDir(argLead, a:cmdLine, a:cursorPos)
+  endif
+
+  " attempt complete project and dir for first arg
+  if cmdLine =~ '^' . args[0] . '\s\+' . escape(argLead, '~.\') . '$'
+    let projects = []
+    let dirs = eclim#util#CommandCompleteDir(argLead, a:cmdLine, a:cursorPos)
+    if argLead !~ '[~]'
+      let projects = eclim#project#util#CommandCompleteProject(
+            \ argLead, a:cmdLine, a:cursorPos)
+    endif
+    return projects + dirs
+  endif
+  return []
 endfunction " }}}
 
 " CommandCompleteProjectRelative(argLead, cmdLine, cursorPos) {{{

@@ -534,7 +534,7 @@ endfunction " }}}
 
 " s:ProcessTags() {{{
 function! s:ProcessTags()
-  let filename = expand('%')
+  let filename = expand('%:p')
   if filename =~ s:taglisttoo_ignore || filename == ''
     return
   endif
@@ -644,8 +644,8 @@ function! s:ProcessTags()
       setlocal nomodifiable
     endif
 
-    " if the file buffer is not longer in the same window it was, then find
-    " its new location.  Occurs when taglist first opens.
+    " if the file buffer is no longer in the same window it was, then find its
+    " new location. Occurs when taglist first opens.
     if winbufnr(filewin) != bufnr(filename)
       let filewin = bufwinnr(filename)
     endif
@@ -790,14 +790,28 @@ function! s:Window(types, tags, content)
     nnoremap <silent> <buffer> <cr> :call <SID>JumpToTag()<cr>
   endif
 
-  let pos = getpos('.')
+  let pos = [0, 1, 1, 0]
+  " if we are updating the taglist for the same file, then preserve the
+  " cursor position.
+  if len(a:content[1]) > 0 && getline(1) == a:content[1][0]
+    let pos = getpos('.')
+  endif
+
   setlocal modifiable
   silent 1,$delete _
   call append(1, a:content[1])
   silent retab
   silent 1,1delete _
   setlocal nomodifiable
+
   call setpos('.', pos)
+
+  " if the entire taglist can fit in the window, then reposition the content
+  " just in case the previous contents result in the current contents being
+  " scrolled up a bit.
+  if len(a:content[1]) < winheight(winnr())
+    normal! zb
+  endif
 
   silent! syn clear TagListKeyword
   for value in values(a:types)

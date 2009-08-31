@@ -28,10 +28,8 @@ else
   finish
 endif
 
-" GetVcsFunction(func_name) {{{
-" Gets a reference to the proper vcs function.
-" Ex. let GetRevision = eclim#vcs#util#GetVcsFunction('GetRevision')
-function eclim#vcs#util#GetVcsFunction(func_name)
+" GetVcsType() {{{
+function eclim#vcs#util#GetVcsType()
   let type = ''
   if isdirectory('CVS')
     runtime autoload/eclim/vcs/impl/cvs.vim
@@ -43,6 +41,9 @@ function eclim#vcs#util#GetVcsFunction(func_name)
   else
     let cwd = escape(getcwd(), ' ')
     let hgdir = finddir('.hg', cwd . ';')
+    if hgdir != ''
+      let hgdir = fnamemodify(hgdir, ':p')
+    endif
     let gitdir = finddir('.git', cwd . ';')
     if gitdir != ''
       let gitdir = fnamemodify(gitdir, ':p')
@@ -57,10 +58,18 @@ function eclim#vcs#util#GetVcsFunction(func_name)
       endif
     endif
   endif
+  return type
+endfunction " }}}
 
+" GetVcsFunction(func_name) {{{
+" Gets a reference to the proper vcs function.
+" Ex. let GetRevision = eclim#vcs#util#GetVcsFunction('GetRevision')
+function eclim#vcs#util#GetVcsFunction(func_name)
+  let type = eclim#vcs#util#GetVcsType()
   if type == ''
     return
   endif
+
   try
     return function('eclim#vcs#impl#' . type . '#' . a:func_name)
   catch /E700:.*/

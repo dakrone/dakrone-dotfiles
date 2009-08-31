@@ -76,8 +76,6 @@ Java
 
 - Logging (|vim-java-logging|)
 
-- Abbreviations (|vim-java-abbreviations|)
-
 - Regex Testing (|vim-java-regex|)
 
 - Java Tools Integration (|vim-java-tools|)

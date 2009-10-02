@@ -30,22 +30,25 @@ endif
 
 " }}}
 
+" Options {{{
+
+setlocal completefunc=eclim#javascript#complete#CodeComplete
+
+" }}}
+
 " Autocmds {{{
 
-if g:EclimJavascriptValidate
-  augroup eclim_javascript_validate
-    autocmd!
-    autocmd BufWritePost *.js call eclim#javascript#validate#Validate(1)
-  augroup END
-endif
+augroup eclim_javascript
+  autocmd! BufWritePost <buffer>
+  autocmd BufWritePost <buffer>
+    \ call eclim#javascript#util#UpdateSrcFile(g:EclimJavascriptValidate)
+augroup END
 
 " }}}
 
 " Command Declarations {{{
 
-if !exists(":Validate")
-  command -nargs=0 -buffer Validate :call eclim#javascript#validate#Validate(0)
-endif
+command! -nargs=0 -buffer Validate :call eclim#javascript#util#UpdateSrcFile(1)
 
 " }}}
 

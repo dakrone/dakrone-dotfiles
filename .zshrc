@@ -18,6 +18,9 @@ export PATH=$PATH:/var/lib/gems/1.8/bin
 export PATH=$PATH:~/src/ruby/jruby/bin
 # Path for postgres
 export PATH=$PATH:/opt/local/lib/postgresql84/bin
+# Path for local gems
+export PATH=$PATH:~/.gem/ruby/1.8/bin
+export PATH=$PATH:~/.gem/ruby/1.9/bin
 
 # Chris' ruby stuff
 export RUBYLIB=~/src/chrisbin/ruby
@@ -45,6 +48,12 @@ source ~/bin/j.sh
 
 # rvm stuff:
 if [ -s ~/.rvm/scripts/rvm ] ; then source ~/.rvm/scripts/rvm ; fi
+
+# path for maven
+export PATH=$PATH:/opt/apache-maven-2.2.1
+
+# IRBRC
+export IRBRC=~/.irbrc
 
 
 # Term settings, if we exist as a screen term, use xterm-color instead of screen-bce.
@@ -234,3 +243,6 @@ bindkey "^k" kill-line
 bindkey ' ' magic-space    # also do history expansion on space
 bindkey '^I' complete-word # complete on tab, leave expansion to _expand
 
+
+
+source /Users/hinmanm/.profile

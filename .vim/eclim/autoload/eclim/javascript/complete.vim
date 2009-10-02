@@ -1,7 +1,7 @@
 " Author:  Eric Van Dewoestine
 "
 " Description: {{{
-"   see http://eclim.sourceforge.net/vim/dtd/index.html
+"   see http://eclim.sourceforge.net/vim/javascript/complete.html
 "
 " License:
 "
@@ -22,31 +22,16 @@
 "
 " }}}
 
-" Global Variables {{{
-
-if !exists("g:EclimDtdValidate")
-  let g:EclimDtdValidate = 1
-endif
-
+" Script Varables {{{
+  let s:complete_command =
+    \ '-command javascript_complete ' .
+    \ '-p "<project>" -f "<file>" -o <offset> -e <encoding>'
 " }}}
 
-" Autocmds {{{
-
-if g:EclimDtdValidate
-  augroup eclim_css_validate
-    autocmd! BufWritePost <buffer>
-    autocmd BufWritePost <buffer> call eclim#lang#Validate('dtd', 1)
-  augroup END
-endif
-
-" }}}
-
-" Command Declarations {{{
-
-if !exists(":Validate")
-  command -nargs=0 -buffer Validate :call eclim#lang#Validate('dtd', 0)
-endif
-
-" }}}
+" CodeComplete(findstart, base) {{{
+" Handles code completion.
+function! eclim#javascript#complete#CodeComplete(findstart, base)
+  return eclim#lang#CodeComplete(s:complete_command, a:findstart, a:base)
+endfunction " }}}
 
 " vim:ft=vim:fdm=marker

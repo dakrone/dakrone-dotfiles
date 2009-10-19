@@ -32,8 +32,11 @@ clj_cp="."
 [ -f ~/.clojurerc ] && clj_rc=~/.clojurerc
 [ -d "${clj_ext}" ] && clj_cp="${clj_cp}:${clj_ext}/*"
 
+[ -n "${clj_cp_other}" ] && clj_cp="${clj_cp}:${clj_cp_other}"
+
 if [ -n "${clj_lib}" ]; then
     export LD_LIBRARY_PATH=${clj_lib}:$LD_LIBRARY_PATH
 fi
 
+echo "java -Dpid=$$ ${clj_opts} -cp ${clj_cp}:${clj} ${clj_wrapper} ${clj_class} ${clj_rc} $*"
 exec java -Dpid=$$ ${clj_opts} -cp ${clj_cp}:${clj} ${clj_wrapper} ${clj_class} ${clj_rc} $*

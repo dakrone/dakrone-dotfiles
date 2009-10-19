@@ -2,7 +2,7 @@
 "   Original: Gergely Kontra <kgergely@mcl.hu>
 "   Current:  Eric Van Dewoestine <ervandew@gmail.com> (as of version 0.4)
 "   Please direct all correspondence to Eric.
-" Version: 0.60
+" Version: 0.61
 "
 " Description: {{{
 "   Use your tab key to do all your completion in insert mode!
@@ -411,7 +411,8 @@ endfunction " }}}
 
 " s:SetDefaultCompletionType() {{{
 function! s:SetDefaultCompletionType()
-  if exists('b:SuperTabDefaultCompletionType') && !b:complCommandLine
+  if exists('b:SuperTabDefaultCompletionType') &&
+  \ (!exists('b:complCommandLine') || !b:complCommandLine)
     call SuperTabSetCompletionType(b:SuperTabDefaultCompletionType)
   endif
 endfunction " }}}

@@ -321,9 +321,9 @@ nmap q: :q
 " save and build
 nmap <LocalLeader>wm  :w<cr>:make<cr>
 " open all folds
-nmap <LocalLeader>fo  :%foldopen!<cr>
+nmap <LocalLeader>o  :%foldopen!<cr>
 " close all folds
-nmap <LocalLeader>fc  :%foldclose!<cr>
+nmap <LocalLeader>c  :%foldclose!<cr>
 " ,tt will toggle taglist on and off
 nmap <LocalLeader>tt :Tlist<cr>
 " ,nn will toggle NERDTree on and off
@@ -399,7 +399,7 @@ nmap <silent> <LocalLeader>s V<LocalLeader>s
 " Annotate the full buffer
 " I actually prefer ggVG to %; it's a sort of poor man's visual bell 
 " ,fe for "Full Eval"
-nmap <silent> <LocalLeader>fe mzggVG!xmpfilter -a<cr>'z
+nmap <silent> <LocalLeader>Fe mzggVG!xmpfilter -a<cr>'z
 
 " assertions
 nmap <silent> <S-F11> mzggVG!xmpfilter -u<cr>'z

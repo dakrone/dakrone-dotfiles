@@ -66,11 +66,6 @@ if !exists('g:loaded_ctk')
     command! -nargs=? -bar -bang -count=0 RUN call s:find_and_call('s:run',
                 \ [<count>, <q-args>, <q-bang>])
 
-    map <silent> <Plug>CTK_compile :<C-U>exec v:count.'CC'<CR>
-    imap <silent> <Plug>CTK_compile <ESC>:<C-U>exec v:count.'CC'<CR>
-    map <silent> <Plug>CTK_run :<C-U>exec v:count.'RUN'<CR>
-    imap <silent> <Plug>CTK_run <ESC>:<C-U>exec v:count.'RUN'<CR>
-
     amenu &Tools.&CTK.&Start :StartCTK<CR>
     amenu &Tools.&CTK.&Stop  :StopCTK<CR>
     amenu &Tools.&CTK.-Sep- :
@@ -96,8 +91,8 @@ if !exists('g:loaded_ctk')
             au FileType * call s:call('s:set_fname', [])
         augroup END
 
-        map gc <Plug>CTK_compile
-        map gC <Plug>CTK_run
+        map gc <C-\><C-N>:<C-U>exec v:count."CC!"<CR>
+        map gC <C-\><C-N>:<C-U>exec v:count."RUN"<CR>
 
         if a:bang == '!'
             call s:call('s:delete_ci', [])
@@ -187,6 +182,7 @@ let s:def_attr = {'cmd': ':echo "Done Nothing"', 'run': ':echo "Done Nothing"',
 
 " patterns {{{2
 
+let s:pat_cmd_is_shell = '\v^[^:]|^:!|^:sil%[ent]\s+!'
 let s:pat_cmdtag = '\v\$(\l+)|\$\{(q-)=(\l+)}'
 let s:pat_com = ':\zs[^,]\+'
 let s:pat_com_begin = 's.\=:\zs[^,]\+\ze'
@@ -200,6 +196,7 @@ let s:pat_fname_escape = "[ \t\n*?[{`$\\%#''\"|!<]"
 let s:pat_info ='\v^\s*(.{-})%(\s+(.{-})\s*)=$' 
 let s:pat_info_var = '\v(\w+)\s*(\+)=\=\s*(\S)(.{-})\3'
 let s:pat_modeline = '\v<cc%(-([^:]*))=:\s*(.*)'
+let s:pat_run_direct = '#*RUN_DIRECT'
 let s:pat_shellcmdtitle = '^!\=\zs.\{-}\ze\(\s\|$\)'
 
 " }}}2
@@ -327,6 +324,11 @@ function! s:expand_fname(fname, mode) " {{{2
 
 "    call Dret('s:expand_fname : '.fname)
     return fname
+endfunction
+
+function! s:is_run_direct() " {{{2
+    return get(get(get(b:{s:ci}, 'status', {}),
+                \ 'info', {}), 'cmd', '') =~ s:pat_run_direct
 endfunction
 
 function! s:begin_setinfo() " {{{2
@@ -530,17 +532,20 @@ function! s:exec_cmd(cmdarg) " {{{2
 "    call Dfunc('s:exec_cmd(cmdarg = '.a:cmdarg.')')
 
     let cmd = a:cmdarg
+    let cmd_is_shell = (cmd =~ s:pat_cmd_is_shell)
+
     if has('win32') && &enc != g:ctk_cmdenc && exists('*iconv')
-                \ && cmd =~ '^:!\|^:silent !\|^[^:]'
+                \ && cmd_is_shell
         let cmd = iconv(cmd, &enc, g:ctk_cmdenc)
     endif
 
     if cmd[0] == ':'
-        " XXX: if you use redir or silent in cmdarg, remember below steps:
-        "       redir END
-        "       silent! command_need_silent_executed
-        "       redir =>> g:ctk_redir
-        redir => g:ctk_redir | silent! exec cmd | redir END
+        if has('gui_running') || !cmd_is_shell
+            redir => g:ctk_redir | silent! exec cmd | redir END
+        else
+            redir => g:ctk_redir | exec cmd | redir END
+            if &term != 'linux' | redraw! | endif
+        endif
         let output = g:ctk_redir
     else
         silent! let output = system(cmd[0] == '!' ? cmd[1:] : cmd)
@@ -771,7 +776,8 @@ function! s:compile(count, entry, bang) " {{{1
     let stat = ci.status
 
 "    call Decho('current changenr = '.changenr().' and stat->changenr = '.get(stat, 'changenr', -1))
-    if get(stat, 'changenr', -1) == changenr()
+    if !s:is_run_direct()
+                \ && get(stat, 'changenr', -1) == changenr()
                 \ && (a:count == 0 || get(stat, 'idx', -1) == a:count - 1)
                 \ && (a:entry == '' || get(stat, 'entry', '') == a:entry)
         redraw | echo 'Buffer no changed, Nothing Done.'
@@ -786,6 +792,11 @@ function! s:compile(count, entry, bang) " {{{1
     let stat.entry = a:entry == '' ? get(stat, 'entry', '') : a:entry
     let stat.idx = a:count == 0 ? get(stat, 'idx', 0) : a:count - 1
     let stat.info = s:make_info(ci.list[stat.idx])
+
+    if s:is_run_direct()
+        call s:run(a:count, a:entry, a:bang)
+        return 1
+    endif
 
     " "entry" is just something like trigger. you press :CC entry, then
     " "entry" specified commands will be executed.
@@ -834,7 +845,7 @@ function! s:run(count, entry, bang) " {{{1
                 \ ', bang = '.a:bang.')')
 
     let bufnr = bufnr('%')
-    if s:compile(a:count, a:entry, a:bang) | return 1 | endif
+    if !s:is_run_direct() && s:compile(a:count, a:entry, a:bang) | return 1 | endif
     exec bufwinnr(bufnr).'wincmd w'
 
     " use locale program
@@ -857,7 +868,6 @@ function! s:run(count, entry, bang) " {{{1
 
     let res = s:exec_cmd(cmd)
 
-    " TODO: sometimes there are two hit-enter notify, but term linux only one.
     if &term != 'linux'
         if res !~ '^\_s*$' && !has('gui_running')
             redraw
@@ -865,8 +875,6 @@ function! s:run(count, entry, bang) " {{{1
                 echomsg line
             endfor
         endif
-
-        redraw!
     endif
 
 "    call Dret('s:run')

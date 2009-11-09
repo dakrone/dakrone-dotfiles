@@ -71,10 +71,6 @@ let g:vimwiki_rxListNumber = '^\s\+#'
 
 let g:vimwiki_rxListDefine = '::\(\s\|$\)'
 
-
-" Treat all other lines that start with spaces as PRE-formatted text.
-let g:vimwiki_rxPre1 = '^\s\+[^[:blank:]*#].*$'
-
 " Preformatted text
 let g:vimwiki_rxPreStart = '{{{'
 let g:vimwiki_rxPreEnd = '}}}'

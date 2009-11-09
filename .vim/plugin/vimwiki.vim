@@ -44,8 +44,8 @@ function! s:find_wiki(path) "{{{
 endfunction "}}}
 
 function! s:setup_buffer_leave()"{{{
-  if !exists("b:vimwiki_idx")
-    let b:vimwiki_idx=g:vimwiki_current_idx
+  if &filetype == 'vimwiki' && !exists("b:vimwiki_idx")
+    let b:vimwiki_idx = g:vimwiki_current_idx
   endif
 endfunction"}}}
 
@@ -60,6 +60,13 @@ function! s:setup_buffer_enter() "{{{
     let path = expand('%:p:h')
     let ext = '.'.expand('%:e')
     let idx = s:find_wiki(path)
+
+    " The buffer's file is not in the path and user do not want his wiki
+    " extension to be global -- do not add new wiki.
+    if idx == -1 && g:vimwiki_global_ext == 0
+      return
+    endif
+
     if idx == -1
       call add(g:vimwiki_list, {'path': path, 'ext': ext})
       let g:vimwiki_current_idx = len(g:vimwiki_list) - 1
@@ -70,59 +77,36 @@ function! s:setup_buffer_enter() "{{{
     let b:vimwiki_idx = g:vimwiki_current_idx
   endif
 
+  call s:setup_colors()
+
   if &filetype != 'vimwiki'
     setlocal ft=vimwiki
   else
     setlocal syntax=vimwiki
   endif
 endfunction "}}}
-" }}}
 
-" DEFAULT wiki {{{
-let s:vimwiki_defaults = {}
-let s:vimwiki_defaults.path = '~/vimwiki/'
-let s:vimwiki_defaults.path_html = '~/vimwiki_html/'
-let s:vimwiki_defaults.css_name = 'style.css'
-let s:vimwiki_defaults.index = 'index'
-let s:vimwiki_defaults.ext = '.wiki'
-let s:vimwiki_defaults.folding = 1
-let s:vimwiki_defaults.maxhi = 1
-let s:vimwiki_defaults.syntax = 'default'
-let s:vimwiki_defaults.gohome = 'split'
-let s:vimwiki_defaults.html_header = ''
-let s:vimwiki_defaults.html_footer = ''
-"}}}
+function! s:setup_colors()"{{{
+  if g:vimwiki_hl_headers == 0
+    return
+  endif
 
-" DEFAULT options {{{
-if &encoding == 'utf-8'
-  call s:default('upper', 'A-Z\u0410-\u042f')
-  call s:default('lower', 'a-z\u0430-\u044f')
-else
-  call s:default('upper', 'A-Z')
-  call s:default('lower', 'a-z')
-endif
-call s:default('other', '0-9')
-call s:default('stripsym', '_')
-call s:default('auto_listitem', 1)
-call s:default('auto_checkbox', 1)
-call s:default('use_mouse', 0)
-call s:default('fold_empty_lines', 0)
-call s:default('menu', 'Vimwiki')
-call s:default('current_idx', 0)
-call s:default('list', [s:vimwiki_defaults])
-
-let upp = g:vimwiki_upper
-let low = g:vimwiki_lower
-let oth = g:vimwiki_other
-let nup = low.oth
-let nlo = upp.oth
-let any = upp.nup
-
-let g:vimwiki_word1 = '\C\<['.upp.']['.nlo.']*['.
-      \ low.']['.nup.']*['.upp.']['.any.']*\>'
-let g:vimwiki_word2 = '\[\[[^\]]\+\]\]'
-let g:vimwiki_rxWikiWord = g:vimwiki_word1.'\|'.g:vimwiki_word2
-"}}}
+  if &background == 'light'
+    hi def wikiHeader1 guibg=bg guifg=#e03010 gui=bold ctermfg=Magenta
+    hi def wikiHeader2 guibg=bg guifg=#309010 gui=bold ctermfg=Magenta
+    hi def wikiHeader3 guibg=bg guifg=#1030a0 gui=bold ctermfg=Blue
+    hi def wikiHeader4 guibg=bg guifg=#103040 gui=bold ctermfg=Black
+    hi def wikiHeader5 guibg=bg guifg=#001020 gui=bold ctermfg=Black
+    hi def wikiHeader6 guibg=bg guifg=#000000 gui=bold ctermfg=Black
+  else
+    hi def wikiHeader1 guibg=bg guifg=#ff8090 gui=bold ctermfg=Magenta
+    hi def wikiHeader2 guibg=bg guifg=#20f040 gui=bold ctermfg=Green
+    hi def wikiHeader3 guibg=bg guifg=#6090f0 gui=bold ctermfg=Yellow
+    hi def wikiHeader4 guibg=bg guifg=#c0c0f0 gui=bold ctermfg=White
+    hi def wikiHeader5 guibg=bg guifg=#e0e0f0 gui=bold ctermfg=White
+    hi def wikiHeader6 guibg=bg guifg=#f0f0f0 gui=bold ctermfg=White
+  endif
+endfunction"}}}
 
 " OPTION get/set functions {{{
 " return value of option for current wiki or if second parameter exists for
@@ -168,6 +152,68 @@ function! VimwikiSet(option, value, ...) "{{{
 endfunction "}}}
 " }}}
 
+" }}}
+
+" DEFAULT wiki {{{
+let s:vimwiki_defaults = {}
+let s:vimwiki_defaults.path = '~/vimwiki/'
+let s:vimwiki_defaults.path_html = '~/vimwiki_html/'
+let s:vimwiki_defaults.css_name = 'style.css'
+let s:vimwiki_defaults.index = 'index'
+let s:vimwiki_defaults.ext = '.wiki'
+let s:vimwiki_defaults.maxhi = 1
+let s:vimwiki_defaults.syntax = 'default'
+let s:vimwiki_defaults.gohome = 'split'
+let s:vimwiki_defaults.html_header = ''
+let s:vimwiki_defaults.html_footer = ''
+"}}}
+
+" DEFAULT options {{{
+if &encoding == 'utf-8'
+  call s:default('upper', 'A-Z\u0410-\u042f')
+  call s:default('lower', 'a-z\u0430-\u044f')
+else
+  call s:default('upper', 'A-Z')
+  call s:default('lower', 'a-z')
+endif
+call s:default('other', '0-9')
+call s:default('stripsym', '_')
+call s:default('badsyms', '')
+call s:default('auto_checkbox', 1)
+call s:default('use_mouse', 0)
+call s:default('folding', 1)
+call s:default('fold_empty_lines', 0)
+call s:default('fold_lists', 1)
+call s:default('menu', 'Vimwiki')
+call s:default('current_idx', 0)
+call s:default('list', [s:vimwiki_defaults])
+call s:default('global_ext', 1)
+call s:default('hl_headers', 0)
+call s:default('hl_cb_checked', 0)
+call s:default('camel_case', 1)
+call s:default('list_ignore_newline', 1)
+
+let upp = g:vimwiki_upper
+let low = g:vimwiki_lower
+let oth = g:vimwiki_other
+let nup = low.oth
+let nlo = upp.oth
+let any = upp.nup
+
+let g:vimwiki_word1 = '\C\<['.upp.']['.nlo.']*['.
+      \ low.']['.nup.']*['.upp.']['.any.']*\>'
+let g:vimwiki_word2 = '\[\[[^\]]\+\]\]'
+let g:vimwiki_word3 = '\[\[[^\]]\+\]\[[^\]]\+\]\]'
+if g:vimwiki_camel_case
+  let g:vimwiki_rxWikiWord = g:vimwiki_word1.'\|'.g:vimwiki_word2.'\|'.g:vimwiki_word3
+else
+  let g:vimwiki_rxWikiWord = g:vimwiki_word2.'\|'.g:vimwiki_word3
+endif
+let g:vimwiki_rxWeblink = '\%("[^"(]\+\((\([^)]\+\))\)\?":\)\?'.
+      \'\%(https\?\|ftp\|gopher\|telnet\|file\|notes\|ms-help\):'.
+      \'\%(\%(\%(//\)\|\%(\\\\\)\)\+[A-Za-z0-9:#@%/;,$~()_?+=.&\\\-]*\)'
+"}}}
+
 " FILETYPE setup for all known wiki extensions {{{
 " Getting all extensions that different wikies could have
 let extensions = {}
@@ -192,7 +238,7 @@ augroup vimwiki
 
     " ColorScheme could have or could have not a wikiHeader1..wikiHeader6
     " highlight groups. We need to refresh syntax after colorscheme change.
-    execute 'autocmd ColorScheme *'.ext.' set syntax=vimwiki'
+    execute 'autocmd ColorScheme *'.ext.' call s:setup_colors() | set syntax=vimwiki'
   endfor
 augroup END
 "}}}

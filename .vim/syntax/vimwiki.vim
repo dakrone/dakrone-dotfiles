@@ -13,8 +13,11 @@ endif
 "" use max highlighting - could be quite slow if there are too many wikifiles
 if VimwikiGet('maxhi')
   " Every WikiWord is nonexistent
-  execute 'syntax match wikiNoExistsWord /\%(^\|[^!]\)\zs'.g:vimwiki_word1.'/'
+  if g:vimwiki_camel_case
+    execute 'syntax match wikiNoExistsWord /\%(^\|[^!]\)\zs'.g:vimwiki_word1.'/'
+  endif
   execute 'syntax match wikiNoExistsWord /'.g:vimwiki_word2.'/'
+  execute 'syntax match wikiNoExistsWord /'.g:vimwiki_word3.'/'
   " till we find them in vimwiki's path
   call vimwiki#WikiHighlightWords()
 else
@@ -24,9 +27,6 @@ else
   execute 'syntax match wikiWord /'.g:vimwiki_word2.'/'
 endif
 
-let g:vimwiki_rxWeblink = '\%("[^"(]\+\((\([^)]\+\))\)\?":\)\?'.
-      \'\%(https\?\|ftp\|gopher\|telnet\|file\|notes\|ms-help\):'.
-      \'\%(\%(\%(//\)\|\%(\\\\\)\)\+[A-Za-z0-9:#@%/;,$~()_?+=.&\\\-]*\)'
 execute 'syntax match wikiLink `'.g:vimwiki_rxWeblink.'`'
 
 " Emoticons: must come after the Textilisms, as later rules take precedence
@@ -58,10 +58,6 @@ execute 'syntax match wikiSubScript /'.g:vimwiki_rxSubScript.'/'
 
 execute 'syntax match wikiCode /'.g:vimwiki_rxCode.'/'
 
-" Aggregate all the regular text highlighting into wikiText
-" syntax cluster wikiText contains=wikiItalic,wikiBold,wikiCode,
-      " \wikiDelText,wikiSuperScript,wikiSubScript,wikiWord,wikiEmoticons
-
 " <hr> horizontal rule
 execute 'syntax match wikiHR /'.g:vimwiki_rxHR.'/'
 
@@ -70,16 +66,15 @@ execute 'syntax match wikiList /'.g:vimwiki_rxListBullet.'/'
 execute 'syntax match wikiList /'.g:vimwiki_rxListNumber.'/'
 execute 'syntax match wikiList /'.g:vimwiki_rxListDefine.'/'
 
-" Treat all other lines that start with spaces as PRE-formatted text.
-execute 'syntax match wikiPre /'.g:vimwiki_rxPre1.'/ contains=wikiComment'
-
 execute 'syntax region wikiPre start=/'.g:vimwiki_rxPreStart.
       \ '/ end=/'.g:vimwiki_rxPreEnd.'/ contains=wikiComment'
 
 " List item checkbox
 syntax match wikiCheckBox /\[.\?\]/
-execute 'syntax match wikiCheckBoxDone /'.g:vimwiki_rxListBullet.'\s*\[x\].*$/'
-execute 'syntax match wikiCheckBoxDone /'.g:vimwiki_rxListNumber.'\s*\[x\].*$/'
+if g:vimwiki_hl_cb_checked
+  execute 'syntax match wikiCheckBoxDone /'.g:vimwiki_rxListBullet.'\s*\[x\].*$/'
+  execute 'syntax match wikiCheckBoxDone /'.g:vimwiki_rxListNumber.'\s*\[x\].*$/'
+endif
 
 syntax region wikiComment start='<!--' end='-->'
 
@@ -117,15 +112,15 @@ hi def link wikiNoExistsWord Error
 
 hi def link wikiPre PreProc
 hi def link wikiLink Underlined
-hi def link wikiList Operator
+hi def link wikiList Statement
+" hi def link wikiList Identifier
 hi def link wikiCheckBox wikiList
 hi def link wikiCheckBoxDone Comment
 hi def link wikiTable PreProc
-hi def link wikiEmoticons Constant
+hi def link wikiEmoticons Character
 hi def link wikiDelText Constant
-hi def link wikiInsText Constant
-hi def link wikiSuperScript Constant
-hi def link wikiSubScript Constant
+hi def link wikiSuperScript Number
+hi def link wikiSubScript Number
 hi def link wikiTodo Todo
 hi def link wikiComment Comment
 

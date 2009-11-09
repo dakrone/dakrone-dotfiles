@@ -35,22 +35,23 @@ if VimwikiGet('syntax') == 'default'
   setl comments=b:\ *\ [\ ],b:\ *[\ ],b:\ *\ [],b:\ *[],b:\ *\ [x],b:\ *[x]
   setl comments+=b:\ #\ [\ ],b:\ #[\ ],b:\ #\ [],b:\ #[],b:\ #\ [x],b:\ #[x]
   setl comments+=b:\ *,b:\ #
+  setl formatlistpat=^\\s\\+[*#]\\s*
 else
   setl comments=n:*\ [\ ],n:*[\ ],n:*\ [],n:*[],n:*\ [x],n:*[x]
   setl comments+=n:#\ [\ ],n:#[\ ],n:#\ [],n:#[],n:#\ [x],n:#[x]
   setl comments+=n:*,n:#
 endif
-setlocal formatoptions=ctnqro
+setlocal formatoptions=tnro
 " COMMENTS }}}
 
 " FOLDING for headers and list items using expr fold method. {{{
-if VimwikiGet('folding')
+if g:vimwiki_folding == 1
   setlocal fdm=expr
 endif
 setlocal foldexpr=VimwikiFoldLevel(v:lnum)
+
 function! VimwikiFoldLevel(lnum) "{{{
   let line = getline(a:lnum)
-  let nline = getline(a:lnum + 1)
 
   " Header folding...
   if line =~ g:vimwiki_rxHeader
@@ -67,49 +68,102 @@ function! VimwikiFoldLevel(lnum) "{{{
   endif
 
   " List item folding...
-  let nnum = a:lnum + 1
+  if g:vimwiki_fold_lists
+    let rx_list_item = '\('.
+          \ g:vimwiki_rxListBullet.'\|'.g:vimwiki_rxListNumber.
+          \ '\)'
 
-  let rx_list_item = '\('.
-        \ g:vimwiki_rxListBullet.'\|'.g:vimwiki_rxListNumber.
-        \ '\)'
-  if line =~ rx_list_item && nline =~ rx_list_item
-    return s:get_li_level(a:lnum, nnum)
-  " list is over, remove foldlevel
-  elseif line =~ rx_list_item && nline !~ rx_list_item
-    return s:get_li_level_last(a:lnum)
+    if line =~ rx_list_item
+      let [nnum, nline] = s:find_next_item(rx_list_item, a:lnum)
+      if nline =~ rx_list_item
+        let level = s:get_li_level(a:lnum, nnum)
+        if !(level < 0 && (nnum - a:lnum) > 1)
+          return s:fold_marker(level)
+        endif
+      elseif nnum - a:lnum == 1
+        " last single-lined list item in a list
+        let level = s:get_li_level_last(a:lnum)
+        return s:fold_marker(level)
+      endif
+    else
+      let [pnum, pline] = s:find_prev_item(rx_list_item, a:lnum)
+      if pline =~ rx_list_item
+        if getline(a:lnum + 1) =~ rx_list_item
+          let level = s:get_li_level(pnum, a:lnum + 1)
+          if level < 0
+            return s:fold_marker(level)
+          endif
+        endif
+
+        let [nnum, nline] = s:find_next_item(rx_list_item, pnum)
+        if nline !~ rx_list_item && nnum-a:lnum == 1
+          " last multi-lined list item in a list
+          let level = s:get_li_level_last(pnum)
+          return s:fold_marker(level)
+        endif
+
+      endif
+    endif
+
   endif
 
   return '='
 endfunction "}}}
 
+function! s:fold_marker(level) "{{{
+  if a:level > 0
+    return "a".a:level
+  elseif a:level < 0
+    return "s".abs(a:level)
+  else
+    return "="
+  endif
+endfunction "}}}
+
+function! s:find_next_item(rx_item, lnum) "{{{
+  let lnum = a:lnum + 1
+
+  while lnum <= line('$')
+    if getline(lnum) =~ a:rx_item
+          \ || getline(lnum) =~ '^\S'
+          \ || indent(lnum) <= indent(a:lnum)
+      break
+    endif
+    let lnum += 1
+  endwhile
+
+  return [lnum, getline(lnum)]
+endfunction "}}}
+
+function! s:find_prev_item(rx_item, lnum) "{{{
+  let lnum = a:lnum - 1
+
+  while lnum > 1
+    if getline(lnum) =~ a:rx_item
+          \ || getline(lnum) =~ '^\S'
+      break
+    endif
+    let lnum -= 1
+  endwhile
+
+  return [lnum, getline(lnum)]
+endfunction "}}}
+
 function! s:get_li_level(lnum, nnum) "{{{
   if VimwikiGet('syntax') == 'media'
-    let level = s:count_first_sym(getline(a:nnum)) -
-          \ s:count_first_sym(getline(a:lnum))
-    if level > 0
-      return "a".level
-    elseif level < 0
-      return "s".abs(level)
-    else
-      return "="
-    endif
+    let level = vimwiki#count_first_sym(getline(a:nnum)) -
+          \ vimwiki#count_first_sym(getline(a:lnum))
   else
     let level = ((indent(a:nnum) - indent(a:lnum)) / &sw)
-    if level > 0
-      return "a".level
-    elseif level < 0
-      return "s".abs(level)
-    else
-      return "="
-    endif
   endif
+  return level
 endfunction "}}}
 
 function! s:get_li_level_last(lnum) "{{{
   if VimwikiGet('syntax') == 'media'
-    return "s".(s:count_first_sym(getline(a:lnum)) - 1)
+    return -(vimwiki#count_first_sym(getline(a:lnum)) - 1)
   else
-    return "s".(indent(a:lnum) / &sw - 1)
+    return -(indent(a:lnum) / &sw - 1)
   endif
 endfunction "}}}
 
@@ -200,9 +254,13 @@ noremap <silent><script><buffer>
 
 if !hasmapto('<Plug>VimwikiToggleListItem')
   nmap <silent><buffer> <C-Space> <Plug>VimwikiToggleListItem
+  if has("unix")
+    nmap <silent><buffer> <C-@> <Plug>VimwikiToggleListItem
+  endif
 endif
 noremap <silent><script><buffer>
       \ <Plug>VimwikiToggleListItem :VimwikiToggleListItem<CR>
+
 
 " Text objects {{{
 omap <silent><buffer> ah :<C-U>call vimwiki#TO_header(0)<CR>

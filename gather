@@ -13,6 +13,8 @@ mkdir -p .zg
 cp -f -v ~/.zg/zg.conf .zg/
 cp -f -v ~/.nsmcrc .
 cp -f -v ~/.vimperatorrc .
+mkdir -p .vimperator
+cp -f -rv ~/.vimperator .
 cp -f -v ~/.gitconfig .
 cp -f -v ~/.gitignore .
 mkdir -p .config/irb

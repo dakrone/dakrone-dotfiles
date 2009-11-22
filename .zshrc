@@ -55,6 +55,10 @@ export PATH=$PATH:/opt/apache-maven-2.2.1
 # IRBRC
 export IRBRC=~/.irbrc
 
+# Perforce
+export P4PORT=137.69.227.201:1666
+export P4USER=hinmam
+export P4CLIENT=hinmam_Xanadu
 
 # Term settings, if we exist as a screen term, use xterm-color instead of screen-bce.
 # Otherwise, leave the TERM var alone, because we need it to set terminal titles correctly

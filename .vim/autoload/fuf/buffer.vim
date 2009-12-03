@@ -87,6 +87,16 @@ function s:compareTimeDescending(i1, i2)
   return a:i1.time == a:i2.time ? 0 : a:i1.time > a:i2.time ? -1 : +1
 endfunction
 
+"
+function s:findItem(items, word)
+  for item in a:items
+    if item.word ==# a:word
+      return item
+    endif
+  endfor
+  return {}
+endfunction
+
 " }}}1
 "=============================================================================
 " s:handler {{{1
@@ -100,7 +110,12 @@ endfunction
 
 "
 function s:handler.getPrompt()
-  return g:fuf_buffer_prompt
+  return fuf#formatPrompt(g:fuf_buffer_prompt, self.partialMatching)
+endfunction
+
+"
+function s:handler.getPreviewHeight()
+  return g:fuf_previewHeight
 endfunction
 
 "
@@ -109,17 +124,31 @@ function s:handler.targetsPath()
 endfunction
 
 "
-function s:handler.onComplete(patternSet)
-  return fuf#filterMatchesAndMapToSetRanks(
-        \ self.items, a:patternSet, self.getFilteredStats(a:patternSet.raw))
+function s:handler.makePatternSet(patternBase)
+  return fuf#makePatternSet(a:patternBase, 's:interpretPrimaryPatternForPath',
+        \                   self.partialMatching)
 endfunction
 
 "
-function s:handler.onOpen(expr, mode)
-  " filter the selected item to get the buffer number for handling unnamed buffer
-  call filter(self.items, 'v:val.word ==# a:expr')
-  if !empty(self.items)
-    call fuf#openBuffer(self.items[0].bufNr, a:mode, g:fuf_reuseWindow)
+function s:handler.makePreviewLines(word, count)
+  let item = s:findItem(self.items, a:word)
+  if empty(item)
+    return []
+  endif
+  return fuf#makePreviewLinesForFile(item.bufNr, a:count, self.getPreviewHeight())
+endfunction
+
+"
+function s:handler.getCompleteItems(patternPrimary)
+  return self.items
+endfunction
+
+"
+function s:handler.onOpen(word, mode)
+  " not use bufnr(a:word) in order to handle unnamed buffer
+  let item = s:findItem(self.items, a:word)
+  if !empty(item)
+    call fuf#openBuffer(item.bufNr, a:mode, g:fuf_reuseWindow)
   endif
 endfunction
 

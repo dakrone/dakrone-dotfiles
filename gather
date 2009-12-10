@@ -28,6 +28,8 @@ cp -f -v ~/bin/putvim .
 cp -f -v ~/bin/putzsh .
 cp -f -v ~/bin/clj .
 cp -f -v ~/.clojure.conf .
+mkdir -p .clojure
+cp -f -v ~/.clojure/user.clj .clojure/
 
 mkdir -p .irssi
 cp -f -v ~/.irssi/config .irssi/

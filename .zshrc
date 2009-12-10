@@ -112,6 +112,8 @@ alias js='j --s'
 alias givm='gvim'
 # Colored rspec
 alias cspec='spec -c --format specdoc'
+# Hate perforce.
+alias pchange='p4 changes //dtlt/... -l | less'
 
 
 # history

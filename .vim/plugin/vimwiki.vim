@@ -1,6 +1,7 @@
 " Vimwiki plugin file
 " Author: Maxim Kim <habamax@gmail.com>
 " Home: http://code.google.com/p/vimwiki/
+" GetLatestVimScripts: 2226 1 :AutoInstall: vimwiki
 
 if exists("loaded_vimwiki") || &cp
   finish
@@ -84,6 +85,16 @@ function! s:setup_buffer_enter() "{{{
   else
     setlocal syntax=vimwiki
   endif
+
+  " Settings foldmethod, foldexpr and foldtext are local to window. Thus in a
+  " new tab with the same buffer folding is reset to vim defaults. So we
+  " insist vimwiki folding here.
+  " TODO: remove the same from ftplugin.
+  if g:vimwiki_folding == 1 && &fdm != 'expr'
+    setlocal fdm=expr
+    setlocal foldexpr=VimwikiFoldLevel(v:lnum)
+    setlocal foldtext=VimwikiFoldText()
+  endif
 endfunction "}}}
 
 function! s:setup_colors()"{{{
@@ -92,19 +103,19 @@ function! s:setup_colors()"{{{
   endif
 
   if &background == 'light'
-    hi def wikiHeader1 guibg=bg guifg=#e03010 gui=bold ctermfg=Magenta
-    hi def wikiHeader2 guibg=bg guifg=#309010 gui=bold ctermfg=Magenta
-    hi def wikiHeader3 guibg=bg guifg=#1030a0 gui=bold ctermfg=Blue
-    hi def wikiHeader4 guibg=bg guifg=#103040 gui=bold ctermfg=Black
-    hi def wikiHeader5 guibg=bg guifg=#001020 gui=bold ctermfg=Black
-    hi def wikiHeader6 guibg=bg guifg=#000000 gui=bold ctermfg=Black
+    hi def VimwikiHeader1 guibg=bg guifg=#aa5858 gui=bold ctermfg=DarkRed
+    hi def VimwikiHeader2 guibg=bg guifg=#309010 gui=bold ctermfg=DarkGreen
+    hi def VimwikiHeader3 guibg=bg guifg=#1030a0 gui=bold ctermfg=DarkBlue
+    hi def VimwikiHeader4 guibg=bg guifg=#103040 gui=bold ctermfg=Black
+    hi def VimwikiHeader5 guibg=bg guifg=#001020 gui=bold ctermfg=Black
+    hi def VimwikiHeader6 guibg=bg guifg=#000000 gui=bold ctermfg=Black
   else
-    hi def wikiHeader1 guibg=bg guifg=#ff8090 gui=bold ctermfg=Magenta
-    hi def wikiHeader2 guibg=bg guifg=#20f040 gui=bold ctermfg=Green
-    hi def wikiHeader3 guibg=bg guifg=#6090f0 gui=bold ctermfg=Yellow
-    hi def wikiHeader4 guibg=bg guifg=#c0c0f0 gui=bold ctermfg=White
-    hi def wikiHeader5 guibg=bg guifg=#e0e0f0 gui=bold ctermfg=White
-    hi def wikiHeader6 guibg=bg guifg=#f0f0f0 gui=bold ctermfg=White
+    hi def VimwikiHeader1 guibg=bg guifg=#e08090 gui=bold ctermfg=Red
+    hi def VimwikiHeader2 guibg=bg guifg=#80e090 gui=bold ctermfg=Green
+    hi def VimwikiHeader3 guibg=bg guifg=#6090e0 gui=bold ctermfg=Blue
+    hi def VimwikiHeader4 guibg=bg guifg=#c0c0f0 gui=bold ctermfg=White
+    hi def VimwikiHeader5 guibg=bg guifg=#e0e0f0 gui=bold ctermfg=White
+    hi def VimwikiHeader6 guibg=bg guifg=#f0f0f0 gui=bold ctermfg=White
   endif
 endfunction"}}}
 
@@ -132,9 +143,10 @@ function! VimwikiGet(option, ...) "{{{
   " then add it
   if a:option == 'path' || a:option == 'path_html'
     let p = g:vimwiki_list[idx][a:option]
-    if p !~ '[\/]$'
-      let g:vimwiki_list[idx][a:option] = p.'/'
-    endif
+    " resolve doesn't work quite right with symlinks ended with / or \
+    let p = substitute(p, '[/\\]\+$', '', '')
+    let p = resolve(expand(p))
+    let g:vimwiki_list[idx][a:option] = p.'/'
   endif
 
   return g:vimwiki_list[idx][a:option]
@@ -154,6 +166,24 @@ endfunction "}}}
 
 " }}}
 
+" CALLBACK function "{{{
+" User can redefine it.
+if !exists("*VimwikiWeblinkHandler") "{{{
+  function VimwikiWeblinkHandler(weblink)
+    for browser in g:vimwiki_browsers
+      if executable(browser)
+        if has("win32")
+          execute '!start "'.browser.'" ' . a:weblink
+        else
+          execute '!'.browser.' ' . a:weblink
+        endif
+        return
+      endif
+    endfor
+  endfunction
+endif "}}}
+" CALLBACK }}}
+
 " DEFAULT wiki {{{
 let s:vimwiki_defaults = {}
 let s:vimwiki_defaults.path = '~/vimwiki/'
@@ -166,9 +196,11 @@ let s:vimwiki_defaults.syntax = 'default'
 let s:vimwiki_defaults.gohome = 'split'
 let s:vimwiki_defaults.html_header = ''
 let s:vimwiki_defaults.html_footer = ''
+let s:vimwiki_defaults.nested_syntaxes = {}
 "}}}
 
 " DEFAULT options {{{
+call s:default('list', [s:vimwiki_defaults])
 if &encoding == 'utf-8'
   call s:default('upper', 'A-Z\u0410-\u042f')
   call s:default('lower', 'a-z\u0430-\u044f')
@@ -181,17 +213,34 @@ call s:default('stripsym', '_')
 call s:default('badsyms', '')
 call s:default('auto_checkbox', 1)
 call s:default('use_mouse', 0)
-call s:default('folding', 1)
-call s:default('fold_empty_lines', 0)
-call s:default('fold_lists', 1)
+call s:default('folding', 0)
+call s:default('fold_trailing_empty_lines', 0)
+call s:default('fold_lists', 0)
 call s:default('menu', 'Vimwiki')
-call s:default('current_idx', 0)
-call s:default('list', [s:vimwiki_defaults])
 call s:default('global_ext', 1)
 call s:default('hl_headers', 0)
 call s:default('hl_cb_checked', 0)
 call s:default('camel_case', 1)
 call s:default('list_ignore_newline', 1)
+call s:default('listsyms', ' .oOX')
+if has("win32")
+  call s:default('browsers',
+        \ [
+        \  expand('~').'\Local Settings\Application Data\Google\Chrome\Application\chrome.exe',
+        \  'C:\Program Files\Opera\opera.exe',
+        \  'C:\Program Files\Mozilla Firefox\firefox.exe',
+        \  'C:\Program Files\Internet Explorer\iexplore.exe',
+        \ ])
+else
+  call s:default('browsers',
+        \ [
+        \  'opera',
+        \  'firefox',
+        \  'konqueror',
+        \ ])
+endif
+
+call s:default('current_idx', 0)
 
 let upp = g:vimwiki_upper
 let low = g:vimwiki_lower
@@ -236,7 +285,7 @@ augroup vimwiki
     execute 'autocmd BufEnter *'.ext.' call s:setup_buffer_enter()'
     execute 'autocmd BufLeave,BufHidden *'.ext.' call s:setup_buffer_leave()'
 
-    " ColorScheme could have or could have not a wikiHeader1..wikiHeader6
+    " ColorScheme could have or could have not a VimwikiHeader1..VimwikiHeader6
     " highlight groups. We need to refresh syntax after colorscheme change.
     execute 'autocmd ColorScheme *'.ext.' call s:setup_colors() | set syntax=vimwiki'
   endfor

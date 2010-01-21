@@ -29,26 +29,28 @@ execute 'setlocal suffixesadd='.VimwikiGet('ext')
 setlocal isfname-=[,]
 " gf}}}
 
-" COMMENTS: autocreate list items {{{
+" Autocreate list items {{{
 " for list items, and list items with checkboxes
 if VimwikiGet('syntax') == 'default'
-  setl comments=b:\ *\ [\ ],b:\ *[\ ],b:\ *\ [],b:\ *[],b:\ *\ [x],b:\ *[x]
-  setl comments+=b:\ #\ [\ ],b:\ #[\ ],b:\ #\ [],b:\ #[],b:\ #\ [x],b:\ #[x]
-  setl comments+=b:\ *,b:\ #
-  setl formatlistpat=^\\s\\+[*#]\\s*
+  setl comments=b:*,b:#,b:-
+  setl formatlistpat=^\\s*[*#-]\\s*
 else
-  setl comments=n:*\ [\ ],n:*[\ ],n:*\ [],n:*[],n:*\ [x],n:*[x]
-  setl comments+=n:#\ [\ ],n:#[\ ],n:#\ [],n:#[],n:#\ [x],n:#[x]
-  setl comments+=n:*,n:#
+  setl comments=n:*,n:#
 endif
 setlocal formatoptions=tnro
+
+inoremap <expr> <CR> vimwiki_lst#insertCR()
+nnoremap o :call vimwiki_lst#insertOo('o')<CR>a
+nnoremap O :call vimwiki_lst#insertOo('O')<CR>a
+
 " COMMENTS }}}
 
 " FOLDING for headers and list items using expr fold method. {{{
 if g:vimwiki_folding == 1
   setlocal fdm=expr
+  setlocal foldexpr=VimwikiFoldLevel(v:lnum)
+  setlocal foldtext=VimwikiFoldText()
 endif
-setlocal foldexpr=VimwikiFoldLevel(v:lnum)
 
 function! VimwikiFoldLevel(lnum) "{{{
   let line = getline(a:lnum)
@@ -56,77 +58,85 @@ function! VimwikiFoldLevel(lnum) "{{{
   " Header folding...
   if line =~ g:vimwiki_rxHeader
     let n = vimwiki#count_first_sym(line)
-    return '>' . n
+    return '>'.n
   endif
 
-  if g:vimwiki_fold_empty_lines == 0
-    let nnline = getline(nextnonblank(a:lnum + 1))
-    if nnline =~ g:vimwiki_rxHeader
-      let n = vimwiki#count_first_sym(nnline)
-      return '<' . n
+  if g:vimwiki_fold_trailing_empty_lines == 0
+    if line =~ '^\s*$'
+      let nnline = getline(nextnonblank(a:lnum + 1))
+      if nnline =~ g:vimwiki_rxHeader
+        let n = vimwiki#count_first_sym(nnline)
+        return '<'.n
+      endif
     endif
   endif
 
   " List item folding...
   if g:vimwiki_fold_lists
+    let base_level = s:get_base_level(a:lnum)
+
     let rx_list_item = '\('.
           \ g:vimwiki_rxListBullet.'\|'.g:vimwiki_rxListNumber.
           \ '\)'
 
+
     if line =~ rx_list_item
-      let [nnum, nline] = s:find_next_item(rx_list_item, a:lnum)
-      if nline =~ rx_list_item
-        let level = s:get_li_level(a:lnum, nnum)
-        if !(level < 0 && (nnum - a:lnum) > 1)
-          return s:fold_marker(level)
-        endif
-      elseif nnum - a:lnum == 1
-        " last single-lined list item in a list
-        let level = s:get_li_level_last(a:lnum)
-        return s:fold_marker(level)
+      let [nnum, nline] = s:find_forward(rx_list_item, a:lnum)
+      let level = s:get_li_level(a:lnum)
+      let leveln = s:get_li_level(nnum)
+      let adj = s:get_li_level(s:get_start_list(rx_list_item, a:lnum))
+
+      if leveln > level
+        return ">".(base_level+leveln-adj)
+      else
+        return (base_level+level-adj)
       endif
     else
-      let [pnum, pline] = s:find_prev_item(rx_list_item, a:lnum)
+      " process multilined list items
+      let [pnum, pline] = s:find_backward(rx_list_item, a:lnum)
       if pline =~ rx_list_item
-        if getline(a:lnum + 1) =~ rx_list_item
-          let level = s:get_li_level(pnum, a:lnum + 1)
-          if level < 0
-            return s:fold_marker(level)
+        if indent(a:lnum) > indent(pnum)
+          let level = s:get_li_level(pnum)
+          let adj = s:get_li_level(s:get_start_list(rx_list_item, pnum))
+
+          let [nnum, nline] = s:find_forward(rx_list_item, a:lnum)
+          if nline =~ rx_list_item
+            let leveln = s:get_li_level(nnum)
+            if leveln > level
+              return (base_level+leveln-adj)
+            endif
           endif
-        endif
 
-        let [nnum, nline] = s:find_next_item(rx_list_item, pnum)
-        if nline !~ rx_list_item && nnum-a:lnum == 1
-          " last multi-lined list item in a list
-          let level = s:get_li_level_last(pnum)
-          return s:fold_marker(level)
+          return (base_level+level-adj)
         endif
-
       endif
     endif
 
+    return base_level
   endif
 
-  return '='
+  return -1
 endfunction "}}}
 
-function! s:fold_marker(level) "{{{
-  if a:level > 0
-    return "a".a:level
-  elseif a:level < 0
-    return "s".abs(a:level)
-  else
-    return "="
-  endif
+function! s:get_base_level(lnum) "{{{
+  let lnum = a:lnum - 1
+  while lnum > 0
+    if getline(lnum) =~ g:vimwiki_rxHeader
+      return vimwiki#count_first_sym(getline(lnum))
+    endif
+    let lnum -= 1
+  endwhile
+  return 0
 endfunction "}}}
 
-function! s:find_next_item(rx_item, lnum) "{{{
+function! s:find_forward(rx_item, lnum) "{{{
   let lnum = a:lnum + 1
 
   while lnum <= line('$')
-    if getline(lnum) =~ a:rx_item
-          \ || getline(lnum) =~ '^\S'
-          \ || indent(lnum) <= indent(a:lnum)
+    let line = getline(lnum)
+    if line =~ a:rx_item
+          \ || line =~ '^\S'
+          \ || line =~ g:vimwiki_rxHeader
       break
     endif
     let lnum += 1
@@ -135,12 +145,13 @@ function! s:find_next_item(rx_item, lnum) "{{{
   return [lnum, getline(lnum)]
 endfunction "}}}
 
-function! s:find_prev_item(rx_item, lnum) "{{{
+function! s:find_backward(rx_item, lnum) "{{{
   let lnum = a:lnum - 1
 
   while lnum > 1
-    if getline(lnum) =~ a:rx_item
-          \ || getline(lnum) =~ '^\S'
+    let line = getline(lnum)
+    if line =~ a:rx_item
+          \ || line =~ '^\S'
       break
     endif
     let lnum -= 1
@@ -149,28 +160,31 @@ function! s:find_prev_item(rx_item, lnum) "{{{
   return [lnum, getline(lnum)]
 endfunction "}}}
 
-function! s:get_li_level(lnum, nnum) "{{{
+function! s:get_li_level(lnum) "{{{
   if VimwikiGet('syntax') == 'media'
-    let level = vimwiki#count_first_sym(getline(a:nnum)) -
-          \ vimwiki#count_first_sym(getline(a:lnum))
+    let level = vimwiki#count_first_sym(getline(a:lnum))
   else
-    let level = ((indent(a:nnum) - indent(a:lnum)) / &sw)
+    let level = (indent(a:lnum) / &sw)
   endif
   return level
 endfunction "}}}
 
-function! s:get_li_level_last(lnum) "{{{
-  if VimwikiGet('syntax') == 'media'
-    return -(vimwiki#count_first_sym(getline(a:lnum)) - 1)
-  else
-    return -(indent(a:lnum) / &sw - 1)
-  endif
+function! s:get_start_list(rx_item, lnum) "{{{
+  let lnum = a:lnum
+  while lnum >= 1
+    let line = getline(lnum)
+    if line !~ a:rx_item && line =~ '^\S'
+      return nextnonblank(lnum + 1)
+    endif
+    let lnum -= 1
+  endwhile
+  return 0
 endfunction "}}}
 
-setlocal foldtext=VimwikiFoldText()
 function! VimwikiFoldText() "{{{
-  let line = getline(v:foldstart)
-  return line.' ['.(v:foldend - v:foldstart).'] '
+  let line = substitute(getline(v:foldstart), '\t',
+        \ repeat(' ', &tabstop), 'g')
+  return line.' ['.(v:foldend - v:foldstart).']'
 endfunction "}}}
 
 " FOLDING }}}
@@ -191,7 +205,14 @@ command! -buffer VimwikiGoBackWord call vimwiki#WikiGoBackWord()
 command! -buffer VimwikiSplitWord call vimwiki#WikiFollowWord('split')
 command! -buffer VimwikiVSplitWord call vimwiki#WikiFollowWord('vsplit')
 
-command! -buffer VimwikiToggleListItem call vimwiki_lst#ToggleListItem()
+command! -buffer -range VimwikiToggleListItem call vimwiki_lst#ToggleListItem(<line1>, <line2>)
+
+exe 'command! -buffer -nargs=* VimwikiSearch vimgrep <args> '.
+      \ escape(VimwikiGet('path').'**/*'.VimwikiGet('ext'), ' ')
+
+exe 'command! -buffer -nargs=* VWS vimgrep <args> '.
+      \ escape(VimwikiGet('path').'**/*'.VimwikiGet('ext'), ' ')
+
 " COMMANDS }}}
 
 " KEYBINDINGS {{{
@@ -254,6 +275,7 @@ noremap <silent><script><buffer>
 
 if !hasmapto('<Plug>VimwikiToggleListItem')
   nmap <silent><buffer> <C-Space> <Plug>VimwikiToggleListItem
+  vmap <silent><buffer> <C-Space> <Plug>VimwikiToggleListItem
   if has("unix")
     nmap <silent><buffer> <C-@> <Plug>VimwikiToggleListItem
   endif
@@ -263,11 +285,11 @@ noremap <silent><script><buffer>
 
 
 " Text objects {{{
-omap <silent><buffer> ah :<C-U>call vimwiki#TO_header(0)<CR>
-vmap <silent><buffer> ah :<C-U>call vimwiki#TO_header(0)<CR>
+omap <silent><buffer> ah :<C-U>call vimwiki#TO_header(0, 0)<CR>
+vmap <silent><buffer> ah :<C-U>call vimwiki#TO_header(0, 1)<CR>
 
-omap <silent><buffer> ih :<C-U>call vimwiki#TO_header(1)<CR>
-vmap <silent><buffer> ih :<C-U>call vimwiki#TO_header(1)<CR>
+omap <silent><buffer> ih :<C-U>call vimwiki#TO_header(1, 0)<CR>
+vmap <silent><buffer> ih :<C-U>call vimwiki#TO_header(1, 1)<CR>
 
 nmap <silent><buffer> = :call vimwiki#AddHeaderLevel()<CR>
 nmap <silent><buffer> - :call vimwiki#RemoveHeaderLevel()<CR>

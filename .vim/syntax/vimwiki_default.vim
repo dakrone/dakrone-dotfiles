@@ -8,7 +8,7 @@
 " let g:vimwiki_rxBold = '\*[^*]\+\*'
 let g:vimwiki_rxBold = '\%(^\|\s\|[[:punct:]]\)\@<='.
       \'\*'.
-      \'\([^*`[:space:]][^*`]*[^*`[:space:]]\|[^*`]\)'.
+      \'\%([^*`[:space:]][^*`]*[^*`[:space:]]\|[^*`]\)'.
       \'\*'.
       \'\%([[:punct:]]\|\s\|$\)\@='
 
@@ -16,20 +16,20 @@ let g:vimwiki_rxBold = '\%(^\|\s\|[[:punct:]]\)\@<='.
 " let g:vimwiki_rxItalic = '_[^_]\+_'
 let g:vimwiki_rxItalic = '\%(^\|\s\|[[:punct:]]\)\@<='.
       \'_'.
-      \'\([^_`[:space:]][^_`]*[^_`[:space:]]\|[^_`]\)'.
+      \'\%([^_`[:space:]][^_`]*[^_`[:space:]]\|[^_`]\)'.
       \'_'.
       \'\%([[:punct:]]\|\s\|$\)\@='
 
 " text: *_bold italic_* or _*italic bold*_
 let g:vimwiki_rxBoldItalic = '\%(^\|\s\|[[:punct:]]\)\@<='.
       \'\*_'.
-      \'\([^*_`[:space:]][^*_`]*[^*_`[:space:]]\|[^*_`]\)'.
+      \'\%([^*_`[:space:]][^*_`]*[^*_`[:space:]]\|[^*_`]\)'.
       \'_\*'.
       \'\%([[:punct:]]\|\s\|$\)\@='
 
 let g:vimwiki_rxItalicBold = '\%(^\|\s\|[[:punct:]]\)\@<='.
       \'_\*'.
-      \'\([^*_`[:space:]][^*_`]*[^*_`[:space:]]\|[^*_`]\)'.
+      \'\%([^*_`[:space:]][^*_`]*[^*_`[:space:]]\|[^*_`]\)'.
       \'\*_'.
       \'\%([[:punct:]]\|\s\|$\)\@='
 
@@ -65,9 +65,9 @@ let g:vimwiki_rxHR = '^----.*$'
 " Tables. Each line starts and ends with '||'; each cell is separated by '||'
 let g:vimwiki_rxTable = '||'
 
-" List items start with whitespace(s) then '*' or '#'
-let g:vimwiki_rxListBullet = '^\s\+\*'
-let g:vimwiki_rxListNumber = '^\s\+#'
+" List items start with optional whitespace(s) then '* ' or '# '
+let g:vimwiki_rxListBullet = '^\s*\%(\*\|-\)\s'
+let g:vimwiki_rxListNumber = '^\s*#\s'
 
 let g:vimwiki_rxListDefine = '::\(\s\|$\)'
 

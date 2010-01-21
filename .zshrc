@@ -103,8 +103,6 @@ alias tcpdump='tcpdump -ttttnnn'
 alias vless=/usr/share/vim/vim72/macros/less.sh
 alias week='remind -c+1 ~/.reminders'
 alias month='remind -c ~/.reminders'
-alias flacsync='rsync -av --delete --ignore-existing ~/Music/FLAC/ /media/ALTHALUS/FLAC/'
-alias musicsync='rsync -av --delete --ignore-existing ~/Music/Library/ /media/ALTHALUS/Library/'
 alias gps='geektool-ps'
 alias jl='j --l'
 alias jr='j --r'
@@ -114,6 +112,10 @@ alias givm='gvim'
 alias cspec='spec -c --format specdoc'
 # Hate perforce.
 alias pchange='p4 changes //dtlt/... -l | less'
+# Tmux stuff
+# force 256 color mode
+alias tmux='tmux -2'
+alias screen='tmux'
 
 
 # history
@@ -252,3 +254,6 @@ bindkey '^I' complete-word # complete on tab, leave expansion to _expand
 
 
 source /Users/hinmanm/.profile
+
+# Remove ctrl+y from the keybinds for delayed suspend
+stty dsusp undef

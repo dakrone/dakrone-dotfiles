@@ -9,7 +9,7 @@ auto-reload                 yes
 bloglines-auth              ""
 bloglines-mark-read         no
 bookmark-cmd                ricepaper.sh
-browser                     firefox -new-tab %u
+browser                     open -a Firefox.app %u --args -new-tab
 cleanup-on-quit             yes
 confirm-exit                yes
 #define-filter
@@ -28,8 +28,8 @@ opml-url                    ""
 #proxy-auth
 refresh-on-startup          yes
 reload-only-visible-feeds   no
-reload-time                 20
-reload-threads              3
+reload-time                 30
+reload-threads              4
 show-keymap-hint            yes
 show-read-articles          yes
 suppress-first-reload       yes
@@ -68,19 +68,19 @@ color           article     default      default
 # highlights
 #
 # This isn't working correctly right now
-#highlight article       "^Feed:.*"                          green   default
-#highlight article       "^Title:.*"                         cyan    default bold
-#highlight article       "^Author:.*"                        cyan    default
-#highlight article       "^Link:.*"                          magenta default
-#highlight article       "^Date:.*"                          yellow  default
-#highlight article       "^Podcast Download URL:.*"          blue    default bold
-#highlight article       "^Links:"                           white   blue    bold
-#highlight article       "\\[[0-9][0-9]*\\]"                 green   default bold
-#highlight article       "\\[image [0-9][0-9]*\\]"           green   default bold
-#highlight article       "\\[embedded flash: [0-9][0-9]*\\]" green   default bold
-#highlight article       ":.*\\(link\\)$"                    magenta default
-#highlight article       ":.*\\(image\\)$"                   magenta default
-#highlight article       ":.*\\(embedded flash\\)$"          magenta default
-#highlight feedlist      "^  *[0-9]+  *N  *.*"               green   default
-#highlight articlelist   "^  *[0-9]+  *N  *.*"               green   default
+highlight article       "^Feed:.*"                          green   default
+highlight article       "^Title:.*"                         cyan    default bold
+highlight article       "^Author:.*"                        cyan    default
+highlight article       "^Link:.*"                          magenta default
+highlight article       "^Date:.*"                          yellow  default
+highlight article       "^Podcast Download URL:.*"          blue    default bold
+highlight article       "^Links:"                           white   blue    bold
+highlight article       "\\[[0-9][0-9]*\\]"                 green   default bold
+highlight article       "\\[image [0-9][0-9]*\\]"           green   default bold
+highlight article       "\\[embedded flash: [0-9][0-9]*\\]" green   default bold
+highlight article       ":.*\\(link\\)$"                    magenta default
+highlight article       ":.*\\(image\\)$"                   magenta default
+highlight article       ":.*\\(embedded flash\\)$"          magenta default
+highlight feedlist      "^  *[0-9]+  *N  *.*"               green   default
+highlight articlelist   "^  *[0-9]+  *N  *.*"               green   default
 

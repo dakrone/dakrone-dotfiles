@@ -70,11 +70,10 @@ if !has("gui_running")
       " (http://www.culater.net/software/TerminalColors/TerminalColors.php)
       " to change the really hard-to-read dark blue into a lighter shade.
       " Or; Use iterm with Tango colors
-      "colorscheme ir_black_new     " only when I can change certain colors
-      colorscheme rdark
+      colorscheme ir_black_new     " my customized version
+      "colorscheme rdark
 end
 if has("gui_running")
-      "colorscheme ir_black_new     " only when I can change certain colors
       colorscheme rdark
       let rdark_current_line=1  " highlight current line
       set background=dark

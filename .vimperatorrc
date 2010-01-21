@@ -30,3 +30,5 @@ inputElm.addEventListener('blur', swapBGColor,false);
 })();
 EOM
 
+" Disbale beep. Drives me crazy because I still use Apple+#
+javascript liberator.beep = function() { return false; }

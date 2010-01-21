@@ -21,9 +21,11 @@ fi
 
 # Whether to load the repl or script
 if [ -z "$1" ]; then
-	clj_class=clojure.lang.Repl
+	#clj_class=clojure.lang.Repl
+	clj_class=clojure.main
 else
-	clj_class=clojure.lang.Script
+	#clj_class=clojure.lang.Script
+	clj_class="clojure.main -i"
 fi
 
 clj_cp="."

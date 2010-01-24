@@ -21,4 +21,4 @@ termcapinfo screen-bce "Co#256:AB=\E[48;5;%dm:AF=\E[38;5;%dm"
 defbce "on"
 
 # Keep our layout, restore on reattach
-layout new default
+#layout new default

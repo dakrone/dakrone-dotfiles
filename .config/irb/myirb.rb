@@ -16,7 +16,7 @@ module MyIRB
     irb/completion irb/ext/save-history thread
     yaml fileutils date open-uri pp monitor
     rubygems map_by_method what_methods
-    english/array english/inflect ruby2ruby
+    english/inflect ruby2ruby
     hpricot stringio mechanize stored_hash
     looksee/shortcuts duration highline wirble
     hirb]

@@ -59,6 +59,7 @@ export IRBRC=~/.irbrc
 export P4PORT=137.69.227.201:1666
 export P4USER=hinmam
 export P4CLIENT=hinmam_Xanadu
+export P4DIFF=vimdiff
 
 # Term settings, if we exist as a screen term, use xterm-color instead of screen-bce.
 # Otherwise, leave the TERM var alone, because we need it to set terminal titles correctly
@@ -115,7 +116,7 @@ alias pchange='p4 changes //dtlt/... -l | less'
 # Tmux stuff
 # force 256 color mode
 alias tmux='tmux -2'
-alias screen='tmux'
+alias screen='TERM=xterm-color && /opt/local/bin/screen'
 
 
 # history

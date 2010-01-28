@@ -127,7 +127,7 @@ let g:clj_want_gorilla=1            " Bananas! (Make sure nailgun in is your pat
 
 " Settings for yankring
 let g:yankring_history_dir="/Users/hinmanm/.vim/"
-let g:yankring_history_file="/Users/hinmanm/.vim/yank.txt"
+let g:yankring_history_file="yank.txt"
 
 " Settings for twitvim
 let twitvim_login=''                " Requires using ,ts to input your username/password

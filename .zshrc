@@ -59,7 +59,7 @@ export IRBRC=~/.irbrc
 export P4PORT=137.69.227.201:1666
 export P4USER=hinmam
 export P4CLIENT=hinmam_Xanadu
-export P4DIFF=vimdiff
+#export P4DIFF=vimdiff
 
 # Term settings, if we exist as a screen term, use xterm-color instead of screen-bce.
 # Otherwise, leave the TERM var alone, because we need it to set terminal titles correctly
@@ -144,13 +144,15 @@ function parse_git_branch() {
 
 
 # prompt (if running screen, show window #)
-if [ x$WINDOW != x ]; then
+#if [ x$WINDOW != x ]; then
     # [5:hinmanm@dagger:~]% 
-    export PS1="%{$fg[blue]%}[%{$fg[cyan]%}$WINDOW%{$fg[blue]%}:%{$fg[green]%}%n%{$fg[cyan]%}@%{$fg[green]%}%m%{$fg[blue]%}:%{$fg[magenta]%}%~%{$fg[blue]%}]%{$reset_color%}%# "
-else
+    #export PS1="%{$fg[blue]%}[%{$fg[cyan]%}$WINDOW%{$fg[blue]%}:%{$fg[green]%}%n%{$fg[cyan]%}@%{$fg[green]%}%m%{$fg[blue]%}:%{$fg[magenta]%}%~%{$fg[blue]%}]%{$reset_color%}%# "
+    #export PS1="%{$fg[magenta]%}$WINDOW %{$fg[blue]%}‹ %{$fg[green]%}%~%{$fg[blue]%} › %{$fg[green]%}∴%{$reset_color%} "
+#else
     # [hinmanm@dagger:~]% 
-    export PS1="%{$fg[blue]%}[%{$fg[green]%}%n%{$fg[cyan]%}@%{$fg[green]%}%m%{$fg[blue]%}:%{$fg[magenta]%}%~%{$fg[blue]%}]%{$reset_color%}%# "
-fi
+    #export PS1="%{$fg[blue]%}[%{$fg[green]%}%n%{$fg[cyan]%}@%{$fg[green]%}%m%{$fg[blue]%}:%{$fg[magenta]%}%~%{$fg[blue]%}]%{$reset_color%}%# "
+    export PS1="%{$fg[grey]%}‹ %{$fg[blue]%}%~%{$fg[grey]%} › %{$fg[green]%}∴%{$reset_color%} "
+#fi
 export RPRMOPT="%{$reset_color%}"
 
 # format titles for screen and rxvt

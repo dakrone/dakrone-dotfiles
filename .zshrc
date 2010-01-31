@@ -101,6 +101,7 @@ alias scsetup='sudo socat -d -d TCP4-listen:6666,fork OPENSSL:typoet.com:443,cer
 alias scsetup2='sudo socat -d -d TCP4-listen:7777,fork OPENSSL:blackex:443,cert=host.pem,verify=0'
 alias blackexprox='ssh -i ~/.ssh/id_rawpacket -ND 9999 hinmanm@localhost -p 7777'
 alias blackprox='ssh -i ~/.ssh/id_rawpacket -ND 9999 hinmanm@black'
+alias styxprox='ssh -i ~/.ssh/id_rawpacket -ND 9999 lee@localhost -p 6666'
 alias tcpdump='tcpdump -ttttnnn'
 alias vless=/usr/share/vim/vim72/macros/less.sh
 alias week='remind -c+1 ~/.reminders'

@@ -1,8 +1,8 @@
 " Script Nmame: code toolkit
 " File Name:    ctk.vim
 " Author:       StarWing
-" Version:      0.4
-" Last Change:  2009-05-09 23:12:57
+" Version:      0.5
+" Last Change:  2010-01-28 20:53:29
 " Note:         see :ctk for details
 " ======================================================{{{1
 
@@ -28,19 +28,24 @@ if !exists('g:loaded_ctk')
     call s:defopt('g:ctk_autofname', 'strftime("%Y-%m-%d")."-".idx')
     call s:defopt('g:ctk_autostart', 1)
     call s:defopt('g:ctk_cinfo_file', '.compiler_info')
-    call s:defopt('g:ctk_cmdenc', 'cp936')
     call s:defopt('g:ctk_defoutput', './output')
     call s:defopt('g:ctk_ext_var', 'ft_ext')
     call s:defopt('g:ctk_tempdir', './noname')
 
     if has('win32')
+        call s:defopt('g:ctk_cmdenc', 'cp936')
+        call s:defopt('g:ctk_envvarfmt', '%var%')
         call s:defopt('g:ctk_execprg', executable('vimrun') ?
                     \ 'start vimrun $exec' : 'start $exec')
-    elseif has('unix') && has('gui_running')
-        call s:defopt('g:ctk_execprg', 'xterm -e "$exec; '.
+    elseif has('unix')
+        call s:defopt('g:ctk_cmdenc', 'utf-8')
+        call s:defopt('g:ctk_envvarfmt', '${var}')
+        call s:defopt('g:ctk_execprg', has('gui_running') ? 'xterm -e "$exec; '.
                     \ 'echo \"$exec returned $?\";read -s -n1 '.
-                    \ '-p\"press any key to continue...\"" &')
+                    \ '-p\"press any key to continue...\"" &' : '')
     else
+        call s:defopt('g:ctk_cmdenc', '')
+        call s:defopt('g:ctk_envvarfmt', '')
         call s:defopt('g:ctk_execprg', '')
     endif
 
@@ -49,8 +54,10 @@ if !exists('g:loaded_ctk')
     " commands & menus {{{2
     command! -bar -bang StartCTK call s:start_ctk('<bang>')
     command! -bar StopCTK call s:stop_ctk()
+    command! -bar RefreshCTK call s:refresh_ctk()
     command! -bar EditCompilerInfo exec 'drop '.globpath(&rtp, g:ctk_cinfo_file)
-
+                \| au BufWritePost <buffer> call s:refresh_ctk()
+    
     command! -bar -nargs=1 SetExtensionName let b:{g:ctk_ext_var} = <q-args>
     command! -nargs=* -complete=custom,s:info_item_complete -bang
 	    \ SetCompilerInfo call s:call('s:set_compiler_info', [<q-args>, '<bang>'])
@@ -107,6 +114,20 @@ if !exists('g:loaded_ctk')
         silent! unmap gc
         silent! unmap gC
     endfunction
+
+function! s:refresh_ctk() " {{{3
+    call s:start_ctk('')
+    let cur_winnr = winnr()
+
+    while 1
+        if exists('b:compiler_info') 
+            call s:delete_ci()
+            silent! filetype detect
+        endif
+        silent! wincmd w
+        if winnr() == cur_winnr | return | endif
+    endwhile
+endfunction
 
     function! s:echoerr(msg) " {{{3
         echohl ErrorMsg
@@ -183,7 +204,7 @@ let s:def_attr = {'cmd': ':echo "Done Nothing"', 'run': ':echo "Done Nothing"',
 " patterns {{{2
 
 let s:pat_cmd_is_shell = '\v^[^:]|^:!|^:sil%[ent]\s+!'
-let s:pat_cmdtag = '\v\$(\l+)|\$\{(q-)=(\l+)}'
+let s:pat_cmdtag = '\v\$(\h\w*)|\$\{([Qq]-)=(\h\w*)}'
 let s:pat_com = ':\zs[^,]\+'
 let s:pat_com_begin = 's.\=:\zs[^,]\+\ze'
 let s:pat_com_end = 'e.\=:\zs[^,]\+\ze'
@@ -293,11 +314,23 @@ function! s:expand_var(entry, default) " {{{2
     let key = submatch(1) == '' ? submatch(3) : submatch(1)
     let val = s:get_entry_val(a:default ? '' : a:entry, key, submatch(0))
 
+"    call Decho('replace '.key.' to '.val)
     if submatch(2) ==? 'q-'
         let escape_val = escape(val, '\"')
         return a:default ? escape_val : '"'.escape_val.'"'
     endif
 
+    return val
+endfunction
+
+function! s:expand_env() " {{{2
+    let key = submatch(1) == '' ? submatch(3) : submatch(1)
+    let val = substitute(g:ctk_envvarfmt, '\<var\>', key, 'g')
+
+"    call Decho('replace '.key.' to '.val)
+    if submatch(2) ==? 'q-'
+        return '"'.val.'"'
+    endif
     return val
 endfunction
 
@@ -534,7 +567,7 @@ function! s:exec_cmd(cmdarg) " {{{2
     let cmd = a:cmdarg
     let cmd_is_shell = (cmd =~ s:pat_cmd_is_shell)
 
-    if has('win32') && &enc != g:ctk_cmdenc && exists('*iconv')
+    if g:ctk_cmdenc != '' && &enc != g:ctk_cmdenc && exists('*iconv')
                 \ && cmd_is_shell
         let cmd = iconv(cmd, &enc, g:ctk_cmdenc)
     endif
@@ -601,7 +634,11 @@ function! s:process_placeholder(cmd, entry) " {{{2
     endif
     let cmd = substitute(cmd, s:pat_filespec_nonescape,
                 \ '\=s:expand_fname(submatch(0), cmd[0])', 'g')
+
     let cmd = substitute(cmd, s:pat_filespec_escape, '', 'g')
+    if g:ctk_envvarfmt != ''
+        let cmd = substitute(cmd, s:pat_cmdtag, '\=s:expand_env()', 'g')
+    endif
 
 "    call Dret('s:process_placeholder : '.cmd)
     return cmd

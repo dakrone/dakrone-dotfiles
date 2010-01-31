@@ -170,6 +170,7 @@
 :PublicTwitter	twitvim.txt	/*:PublicTwitter*
 :RUN	ctk.txt	/*:RUN*
 :RateLimitTwitter	twitvim.txt	/*:RateLimitTwitter*
+:RefreshCTK	ctk.txt	/*:RefreshCTK*
 :RefreshTwitter	twitvim.txt	/*:RefreshTwitter*
 :RepliesTwitter	twitvim.txt	/*:RepliesTwitter*
 :Rexplore	pi_netrw.txt	/*:Rexplore*
@@ -602,6 +603,7 @@ ctk_autostart	ctk.txt	/*ctk_autostart*
 ctk_cinfo_file	ctk.txt	/*ctk_cinfo_file*
 ctk_cmdenc	ctk.txt	/*ctk_cmdenc*
 ctk_defoutput	ctk.txt	/*ctk_defoutput*
+ctk_envvarfmt	ctk.txt	/*ctk_envvarfmt*
 ctk_execprg	ctk.txt	/*ctk_execprg*
 ctk_ext_var	ctk.txt	/*ctk_ext_var*
 ctk_tempdir	ctk.txt	/*ctk_tempdir*

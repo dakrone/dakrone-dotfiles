@@ -1,6 +1,6 @@
 " compiler infomation file
 " Maintainer: StarWing
-" Last Change: 2009-05-10 13:41:26
+" Last Change: 2010-01-28 20:56:01
 " need ctk {{{1
 
 if !exists('g:loaded_ctk')
@@ -55,23 +55,41 @@ au FileType cpp SetCompilerInfo! vc++
     	\ asm_flags='/FAs $flags'
 
 " }}}1
-" filetype ruby {{{1
+" filetype lua {{{1
 
-au FileType ruby SetExtensionName rb
-au FileType ruby SetCompilerInfo! ruby
-	    \ title='Ruby 1.9.1 - Matz'
-	    \ cmd='ruby $flags $input'
-	    \ run='ruby $input'
-	    \ flags='-wc' debug_flags='-rdebug $flags'
+au FileType lua SetExtensionName lua
+au FileType lua SetCompilerInfo! lua
+	    \ title='lua' src='%:.'
+	    \ cmd="#RUN_DIRECT"
+	    \ run="lua $flags -- $src $args" args=''
+	    \ flags='' debug_flags=''
+
+" filetype perl {{{1
+
+au FileType perl SetExtensionName pl
+au FileType perl SetCompilerInfo! perl
+	    \ title='perl' src='%:.'
+	    \ cmd="#RUN_DIRECT"
+	    \ run="perl $flags -- $src $args" args=''
+	    \ flags='-w' debug_flags='-wd'
 
 " filetype python {{{1
 
 au FileType python SetExtensionName py
 au FileType python SetCompilerInfo! python
-	    \ title='Python' input='%:.'
+	    \ title='Python' src='%:.'
 	    \ cmd="#RUN_DIRECT"
-	    \ run="python $flags $input"
-	    \ flags='-O' debug_flags='-d'
+	    \ run="python $flags $src $args" args=''
+	    \ flags='-OO' debug_flags='-d'
+
+" filetype ruby {{{1
+
+au FileType ruby SetExtensionName rb
+au FileType ruby SetCompilerInfo! ruby
+	    \ title='Ruby 1.9.1 - Matz' src='%:.'
+	    \ cmd='#RUN_DIRECT'
+	    \ run='ruby $flags -- $src $args' args=''
+	    \ flags='-w' debug_flags='-rdebug $flags'
 
 " terminational works {{{1
 let &cpo = s:cpo_save

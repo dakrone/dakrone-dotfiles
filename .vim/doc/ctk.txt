@@ -2,7 +2,7 @@
 
 ctk - Compile Toolkit					*ctk* *CTK*
     Wroten by StarWing <weasley_wx AT qq DOT com>
-Last Change: May 10th, 2009
+Last Change: 2010-01-28 21:04:52
 
 |ctk-description|	Description
 |ctk-options|		Option
@@ -60,6 +60,11 @@ CTK commands		   					*ctk-commands*
 
 		with '!', StartCTK will also reload and refresh current
 		compiler info.
+
+								 *:RefreshCTK*
+:RefreshCTK
+		reload the CTK compiler info file and refresh all displayed
+		buffers in Vim.
 
 :[N]CC[!] {entry}
 		this command is used to invoke specified compiler. [N] is your
@@ -349,6 +354,10 @@ a line in vim |:echo|.
 if cmd is the string "#RUN_DIRECT", then when you press cmd hotkey, the
 compiler will not run, and the "run" tag will be run instead.
 
+in several subscript languages (lua, perl, python and ruby, etc.), you can use
+"src" to specifie script file, use "args" to specifie runtime argument, and
+use "flags" to pass flags to intepreter.
+
 in run='!$output' or run='$output', the run tag is a shell-command tag. it
 will be run in a shell.
 
@@ -376,6 +385,8 @@ below).
 you can also use ${q-output} for a placeholder, that means the value will be
 quoted, just like <q-args> sign of :command |<a-args>|.
 
+if ctk can't find the placeholder you specified, it will replace placeholder
+to a enviroment variable. |ctk_envvarfmt|
 
 							       *ctk-entry-tag*
 
@@ -587,6 +598,17 @@ your .vimrc file |.vimrc| to modified ctk.
 >
  let g:ctk_tempdir = './noname'
 <			this is the temporary folder to contain noname file.
+
+							       *ctk_envvarfmt*
+ if has('win32')
+     let g:ctk_envvarfmt = '%var%'
+ elseif has('unix')
+     let g:ctk_envvarfmt = '${var}'
+ else
+     let g:ctk_envvarfmt = ''
+ endif
+			this option is used to substitute placeholder to a
+enviroment variable.
 
 								 *ctk_execprg*
 >

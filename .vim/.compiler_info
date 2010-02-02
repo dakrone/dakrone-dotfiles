@@ -88,7 +88,7 @@ au FileType ruby SetExtensionName rb
 au FileType ruby SetCompilerInfo! ruby
 	    \ title='Ruby 1.9.1 - Matz' src='%:.'
 	    \ cmd='#RUN_DIRECT'
-	    \ run='ruby $flags -- $src $args' args=''
+	    \ run='ruby -w $flags -- $src $args' args=''
 	    \ flags='-w' debug_flags='-rdebug $flags'
 
 " terminational works {{{1

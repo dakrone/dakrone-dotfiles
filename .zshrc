@@ -111,11 +111,12 @@ alias jl='j --l'
 alias jr='j --r'
 alias js='j --s'
 alias givm='gvim'
+# Hate perforce.
 alias pd='p4 diff | p4c'
+alias pc='p4 changes //dtlt/... -l | maxhead'
+alias pchange='p4 changes //dtlt/... -l | maxhead'
 # Colored rspec
 alias cspec='spec -c --format specdoc'
-# Hate perforce.
-alias pchange='p4 changes //dtlt/... -l | less'
 # Tmux stuff
 # force 256 color mode
 alias tmux='tmux -2'
@@ -143,6 +144,10 @@ function git_dirty_flag() {
 }
 function parse_git_branch() {
   git branch --no-color 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/ (\1)/'
+}
+# Perforce describe (with color)
+function pdesc() {
+      p4 describe $1 | p4c
 }
 
 

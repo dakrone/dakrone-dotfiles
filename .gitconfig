@@ -17,6 +17,3 @@
   st = status
   stat = status
 	lg = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr)%Creset' --abbrev-commit --date=relative
-[github]
-	user = dakrone
-	token = 34ca541d2d5ff7537ad6ed3ff8165663

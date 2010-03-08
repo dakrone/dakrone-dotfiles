@@ -1,3 +1,4 @@
+[github]	user = dakrone	token = 34ca541d2d5ff7537ad6ed3ff8165663,V
 hg clone http://bitbucket.org/kotarak/clj-gradle/,v
 /custom/installation/path/for/vimplugin,v
 /path/to/clojure-contrib.jar,v
@@ -97,4 +98,3 @@ for,v
  [token],v
 (,v
 h,v
-c,v

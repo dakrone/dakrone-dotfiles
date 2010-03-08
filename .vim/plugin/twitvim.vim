@@ -2,12 +2,12 @@
 " TwitVim - Post to Twitter from Vim
 " Based on Twitter Vim script by Travis Jeffery <eatsleepgolf@gmail.com>
 "
-" Version: 0.4.1
+" Version: 0.4.6
 " License: Vim license. See :help license
 " Language: Vim script
 " Maintainer: Po Shan Cheah <morton@mortonfox.com>
 " Created: March 28, 2008
-" Last updated: March 30, 2009
+" Last updated: February 5, 2010
 "
 " GetLatestVimScripts: 2204 1 twitvim.vim
 " ==============================================================
@@ -30,7 +30,7 @@ let s:char_limit = 246
 " Allow the user to override the API root, e.g. for identi.ca, which offers a
 " Twitter-compatible API.
 function! s:get_api_root()
-    return exists('g:twitvim_api_root') ? g:twitvim_api_root : "http://twitter.com"
+    return exists('g:twitvim_api_root') ? g:twitvim_api_root : "http://api.twitter.com/1"
 endfunction
 
 " Allow user to set the format for retweets.
@@ -91,6 +91,11 @@ function! s:get_count()
     return 0
 endfunction
 
+" User setting to show/hide header in the buffer. Default: show header.
+function! s:get_show_header()
+    return exists('g:twitvim_show_header') ? g:twitvim_show_header : 1
+endfunction
+
 " Display an error message in the message area.
 function! s:errormsg(msg)
     redraw
@@ -111,17 +116,174 @@ endfunction
 " Format is username:password
 " If twitvim_login_b64 exists, use that instead. This is the user:password
 " in base64 encoding.
-function! s:get_twitvim_login()
+" Use this function if the API call doesn't require authentication but
+" can use it if available.
+function! s:get_twitvim_login_noerror()
     if exists('g:twitvim_login_b64') && g:twitvim_login_b64 != ''
 	return g:twitvim_login_b64
     elseif exists('g:twitvim_login') && g:twitvim_login != ''
 	return g:twitvim_login
     else
-	" Beep and error-highlight 
-	execute "normal \<Esc>"
-	call s:errormsg('Twitter login not set. Please add to .vimrc: let twitvim_login="USER:PASS"')
 	return ''
     endif
+endfunction
+
+" Reset login info.
+function! s:reset_twitvim_login()
+    unlet! g:twitvim_login
+    unlet! g:twitvim_login_b64
+endfunction
+
+" Verify login info. This will be used to check whether a username and password
+" pair entered by the user is a valid login.
+"
+" Returns 1 if login succeeded, 0 if login failed, <0 for other errors.
+function! s:check_twitvim_login(user, password)
+    let login = a:user.':'.a:password
+
+    redraw
+    echo "Logging into Twitter..."
+
+    let url = s:get_api_root()."/account/verify_credentials.xml"
+    let [error, output] = s:run_curl(url, login, s:get_proxy(), s:get_proxy_login(), {})
+    if error =~ '401'
+	return 0
+    endif
+
+    if error != ''
+	call s:errormsg("Error logging into Twitter: ".error)
+	return -1
+    endif
+
+    " The following check should not be required because Twitter is supposed to
+    " return a 401 HTTP status on login failure, but you never know with
+    " Twitter.
+    let error = s:xml_get_element(output, 'error')
+    if error =~ '\ccould not authenticate'
+	return 0
+    endif
+
+    if error != ''
+	call s:errormsg("Error logging into Twitter: ".error)
+	return -1
+    endif
+
+    redraw
+    echo "Twitter login succeeded."
+
+    return 1
+endfunction
+
+" Ask user for Twitter login info.
+" Returns user:password. Also saves it in g:twitvim_login for future use.
+" Returns empty string if login canceled or failed.
+function! s:prompt_twitvim_login()
+    let failed = 0
+
+    while 1
+	call inputsave()
+	redraw
+	let user = input((failed ? 'Login failed. Try again. ' : 'Please log in. ')."Twitter username (Esc=exit): ")
+	call inputrestore()
+
+	if user == ''
+	    call s:warnmsg("Twitter login not set.")
+	    return ''
+	endif
+
+	call inputsave()
+	redraw
+	let pass = inputsecret("Twitter password (Esc=exit): ")
+	call inputrestore()
+
+	if pass == ''
+	    call s:warnmsg("Twitter login not set.")
+	    return ''
+	endif
+
+	let result = s:check_twitvim_login(user, pass)
+	if result < 0
+	    " Login didn't succeed or fail but there was some kind of error.
+	    return ''
+	endif
+
+	if result > 0
+	    " Login succeeded.
+	    break
+	endif
+
+	let failed = 1
+    endwhile
+
+    call s:reset_twitvim_login()
+    let g:twitvim_login = user.':'.pass
+    return g:twitvim_login
+endfunction
+
+" Get Twitter login info from twitvim_login in .vimrc or _vimrc.
+" Format is username:password
+" If twitvim_login_b64 exists, use that instead. This is the user:password
+" in base64 encoding.
+function! s:get_twitvim_login()
+    let login = s:get_twitvim_login_noerror()
+    if login == ''
+
+	" Prompt user to enter login info if not already configured.
+	let login = s:prompt_twitvim_login()
+	if login == ''
+	    return ''
+	endif
+
+	" Beep and error-highlight 
+	" execute "normal \<Esc>"
+	" call s:errormsg('Twitter login not set. Please add to .vimrc: let twitvim_login="USER:PASS"')
+	" return ''
+    endif
+    return login
+endfunction
+
+let s:cached_login = ''
+let s:cached_username = ''
+
+" Get Twitter user name by verifying login credentials
+function! s:get_twitvim_username()
+    let login = s:get_twitvim_login()
+    if login == ''
+	return ''
+    endif
+
+    " If we already got the info, no need to get it again.
+    if login == s:cached_login
+	return s:cached_username
+    endif
+
+    redraw
+    echo "Verifying login credentials with Twitter..."
+
+    let url = s:get_api_root()."/account/verify_credentials.xml"
+    let [error, output] = s:run_curl(url, login, s:get_proxy(), s:get_proxy_login(), {})
+    if error != ''
+	call s:errormsg("Error verifying login credentials: ".error)
+	return
+    endif
+
+    let error = s:xml_get_element(output, 'error')
+    if error != ''
+	call s:errormsg("Error verifying login credentials: ".error)
+	return
+    endif
+
+    redraw
+    echo "Twitter login credentials verified."
+
+    let username = s:xml_get_element(output, 'screen_name')
+
+    " Save it so we don't have to do it again unless the user switches to
+    " a different login.
+    let s:cached_login = login
+    let s:cached_username = username
+
+    return username
 endfunction
 
 " If set, twitvim_cert_insecure turns off certificate verification if using
@@ -720,13 +882,15 @@ endif
 
 " Each buffer record holds the following fields:
 "
-" buftype: Buffer type = dmrecv, dmsent, search, public, friends, user, replies
+" buftype: Buffer type = dmrecv, dmsent, search, public, friends, user, replies, list
 " user: For user buffers if other than current user
-" page: Keep track of pagination
+" list: List slug if displaying a Twitter list.
+" page: Keep track of pagination.
 " statuses: Tweet IDs. For use by in_reply_to_status_id
 " inreplyto: IDs of predecessor messages for @-replies.
 " dmids: Direct Message IDs.
-" buffer: The buffer text
+" buffer: The buffer text.
+" showheader: 1 if header is shown in this buffer, 0 if header is hidden.
 
 let s:curbuffer = {}
 
@@ -743,6 +907,9 @@ let s:bufstackptr = -1
 " Add current buffer to the buffer stack at the next position after current.
 " Remove all buffers after that.
 function! s:add_buffer()
+
+    " If stack is already full, remove the buffer at the bottom of the stack to
+    " make room.
     if s:bufstackptr >= s:bufstackmax
 	call remove(s:bufstack, 0)
 	let s:bufstackptr -= 1
@@ -774,12 +941,15 @@ function! s:save_buffer()
 	execute curwin .  "wincmd w"
     endif
 
-    if s:bufstackptr >= 0 && s:curbuffer.buftype == s:bufstack[s:bufstackptr].buftype && s:curbuffer.user == s:bufstack[s:bufstackptr].user && s:curbuffer.page == s:bufstack[s:bufstackptr].page
+    " If current buffer is the same type as buffer at the top of the stack,
+    " then just copy it.
+    if s:bufstackptr >= 0 && s:curbuffer.buftype == s:bufstack[s:bufstackptr].buftype && s:curbuffer.list == s:bufstack[s:bufstackptr].list && s:curbuffer.user == s:bufstack[s:bufstackptr].user && s:curbuffer.page == s:bufstack[s:bufstackptr].page
 
 	let s:bufstack[s:bufstackptr] = deepcopy(s:curbuffer)
 	return
     endif
 
+    " Otherwise, push the current buffer onto the stack.
     call s:add_buffer()
 endfunction
 
@@ -842,24 +1012,31 @@ endif
 
 " Add update to Twitter buffer if public, friends, or user timeline.
 function! s:add_update(output)
-    if has_key(s:curbuffer, 'buftype') && (s:curbuffer.buftype == "public" || s:curbuffer.buftype == "friends" || s:curbuffer.buftype == "user" || s:curbuffer.buftype == "replies")
+    if has_key(s:curbuffer, 'buftype') && (s:curbuffer.buftype == "public" || s:curbuffer.buftype == "friends" || s:curbuffer.buftype == "user" || s:curbuffer.buftype == "replies" || s:curbuffer.buftype == "list" || s:curbuffer.buftype == "retweeted_by_me" || s:curbuffer.buftype == "retweeted_to_me")
 
 	" Parse the output from the Twitter update call.
 	let line = s:format_status_xml(a:output)
 
+	" Line number where new tweet will be inserted. It should be 3 if
+	" header is shown and 1 if header is hidden.
+	let insline = 1
+	if s:curbuffer.showheader
+	    let insline = 3
+	endif
+
 	" Add the status ID to the current buffer's statuses list.
-	call insert(s:curbuffer.statuses, s:xml_get_element(a:output, 'id'), 3)
+	call insert(s:curbuffer.statuses, s:xml_get_element(a:output, 'id'), insline)
 
 	" Add in-reply-to ID to current buffer's in-reply-to list.
-	call insert(s:curbuffer.inreplyto, s:xml_get_element(a:output, 'in_reply_to_status_id'), 3)
+	call insert(s:curbuffer.inreplyto, s:xml_get_element(a:output, 'in_reply_to_status_id'), insline)
 
 	let twit_bufnr = bufwinnr('^'.s:twit_winname.'$')
 	if twit_bufnr > 0
 	    let curwin = winnr()
 	    execute twit_bufnr . "wincmd w"
 	    set modifiable
-	    call append(2, line)
-	    normal 3G
+	    call append(insline - 1, line)
+	    execute "normal! ".insline."G"
 	    set nomodifiable
 	    execute curwin .  "wincmd w"
 	endif
@@ -935,6 +1112,7 @@ function! s:CmdLine_Twitter(initstr, inreplyto)
     endif
 
     call inputsave()
+    redraw
     let mesg = input("Your Twitter: ", a:initstr)
     call inputrestore()
     call s:post_twitter(mesg, a:inreplyto)
@@ -958,6 +1136,60 @@ function! s:Quick_Reply()
     endif
 endfunction
 
+" Extract all user names from a line in the timeline. Return the poster's name as well as names from all the @replies.
+function! s:get_all_names(line)
+    let names = []
+    let dictnames = {}
+
+    let username = s:get_user_name(getline('.'))
+    if username != ""
+	" Add this to the beginning of the list because we want the tweet
+	" author to be the main addressee in the reply to all.
+	let names = [ username ]
+	let dictnames[tolower(username)] = 1
+    endif
+
+    let matchcount = 1
+    while 1
+	let matchres = matchlist(a:line, '@\(\w\+\)', -1, matchcount)
+	if matchres == []
+	    break
+	endif
+	let name = matchres[1]
+	" Don't add duplicate names.
+	if !has_key(dictnames, tolower(name))
+	    call add(names, name)
+	    let dictnames[tolower(name)] = 1
+	endif
+	let matchcount += 1
+    endwhile
+
+    return names
+endfunction
+
+" Reply to everyone mentioned on a line in the timeline.
+function! s:Reply_All()
+    let names = s:get_all_names(getline('.'))
+
+    " Remove the author from the reply list so that he doesn't end up replying
+    " to himself.
+    let user = s:get_twitvim_username()
+    let names2 = []
+    for name in names
+	if name != user
+	    call add(names2, name)
+	endif
+    endfor
+
+    let replystr = '@'.join(names2, ' @').' '
+
+    if names != []
+	" If the status ID is not available, get() will return 0 and
+	" post_twitter() won't add in_reply_to_status_id to the update.
+	call s:CmdLine_Twitter(replystr, get(s:curbuffer.statuses, line('.')))
+    endif
+endfunction
+
 " This is for a local mapping in the timeline. Start a direct message on the
 " command line to the author of the tweet on the current line.
 function! s:Quick_DM()
@@ -966,6 +1198,11 @@ function! s:Quick_DM()
 	" call s:CmdLine_Twitter('d '.username.' ', 0)
 	call s:send_dm(username, '')
     endif
+endfunction
+
+" Allow user to switch to old-style retweets by setting twitvim_old_retweet.
+function! s:get_old_retweet()
+    return exists('g:twitvim_old_retweet') ? g:twitvim_old_retweet : 0
 endfunction
 
 " Extract the tweet text from a timeline buffer line.
@@ -990,6 +1227,48 @@ function! s:Retweet()
     endif
 endfunction
 
+" Use new-style retweet API to retweet a tweet from another user.
+function! s:Retweet_2()
+
+    " Do an old-style retweet if user has set twitvim_old_retweet.
+    if s:get_old_retweet()
+	call s:Retweet()
+	return
+    endif
+
+    let status = get(s:curbuffer.statuses, line('.'))
+    if status == 0
+	" Fall back to old-style retweeting if we can't get this tweet's status
+	" ID.
+	call s:Retweet()
+	return
+    endif
+
+    let login = s:get_twitvim_login()
+    if login == ''
+	return -1
+    endif
+
+    let parms = {}
+
+    " Force POST instead of GET.
+    let parms["dummy"] = "dummy1"
+
+    let url = s:get_api_root()."/statuses/retweet/".status.".xml"
+
+    redraw
+    echo "Retweeting..."
+
+    let [error, output] = s:run_curl(url, login, s:get_proxy(), s:get_proxy_login(), parms)
+    if error != ''
+	call s:errormsg("Error retweeting: ".error)
+    else
+	call s:add_update(output)
+	redraw
+	echo "Retweeted."
+    endif
+endfunction
+
 " Show which tweet this one is replying to below the current line.
 function! s:show_inreplyto()
     let lineno = line('.')
@@ -1004,6 +1283,9 @@ function! s:show_inreplyto()
     if login == ''
 	return -1
     endif
+
+    redraw
+    echo "Querying Twitter for in-reply-to tweet..."
 
     let url = s:get_api_root()."/statuses/show/".inreplyto.".xml"
     let [error, output] = s:run_curl(url, login, s:get_proxy(), s:get_proxy_login(), {})
@@ -1088,7 +1370,7 @@ function! s:do_delete_tweet()
 
     " Already in the correct buffer so no need to search or switch buffers.
     set modifiable
-    normal dd
+    normal! dd
     set nomodifiable
 
     redraw
@@ -1156,7 +1438,7 @@ vmenu Plugin.TwitVim.Post\ selection <Plug>TwitvimVisual
 function! s:launch_browser(url)
     if !exists('g:twitvim_browser_cmd') || g:twitvim_browser_cmd == ''
 	" Beep and error-highlight 
-	execute "normal \<Esc>"
+	execute "normal! \<Esc>"
 	call s:errormsg('Browser cmd not set. Please add to .vimrc: let twitvim_browser_cmd="browsercmd"')
 	return -1
     endif
@@ -1228,7 +1510,7 @@ function! s:call_longurl(url)
 
 	let longurl = s:xml_get_element(output, 'long_url')
 	if longurl != ""
-	    return longurl
+	    return substitute(longurl, '<!\[CDATA\[\(.*\)]]>', '\1', '')
 	endif
 
 	let errormsg = s:xml_get_element(output, 'error')
@@ -1298,7 +1580,9 @@ let s:twit_winname = "Twitter_".localtime()
 " Set syntax highlighting in timeline window.
 function! s:twitter_win_syntax(wintype)
     " Beautify the Twitter window with syntax highlighting.
-    if has("syntax") && exists("g:syntax_on") && !has("syntax_items")
+    if has("syntax") && exists("g:syntax_on")
+	" Reset syntax items in case there are any predefined in the new buffer.
+	syntax clear
 
 	" Twitter user name: from start of line to first colon.
 	syntax match twitterUser /^.\{-1,}:/
@@ -1382,7 +1666,10 @@ function! s:twitter_win(wintype)
 	    nnoremap <buffer> <silent> <Leader>d :call <SID>Quick_DM()<cr>
 
 	    " Retweet feature for replicating another user's tweet.
-	    nnoremap <buffer> <silent> <Leader>R :call <SID>Retweet()<cr>
+	    nnoremap <buffer> <silent> <Leader>R :call <SID>Retweet_2()<cr>
+
+	    " Reply to all feature.
+	    nnoremap <buffer> <silent> <Leader><C-r> :call <SID>Reply_All()<cr>
 
 	    " Show in-reply-to for current tweet.
 	    nnoremap <buffer> <silent> <Leader>@ :call <SID>show_inreplyto()<cr>
@@ -1423,7 +1710,7 @@ function! s:twitter_wintext_view(text, wintype, view)
     " Delete to the blackhole register "_ so that we don't affect registers.
     silent %delete _
     call setline('.', a:text)
-    normal 1G
+    normal! 1G
 
     set nomodifiable
 
@@ -1451,6 +1738,10 @@ endfunction
 function! s:format_status_xml(item)
     let item = a:item
 
+    " Quick hack. Even though we're getting new-style retweets in the timeline
+    " XML, we'll still use the old-style retweet text from it.
+    let item = s:xml_remove_elements(item, 'retweeted_status')
+
     let user = s:xml_get_element(item, 'screen_name')
     let text = s:convert_entity(s:xml_get_element(item, 'text'))
     let pubdate = s:time_filter(s:xml_get_element(item, 'created_at'))
@@ -1463,10 +1754,6 @@ function! s:show_timeline_xml(timeline, tline_name, username, page)
     let matchcount = 1
     let text = []
 
-    " Index of first status will be 3 to match line numbers in timeline display.
-    let s:curbuffer.statuses = [0, 0, 0]
-    let s:curbuffer.inreplyto = [0, 0, 0]
-
     let s:curbuffer.dmids = []
 
     " Construct page title.
@@ -1476,15 +1763,35 @@ function! s:show_timeline_xml(timeline, tline_name, username, page)
 	let title .= " for ".a:username
     endif
 
+    " Special case titles for Retweets.
+    if a:tline_name == "retweeted_to_me"
+	let title = "Retweets by others"
+    elseif a:tline_name == "retweeted_by_me"
+	let title = "Retweets by you"
+    endif
+
     if a:page > 1
 	let title .= ' (page '.a:page.')'
     endif
 
-    " The extra stars at the end are for the syntax highlighter to recognize
-    " the title. Then the syntax highlighter hides the stars by coloring them
-    " the same as the background. It is a bad hack.
-    call add(text, title.'*')
-    call add(text, repeat('=', s:mbstrlen(title)).'*')
+    let s:curbuffer.showheader = s:get_show_header()
+    if s:curbuffer.showheader
+	" Index of first status will be 3 to match line numbers in timeline
+	" display.
+	let s:curbuffer.statuses = [0, 0, 0]
+	let s:curbuffer.inreplyto = [0, 0, 0]
+
+	" The extra stars at the end are for the syntax highlighter to
+	" recognize the title. Then the syntax highlighter hides the stars by
+	" coloring them the same as the background. It is a bad hack.
+	call add(text, title.'*')
+	call add(text, repeat('=', s:mbstrlen(title)).'*')
+    else
+	" Index of first status will be 1 to match line numbers in timeline
+	" display.
+	let s:curbuffer.statuses = [0]
+	let s:curbuffer.inreplyto = [0]
+    endif
 
     while 1
 	let item = s:xml_get_nth(a:timeline, 'status', matchcount)
@@ -1517,11 +1824,11 @@ function! s:get_timeline(tline_name, username, page)
 	endif
     endif
 
-    " Twitter API allows you to specify a username for user timeline and
-    " friends timeline to retrieve another user's timeline.
+    " Twitter API allows you to specify a username for user_timeline to
+    " retrieve another user's timeline.
     let user = a:username == '' ? '' : '/'.a:username
 
-    let url_fname = a:tline_name == "replies" ? "replies.xml" : a:tline_name."_timeline".user.".xml"
+    let url_fname = (a:tline_name == "replies" || a:tline_name == "retweeted_to_me" || a:tline_name == "retweeted_by_me") ? a:tline_name.".xml" : a:tline_name == "friends" ? "home_timeline.xml" : a:tline_name."_timeline".user.".xml"
 
     " Support pagination.
     if a:page > 1
@@ -1529,8 +1836,8 @@ function! s:get_timeline(tline_name, username, page)
 	let gotparam = 1
     endif
 
-    " Support count parameter in friends and user timelines.
-    if a:tline_name == 'friends' || a:tline_name == 'user'
+    " Support count parameter in friends, user, and retweet timelines.
+    if a:tline_name == 'friends' || a:tline_name == 'user' || a:tline_name == 'retweeted_to_me' || a:tline_name == 'retweeted_by_me'
 	let tcount = s:get_count()
 	if tcount > 0
 	    let url_fname .= (gotparam ? '&' : '?').'count='.tcount
@@ -1561,6 +1868,7 @@ function! s:get_timeline(tline_name, username, page)
     call s:show_timeline_xml(output, a:tline_name, a:username, a:page)
     let s:curbuffer.buftype = a:tline_name
     let s:curbuffer.user = a:username
+    let s:curbuffer.list = ''
     let s:curbuffer.page = a:page
     redraw
 
@@ -1568,6 +1876,70 @@ function! s:get_timeline(tline_name, username, page)
 
     " Uppercase the first letter in the timeline name.
     echo substitute(a:tline_name, '^.', '\u&', '') "timeline updated".foruser."."
+endfunction
+
+" Retrieve a Twitter list timeline.
+function! s:get_list_timeline(username, listname, page)
+    let gotparam = 0
+
+    let login = s:get_twitvim_login_noerror()
+    " No login is no problem because the list statuses API is documented 
+    " to not require authentication. However, you won't see tweets from
+    " protected timelines.
+
+    let user = a:username
+    if user == ''
+	let user = s:get_twitvim_username()
+	if user == ''
+	    call s:errormsg('Twitter login not set. Please specify a username.')
+	    return -1
+	endif
+    endif
+
+    let url = "/".user."/lists/".a:listname."/statuses.xml"
+
+    " Support pagination.
+    if a:page > 1
+	let url .= '?page='.a:page
+	let gotparam = 1
+    endif
+
+    " Support count parameter.
+    let tcount = s:get_count()
+    if tcount > 0
+	let url .= (gotparam ? '&' : '?').'count='.tcount
+	let gotparam = 1
+    endif
+
+    redraw
+    echo "Sending list timeline request to Twitter..."
+
+    let url = s:get_api_root().url
+
+    let [error, output] = s:run_curl(url, login, s:get_proxy(), s:get_proxy_login(), {})
+
+    if error != ''
+	call s:errormsg("Error getting Twitter list timeline: ".error)
+	return
+    endif
+
+    let error = s:xml_get_element(output, 'error')
+    if error != ''
+	call s:errormsg("Error getting Twitter list timeline: ".error)
+	return
+    endif
+
+    call s:save_buffer()
+    let s:curbuffer = {}
+    call s:show_timeline_xml(output, "list", user."/".a:listname, a:page)
+    let s:curbuffer.buftype = "list"
+    let s:curbuffer.user = user
+    let s:curbuffer.list = a:listname
+    let s:curbuffer.page = a:page
+    redraw
+
+    " Uppercase the first letter in the timeline name.
+    echo "List timeline updated for ".user."/".a:listname
 endfunction
 
 " Show direct message sent or received by user. First argument should be 'sent'
@@ -1580,20 +1952,28 @@ function! s:show_dm_xml(sent_or_recv, timeline, page)
     let s:curbuffer.statuses = []
     let s:curbuffer.inreplyto = []
 
-    " Index of first dmid will be 3 to match line numbers in timeline display.
-    let s:curbuffer.dmids = [0, 0, 0]
-
     let title = 'Direct messages '.a:sent_or_recv
 
     if a:page > 1
 	let title .= ' (page '.a:page.')'
     endif
 
-    " The extra stars at the end are for the syntax highlighter to recognize
-    " the title. Then the syntax highlighter hides the stars by coloring them
-    " the same as the background. It is a bad hack.
-    call add(text, title.'*')
-    call add(text, repeat('=', s:mbstrlen(title)).'*')
+    let s:curbuffer.showheader = s:get_show_header()
+    if s:curbuffer.showheader
+	" Index of first dmid will be 3 to match line numbers in timeline
+	" display.
+	let s:curbuffer.dmids = [0, 0, 0]
+
+	" The extra stars at the end are for the syntax highlighter to
+	" recognize the title. Then the syntax highlighter hides the stars by
+	" coloring them the same as the background. It is a bad hack.
+	call add(text, title.'*')
+	call add(text, repeat('=', s:mbstrlen(title)).'*')
+    else
+	" Index of first dmid will be 1 to match line numbers in timeline
+	" display.
+	let s:curbuffer.dmids = [0]
+    endif
 
     while 1
 	let item = s:xml_get_nth(a:timeline, 'direct_message', matchcount)
@@ -1647,6 +2027,7 @@ function! s:Direct_Messages(mode, page)
     call s:show_dm_xml(s_or_r, output, a:page)
     let s:curbuffer.buftype = a:mode
     let s:curbuffer.user = ''
+    let s:curbuffer.list = ''
     let s:curbuffer.page = a:page
     redraw
     echo "Direct messages ".s_or_r." timeline updated."
@@ -1654,9 +2035,11 @@ endfunction
 
 " Function to load a timeline from the given parameters. For use by refresh and
 " next/prev pagination commands.
-function! s:load_timeline(buftype, user, page)
-    if a:buftype == "public" || a:buftype == "friends" || a:buftype == "user" || a:buftype == "replies"
+function! s:load_timeline(buftype, user, list, page)
+    if a:buftype == "public" || a:buftype == "friends" || a:buftype == "user" || a:buftype == "replies" || a:buftype == "retweeted_by_me" || a:buftype == "retweeted_to_me"
 	call s:get_timeline(a:buftype, a:user, a:page)
+    elseif a:buftype == "list"
+	call s:get_list_timeline(a:user, a:list, a:page)
     elseif a:buftype == "dmsent" || a:buftype == "dmrecv"
 	call s:Direct_Messages(a:buftype, a:page)
     elseif a:buftype == "search"
@@ -1667,7 +2050,7 @@ endfunction
 " Refresh the timeline buffer.
 function! s:RefreshTimeline()
     if s:curbuffer != {}
-	call s:load_timeline(s:curbuffer.buftype, s:curbuffer.user, s:curbuffer.page)
+	call s:load_timeline(s:curbuffer.buftype, s:curbuffer.user, s:curbuffer.list, s:curbuffer.page)
     else
 	call s:warnmsg("No timeline buffer to refresh.")
     endif
@@ -1676,7 +2059,7 @@ endfunction
 " Go to next page in timeline.
 function! s:NextPageTimeline()
     if s:curbuffer != {}
-	call s:load_timeline(s:curbuffer.buftype, s:curbuffer.user, s:curbuffer.page + 1)
+	call s:load_timeline(s:curbuffer.buftype, s:curbuffer.user, s:curbuffer.list, s:curbuffer.page + 1)
     else
 	call s:warnmsg("No timeline buffer.")
     endif
@@ -1688,18 +2071,30 @@ function! s:PrevPageTimeline()
 	if s:curbuffer.page <= 1
 	    call s:warnmsg("Timeline is already on first page.")
 	else
-	    call s:load_timeline(s:curbuffer.buftype, s:curbuffer.user, s:curbuffer.page - 1)
+	    call s:load_timeline(s:curbuffer.buftype, s:curbuffer.user, s:curbuffer.list, s:curbuffer.page - 1)
 	endif
     else
 	call s:warnmsg("No timeline buffer.")
     endif
 endfunction
 
+" Get a Twitter list. Need to do a little fiddling because the 
+" username argument is optional.
+function! s:DoList(page, arg1, ...)
+    let user = ''
+    let list = a:arg1
+    if a:0 > 0
+	let user = a:arg1
+	let list = a:1
+    endif
+    call s:get_list_timeline(user, list, a:page)
+endfunction
+
 if !exists(":PublicTwitter")
     command PublicTwitter :call <SID>get_timeline("public", '', 1)
 endif
 if !exists(":FriendsTwitter")
-    command -range=1 -nargs=? FriendsTwitter :call <SID>get_timeline("friends", <q-args>, <count>)
+    command -count=1 FriendsTwitter :call <SID>get_timeline("friends", '', <count>)
 endif
 if !exists(":UserTwitter")
     command -range=1 -nargs=? UserTwitter :call <SID>get_timeline("user", <q-args>, <count>)
@@ -1713,6 +2108,15 @@ endif
 if !exists(":DMSentTwitter")
     command -count=1 DMSentTwitter :call <SID>Direct_Messages("dmsent", <count>)
 endif
+if !exists(":ListTwitter")
+    command -range=1 -nargs=+ ListTwitter :call <SID>DoList(<count>, <f-args>)
+endif
+if !exists(":RetweetedByMeTwitter")
+    command -count=1 RetweetedByMeTwitter :call <SID>get_timeline("retweeted_by_me", '', <count>)
+endif
+if !exists(":RetweetedToMeTwitter")
+    command -count=1 RetweetedToMeTwitter :call <SID>get_timeline("retweeted_to_me", '', <count>)
+endif
 
 nnoremenu Plugin.TwitVim.-Sep1- :
 nnoremenu Plugin.TwitVim.&Friends\ Timeline :call <SID>get_timeline("friends", '', 1)<cr>
@@ -1721,6 +2125,9 @@ nnoremenu Plugin.TwitVim.&Replies\ Timeline :call <SID>get_timeline("replies", '
 nnoremenu Plugin.TwitVim.&Direct\ Messages :call <SID>Direct_Messages("dmrecv", 1)<cr>
 nnoremenu Plugin.TwitVim.Direct\ Messages\ &Sent :call <SID>Direct_Messages("dmsent", 1)<cr>
 nnoremenu Plugin.TwitVim.&Public\ Timeline :call <SID>get_timeline("public", '', 1)<cr>
+
+nnoremenu Plugin.TwitVim.Retweeted\ &By\ Me :call <SID>get_timeline("retweeted_by_me", '', 1)<cr>
+nnoremenu Plugin.TwitVim.Retweeted\ &To\ Me :call <SID>get_timeline("retweeted_to_me", '', 1)<cr>
 
 if !exists(":RefreshTwitter")
     command RefreshTwitter :call <SID>RefreshTimeline()
@@ -1731,6 +2138,18 @@ endif
 if !exists(":PreviousTwitter")
     command PreviousTwitter :call <SID>PrevPageTimeline()
 endif
+
+if !exists(":SetLoginTwitter")
+    command SetLoginTwitter :call <SID>prompt_twitvim_login()
+endif
+if !exists(":ResetLoginTwitter")
+    command ResetLoginTwitter :call <SID>reset_twitvim_login()
+endif
+
+nnoremenu Plugin.TwitVim.-Sep2- :
+nnoremenu Plugin.TwitVim.Set\ Twitter\ Login :call <SID>prompt_twitvim_login()<cr>
+nnoremenu Plugin.TwitVim.Reset\ Twitter\ Login :call <SID>reset_twitvim_login()<cr>
+
 
 " Send a direct message.
 function! s:do_send_dm(user, mesg)
@@ -1759,7 +2178,7 @@ function! s:do_send_dm(user, mesg)
 	call s:warnmsg("Your message was empty. It was not sent.")
     else
 	redraw
-	echo "Sending update to Twitter..."
+	echo "Sending message to ".a:user."..."
 
 	let url = s:get_api_root()."/direct_messages/new.xml?source=twitvim"
 	let parms = { "user" : a:user, "text" : mesg }
@@ -1770,7 +2189,7 @@ function! s:do_send_dm(user, mesg)
 	    call s:errormsg("Error sending your message: ".error)
 	else
 	    redraw
-	    echo "Your message was sent. You used ".mesglen." characters."
+	    echo "Your message was sent to ".a:user.". You used ".mesglen." characters."
 	endif
     endif
 endfunction
@@ -2006,22 +2425,51 @@ function! s:call_tinyurl(url)
     endif
 endfunction
 
+" Get bit.ly username and api key if configured by the user. Otherwise, use a
+" default username and api key.
+function! s:get_bitly_key()
+    if exists('g:twitvim_bitly_user') && exists('g:twitvim_bitly_key')
+	return [ g:twitvim_bitly_user, g:twitvim_bitly_key ]
+    endif
+    return [ 'twitvim', 'R_a53414d2f36a90c3e189299c967e6efc' ]
+endfunction
+
 " Call bit.ly API to shorten a URL.
 function! s:call_bitly(url)
+    let [ user, key ] = s:get_bitly_key()
+
     redraw
     echo "Sending request to bit.ly..."
 
-    let url = 'http://bit.ly/api?url='.s:url_encode(a:url)
+    let url = 'http://api.bit.ly/shorten?version=2.0.1'
+    let url .= '&longUrl='.s:url_encode(a:url)
+    let url .= '&login='.user
+    let url .= '&apiKey='.key.'&format=xml&history=1'
     let [error, output] = s:run_curl(url, '', s:get_proxy(), s:get_proxy_login(), {})
 
     if error != ''
 	call s:errormsg("Error calling bit.ly API: ".error)
 	return ""
-    else
-	redraw
-	echo "Received response from bit.ly."
-	return output
     endif
+
+    let status = s:xml_get_element(output, 'statusCode')
+    if status != 'OK'
+	let errorcode = s:xml_get_element(output, 'errorCode')
+	let errormsg = s:xml_get_element(output, 'errorMessage')
+	if errorcode == 0
+	    " For reasons unknown, bit.ly sometimes return two error codes and
+	    " the first one is 0.
+	    let errorcode = s:xml_get_nth(output, 'errorCode', 2)
+	    let errormsg = s:xml_get_nth(output, 'errorMessage', 2)
+	endif
+	call s:errormsg("Error from bit.ly: ".errorcode." ".errormsg)
+	return ""
+    endif
+
+    let shorturl = s:xml_get_element(output, 'shortUrl')
+    redraw
+    echo "Received response from bit.ly."
+    return shorturl
 endfunction
 
 " Call is.gd API to shorten a URL.
@@ -2062,15 +2510,14 @@ function! s:call_urlborg(url)
 	call s:errormsg("Error calling urlBorg API: ".error)
 	return ""
     else
-	let matchres = matchlist(output, '^http')
-	if matchres == []
+	if output !~ '\c^http'
 	    call s:errormsg("urlBorg error: ".output)
 	    return ""
-	else
-	    redraw
-	    echo "Received response from urlBorg."
-	    return output
 	endif
+
+	redraw
+	echo "Received response from urlBorg."
+	return output
     endif
 endfunction
 
@@ -2083,6 +2530,9 @@ endfunction
 " Call tr.im API to shorten a URL.
 function! s:call_trim(url)
     let login = s:get_trim_login()
+
+    redraw
+    echo "Sending request to tr.im..."
 
     let url = 'http://tr.im/api/trim_url.xml?url='.s:url_encode(a:url)
 
@@ -2122,6 +2572,9 @@ function! s:call_cligs(url)
 	let url .= '&key='.key
     endif
 
+    redraw
+    echo "Sending request to Cligs..."
+
     let [error, output] = s:run_curl(url, '', s:get_proxy(), s:get_proxy_login(), {})
     if error != ''
 	call s:errormsg("Error calling Cligs API: ".error)
@@ -2130,6 +2583,30 @@ function! s:call_cligs(url)
 
     redraw
     echo "Received response from Cligs."
+    return output
+endfunction
+
+" Call Zi.ma API to shorten a URL.
+function! s:call_zima(url)
+    let url = "http://zi.ma/?module=ShortURL&file=Add&mode=API&url=".s:url_encode(a:url)
+
+    redraw
+    echo "Sending request to Zi.ma..."
+
+    let [error, output] = s:run_curl(url, '', s:get_proxy(), s:get_proxy_login(), {})
+    if error != ''
+	call s:errormsg("Error calling Zi.ma API: ".error)
+	return ""
+    endif
+
+    let error = s:xml_get_element(output, 'h3')
+    if error != ''
+	call s:errormsg("Error from Zi.ma: ".error)
+	return ""
+    endif
+
+    redraw
+    echo "Received response from Zi.ma."
     return output
 endfunction
 
@@ -2156,9 +2633,9 @@ function! s:GetShortURL(tweetmode, url, shortfn)
 	if a:tweetmode == "cmdline"
 	    call s:CmdLine_Twitter(shorturl." ", 0)
 	elseif a:tweetmode == "append"
-	    execute "normal a".shorturl."\<esc>"
+	    execute "normal! a".shorturl."\<esc>"
 	else
-	    execute "normal i".shorturl." \<esc>"
+	    execute "normal! i".shorturl." \<esc>"
 	endif
     endif
 endfunction
@@ -2253,14 +2730,20 @@ if !exists(":PCligs")
     command -nargs=? PCligs :call <SID>GetShortURL("cmdline", <q-args>, "call_cligs")
 endif
 
+if !exists(":Zima")
+    command -nargs=? Zima :call <SID>GetShortURL("insert", <q-args>, "call_zima")
+endif
+if !exists(":AZima")
+    command -nargs=? AZima :call <SID>GetShortURL("append", <q-args>, "call_zima")
+endif
+if !exists(":PZima")
+    command -nargs=? PZima :call <SID>GetShortURL("cmdline", <q-args>, "call_zima")
+endif
+
 " Parse and format search results from Twitter Search API.
 function! s:show_summize(searchres, page)
     let text = []
     let matchcount = 1
-
-    " Index of first status will be 3 to match line numbers in timeline display.
-    let s:curbuffer.statuses = [0, 0, 0]
-    let s:curbuffer.inreplyto = [0, 0, 0]
 
     let s:curbuffer.dmids = []
 
@@ -2271,11 +2754,24 @@ function! s:show_summize(searchres, page)
 	let title .= ' (page '.a:page.')'
     endif
 
-    " The extra stars at the end are for the syntax highlighter to recognize
-    " the title. Then the syntax highlighter hides the stars by coloring them
-    " the same as the background. It is a bad hack.
-    call add(text, title.'*')
-    call add(text, repeat('=', strlen(title)).'*')
+    let s:curbuffer.showheader = s:get_show_header()
+    if s:curbuffer.showheader
+	" Index of first status will be 3 to match line numbers in timeline
+	" display.
+	let s:curbuffer.statuses = [0, 0, 0]
+	let s:curbuffer.inreplyto = [0, 0, 0]
+
+	" The extra stars at the end are for the syntax highlighter to
+	" recognize the title. Then the syntax highlighter hides the stars by
+	" coloring them the same as the background. It is a bad hack.
+	call add(text, title.'*')
+	call add(text, repeat('=', strlen(title)).'*')
+    else
+	" Index of first status will be 1 to match line numbers in timeline
+	" display.
+	let s:curbuffer.statuses = [0]
+	let s:curbuffer.inreplyto = [0]
+    endif
 
     while 1
 	let item = s:xml_get_nth(a:searchres, 'entry', matchcount)
@@ -2332,6 +2828,7 @@ function! s:get_summize(query, page)
     " Stick the query in here to differentiate between sets of search results.
     let s:curbuffer.user = a:query
 
+    let s:curbuffer.list = ''
     let s:curbuffer.page = a:page
     redraw
     echo "Received search results from Twitter Search."

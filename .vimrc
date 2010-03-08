@@ -103,7 +103,7 @@ endif
 
 " Settings for NERD_Tree
 let NERDTreeWinPos="left"
-let NERDTreeWinSize=25
+let NERDTreeWinSize=28
 
 " Settings for taglist.vim
 let Tlist_Use_Right_Window=1
@@ -166,6 +166,18 @@ let g:SuperTabDefaultCompletionTypeDiscovery = [
                   \ "&omnifunc:<c-x><c-o>",
                   \ ]
 let g:SuperTabLongestHighlight = 1
+
+" Gist.vim settings (http://www.vim.org/scripts/script.php?script_id=2423)
+let g:gist_open_browser_after_post = 1
+" Mac-specific
+let g:gist_browser_command = 'open %URL%'
+let g:gist_clip_command = 'pbcopy'
+
+" SimpleFold settings
+" This doesn't work yet.
+let g:clojure_simplefold_nestable_start_expr = '\v\(defn'
+let g:clojure_simplefold_nestable_end_expr = '\v^\s*$'
+
 
 " Eclim settings
 " ,i imports whatever is needed for current line
@@ -337,6 +349,8 @@ cmap w!! %!sudo tee > /dev/null %
 inoremap # X<BS>#
 " When I forget I'm in Insert mode, how often do you type 'jj' anyway?:
 imap jj <Esc>
+" Fold with paren begin/end matching
+nmap F zf%
 " When I use ,sf - return to syntax folding with a big foldcolumn
 nmap <LocalLeader>sf :set foldcolumn=6 foldmethod=syntax<cr>
 " ruby helpers

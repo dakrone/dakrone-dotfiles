@@ -1,0 +1,79 @@
+" compiler infomation file
+" Maintainer: StarWing
+" Last Change: 2009-05-10 13:41:26
+" need ctk {{{1
+
+if !exists('g:loaded_ctk')
+    finish
+endif
+let s:cpo_save = &cpo
+set cpo&vim
+
+" Common default info {{{1
+
+au FileType c,cpp SetDefaultInfo!
+	\ cmd='!$cc $input $flags -o $output'
+	\ run='!$output' input='%:.' output='%:t:r'
+	\ asm_run=":pedit $output"
+	\ asm_output='$output.s'
+	\ debug_run='!gdb -q $output'
+
+if has('unix')
+    au FileType c,cpp SetDefaultInfo asm_output='$output.s'
+else
+    au FileType c,cpp SetDefaultInfo asm_output='$output.asm'
+endif
+
+
+" filetype C {{{1
+
+au FileType c SetExtensionName c
+au FileType c SetCompilerInfo! gcc
+    	\ title='GNU C Compiler'
+    	\ cc='gcc' flags='-Wall' cmdmap='<m-c>' runmap='<m-1> <f5>'
+    	\ asm_title='GCC to ASM' asm_flags='-S $flags'
+    	\ debug_title='GCC with debug' debug_flags='-ggdb $flags'
+
+au FileType c SetCompilerInfo! vc6  
+    	\ title='Microsoft Visual C'
+    	\ cc='cl' flags='-W4' runmap='<m-2> <f6>'
+    	\ asm_title='Microsoft VC to ASM' asm_flags='/FAs $flags'
+
+" filetype C++ {{{1
+
+au FileType cpp SetExtensionName cpp
+au FileType cpp SetCompilerInfo! g++
+    	\ title='GNU Compiler Collection - C++'
+    	\ cc='g++' flags='-Wall' cmdmap='<m-c>' runmap='<m-1> <f5>'
+    	\ asm_title='G++ to ASM' asm_flags='-S $flags'
+    	\ debug_title='G++ with debug' debug_flags='-ggdb $flags'
+
+au FileType cpp SetCompilerInfo! vc++
+    	\ title='Microsoft Visual C++'
+    	\ cc='cl' flags='-W4' runmap='<m-2> <f6>'
+    	\ asm_title='Microsoft VC++ to ASM'
+    	\ asm_flags='/FAs $flags'
+
+" }}}1
+" filetype ruby {{{1
+
+au FileType ruby SetExtensionName rb
+au FileType ruby SetCompilerInfo! ruby
+	    \ title='Ruby 1.9.1 - Matz'
+	    \ cmd='ruby $flags $input'
+	    \ run='ruby $input'
+	    \ flags='-wc' debug_flags='-rdebug $flags'
+
+" filetype python {{{1
+
+au FileType python SetExtensionName py
+au FileType python SetCompilerInfo! python
+	    \ title='Python' input='%:.' output='%:.o'
+	    \ cmd="python $flags -c 'import py_compile; exit(py_compile.main([${q-input}]))'"
+	    \ run="python $flags $output"
+	    \ flags='-O' debug_flags='-d'
+
+" terminational works {{{1
+let &cpo = s:cpo_save
+unlet s:cpo_save " }}}1
+" vim: ff=unix ft=vim fdm=marker sw=4 ts=8 sta

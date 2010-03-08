@@ -35,6 +35,16 @@ Note: Should there be an error when executing an interactive command
 and the error message goes away to quickly, you can use |:messages| to
 recall the message and read it conveniently without time pressure.
 
+VimClojure might pop up windows, like the preview window or the Repl.
+The place where this is done may be controlled with the SplitPos variable.
+Possible values are "left", "right", "top" and "bottom". Thedefault is
+"top".
+
+Example:
+>
+        let vimclojure#SplitPos = "left"
+<
+
 Syntax Highlighting                 *ft-clj-syntax*
 -------------------
 
@@ -52,6 +62,13 @@ The clojure syntax highlighting provides several options:
         g:clj_paren_rainbow
                 If it exists and is nonzero, then differing levels of
                 parenthesisation will receive different highlighting.
+
+        g:clj_dynamic_highlighting
+                Uses the dynamic features of VimClojure to dynamically add
+                the symbols of required and used namespaces. The file needs
+                to be correct (ie. w/o syntax errors and on the classpath)
+                for this to work. If this is not the case, that dynamic
+                highlighting is not done.
 <
 The g:clj_paren_rainbow option provides 10 levels of individual colorisation
 for the parentheses. Because of the quantity of colorisation levels, unlike
@@ -59,6 +76,18 @@ non-rainbow highlighting, the rainbow mode specifies its highlighting using
 ctermfg and guifg, thereby bypassing the usual colorscheme control using
 standard highlighting groups. The actual highlighting used depends on the
 dark/bright setting (see |'bg'|).
+
+Preview Window
+--------------
+
+Many of the below mentioned commands open the so called preview window.
+It displays information obtained from the lookup functions and the omni
+completion. You may close the preview window with <LocalLeader>p.
+
+Note: The preview window sometimes doesn't not adhere to the SplitPos
+variable. This is the case, eg. for omni completion. It happens when
+the preview window is created by Vim and not by VimClojure itself. At
+the moment, I don't know how to fix this.
 
 Keybindings
 -----------
@@ -107,6 +136,14 @@ Plug name and your setting will override the default mapping.
                         a remote Clojure server, the files have to put in
                         place before issueing the command, eg. via scp
                         or NFS.
+
+<LocalLeader>rt                                 *rt* *RunTests*
+                        Require the namespace of the filename with the
+                        :reload flag. Then use clojure.contrib.test-is
+                        to run the tests of the namespace via run-tests.
+                        Note: For this to work with a remote Clojure
+                        server, the files have to put in place before
+                        issueing the command, eg. via scp or NFS.
 
 <LocalLeader>me                                 *me* *MacroExpand*
                         Expand the innermost sexpression currently
@@ -173,6 +210,19 @@ Plug name and your setting will override the default mapping.
                         Start a new Vim Repl in a fresh buffer. There
                         might be multiple Repls at the same time.
 
+<LocalLeader>sR                                 *sR* *StartLocalRepl*
+                        Start a new Vim Repl in a fresh buffer. Initialise
+                        the namespace to be the namespace of the current
+                        buffer. Note: this will 'require' the namespace!
+
+The following key mappings are also supported if the dynamic features are
+turned off.
+
+<LocalLeader>aw                                 *aw* *AddToLispWords*
+                        Add the word under the cursor to the lispwords option
+                        of the buffer. This modifies the way the form is
+                        indented.
+
 Vim Repl
 --------
 
@@ -196,6 +246,7 @@ The following convenience commands are provided:
  - ,close - close the Repl and free the Repl resources in the server process
  - ,st - print a stack trace of *e as with clojure.contrib.stacktrace
  - ,ct - print a cause trace of *e as with clojure.contrib.stacktrace
+ - ,toggle-pprint - toggle pretty-printing of evaluated values
 
 Pretty Printing
 ---------------

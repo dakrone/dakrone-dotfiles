@@ -39,6 +39,8 @@ License: The Vim License applies to twitvim.vim and twitvim.txt (see
 	     Twitter SSL via Perl interface.......: |TwitVim-ssl-perl|
 	     Twitter SSL via Ruby interface.......: |TwitVim-ssl-ruby|
 	     Twitter SSL via Python interface.....: |TwitVim-ssl-python|
+	3.4. Hide the header in timeline buffer...: |TwitVim-hide-header|
+	     twitvim_show_header..................: |twitvim_show_header|
 	4. Manual.................................: |TwitVim-manual|
 	4.1. Update Commands......................: |TwitVim-update-commands|
 	     :PosttoTwitter.......................: |:PosttoTwitter|
@@ -53,19 +55,27 @@ License: The Vim License applies to twitvim.vim and twitvim.txt (see
 	     :PublicTwitter.......................: |:PublicTwitter|
 	     :DMTwitter...........................: |:DMTwitter|
 	     :DMSentTwitter.......................: |:DMSentTwitter|
+	     :ListTwitter.........................: |:ListTwitter|
+	     :RetweetedToMeTwitter................: |:RetweetedToMeTwitter|
+	     :RetweetedByMeTwitter................: |:RetweetedByMeTwitter|
 	     :BackTwitter.........................: |:BackTwitter|
 	     :ForwardTwitter......................: |:ForwardTwitter|
 	     :RefreshTwitter......................: |:RefreshTwitter|
 	     :NextTwitter.........................: |:NextTwitter|
 	     :PreviousTwitter.....................: |:PreviousTwitter|
+	     :SetLoginTwitter.....................: |:SetLoginTwitter|
+	     :ResetLoginTwitter...................: |:ResetLoginTwitter|
 	4.3. Mappings.............................: |TwitVim-mappings|
 	     Alt-T................................: |TwitVim-A-t|
 	     Ctrl-T...............................: |TwitVim-C-t|
 	     Reply Feature........................: |TwitVim-reply|
 	     Alt-R................................: |TwitVim-A-r|
 	     <Leader>r............................: |TwitVim-Leader-r|
+	     Reply to all Feature.................: |TwitVim-reply-all|
+	     <Leader>Ctrl-R.......................: |TwitVim-Leader-C-r|
 	     Retweet Feature......................: |TwitVim-retweet|
 	     <Leader>R............................: |TwitVim-Leader-S-r|
+	     Old-style retweets...................: |twitvim_old_retweet|
 	     twitvim_retweet_format...............: |twitvim_retweet_format|
 	     Direct Message Feature...............: |TwitVim-direct-message|
 	     Alt-D................................: |TwitVim-A-d|
@@ -104,6 +114,8 @@ License: The Vim License applies to twitvim.vim and twitvim.txt (see
 	     :ATinyURL............................: |:ATinyURL|
 	     :PTinyURL............................: |:PTinyURL|
 	     :BitLy...............................: |:BitLy|
+	     twitvim_bitly_user...................: |twitvim_bitly_user|
+	     twitvim_bitly_key....................: |twitvim_bitly_key|
 	     :ABitLy..............................: |:ABitLy|
 	     :PBitLy..............................: |:PBitLy|
 	     :IsGd................................: |:IsGd|
@@ -121,6 +133,9 @@ License: The Vim License applies to twitvim.vim and twitvim.txt (see
 	     twitvim_cligs_key....................: |twitvim_cligs_key|
 	     :ACligs..............................: |:ACligs|
 	     :PCligs..............................: |:PCligs|
+	     :Zima................................: |:Zima|
+	     :AZima...............................: |:AZima|
+	     :PZima...............................: |:PZima|
 	     :SearchTwitter.......................: |:SearchTwitter|
 	     :RateLimitTwitter....................: |:RateLimitTwitter|
 	     :ProfileTwitter......................: |:ProfileTwitter|
@@ -186,6 +201,19 @@ License: The Vim License applies to twitvim.vim and twitvim.txt (see
 
 	It is possible to avoid having your Twitter password in plaintext in
 	your vimrc. See |TwitVim-login-base64| for details.
+
+
+	If you haven't configured twitvim_login, the first TwitVim command
+	that needs Twitter authentication will prompt you to log into Twitter.
+	This alternative is provided to allow TwitVim use on a public, shared,
+	or non-secure system where storing passwords in the vimrc is not
+	advisable.
+
+	If you make a mistake when entering your Twitter login information,
+	simply run |:SetLoginTwitter| to reenter your Twitter login
+	information or use |:ResetLoginTwitter| to remove the login
+	information so that the next TwitVim command will prompt you to log in
+	again.
 
 
 	4. twitvim_proxy				*twitvim_proxy*
@@ -430,6 +458,30 @@ License: The Vim License applies to twitvim.vim and twitvim.txt (see
 	succeed, let me know what you did.
 
 
+------------------------------------------------------------------------------
+3.4. Hide the header in timeline buffer			*TwitVim-hide-header*
+
+	In a timeline buffer, the first two lines are header lines. The first
+	line tells you the type of buffer it is (e.g. friends, user, replies,
+	direct messages, search) and other relevant buffer information. (e.g.
+	user name, search terms, page number) The second line is a separator
+	line.
+
+	If you wish to suppress the header display, set twitvim_show_header
+	to 0:
+
+							*twitvim_show_header*
+		let twitvim_show_header = 0
+
+	If twitvim_show_header is unset, it defaults to 1, i.e. show the
+	header.
+
+	Note: Setting twitvim_show_header does not change the timeline buffer
+	immediately. Use |:RefreshTwitter| to refresh the timeline to see the
+	effect. Also, twitvim_show_header does not retroactively alter
+	previous timelines in the timeline stack.
+
+
 ==============================================================================
 4. TwitVim Manual					*TwitVim-manual*
 
@@ -489,13 +541,9 @@ License: The Vim License applies to twitvim.vim and twitvim.txt (see
 
 
 	:[count]FriendsTwitter				*:FriendsTwitter*
-	:[count]FriendsTwitter {username}
 
 	This command displays your Twitter timeline with updates from friends
 	merged in.
-
-	If you specify a {username}, this command displays the friends
-	timeline for that user. Note: Twitter has disabled this API feature.
 
 	If you specify [count], that number is used as the page number. For
 	example, :2FriendsTwitter displays the second page from your friends
@@ -538,12 +586,46 @@ License: The Vim License applies to twitvim.vim and twitvim.txt (see
 	messages sent timeline.
 
 
+	:[count]ListTwitter {list}			*:ListTwitter*
+	:[count]ListTwitter {user} {list}
+
+	This command displays a Twitter list timeline.
+
+	In the first form, {user} is assumed to be you so the command will
+	display a list of yours named {list}.
+
+	In the second form, the command displays list {list} from user
+	{user}.
+
+	If you specify [count], that number is used as the page number. For
+	example, :2ListTwitter list1 displays the second page from the list1
+	list timeline.
+
+
+	:[count]RetweetedToMeTwitter			*:RetweetedToMeTwitter*
+
+	This command displays a timeline of retweets by others to you.
+
+	If you specify [count], that number is used as the page number. For
+	example, :2RetweetedToMeTwitter displays the second page from the
+	retweets timeline.
+
+
+	:[count]RetweetedByMeTwitter			*:RetweetedByMeTwitter*
+
+	This command displays a timeline of retweets by you.
+
+	If you specify [count], that number is used as the page number. For
+	example, :2RetweetedByMeTwitter displays the second page from the
+	retweets timeline.
+
+
 	:BackTwitter					*:BackTwitter*
 
 	This command takes you back to the previous timeline in the timeline
 	stack. TwitVim saves a limited number of timelines. This command
 	will display a warning if you attempt to go beyond the oldest saved
-	timeline.
+	timeline. See |TwitVim-C-o|.
 
 
 	:ForwardTwitter					*:ForwardTwitter*
@@ -551,23 +633,45 @@ License: The Vim License applies to twitvim.vim and twitvim.txt (see
 	This command takes you to the next timeline in the timeline stack.
 	It will display a warning if you attempt to go past the newest saved
 	timeline so this command can only be used after :BackTwitter.
+	See |TwitVim-C-i|.
 
 
 	:RefreshTwitter					*:RefreshTwitter*
 
-	This command refreshes the timeline.
+	This command refreshes the timeline. See |TwitVim-Leader-Leader|.
 
 
 	:NextTwitter					*:NextTwitter*
 
 	This command loads the next (older) page in the timeline.
+	See |TwitVim-C-PageDown|.
 
 
 	:PreviousTwitter				*:PreviousTwitter*
 
 	This command loads the previous (newer) page in the timeline. If the
 	timeline is on the first page, it issues a warning and doesn't do
-	anything.
+	anything. See |TwitVim-C-PageUp|.
+
+
+	:SetLoginTwitter				*:SetLoginTwitter*
+
+	This command prompts you for a Twitter username and password, which
+	will then be used for subsequent TwitVim commands. This is an
+	alternative to configuring |twitvim_login| in your vimrc.
+
+	If you make a mistake when entering your Twitter login information,
+	simply rerun |:SetLoginTwitter| to reenter your Twitter login
+	information or use |:ResetLoginTwitter| to remove the login
+	information so that the next TwitVim command will prompt you to log in
+	again.
+
+
+	:ResetLoginTwitter				*:ResetLoginTwitter*
+
+	This command removes stored Twitter login information. The next
+	TwitVim command that needs Twitter authentication will then prompt you
+	log in again.
 
 
 ------------------------------------------------------------------------------
@@ -595,25 +699,42 @@ License: The Vim License applies to twitvim.vim and twitvim.txt (see
 	|mapleader| for information on customizing that.
 
 
+							*TwitVim-reply-all*
+	<Leader>Ctrl-R					*TwitVim-Leader-C-r*
+
+	This mapping is local to the timeline buffer. It starts composing a
+	reply to all, i.e. a reply to the tweet author and also to everyone
+	mentioned in @-replies on the current line.
+
+
 							*TwitVim-retweet*	
 	<Leader>R					*TwitVim-Leader-S-r*
 
 	This mapping (Note: uppercase 'R' instead of 'r'.) is local to the
 	timeline buffer. It is similar to the retweet feature in popular
-	Twitter clients. In the timeline buffer, it sends the current line to
-	the command line so that you can repost this line as a new tweet.
+	Twitter clients. In the timeline buffer, it retweets the current line.
+
+
+							*twitvim_old_retweet*
+	If you prefer old-style retweets, add this to your vimrc:
+
+		let twitvim_old_retweet = 1
+	
+	The difference is an old-style retweet does not use the retweet API.
+	Instead, it sends the current line to the command line so that you can
+	repost it as a new tweet and optionally edit it or add your own
+	comments.
 
 						    *twitvim_retweet_format*
+	If you use old-style retweets, you can configure the retweet format.
 	By default, TwitVim retweets tweets in the following format:
 
-		Retweeting @user: text of the tweet
+		RT @user: text of the tweet
 
 	You can customize the retweet format by adding the following to your
 	vimrc, for example:
 
 		let twitvim_retweet_format = 'Retweet from %s: %t'
-
-	or:
 
 		let twitvim_retweet_format = '%t (retweeted from %s)'
 
@@ -621,7 +742,7 @@ License: The Vim License applies to twitvim.vim and twitvim.txt (see
 	twitvim_retweet_format with the user name of the original poster and
 	"%t" with the text of the tweet.
 
-	The default setting of twitvim_retweet_format is "Retweeting %s: %t"
+	The default setting of twitvim_retweet_format is "RT %s: %t"
 
 
 							*TwitVim-direct-message*
@@ -853,12 +974,27 @@ License: The Vim License applies to twitvim.vim and twitvim.txt (see
 	:BitLy {url}
 
 	bit.ly is a URL forwarding and shortening service. See
-	http://bit.ly/go
+	http://bit.ly/
 
 	This command calls the bit.ly API to get a short URL in place of
 	<url>. If {url} is not provided on the command line, the command will
 	prompt you to enter a URL. The short URL is then inserted into the
 	current buffer at the current position.
+
+	The bit.ly API requires a bit.ly login and a bit.ly API key. A default
+	login and key pair is provided with TwitVim and no configuration is
+	needed. However, if you wish to supply your own login and key to track
+	your bit.ly history and stats, visit
+	http://bit.ly/account/your_api_key to retrieve your API info and add
+	the following to your vimrc:
+
+							*twitvim_bitly_user*
+							*twitvim_bitly_key*
+		let twitvim_bitly_user = "username"
+		let twitvim_bitly_key = "R_123456789"
+
+	Replace username with your bit.ly login and R_123456789 with your
+	bit.ly API key.
 
 	:ABitLy						*:ABitLy*
 	:ABitLy {url}
@@ -909,7 +1045,7 @@ License: The Vim License applies to twitvim.vim and twitvim.txt (see
 	current buffer at the current position.
 
 	The urlBorg API requires an API key. A default API key is provided
-	with TwitVim and no configuration is required. However, if you wish to
+	with TwitVim and no configuration is needed. However, if you wish to
 	supply your own key in order to track your urlBorg history and stats,
 	visit http://urlborg.com/a/account/ to retrieve your API key and then
 	add the following to your vimrc:
@@ -1001,6 +1137,29 @@ License: The Vim License applies to twitvim.vim and twitvim.txt (see
 	:PCligs {url}
 	
 	Same as :Cligs but prompts for a tweet on the command line with the
+	short URL already inserted.
+
+
+	:Zima						*:Zima*
+	:Zima {url}
+
+	Zima is a URL forwarding and shortening service. See http://zi.ma/
+
+	This command calls the Zi.ma API to get a short URL in place of
+	<url>. If {url} is not provided on the command line, the command will
+	prompt you to enter a URL. The short URL is then inserted into the
+	current buffer at the current position.
+
+	:AZima						*:AZima*
+	:AZima {url}
+
+	Same as :Zima but appends, i.e. inserts after the current position
+	instead of at the current position, the short URL instead.
+
+	:PZima						*:PZima*
+	:PZima {url}
+	
+	Same as :Zima but prompts for a tweet on the command line with the
 	short URL already inserted.
 
 
@@ -1147,6 +1306,31 @@ License: The Vim License applies to twitvim.vim and twitvim.txt (see
 ==============================================================================
 7. TwitVim History					*TwitVim-history*
 
+	0.4.6 : 2010-02-05 * Added option to hide header in timeline buffer.
+			     |TwitVim-hide-header|
+	0.4.5 : 2009-12-20 * Prompt for login info if not configured.
+			     |:SetLoginTwitter| |:ResetLoginTwitter|
+			   * Reintroduced old-style retweet via
+			     |twitvim_old_retweet|.
+	0.4.4 : 2009-12-13 * Upgraded bit.ly API support to version 2.0.1
+			     with configurable user login and key.
+			   * Added support for Zima. |:Zima|
+			   * Fixed :BackTwitter behavior when browsing
+			     multiple lists.
+			   * Added support for displaying retweets in
+			     friends timeline.
+			   * Use Twitter Retweet API to retweet.
+			   * Added commands to display retweets to you or
+			     by you. |:RetweetedToMeTwitter|
+			     |:RetweetedByMeTwitter|
+	0.4.3 : 2009-11-27 * Fixed some minor breakage in LongURL support.
+			   * Added |:ListTwitter|
+			   * Omit author's name from the list when doing a
+			     reply to all. |TwitVim-reply-all|
+	0.4.2 : 2009-06-22 * Bugfix: Reset syntax items in Twitter window.
+			   * Bugfix: Show progress message before querying
+			     for in-reply-to tweet.
+			   * Added reply to all feature. |TwitVim-reply-all|
 	0.4.1 : 2009-03-30 * Fixed a problem with usernames and search terms
 			     that begin with digits.
 	0.4.0 : 2009-03-09 * Added |:SendDMTwitter| to send direct messages

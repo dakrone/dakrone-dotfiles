@@ -14,7 +14,7 @@ set cpo&vim
 
 let b:undo_ftplugin = "setlocal fo< com< cms< cpt< isk< def<"
 
-setlocal iskeyword+=?,-,*,!,+,/,=,<,>,.
+setlocal iskeyword+=?,-,*,!,+,/,=,<,>,.,:
 
 setlocal define=^\\s*(def\\(-\\|n\\|n-\\|macro\\|struct\\|multi\\)?
 
@@ -49,7 +49,9 @@ if has("gui_win32") && !exists("b:browsefilter")
 				\ "All Files (*.*)\t*.*\n"
 endif
 
-for ns in ['clojure.core', 'clojure.set', 'clojure.xml', 'clojure.zip']
+for ns in ['clojure.core', 'clojure.set', 'clojure.xml', 'clojure.zip',
+			\ 'clojure.walk', 'clojure.template', 'clojure.stacktrace',
+			\ 'clojure.inspector', 'clojure.test', 'clojure.test.tap']
 	call vimclojure#AddCompletions(ns)
 endfor
 
@@ -60,7 +62,7 @@ function! ClojureGetFoldingLevel(lineno)
 	function closure.f() dict
 		execute self.lineno
 
-		if vimclojure#SynIdName() =~ 'clojureParen\d' && vimclojure#Yank('l', 'normal "lyl') == '('
+		if vimclojure#SynIdName() =~ 'clojureParen\d' && vimclojure#Yank('l', 'normal! "lyl') == '('
 			return 1
 		endif
 
@@ -80,7 +82,18 @@ if exists("g:clj_want_folding") && g:clj_want_folding == 1 && 0 == 1
 	setlocal foldmethod=expr
 endif
 
-call vimclojure#InitBuffer()
+try
+	call vimclojure#InitBuffer()
+catch /.*/
+	" We swallow a failure here. It means most likely that the
+	" server is not running.
+	echohl WarningMsg
+	echomsg v:exception
+	echohl None
+endtry
+
+call vimclojure#MakePlug("n", "AddToLispWords", 'vimclojure#AddToLispWords(expand("<cword>"))')
+call vimclojure#MapPlug("n", "aw", "AddToLispWords")
 
 if exists("b:vimclojure_namespace")
 	call vimclojure#MakePlug("n", "DocLookupWord", 'vimclojure#DocLookup(expand("<cword>"))')
@@ -119,6 +132,9 @@ if exists("b:vimclojure_namespace")
 	call vimclojure#MapPlug("n", "rf", "RequireFile")
 	call vimclojure#MapPlug("n", "rF", "RequireFileAll")
 
+	call vimclojure#MakePlug("n", "RunTests", 'vimclojure#RunTests(0)')
+	call vimclojure#MapPlug("n", "rt", "RunTests")
+
 	call vimclojure#MakePlug("n", "MacroExpand",  'vimclojure#MacroExpand(0)')
 	call vimclojure#MakePlug("n", "MacroExpand1", 'vimclojure#MacroExpand(1)')
 
@@ -137,15 +153,17 @@ if exists("b:vimclojure_namespace")
 	call vimclojure#MapPlug("n", "et", "EvalToplevel")
 	call vimclojure#MapPlug("n", "ep", "EvalParagraph")
 
-	call vimclojure#MakePlug("n", "StartRepl", 'vimclojure#Repl.New()')
+	call vimclojure#MakePlug("n", "StartRepl", 'vimclojure#Repl.New("user")')
+	call vimclojure#MakePlug("n", "StartLocalRepl", 'vimclojure#Repl.New(b:vimclojure_namespace)')
 	call vimclojure#MapPlug("n", "sr", "StartRepl")
+	call vimclojure#MapPlug("n", "sR", "StartLocalRepl")
 
 	inoremap <Plug>ClojureReplEnterHook <Esc>:call b:vimclojure_repl.enterHook()<CR>
 	inoremap <Plug>ClojureReplUpHistory <C-O>:call b:vimclojure_repl.upHistory()<CR>
 	inoremap <Plug>ClojureReplDownHistory <C-O>:call b:vimclojure_repl.downHistory()<CR>
 
-	nnoremap <Plug>ClojureClosePreview :pclose!<CR>
-	call vimclojure#MapPlug("n", "p", "ClosePreview")
+	nnoremap <Plug>ClojureCloseResultBuffer :call vimclojure#ResultBuffer.CloseBuffer()<CR>
+	call vimclojure#MapPlug("n", "p", "CloseResultBuffer")
 
 	setlocal omnifunc=vimclojure#OmniCompletion
 

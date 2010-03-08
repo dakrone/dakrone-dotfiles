@@ -69,6 +69,7 @@
 :ATrim	twitvim.txt	/*:ATrim*
 :ATweetburner	twitvim.txt	/*:ATweetburner*
 :AUrlBorg	twitvim.txt	/*:AUrlBorg*
+:AZima	twitvim.txt	/*:AZima*
 :Ack	ack.txt	/*:Ack*
 :AckAdd	ack.txt	/*:AckAdd*
 :AddFlags	ctk.txt	/*:AddFlags*
@@ -140,6 +141,7 @@
 :LAckAdd	ack.txt	/*:LAckAdd*
 :ListCompiler	ctk.txt	/*:ListCompiler*
 :ListMethods	cocoa.txt	/*:ListMethods*
+:ListTwitter	twitvim.txt	/*:ListTwitter*
 :LocationTwitter	twitvim.txt	/*:LocationTwitter*
 :MatchDebug	matchit.txt	/*:MatchDebug*
 :Metamark	twitvim.txt	/*:Metamark*
@@ -163,6 +165,7 @@
 :PTrim	twitvim.txt	/*:PTrim*
 :PTweetburner	twitvim.txt	/*:PTweetburner*
 :PUrlBorg	twitvim.txt	/*:PUrlBorg*
+:PZima	twitvim.txt	/*:PZima*
 :Pexplore	pi_netrw.txt	/*:Pexplore*
 :PosttoTwitter	twitvim.txt	/*:PosttoTwitter*
 :PreviousTwitter	twitvim.txt	/*:PreviousTwitter*
@@ -173,6 +176,9 @@
 :RefreshCTK	ctk.txt	/*:RefreshCTK*
 :RefreshTwitter	twitvim.txt	/*:RefreshTwitter*
 :RepliesTwitter	twitvim.txt	/*:RepliesTwitter*
+:ResetLoginTwitter	twitvim.txt	/*:ResetLoginTwitter*
+:RetweetedByMeTwitter	twitvim.txt	/*:RetweetedByMeTwitter*
+:RetweetedToMeTwitter	twitvim.txt	/*:RetweetedToMeTwitter*
 :Rexplore	pi_netrw.txt	/*:Rexplore*
 :Ri	ri.txt	/*:Ri*
 :RiExpand	ri.txt	/*:RiExpand*
@@ -182,6 +188,7 @@
 :SetCompilerInfo	ctk.txt	/*:SetCompilerInfo*
 :SetDefaultInfo	ctk.txt	/*:SetDefaultInfo*
 :SetExtensionName	ctk.txt	/*:SetExtensionName*
+:SetLoginTwitter	twitvim.txt	/*:SetLoginTwitter*
 :Snipurl	twitvim.txt	/*:Snipurl*
 :StartCTK	ctk.txt	/*:StartCTK*
 :StopCTK	ctk.txt	/*:StopCTK*
@@ -244,6 +251,7 @@
 :VimwikiUISelect	vimwiki.txt	/*:VimwikiUISelect*
 :VimwikiVSplitWord	vimwiki.txt	/*:VimwikiVSplitWord*
 :Widen	narrow.txt	/*:Widen*
+:Zima	twitvim.txt	/*:Zima*
 CTK	ctk.txt	/*CTK*
 DocLookupInteractive	clojure.txt	/*DocLookupInteractive*
 DocLookupWord	clojure.txt	/*DocLookupWord*
@@ -385,6 +393,7 @@ TwitVim-C-i	twitvim.txt	/*TwitVim-C-i*
 TwitVim-C-o	twitvim.txt	/*TwitVim-C-o*
 TwitVim-C-t	twitvim.txt	/*TwitVim-C-t*
 TwitVim-Leader-@	twitvim.txt	/*TwitVim-Leader-@*
+TwitVim-Leader-C-r	twitvim.txt	/*TwitVim-Leader-C-r*
 TwitVim-Leader-Leader	twitvim.txt	/*TwitVim-Leader-Leader*
 TwitVim-Leader-S-r	twitvim.txt	/*TwitVim-Leader-S-r*
 TwitVim-Leader-X	twitvim.txt	/*TwitVim-Leader-X*
@@ -401,6 +410,7 @@ TwitVim-credits	twitvim.txt	/*TwitVim-credits*
 TwitVim-delete	twitvim.txt	/*TwitVim-delete*
 TwitVim-direct-message	twitvim.txt	/*TwitVim-direct-message*
 TwitVim-goto	twitvim.txt	/*TwitVim-goto*
+TwitVim-hide-header	twitvim.txt	/*TwitVim-hide-header*
 TwitVim-highlight	twitvim.txt	/*TwitVim-highlight*
 TwitVim-history	twitvim.txt	/*TwitVim-history*
 TwitVim-hotkeys	twitvim.txt	/*TwitVim-hotkeys*
@@ -417,6 +427,7 @@ TwitVim-previous	twitvim.txt	/*TwitVim-previous*
 TwitVim-profile	twitvim.txt	/*TwitVim-profile*
 TwitVim-refresh	twitvim.txt	/*TwitVim-refresh*
 TwitVim-reply	twitvim.txt	/*TwitVim-reply*
+TwitVim-reply-all	twitvim.txt	/*TwitVim-reply-all*
 TwitVim-retweet	twitvim.txt	/*TwitVim-retweet*
 TwitVim-ssl	twitvim.txt	/*TwitVim-ssl*
 TwitVim-ssl-curl	twitvim.txt	/*TwitVim-ssl-curl*
@@ -1475,6 +1486,8 @@ taglist.txt	taglist.txt	/*taglist.txt*
 twitvim-identi.ca	twitvim.txt	/*twitvim-identi.ca*
 twitvim.txt	twitvim.txt	/*twitvim.txt*
 twitvim_api_root	twitvim.txt	/*twitvim_api_root*
+twitvim_bitly_key	twitvim.txt	/*twitvim_bitly_key*
+twitvim_bitly_user	twitvim.txt	/*twitvim_bitly_user*
 twitvim_browser_cmd	twitvim.txt	/*twitvim_browser_cmd*
 twitvim_cert_insecure	twitvim.txt	/*twitvim_cert_insecure*
 twitvim_cligs_key	twitvim.txt	/*twitvim_cligs_key*
@@ -1485,10 +1498,12 @@ twitvim_enable_ruby	twitvim.txt	/*twitvim_enable_ruby*
 twitvim_enable_tcl	twitvim.txt	/*twitvim_enable_tcl*
 twitvim_login	twitvim.txt	/*twitvim_login*
 twitvim_login_b64	twitvim.txt	/*twitvim_login_b64*
+twitvim_old_retweet	twitvim.txt	/*twitvim_old_retweet*
 twitvim_proxy	twitvim.txt	/*twitvim_proxy*
 twitvim_proxy_login	twitvim.txt	/*twitvim_proxy_login*
 twitvim_proxy_login_b64	twitvim.txt	/*twitvim_proxy_login_b64*
 twitvim_retweet_format	twitvim.txt	/*twitvim_retweet_format*
+twitvim_show_header	twitvim.txt	/*twitvim_show_header*
 twitvim_trim_login	twitvim.txt	/*twitvim_trim_login*
 twitvim_urlborg_key	twitvim.txt	/*twitvim_urlborg_key*
 v_[%	matchit.txt	/*v_[%*

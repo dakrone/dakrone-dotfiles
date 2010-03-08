@@ -1,0 +1,100 @@
+hg clone http://bitbucket.org/kotarak/clj-gradle/,v
+/custom/installation/path/for/vimplugin,v
+/path/to/clojure-contrib.jar,v
+/Users/hinmanm/.clojure/clojure.jar,v
+clojure.jar=/Users/hinmanm/.clojure/clojure.jar,V
+/,v
+/path/to,v
+––8<––––8<––––8<––,V
+-,v
+(def sw (get-scored-terms mytext "brake")),V
+(score-sentences mytext sw),v
+http://opennlp.sourceforge.net/models.html,v
+http://github.com/dakrone/clojure-opennlp,v
+(["The" "DT"] ["override" "NN"] ["system" "NN"] ["is" "VBZ"] ["meant" "VBN"] ["to" "TO"] ["deactivate" "VB"] ["the" "DT"] ["accelerator" "NN"] ["when" "WRB"] ["the" "DT"] ["brake" "NN"] ["pedal" "NN"] ["is" "VBZ"] ["pressed" "VBN"] ["." "."]),v
+"The override system is meant to deactivate the accelerator when the brake pedal is pressed.",v
+The override system is meant to deactivate the accelerator when the brake pedal is pressed.,v
+http://sites.google.com/site/sxswtorrent/2010,v
+ambivalenticity,v
+; Score the whole text(score-text mytext sw),V
+; Ranked sentences(reverse (sort-by second (score-sentences mytext sw))),V
+(def mytext "The Obama administration is considering requiring all automobiles to contain a brake override system intended to prevent sudden acceleration episodes like those that have led to the recall of millions of Toyotas, the Transportation secretary, Ray LaHood, said Tuesday. The override system is meant to deactivate the accelerator when the brake pedal is pressed. That will let the driver stop safely even if the car’s throttle sticks open. Often called a \"smart pedal,\" the feature is already found on many automobiles sold worldwide, including models from BMW, Chrysler, Mercedes-Benz, Nissan and Volkswagen."),V
+(defn score-text  "Score a block of text, given a map of score-words."  [text score-words]  (let [sentences (get-sentences text)]    (reduce + (map #(score-sentence % score-words) sentences)))),V
+(defn score-sentences  "Given a text and a map of words/scores. Return a list of sentences  and their scores."  [text score-words]  (let [sentences (get-sentences text)]    (for [s sentences]      [s (score-sentence s score-words)]))),V
+(defn score-sentence  "Given a sentence and a map of words & their scores, return the score  of the sentence."  [sentence score-words]  (let [tokens (tokenize sentence)]    (reduce + (map #(get score-words % 0) tokens)))),V
+(defn get-scored-terms  "Given a block of text and a search term, return a map of new search  terms as keys with weighted score values."  [text term]  (let [sentences (get-sentences text)        matched-sentences (get-matching-sentences sentences term)        tagged-sentences (get-tagged-sentences matched-sentences)        weighted-sentences (get-weighted-sentences tagged-sentences term)        new-terms (get-new-terms weighted-sentences)]    new-terms)),V
+(defn get-new-terms  "Given a sequence of weighted sentences, return a map of new terms  to be used for searching."  [weighted-sentences]  (into {}        (reduce conj                (reduce conj                        (map #(filter (fn [pair] (not= 0 (second pair))) %)                             weighted-sentences))))),V
+(defn get-weighted-sentences  "Given POS-tagged sentences and a term, return a sequence of  sentences that have been weighted."  [tagged-sentences term]  (map #(score-words term (map first (nv-filter %))) tagged-sentences)),V
+(defn get-tagged-sentences  "Return a sequence of POS-tagged sentences."  [sentences]  (map #(pos-tag (tokenize %)) sentences)),V
+(defn get-matching-sentences  "Given a sequence of sentences, return the sentences containing  the term."  [sentences term]  (filter #(contains-token? % term) sentences)),V
+(defn contains-token?  "Given a sentence, does the given term exist in that sentence?"  [sentence term]  (let [tokens (tokenize sentence)]    (boolean (some #{term} tokens)))),V
+(defn nv-filter  "Filter tagged sentences by noun, verb and >= 3 characters."  [tagged-sentence]  (filter #(>= (count (first %)) 3) (nouns-and-verbs tagged-sentence))),V
+(defn score-words  "Score a list of words linearly based on how far they are from the  term.  Base score is optional and is 1 by default.  Case sensitive."  ([term words] (score-words term words 1))  ([term words base]   (let [iwords (indexed words)         iterms (map first (filter (fn [e] (= (second e) term)) iwords))]     (if (= 0 (count iterms))       (map #(vector % 0) words)       (map #(vector (second %) (score-word % iterms base)) iwords))))),V
+(defn- score-word  "Score the index-term based on it's distance from any intex-term in the given  search list. Use the base score to boost matches from 1 up to another value."  [iword iterms base]  (let [dist (mindist (first iword) iterms)        score (if (zero? dist)                base                (/ base (* 2 dist)))]    (if (> dist 2) 0 score))),V
+(defn- mindist  "Give the minimum distance from the first arg to any value in the second arg."  [n ns]  (apply min (map #(abs (- n %)) ns))),V
+(def get-sentences (make-sentence-detector "models/EnglishSD.bin.gz"))(def tokenize (make-tokenizer "models/EnglishTok.bin.gz"))(def pos-tag (make-pos-tagger "models/tag.bin.gz"))(def name-find (make-name-finder "models/namefind/person.bin.gz" "models/namefind/organization.bin.gz")),V
+(ns contextfinder  (:use [opennlp.nlp])  (:use [opennlp.tools.filters])  (:use [clojure.contrib.seq-utils])  (:use [clojure.contrib.pprint])  (:use [clojure.contrib.math])),V
+http://daringfireball.net/,v
+cityofthornton.net/Departments/CityDevelopment/Business/Inventory/Documents/Retail/For%20Lease/128th%20Ave%20and%20Quebec%20-%20Brochure.pdf,v
+http://www.bestinclass.dk/wp-content/uploads/2009/ducktyping.jpeg,v
+http://www.engadget.com/2010/03/05/microsofts-courier-digital-journal-exclusive-pictures-and-de/,v
+progit.org/2010/03/04/smart-http.html,v
+http://www.amazon.com/Technica-ATH-AD700-Audiophile-Headphones-Neodymium/dp/B000CMS0XU/ref=sr_1_3?ie=UTF8&s=electronics&qid=1267814181&sr=8-3,v
+-server,v
+(defn jstop []  (stop *server*)),V
+(def *server*),V
+let,v
+l,v
+,V
+(def *server*)(defn jstart []  (let [server (run-server {:port 8080} "/*" (servlet main-routes))))(defn jstop []  (stop *server*)),V
+contextfinder=> (pprint (reverse (sort-by second (score-sentences mytext sw))))(["The override system is meant to deactivate the accelerator when the brake pedal is pressed. "  13/4] ["The Obama administration is considering requiring all automobiles to contain a brake override system intended to prevent sudden acceleration episodes like those that have led to the recall of millions of Toyotas, the Transportation secretary, Ray LaHood, said Tuesday. "  5/2] ["Often called a \"smart pedal,\" the feature is already found on many automobiles sold worldwide, including models from BMW, Chrysler, Mercedes-Benz, Nissan and Volkswagen."  3/4] ["That will let the driver stop safely even if the cars throttle sticks open. "  0])nil,V
+http://gist.github.com/322987,v
+(score-text mytext sw),V
+http://vimeo.com/channels/fulldisclojure,v
+nouns-and-verbs,v
+(defn nv-filter  [tagged-sentence]  (filter #(>= (count (first %)) 3) (nouns-and-verbs tagged-sentence))),V
+defn,v
+d,v
+;(into {} (filter #(not= 0 (second %)) (score-words "truck" ["bobby" "fire" "truck" "city" "truck" "state" "colorado"])));opennlp.tools.filters=> words;["bobby" "fire" "truck" "city" "department" "state" "colorado"];opennlp.tools.filters=> (score-words "truck" words);(["bobby" 1/3] ["fire" 1/2] ["truck" 1] ["city" 1/2] ["department" 1/3] ["state" 0] ["colorado" 0]);opennlp.tools.filters=> (score-words "truck" words 10);(["bobby" 10/3] ["fire" 5] ["truck" 10] ["city" 5] ["department" 10/3] ["state" 0] ["colorado" 0]),V
+(defn get-weighted-sentences  "Given POS-tagged sentences and a term, return a sequence of  sentences that have been weighted."  [tagged-sentences term]  (map #(score-words term (map first (nouns-and-verbs %))) tagged-sentences)),V
+(defn get-weighted-sentences  "Given POS-tagged sentences and a term, return a sequence of  sentences that have been weighted."  [tagged-sentences term]  (map #(score-words term (filter                            #(>= (count %) 3)                            (map first (nouns-and-verbs %)))) tagged-sentences)),V
+filter,v
+f,v
+(reverse (sort-by second (score-sentences mytext sw))),V
+Please can you see if you can upload this photo to my FB and Linked In pages?  You know my email and p/w for both (call me if you can’t remember).  I need to get something out there.,v
+ ++++++++++++++++++ .../LBServerTestCapabilityAndMove.plist            |   38 +,V
+(sort-by second (score-sentences mytext sw)),V
+(score-sentences mytext sw)(score-text mytext sw),V
+t,v
+sentences ,v
+(score-sentences mytext sw),V
+the ,v
+Given a text and a map of words/scores. Return the score of,v
+(defn score-text  "Given a text and a map of words/scores. Return the score of  the text."  [text score-words]  (let [sentences (get-sentences text)]    (reduce + (map #(score-sentence % score-words) sentences)))),V
+  ,V
+      [s (score-sentence s score-words)]))),V
+    ,V
+(for [s sentences],v
+  (let [sentences (get-sentences text)]    (for [s sentences]      [s (score-sentence s score-words)]))),V
+  and their scores.",V
+.,v
+list of sentences,v
+  "Given a text and a map of words/scores. Return a list of sentences  and their scores.",V
+[,v
+],v
+s,v
+(defn score-sentences  "Given a text and a map of words/scores. Return a list of sentences  and their scores."  [text score-words]  (let [sentences (get-sentences text)]    (for [s sentences]      [s (score-sentences s score-words)]))),V
+(defn score-sentences  "Given a text and a map of words/scores. Return a list of sentences  and their scores."  [text score-words]  (let [sentences (get-sentences text)]    (for [s sentences]      [s (score-sentences s)]))),V
+for,v
+"The Obama administration is considering requiring all automobiles to contain a brake override system,v
+ ,v
+        core  (ref 0),v
+        ,v
+(map #(score-sentence ,V
+(defn score-sentence  "Given a sentence and a map of words & their scores, return the score  of the sentence."  [sentence score-words]  (let [tokens (tokenize sentence)        score  (ref 0)]    (reduce + (map #(get score-words % 0) tokens)))),V
+(defn score-sentence  [sentence score-words]  (let [tokens (tokenize sentence)        score  (ref 0)]    (reduce + (map #(get score-words % 0) tokens)))),V
+),v
+ [token],v
+(,v
+h,v
+c,v

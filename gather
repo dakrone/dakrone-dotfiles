@@ -16,7 +16,7 @@ cp -f -v ~/.vimperatorrc .
 mkdir -p .vimperator
 cp -f -rv ~/.vimperator .
 cp -f -v ~/.gitconfig .
-cp -f -v ~/.gitignore .
+#cp -f -v ~/.gitignore .
 mkdir -p .config/irb
 cp -f -rv ~/.config/irb .config/
 cp -f -v ~/.irbrc .

@@ -70,7 +70,7 @@ if !has("gui_running")
       " (http://www.culater.net/software/TerminalColors/TerminalColors.php)
       " to change the really hard-to-read dark blue into a lighter shade.
       " Or; Use iterm with Tango colors
-      colorscheme ir_black_new     " my customized version
+      colorscheme Mustang
       "colorscheme rdark
 end
 if has("gui_running")
@@ -88,6 +88,7 @@ if has("gui_running")
       set columns=135
       set transparency=0
       set gfn=Monaco:h9.0
+      set clipboard=unnamed
 end
 
 if exists('&t_SI')
@@ -103,7 +104,7 @@ endif
 
 " Settings for NERD_Tree
 let NERDTreeWinPos="left"
-let NERDTreeWinSize=28
+let NERDTreeWinSize=35
 
 " Settings for taglist.vim
 let Tlist_Use_Right_Window=1
@@ -178,6 +179,9 @@ let g:gist_clip_command = 'pbcopy'
 let g:clojure_simplefold_nestable_start_expr = '\v\(defn'
 let g:clojure_simplefold_nestable_end_expr = '\v^\s*$'
 
+" Showmarks settings
+let g:showmarks_ignore_type="hmprq"
+let g:showmakrs_enable=0
 
 " Eclim settings
 " ,i imports whatever is needed for current line

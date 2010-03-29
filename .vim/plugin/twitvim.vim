@@ -2,12 +2,12 @@
 " TwitVim - Post to Twitter from Vim
 " Based on Twitter Vim script by Travis Jeffery <eatsleepgolf@gmail.com>
 "
-" Version: 0.4.6
+" Version: 0.4.7
 " License: Vim license. See :help license
 " Language: Vim script
 " Maintainer: Po Shan Cheah <morton@mortonfox.com>
 " Created: March 28, 2008
-" Last updated: February 5, 2010
+" Last updated: March 13, 2010
 "
 " GetLatestVimScripts: 2204 1 twitvim.vim
 " ==============================================================
@@ -691,38 +691,50 @@ end
 
 parms = {}
 keys = VIM.evaluate('keys(a:parms)')
-keys.split(/\n/).each { |k|
+
+# Vim patch 7.2.374 adds support to if_ruby for Vim types. So keys() will
+# actually return a Ruby array instead of a newline-delimited string.
+# So we only need to split the string if VIM.evaluate returns a string.
+# If it's already an array, leave it alone.
+
+keys = keys.split(/\n/) if keys.is_a? String
+
+keys.each { |k|
     parms[k] = VIM.evaluate("a:parms['#{k}']")
 }
 
-res = net.start { |http| 
-    path = "#{url.path}?#{url.query}"
-    if parms == {}
-	req = Net::HTTP::Get.new(path)
+begin
+    res = net.start { |http| 
+	path = "#{url.path}?#{url.query}"
+	if parms == {}
+	    req = Net::HTTP::Get.new(path)
+	else
+	    req = Net::HTTP::Post.new(path)
+	    req.set_form_data(parms)
+	end
+
+	login = VIM.evaluate('a:login')
+	if login != ''
+	    req.add_field 'Authorization', "Basic #{make_base64(login)}"
+	end
+
+	#    proxylogin = VIM.evaluate('a:proxylogin')
+	#    if proxylogin != ''
+	#	req.add_field 'Proxy-Authorization', "Basic #{make_base64(proxylogin)}"
+	#    end
+
+	http.request(req)
+    }
+    case res
+    when Net::HTTPSuccess
+	output = res.body.gsub("'", "''")
+	VIM.command("let output='#{output}'")
     else
-	req = Net::HTTP::Post.new(path)
-	req.set_form_data(parms)
+	error = "#{res.code} #{res.message}".gsub("'", "''")
+	VIM.command("let error='#{error}'")
     end
-
-    login = VIM.evaluate('a:login')
-    if login != ''
-	req.add_field 'Authorization', "Basic #{make_base64(login)}"
-    end
-
-    #    proxylogin = VIM.evaluate('a:proxylogin')
-    #    if proxylogin != ''
-    #	req.add_field 'Proxy-Authorization', "Basic #{make_base64(proxylogin)}"
-    #    end
-
-    http.request(req)
-}
-case res
-when Net::HTTPSuccess
-    output = res.body.gsub("'", "''")
-    VIM.command("let output='#{output}'")
-else
-    error = "#{res.code} #{res.message}".gsub("'", "''")
-    VIM.command("let error='#{error}'")
+rescue SocketError
+    VIM.command("let error='#{ERROR_INFO}'")
 end
 EOF
 
@@ -939,6 +951,8 @@ function! s:save_buffer()
 	let s:curbuffer.buffer = getline(1, '$')
 	let s:curbuffer.view = winsaveview()
 	execute curwin .  "wincmd w"
+    else
+	let s:curbuffer.view = {}
     endif
 
     " If current buffer is the same type as buffer at the top of the stack,
@@ -1019,10 +1033,7 @@ function! s:add_update(output)
 
 	" Line number where new tweet will be inserted. It should be 3 if
 	" header is shown and 1 if header is hidden.
-	let insline = 1
-	if s:curbuffer.showheader
-	    let insline = 3
-	endif
+	let insline = s:curbuffer.showheader ? 3 : 1
 
 	" Add the status ID to the current buffer's statuses list.
 	call insert(s:curbuffer.statuses, s:xml_get_element(a:output, 'id'), insline)
@@ -1038,6 +1049,7 @@ function! s:add_update(output)
 	    call append(insline - 1, line)
 	    execute "normal! ".insline."G"
 	    set nomodifiable
+	    let s:curbuffer.buffer = getline(1, '$')
 	    execute curwin .  "wincmd w"
 	endif
     endif
@@ -1312,6 +1324,7 @@ function! s:show_inreplyto()
     set modifiable
     call append(lineno, '+ '.line)
     set nomodifiable
+    let s:curbuffer.buffer = getline(1, '$')
 
     redraw
     echo "In-reply-to tweet found."
@@ -1372,6 +1385,7 @@ function! s:do_delete_tweet()
     set modifiable
     normal! dd
     set nomodifiable
+    let s:curbuffer.buffer = getline(1, '$')
 
     redraw
     echo uobj "deleted."
@@ -1763,11 +1777,13 @@ function! s:show_timeline_xml(timeline, tline_name, username, page)
 	let title .= " for ".a:username
     endif
 
-    " Special case titles for Retweets.
+    " Special case titles for Retweets and Mentions.
     if a:tline_name == "retweeted_to_me"
 	let title = "Retweets by others"
     elseif a:tline_name == "retweeted_by_me"
 	let title = "Retweets by you"
+    elseif a:tline_name == "replies"
+	let title = "Mentions timeline"
     endif
 
     if a:page > 1
@@ -1808,6 +1824,7 @@ function! s:show_timeline_xml(timeline, tline_name, username, page)
 	let matchcount += 1
     endwhile
     call s:twitter_wintext(text, "timeline")
+    let s:curbuffer.buffer = text
 endfunction
 
 " Generic timeline retrieval function.
@@ -1828,7 +1845,7 @@ function! s:get_timeline(tline_name, username, page)
     " retrieve another user's timeline.
     let user = a:username == '' ? '' : '/'.a:username
 
-    let url_fname = (a:tline_name == "replies" || a:tline_name == "retweeted_to_me" || a:tline_name == "retweeted_by_me") ? a:tline_name.".xml" : a:tline_name == "friends" ? "home_timeline.xml" : a:tline_name."_timeline".user.".xml"
+    let url_fname = (a:tline_name == "retweeted_to_me" || a:tline_name == "retweeted_by_me") ? a:tline_name.".xml" : a:tline_name == "friends" ? "home_timeline.xml" : a:tline_name == "replies" ? "mentions.xml" : a:tline_name."_timeline".user.".xml"
 
     " Support pagination.
     if a:page > 1
@@ -1836,8 +1853,8 @@ function! s:get_timeline(tline_name, username, page)
 	let gotparam = 1
     endif
 
-    " Support count parameter in friends, user, and retweet timelines.
-    if a:tline_name == 'friends' || a:tline_name == 'user' || a:tline_name == 'retweeted_to_me' || a:tline_name == 'retweeted_by_me'
+    " Support count parameter in friends, user, mentions, and retweet timelines.
+    if a:tline_name == 'friends' || a:tline_name == 'user' || a:tline_name == 'replies' || a:tline_name == 'retweeted_to_me' || a:tline_name == 'retweeted_by_me'
 	let tcount = s:get_count()
 	if tcount > 0
 	    let url_fname .= (gotparam ? '&' : '?').'count='.tcount
@@ -1845,21 +1862,23 @@ function! s:get_timeline(tline_name, username, page)
 	endif
     endif
 
+    let tl_name = a:tline_name == "replies" ? "mentions" : a:tline_name
+
     redraw
-    echo "Sending" a:tline_name "timeline request to Twitter..."
+    echo "Sending" tl_name "timeline request to Twitter..."
 
     let url = s:get_api_root()."/statuses/".url_fname
 
     let [error, output] = s:run_curl(url, login, s:get_proxy(), s:get_proxy_login(), {})
 
     if error != ''
-	call s:errormsg("Error getting Twitter ".a:tline_name." timeline: ".error)
+	call s:errormsg("Error getting Twitter ".tl_name." timeline: ".error)
 	return
     endif
 
     let error = s:xml_get_element(output, 'error')
     if error != ''
-	call s:errormsg("Error getting Twitter ".a:tline_name." timeline: ".error)
+	call s:errormsg("Error getting Twitter ".tl_name." timeline: ".error)
 	return
     endif
 
@@ -1875,7 +1894,7 @@ function! s:get_timeline(tline_name, username, page)
     let foruser = a:username == '' ? '' : ' for user '.a:username
 
     " Uppercase the first letter in the timeline name.
-    echo substitute(a:tline_name, '^.', '\u&', '') "timeline updated".foruser."."
+    echo substitute(tl_name, '^.', '\u&', '') "timeline updated".foruser."."
 endfunction
 
 " Retrieve a Twitter list timeline.
@@ -1907,7 +1926,7 @@ function! s:get_list_timeline(username, listname, page)
     " Support count parameter.
     let tcount = s:get_count()
     if tcount > 0
-	let url .= (gotparam ? '&' : '?').'count='.tcount
+	let url .= (gotparam ? '&' : '?').'per_page='.tcount
 	let gotparam = 1
     endif
 
@@ -1992,6 +2011,7 @@ function! s:show_dm_xml(sent_or_recv, timeline, page)
 	let matchcount += 1
     endwhile
     call s:twitter_wintext(text, "timeline")
+    let s:curbuffer.buffer = text
 endfunction
 
 " Get direct messages sent to or received by user.
@@ -2099,6 +2119,9 @@ endif
 if !exists(":UserTwitter")
     command -range=1 -nargs=? UserTwitter :call <SID>get_timeline("user", <q-args>, <count>)
 endif
+if !exists(":MentionsTwitter")
+    command -count=1 MentionsTwitter :call <SID>get_timeline("replies", '', <count>)
+endif
 if !exists(":RepliesTwitter")
     command -count=1 RepliesTwitter :call <SID>get_timeline("replies", '', <count>)
 endif
@@ -2121,7 +2144,7 @@ endif
 nnoremenu Plugin.TwitVim.-Sep1- :
 nnoremenu Plugin.TwitVim.&Friends\ Timeline :call <SID>get_timeline("friends", '', 1)<cr>
 nnoremenu Plugin.TwitVim.&User\ Timeline :call <SID>get_timeline("user", '', 1)<cr>
-nnoremenu Plugin.TwitVim.&Replies\ Timeline :call <SID>get_timeline("replies", '', 1)<cr>
+nnoremenu Plugin.TwitVim.&Mentions\ Timeline :call <SID>get_timeline("replies", '', 1)<cr>
 nnoremenu Plugin.TwitVim.&Direct\ Messages :call <SID>Direct_Messages("dmrecv", 1)<cr>
 nnoremenu Plugin.TwitVim.Direct\ Messages\ &Sent :call <SID>Direct_Messages("dmsent", 1)<cr>
 nnoremenu Plugin.TwitVim.&Public\ Timeline :call <SID>get_timeline("public", '', 1)<cr>
@@ -2792,6 +2815,7 @@ function! s:show_summize(searchres, page)
 	let matchcount += 1
     endwhile
     call s:twitter_wintext(text, "timeline")
+    let s:curbuffer.buffer = text
 endfunction
 
 " Query Twitter Search API and retrieve results

@@ -1,3 +1,5 @@
+(use 'clojure.contrib.repl-utils)
+
 (defn class-methods [x]
   (let [c (if (class? x) x (class x))]
     (distinct (sort (seq 

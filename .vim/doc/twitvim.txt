@@ -51,6 +51,7 @@ License: The Vim License applies to twitvim.vim and twitvim.txt (see
 	     :UserTwitter.........................: |:UserTwitter|
 	     twitvim_count........................: |twitvim_count|
 	     :FriendsTwitter......................: |:FriendsTwitter|
+	     :MentionsTwitter.....................: |:MentionsTwitter|
 	     :RepliesTwitter......................: |:RepliesTwitter|
 	     :PublicTwitter.......................: |:PublicTwitter|
 	     :DMTwitter...........................: |:DMTwitter|
@@ -356,12 +357,14 @@ License: The Vim License applies to twitvim.vim and twitvim.txt (see
 	TwitVim requires the net/http, uri, and Base64 modules. These modules
 	are in the Ruby standard library.
 
-	In addition, TwitVim requires a Vim patch to fix an if_ruby networking
-	problem. See the following message:
+	In addition, if using the Ruby interface, TwitVim requires Vim
+	7.2.360 or later to fix an if_ruby problem with Windows sockets.
+
+	Alternatively, you can add the following patch to the Vim sources:
 
 	http://www.mail-archive.com/vim_dev@googlegroups.com/msg03693.html
 
-	and also Bram's correction to the patch:
+	See also Bram's correction to the patch:
 
 	http://www.mail-archive.com/vim_dev@googlegroups.com/msg03713.html
 
@@ -553,14 +556,20 @@ License: The Vim License applies to twitvim.vim and twitvim.txt (see
 	setting |twitvim_count|.
 
 
+	:[count]MentionsTwitter				*:MentionsTwitter*
 	:[count]RepliesTwitter				*:RepliesTwitter*
 
-	This command displays a timeline of @-replies that you've received
-	from other Twitter users.
+	This command displays a timeline of mentions (updates containing
+	@username) that you've received from other Twitter users.
 
 	If you specify [count], that number is used as the page number. For
-	example, :2RepliesTwitter displays the second page from your replies
+	example, :2MentionsTwitter displays the second page from your mentions
 	timeline.
+
+	:RepliesTwitter is the old name for :MentionsTwitter.
+
+	You can configure the number of tweets returned by :MentionsTwitter by
+	setting |twitvim_count|.
 
 
 	:PublicTwitter					*:PublicTwitter*
@@ -1306,6 +1315,15 @@ License: The Vim License applies to twitvim.vim and twitvim.txt (see
 ==============================================================================
 7. TwitVim History					*TwitVim-history*
 
+	0.4.7 : 2010-03-13 * Added |:MentionsTwitter| as an alias for
+			     |:RepliesTwitter|.
+			   * Support |twitvim_count| in |:MentionsTwitter|.
+			   * Fixed |twitvim_count| bug in |:ListTwitter|.
+			   * Fixed Ruby interface problem with
+			     Vim patch 7.2.374.
+			   * Fixed |:BackTwitter| behavior when timeline
+			     window is hidden by user.
+			   * Handle SocketError exception in Ruby code.
 	0.4.6 : 2010-02-05 * Added option to hide header in timeline buffer.
 			     |TwitVim-hide-header|
 	0.4.5 : 2009-12-20 * Prompt for login info if not configured.

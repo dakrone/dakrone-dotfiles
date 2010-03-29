@@ -15,3 +15,4 @@ vimwiki-0-9-801.vba: call delete('/Users/hinmanm/.vim/autoload/vimwiki.vim')|cal
 ctk.vba: call delete('/Users/hinmanm/.vim/.compiler_info')|call delete('/Users/hinmanm/.vim/plugin/ctk.vim')|call delete('/Users/hinmanm/.vim/doc/ctk.txt')
 markdown-1.1.0.vba: call delete('/Users/hinmanm/.vim/ftdetect/markdown.vim')|call delete('/Users/hinmanm/.vim/snippets/markdown.snippets')|call delete('/Users/hinmanm/.vim/syntax/markdown.vim')
 twitvim-0.4.6.vba: call delete('/Users/hinmanm/.vim/plugin/twitvim.vim')|call delete('/Users/hinmanm/.vim/doc/twitvim.txt')
+twitvim-0.4.7.vba: call delete('/Users/hinmanm/.vim/plugin/twitvim.vim')|call delete('/Users/hinmanm/.vim/doc/twitvim.txt')

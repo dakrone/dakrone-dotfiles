@@ -9,15 +9,17 @@ file when it is written.  Any errors will be added to the current
 window's location list (:help location-list) and their corresponding
 line number noted via Vim's sign functionality.
 
-Javascript validation currently uses JavaScript Lint to perform the
-validation.  To use it you will need to first install JavaScript Lint
-and put it in your path.
+Javascript validation currently uses JavaScript Lint
+(http://www.javascriptlint.com/) to perform the validation.  To use it
+you will need to first install JavaScript Lint and put it in your
+path.
 
 Installing on windows and the mac should be very straight forward
 since pre-compiled version for each are available for download on the
-JavaScript Lint site.  For other unix based systems (linux, bsd, etc.)
-the installation procedure is not so obvious.  Here are the steps used
-to compile and install it on a linux machine (your paths may vary):
+JavaScript Lint (http://www.javascriptlint.com/) site.  For other unix
+based systems (linux, bsd, etc.) the installation procedure is not so
+obvious.  Here are the steps used to compile and install it on a linux
+machine (your paths may vary):
 
 >
 

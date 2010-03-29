@@ -18,9 +18,21 @@ Note: Please note that this command is not intended to be a full
   replacement for the more advance support provided by eclipse, ant,
   or maven.
 
+The :Java will locate the main class to run using the following steps:
+
+1. if the first argument is '%' (:Java %) then run the current class.
+
+2. if the setting |org.eclim.java.run.mainclass| is set, then use the
+   value as the fully qualified class name to run.
+
+3. lastly, attempt to locate a class containing a static main method,
+   if only one is found, use that class.
+
 
 Configuration
 =============
+
+*org.eclim.java.run.mainclass*
 
 Eclim Settings
 
@@ -33,8 +45,13 @@ Eclim Settings
 Executing javac
 ===============
 
-To run the javac command on your source code, you may use the :Javac
-command, which executes javac against all your source code.
+To compile your project's source code, you may use the :Javac command,
+which will run javac on all source files found in your project's src
+directories as configured by your .classpath file.  You may use the
+|org.eclim.java.compile.sourcepath| setting described below, if you
+wish to alter which directories are used.  The resulting class files
+will be written to the output path as defined in your project's
+.classpath file.
 
 Note: Please note that this command is not intended to be a full
   replacement for javac support provided by more comprehensive build
@@ -46,10 +63,21 @@ Configuration
 
 Eclim Settings
 
+*org.eclim.java.compile.sourcepath*
+
 - org.eclim.java.compile.sourcepath - The project relative source
   paths to be compiled by javac.  This should be a space separated
   list of project relative source directories which you want javac to
   be executed against.  When unset, all your configured source
   directories will be used.
+
+*:JavaListInstalls*
+
+
+Viewing list of known JDKs/JREs installed
+=========================================
+
+To view a list of all the JDKs/JREs that eclipse is aware of, eclim
+provides the command :JavaListInstalls.
 
 vim:ft=eclimhelp

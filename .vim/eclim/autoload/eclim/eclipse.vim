@@ -5,7 +5,7 @@
 "
 " License:
 "
-" Copyright (C) 2005 - 2009  Eric Van Dewoestine
+" Copyright (C) 2005 - 2010  Eric Van Dewoestine
 "
 " This program is free software: you can redistribute it and/or modify
 " it under the terms of the GNU General Public License as published by
@@ -23,51 +23,108 @@
 " }}}
 
 " Script Variables {{{
-  let s:command_workspace_dir = '-command workspace_dir'
   let s:ide_prefs =
-    \ eclim#GetEclimHome() . '/../../configuration/.settings/org.eclipse.ui.ide.prefs'
+    \ g:EclimEclipseHome . '/configuration/.settings/org.eclipse.ui.ide.prefs'
 " }}}
 
-" GetWorkspaceDir() {{{
-" Gets the path to the workspace.  Ensures the path uses cross platform '/'
-" separators and includes a trailing '/'.  If the workspace could not be
-" determined, the empty string is returned.
-function! eclim#eclipse#GetWorkspaceDir()
-  if !exists('g:EclimWorkspace')
-    let result = ''
+" GetAllWorkspaceDirs() {{{
+function! eclim#eclipse#GetAllWorkspaceDirs()
+  let results = []
 
-    if result == ''
-      let result = eclim#ExecuteEclim(s:command_workspace_dir)
-      if result == '0'
-        let result = ''
-      endif
-    endif
-
-    " fall back to file based discovery
-    if result == '' && filereadable(s:ide_prefs)
-      let lines = readfile(s:ide_prefs)
-      call filter(lines, 'v:val =~ "^\s*RECENT_WORKSPACES\s*="')
-      if len(lines) == 1
-        let result = substitute(lines[0], '.\{-}=\s*\(.\{-}\)\(\s*,\|$\)', '\1', '')
-        " unescape the escaped dir name in windows
-        exec 'let result = "' . result . '"'
-      endif
-    endif
-
-    " failed to get the workspace.
-    if result == ''
-      return result
-    endif
-
-    " ensure value uses unix slashes and ends in a slash
-    let result = substitute(result, '\', '/', 'g')
-    if result !~ '/$'
-      let result .= '/'
-    endif
-
-    let g:EclimWorkspace = result
+  let instances = has('win32unix') ?
+    \ eclim#cygwin#WindowsHome() . '/.eclim/.eclimd_instances' :
+    \ expand('~/.eclim/.eclimd_instances')
+  if filereadable(instances)
+    let results = readfile(instances)
+    call map(results, 'substitute(v:val, "\\(.*\\):.*", "\\1", "")')
   endif
-  return g:EclimWorkspace
+
+  if len(results) == 0 && filereadable(s:ide_prefs)
+    let results = readfile(s:ide_prefs)
+    call filter(results, 'v:val =~ "^\s*RECENT_WORKSPACES\s*="')
+    call map(results,
+      \ 'substitute(v:val, ".\\{-}=\\s*\\(.\\{-}\\)\\(\\s*,\\|$\\)", "\\1", "")')
+    " unescape the escaped dir name in windows
+    exec 'let results = ["' . results[0] . '"]'
+
+    if results[0] =~ "\n"
+      let results = split(results[0], "\n")
+    endif
+
+    if has('win32unix')
+      call map(results, 'eclim#cygwin#CygwinPath(v:val, 1)')
+    endif
+  endif
+
+  " ensure each value uses unix slashes and ends in a slash
+  let results = map(results, 'substitute(v:val, "\\\\", "/", "g")')
+  let results = map(results, 'v:val . (v:val !~ "/$" ? "/" : "")')
+
+  " only return workspaces that exist.
+  let results = filter(results, 'isdirectory(v:val)')
+
+  call sort(results)
+
+  return results
+endfunction " }}}
+
+" ChooseWorkspace([dir]) {{{
+" Function which prompts the user to pick the target workspace and returns
+" their choice or if only one workspace is active simply return it without
+" prompting the user.  If the optional 'dir' argument is supplied and that dir
+" is a subdirectory of one of the workspaces, then that workspace will be
+" returned.
+function! eclim#eclipse#ChooseWorkspace(...)
+  let workspaces = eclim#eclipse#GetAllWorkspaceDirs()
+  if len(workspaces) == 1
+    return workspaces[0]
+  endif
+
+  if len(workspaces) > 1
+    if a:0 > 0
+      for workspace in workspaces
+        if a:1 =~ '^' . substitute(workspace, '\(/\|\\\)$', '', '') . '\>'
+          return workspace
+        endif
+      endfor
+    else
+      let project = eclim#project#util#GetCurrentProjectName()
+      if project != ''
+        let workspace = eclim#project#util#GetProjectWorkspace(project)
+        if workspace != ''
+          return workspace
+        endif
+      endif
+    endif
+
+    let response = eclim#util#PromptList(
+      \ 'Muliple workspaces found, please choose the target workspace',
+      \ workspaces, g:EclimInfoHighlight)
+
+    " user cancelled, error, etc.
+    if response < 0
+      return
+    endif
+
+    return workspaces[response]
+  endif
+
+  call eclim#util#Echo('Unable to determine your eclipse workspace.')
+endfunction " }}}
+
+" CommandCompleteWorkspaces(argLead, cmdLine, cursorPos) {{{
+" Custom command completion for available workspaces.
+function! eclim#eclipse#CommandCompleteWorkspaces(argLead, cmdLine, cursorPos)
+  let cmdLine = strpart(a:cmdLine, 0, a:cursorPos)
+  let args = eclim#util#ParseCmdLine(cmdLine)
+  let argLead = cmdLine =~ '\s$' ? '' : args[len(args) - 1]
+
+  let workspaces = eclim#eclipse#GetAllWorkspaceDirs()
+  if cmdLine !~ '[^\\]\s$'
+    call filter(workspaces, 'v:val =~ "^' . argLead . '"')
+  endif
+
+  return workspaces
 endfunction " }}}
 
 " vim:ft=vim:fdm=marker

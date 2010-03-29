@@ -12,7 +12,10 @@ C/C++
 
 - C/C++ Search (|vim-c-search|)
 
-Note: These features depends on the eclipse cdt which should be installed
-  for you when choosing c/c++ support in the eclim installer.
+- Call Hierarchy (|vim-c-hierarchy|)
+
+Note: These features depends on the eclipse cdt (http://eclipse.org/cdt)
+  which should be installed for you when choosing c/c++ support in the
+  eclim installer.
 
 vim:ft=eclimhelp

@@ -181,7 +181,7 @@ let g:clojure_simplefold_nestable_end_expr = '\v^\s*$'
 
 " Showmarks settings
 let g:showmarks_ignore_type="hmprq"
-let g:showmakrs_enable=0
+let g:showmarks_enable=0
 
 " Eclim settings
 " ,i imports whatever is needed for current line
@@ -301,6 +301,7 @@ autocmd FileType php set omnifunc=phpcomplete#CompletePHP
 autocmd FileType c set omnifunc=ccomplete#Complete
 autocmd FileType ruby,eruby set omnifunc=rubycomplete#Complete
 autocmd FileType ruby,eruby let g:rubycomplete_rails = 1  " Rails support
+autocmd FileType java set noexpandtab
 " put these lines in ~/.vim/.compiler_info
 "au FileType ruby let b:{g:ctk_ext_var} = 'rb'
 "au FileType ruby SetCompilerInfo ruby title='Ruby 1.9.1 - Matz' cmd='ruby $flags $input' run='ruby $input' flags='-wc' debug_flags='-rdebug $flags'

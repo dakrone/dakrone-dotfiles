@@ -28,13 +28,15 @@ on the inner class / interface before calling :JavaHierarchy.
 While you are in the hierarchy tree buffer, you can jump to the type
 under the cursor using one of the following key bindings:
 
-   - <enter> - open the type using the (default action).
+   - <cr> - open the type using the (default action).
 
-   - <ctrl>e - open the type via :edit
+   - E - open the type via :edit
 
-   - <ctrl>s - open the type via :split
+   - S - open the type via :split
 
-   - <ctrl>t - open the type via :tabnew
+   - T - open the type via :tabnew
+
+   - ? - view help buffer
 
 
 Configuration

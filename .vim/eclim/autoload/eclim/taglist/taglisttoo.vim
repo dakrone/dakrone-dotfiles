@@ -1,7 +1,7 @@
 " Author:  Eric Van Dewoestine
 "
 " Description: {{{
-"   see http://eclim.sourceforge.net/vim/taglist.html
+"   see http://eclim.org/vim/taglist.html
 "
 " License:
 "
@@ -534,6 +534,12 @@ endfunction " }}}
 
 " s:ProcessTags() {{{
 function! s:ProcessTags()
+  " on insert completion prevent vim's jumping back and forth from the
+  " completion preview window from triggering a re-processing of tags
+  if pumvisible()
+    return
+  endif
+
   let filename = expand('%:p')
   if filename =~ s:taglisttoo_ignore || filename == ''
     return
@@ -564,12 +570,22 @@ function! s:ProcessTags()
     endif
 
     try
-      let command = g:Tlist_Ctags_Cmd . ' -f - --format=2 --excmd=pattern ' .
+      let command = g:Tlist_Ctags_Cmd_Ctags
+      if eclim#EclimAvailable() && !exists('g:EclimDisabled')
+        let port = eclim#client#nailgun#GetNgPort()
+        let command = substitute(g:Tlist_Ctags_Cmd_Eclim, '<port>', port, '')
+      endif
+
+      let command .= ' -f - --format=2 --excmd=pattern ' .
           \ '--fields=nks --sort=no --language-force=<lang> ' .
           \ '--<lang>-types=<types> "<file>"'
       let command = substitute(command, '<lang>', settings.lang, 'g')
       let command = substitute(command, '<types>', types, 'g')
       let command = substitute(command, '<file>', file, '')
+
+      if (has('win32') || has('win64')) && command =~ '^"'
+        let command .= ' "'
+      endif
 
       let response = eclim#util#System(command)
     finally
@@ -654,8 +670,13 @@ function! s:ProcessTags()
       exec filewin . 'winc w'
     endif
   else
-    call s:Window({}, tags, [[],[]])
-    winc p
+    " if the file isn't supported, then don't open the taglist window if it
+    " isn't open already.
+    let winnum = bufwinnr(g:TagList_title)
+    if winnum != -1
+      call s:Window({}, tags, [[],[]])
+      winc p
+    endif
   endif
 
   call s:ShowCurrentTag()
@@ -720,7 +741,11 @@ function! s:JumpToTag()
   let lnum = s:GetTagLineNumber(tag_info)
   let pattern = eclim#taglist#util#GetTagPattern(tag_info)
 
-  if getline(lnum) =~ escape(pattern, '*[]')
+  " account for my plugin which removes trailing spaces from the file
+  let pattern = escape(pattern, '.~*[]')
+  let pattern = substitute(pattern, '\s\+\$$', '\s*$', '')
+
+  if getline(lnum) =~ pattern
     mark '
     call cursor(lnum, 1)
     call s:ShowCurrentTag()
@@ -865,11 +890,11 @@ function! s:ShowCurrentTag()
   endif
 endfunction " }}}
 
-" s:FileSupported() {{{
+" s:FileSupported(filename, ftype) {{{
 " Check whether tag listing is supported for the specified file
 function! s:FileSupported(filename, ftype)
-  " Skip buffers with no names and buffers with filetype not set
-  if a:filename == '' || a:ftype == ''
+  " Skip buffers with no names, buffers with filetype not set, and vimballs
+  if a:filename == '' || a:ftype == '' || expand('%:e') == 'vba'
     return 0
   endif
 

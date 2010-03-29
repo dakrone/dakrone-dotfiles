@@ -4,9 +4,10 @@
 Running VimClojure in eclimd
 ****************************
 
-VimClojure is set of plugins for vim which provide various features
-for working with clojure.  When running the bundled nailgun server it
-can provide interactive features like code completion, repl
+VimClojure (http://kotka.de/projects/clojure/vimclojure.html) is set
+of plugins for vim which provide various features for working with
+clojure (http://clojure.org).  When running the bundled nailgun server
+it can provide interactive features like code completion, repl
 interaction, etc. While VimClojure can be used independently of eclim,
 you can also embed VimClojure's nailgun server inside of eclim via
 eclim's ext dir (|eclimd-extdir|) support.  By doing so, you only have
@@ -21,7 +22,8 @@ Note: In this guide we keep VimClojure as self contained as possible
   directory.  While this isn't required, it can make upgrading or
   removing VimClojure easier.
 
-1. First download the VimClojure distribution.
+1. First download the VimClojure distribution
+   (http://www.vim.org/scripts/script.php?script_id=2501).
 
 2. Next, unpack the distribution into your vim files directory:
 
@@ -54,14 +56,14 @@ Note: In this guide we keep VimClojure as self contained as possible
    Linux, BSD, OSX:
 
    >
-      $ mkdir ~/.vim/eclim/resources/ext/vimclojure
-      $ cp {build/vimclojure.jar,lib/clojure*.jar} ~/.vim/eclim/resources/ext/vimclojure
+      $ mkdir ~/.eclim/resources/ext/vimclojure
+      $ cp {build/vimclojure.jar,lib/clojure*.jar} ~/.eclim/resources/ext/vimclojure
 
    <
 
    Windows users, your can just create the
-   %HOME%\vimfiles\eclim\resources\ext\vimclojure directory and copy
-   the jar files from the build and lib dirs via Windows Explorer.
+   %HOME%\.eclim\resources\ext\vimclojure directory and copy the jar
+   files from the build and lib dirs via Windows Explorer.
 
 5. Lastely, configure vim:
 

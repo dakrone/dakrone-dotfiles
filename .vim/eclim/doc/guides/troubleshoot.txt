@@ -150,7 +150,7 @@ to:
        command you copied:
 
        >
-          > "C:\Program Files\eclipse\plugins\org.eclim_1.4.5\bin\eclim" -command ...
+          > "C:\Program Files\eclipse\eclim" -command ...
 
        <
 
@@ -158,10 +158,10 @@ to:
        error.
 
 Once you've obtained the stack trace, the next step it to send it to
-the eclim-user mailing list along with a description of what you were
-doing when the error occurred, as well as the OS you are on, and
-whether you were using eclimd headless or headed (inside of the
-eclipse gui).
+the eclim-user (http://groups.google.com/group/eclim-user) mailing
+list along with a description of what you were doing when the error
+occurred, as well as the OS you are on, and whether you were using
+eclimd headless or headed (inside of the eclipse gui).
 
 *ts_incompatible_plugins*
 

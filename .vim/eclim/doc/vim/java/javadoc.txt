@@ -60,6 +60,17 @@ file, etc).
 <
 
 
+Warning: Searching for classes in the jdk requires the JRE_CONTAINER entry in
+  your .classpath file.  Some third party plugins may create java
+  projects with this entry ommitted (like android projects created by
+  the Android Development Tools).  In these cases you can manually add
+  the following to your project's .classpath file:>
+
+     <classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+
+  <
+
+
 
 Configuration
 =============
@@ -83,10 +94,10 @@ Vim Variables
 Executing javadoc
 =================
 
-To run the javadoc utility on your source code, you may use the
-:Javadoc command, which with no arguments will execute javadoc against
-all your source code (as specified by any optional settings described
-below).
+To run the javadoc utility on your project's source code, you may use
+the :Javadoc command, which with no arguments will execute javadoc
+against all your project's source code (as specified by any optional
+settings described below).
 
 If you wish to run javadoc only against one or more files, you can
 supply the project relative paths as arguments to the :Javadoc command

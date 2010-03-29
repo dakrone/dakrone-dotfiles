@@ -1,11 +1,11 @@
 " Author:  Eric Van Dewoestine
 "
 " Description: {{{
-"  see http://eclim.sourceforge.net/vim/java/logging.html
+"  see http://eclim.org/vim/java/logging.html
 "
 " License:
 "
-" Copyright (C) 2005 - 2009  Eric Van Dewoestine
+" Copyright (C) 2005 - 2010  Eric Van Dewoestine
 "
 " This program is free software: you can redistribute it and/or modify
 " it under the terms of the GNU General Public License as published by
@@ -38,7 +38,7 @@ function! eclim#java#logging#LoggingInit(var)
       let logger = substitute(logger, '\${var}', a:var, '')
       if strlen(logger) > &textwidth && logger !~ '\n'
         let logger = substitute(logger,
-          \ '\(.*\)\s\(.*\)', '\1\n' . g:EclimIndent . g:EclimIndent . '\2', '')
+          \ '\(.*\)\s\(.*\)', '\1\n' . eclim#util#GetIndent(2) . '\2', '')
       endif
 
       let position = search('{')
@@ -65,22 +65,23 @@ function! s:InitLoggingSettings()
     return
   endif
 
+  let indent = eclim#util#GetIndent(1)
   if s:EclimLoggingImpl == "commons-logging"
-    let s:logger = g:EclimIndent .
+    let s:logger = indent .
       \ "private static final Log ${var} = LogFactory.getLog(${class}.class);"
     let s:logger_imports = [
       \ "org.apache.commons.logging.Log",
       \ "org.apache.commons.logging.LogFactory"]
   elseif s:EclimLoggingImpl == "slf4j"
-    let s:logger = g:EclimIndent .
+    let s:logger = indent .
       \ "private static final Logger ${var} = LoggerFactory.getLogger(${class}.class);"
     let s:logger_imports = ["org.slf4j.Logger", "org.slf4j.LoggerFactory"]
   elseif s:EclimLoggingImpl == "log4j"
-    let s:logger = g:EclimIndent .
+    let s:logger = indent .
       \ "private static final Logger ${var} = Logger.getLogger(${class}.class);"
     let s:logger_imports = ["org.apache.log4j.Logger"]
   elseif s:EclimLoggingImpl == "jdk"
-    let s:logger = g:EclimIndent .
+    let s:logger = indent .
       \ "private static final Logger ${var} = Logger.getLogger(${class}.class.getName());"
     let s:logger_imports = ["java.util.logging.Logger"]
   elseif s:EclimLoggingImpl == "custom"
@@ -88,7 +89,7 @@ function! s:InitLoggingSettings()
     if type(name) == 0 || name == ''
       return
     endif
-    let template = g:EclimBaseDir . '/eclim/resources/jdt/templates/' . name
+    let template = expand('~/.eclim/resources/jdt/templates/' . name)
     let template = substitute(template, '\\ ', ' ', 'g')
     if(!filereadable(template))
       echoe 'Custom logger template not found at "' . template . '"'
@@ -100,7 +101,7 @@ function! s:InitLoggingSettings()
     call map(s:logger_imports,
       \ "substitute(v:val, '^\\s*import\\>\\s*\\(.*\\);\\s*', '\\1', '')")
     call filter(lines, "v:val !~ '\\(^\\s*$\\|^\\s*import\\>\\)'")
-    let s:logger = g:EclimIndent . join(lines, "\n" . g:EclimIndent)
+    let s:logger = indent . join(lines, "\n" . indent)
   elseif s:EclimLoggingImpl == ''
     " no setting returned, probably not in a project, or user is attempting to
     " disable this functionality for the current project.

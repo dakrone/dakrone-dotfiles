@@ -16,8 +16,8 @@ Warning: Refactoring support in eclim is very new, so it should probably be
   refactoring, please first try the |:JavaRefactorUndo| command.  If
   that fails to revert the changes, you can then try using the
   |:History| command for each file that was changed.Be sure to report
-  your experiences, good or bad, on the eclim-user mailing list as
-  well.
+  your experiences, good or bad, on the eclim-user
+  (http://groups.google.com/group/eclim-user) mailing list as well.
 
 *:JavaRename*
 

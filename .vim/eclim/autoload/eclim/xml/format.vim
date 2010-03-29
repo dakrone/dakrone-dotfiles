@@ -1,11 +1,11 @@
 " Author:  Eric Van Dewoestine
 "
 " Description: {{{
-"   see http://eclim.sourceforge.net/vim/xml/format.html
+"   see http://eclim.org/vim/xml/format.html
 "
 " License:
 "
-" Copyright (C) 2005 - 2009  Eric Van Dewoestine
+" Copyright (C) 2005 - 2010  Eric Van Dewoestine
 "
 " This program is free software: you can redistribute it and/or modify
 " it under the terms of the GNU General Public License as published by
@@ -23,7 +23,8 @@
 " }}}
 
 " Script Variables {{{
-  let s:command_format = '-command xml_format -f "<file>" -w <width> -i <indent>'
+  let s:command_format =
+    \ '-command xml_format -f "<file>" -w <width> -i <indent> -m <ff>'
 " }}}
 
 " Format() {{{
@@ -38,16 +39,20 @@ function! eclim#xml#format#Format()
   endif
 
   let file = substitute(expand('%:p'), '\', '/', 'g')
+  if has('win32unix')
+    let file = eclim#cygwin#WindowsPath(file)
+  endif
 
   let command = s:command_format
   let command = substitute(command, '<file>', file, '')
   let command = substitute(command, '<width>', &textwidth, '')
   let command = substitute(command, '<indent>', &shiftwidth, '')
+  let command = substitute(command, '<ff>', &ff, '')
 
   let result = eclim#ExecuteEclim(command)
   if result != '0'
     silent! 1,$delete _
-    call append(1, split(result, '\n'))
+    silent put =result
     silent! 1,1delete _
   endif
 endfunction " }}}

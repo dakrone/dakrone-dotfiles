@@ -5,8 +5,9 @@ Eclim Architecture
 ******************
 
 The eclim architecture is pretty straight forward.  Commands issued by
-a user in vim are relayed via nailgun to the running eclim daemon and
-the proper command implementation is then located and executed.
+a user in vim are relayed via nailgun
+(http://www.martiansoftware.com/nailgun/) to the running eclim daemon
+and the proper command implementation is then located and executed.
 
 Here is a diagram showing the sequence in a bit more detail:
 

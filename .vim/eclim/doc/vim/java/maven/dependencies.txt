@@ -10,7 +10,7 @@ Maven provides online repositories where it will download dependencies
 from at build time.  One problem is that finding all your dependencies
 and then adding them to your pom file can become labor intensive.  To
 help alleviate this, eclim provides commands for searching via the web
-service provided by jarvana.com.
+service provided by jarvana.com (http://www.jarvana.com/jarvana/).
 
 - :MavenDependencySearch <artifact> - Available when editing a maven
   1.x project.xml file.

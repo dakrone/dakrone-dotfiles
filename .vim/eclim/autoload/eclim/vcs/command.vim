@@ -5,7 +5,7 @@
 "
 " License:
 "
-" Copyright (C) 2005 - 2009  Eric Van Dewoestine
+" Copyright (C) 2005 - 2010  Eric Van Dewoestine
 "
 " This program is free software: you can redistribute it and/or modify
 " it under the terms of the GNU General Public License as published by
@@ -59,33 +59,22 @@ function! eclim#vcs#command#Annotate(...)
   "  let revision = eclim#vcs#util#GetRevision()
   "endif
 
-  " don't cache annotations since we won't see local changes in the results if
-  " the underlying vcs supports reporting them in the annotation output (git
-  " does, cvs, svn, and mercurial seem not to).
-  "let key = 'annotate_' . path . '_' . revision
-  "let cached = eclim#cache#Get(key)
-  "if has_key(cached, 'content')
-  "  let annotations = cached.content
-  "else
-    let dir = fnamemodify(path, ':h')
-    let cwd = getcwd()
-    if isdirectory(dir)
-      exec 'lcd ' . escape(dir, ' ')
+  let dir = fnamemodify(path, ':h')
+  let cwd = getcwd()
+  if isdirectory(dir)
+    exec 'lcd ' . escape(dir, ' ')
+  endif
+  try
+    let Annotate = eclim#vcs#util#GetVcsFunction('GetAnnotations')
+    if type(Annotate) != 2
+      call eclim#util#EchoError(
+        \ 'Current file is not under cvs, svn, hg, or git version control.')
+      return
     endif
-    try
-      let Annotate = eclim#vcs#util#GetVcsFunction('GetAnnotations')
-      if type(Annotate) != 2
-        call eclim#util#EchoError(
-          \ 'Current file is not under cvs, svn, hg, or git version control.')
-        return
-      endif
-      let annotations = Annotate(revision)
-      "call eclim#cache#Set(key, annotations,
-      "  \ {'path': path, 'revision': revision})
-    finally
-      exec 'lcd ' . escape(cwd, ' ')
-    endtry
-  "endif
+    let annotations = Annotate(revision)
+  finally
+    exec 'lcd ' . escape(cwd, ' ')
+  endtry
 
   call s:ApplyAnnotations(annotations)
 endfunction " }}}
@@ -110,36 +99,28 @@ function! eclim#vcs#command#ChangeSet(path, revision)
     let revision = eclim#vcs#util#GetPreviousRevision(path)
   endif
 
-  let key = 'changeset_' . path . '_' . revision
-  let cached = eclim#cache#Get(key)
-  if has_key(cached, 'content')
-    let info = {'changeset': cached.content, 'props': cached.metadata.props}
-  else
-    let cwd = getcwd()
-    let dir = fnamemodify(path, ':h')
-    if isdirectory(dir)
-      exec 'lcd ' . escape(dir, ' ')
-    endif
-    try
-      let ChangeSet = eclim#vcs#util#GetVcsFunction('ChangeSet')
-      if type(ChangeSet) != 2
-        return
-      endif
-      let info = ChangeSet(revision)
-    catch /E117:.*/
-      let type = eclim#vcs#util#GetVcsType()
-      call eclim#util#EchoError('This function is not supported by "' . type . '".')
-      return
-    finally
-      exec 'lcd ' . escape(cwd, ' ')
-    endtry
-    let info.props = has_key(info, 'props') ? info.props : {}
-    let info.props.view = 'changeset'
-    let info.props.path = path
-    let info.props.revision = revision
-    call eclim#cache#Set(key, info.changeset,
-      \ {'path': path, 'revision': revision, 'props': info.props})
+  let cwd = getcwd()
+  let dir = fnamemodify(path, ':h')
+  if isdirectory(dir)
+    exec 'lcd ' . escape(dir, ' ')
   endif
+  try
+    let ChangeSet = eclim#vcs#util#GetVcsFunction('ChangeSet')
+    if type(ChangeSet) != 2
+      return
+    endif
+    let info = ChangeSet(revision)
+  catch /E117:.*/
+    let type = eclim#vcs#util#GetVcsType()
+    call eclim#util#EchoError('This function is not supported by "' . type . '".')
+    return
+  finally
+    exec 'lcd ' . escape(cwd, ' ')
+  endtry
+  let info.props = has_key(info, 'props') ? info.props : {}
+  let info.props.view = 'changeset'
+  let info.props.path = path
+  let info.props.revision = revision
 
   call s:TempWindow(info.changeset)
   call s:LogSyntax()
@@ -244,40 +225,29 @@ function! eclim#vcs#command#Log(path)
     return
   endif
 
+  let cwd = getcwd()
   let path = substitute(a:path, '\', '/', 'g')
-  let key = 'log_' . path . '_' . g:EclimVcsLogMaxEntries
-  let cached = eclim#cache#Get(key, function('eclim#vcs#util#IsCacheValid'))
-  if has_key(cached, 'content')
-    let info = {'log': cached.content, 'props': cached.metadata.props}
-  else
-    let cwd = getcwd()
-    let dir = fnamemodify(path, ':h')
-    if isdirectory(dir)
-      exec 'lcd ' . escape(dir, ' ')
-    endif
-    try
-      let Log = eclim#vcs#util#GetVcsFunction('Log')
-      if type(Log) != 2
-        return
-      endif
-      let info = Log(path)
-    finally
-      exec 'lcd ' . escape(cwd, ' ')
-    endtry
-    if g:EclimVcsLogMaxEntries > 0 && len(info.log) == g:EclimVcsLogMaxEntries
-      call add(info.log, '------------------------------------------')
-      call add(info.log, 'Note: entries limited to ' . g:EclimVcsLogMaxEntries . '.')
-      call add(info.log, '      let g:EclimVcsLogMaxEntries = ' . g:EclimVcsLogMaxEntries)
-    endif
-    let info.props = has_key(info, 'props') ? info.props : {}
-    let info.props.view = 'log'
-    let info.props.path = path
-    call eclim#cache#Set(key, info.log, {
-      \  'path': path,
-      \  'revision': eclim#vcs#util#GetRevision(path),
-      \  'props': info.props
-      \ })
+  let dir = fnamemodify(path, ':h')
+  if isdirectory(dir)
+    exec 'lcd ' . escape(dir, ' ')
   endif
+  try
+    let Log = eclim#vcs#util#GetVcsFunction('Log')
+    if type(Log) != 2
+      return
+    endif
+    let info = Log(path)
+  finally
+    exec 'lcd ' . escape(cwd, ' ')
+  endtry
+  if g:EclimVcsLogMaxEntries > 0 && len(info.log) == g:EclimVcsLogMaxEntries
+    call add(info.log, '------------------------------------------')
+    call add(info.log, 'Note: entries limited to ' . g:EclimVcsLogMaxEntries . '.')
+    call add(info.log, '      let g:EclimVcsLogMaxEntries = ' . g:EclimVcsLogMaxEntries)
+  endif
+  let info.props = has_key(info, 'props') ? info.props : {}
+  let info.props.view = 'log'
+  let info.props.path = path
 
   " if annotations are on, jump to the revision for the current line
   let jumpto = ''
@@ -347,31 +317,24 @@ function! eclim#vcs#command#ViewFileRevision(path, revision, open_cmd)
   let b:vcs_props.view = 'cat'
 
   " load in content
-  let key = 'cat_' . path . '_' . revision
-  let cached = eclim#cache#Get(key)
-  if has_key(cached, 'content')
-    let lines = cached.content
-  else
-    let cwd = getcwd()
-    let dir = fnamemodify(path, ':h')
-    if has_key(props, 'root_dir')
-      let dir = b:vcs_props.root_dir . '/' . dir
-    endif
-    if isdirectory(dir)
-      exec 'lcd ' . escape(dir, ' ')
-      let path = fnamemodify(path, ':t')
-    endif
-    try
-      let ViewFileRevision = eclim#vcs#util#GetVcsFunction('ViewFileRevision')
-      if type(ViewFileRevision) != 2
-        return
-      endif
-      let lines = ViewFileRevision(path, revision)
-      call eclim#cache#Set(key, lines, {'path': path, 'revision': revision})
-    finally
-      exec 'lcd ' . escape(cwd, ' ')
-    endtry
+  let cwd = getcwd()
+  let dir = fnamemodify(path, ':h')
+  if has_key(props, 'root_dir')
+    let dir = b:vcs_props.root_dir . '/' . dir
   endif
+  if isdirectory(dir)
+    exec 'lcd ' . escape(dir, ' ')
+    let path = fnamemodify(path, ':t')
+  endif
+  try
+    let ViewFileRevision = eclim#vcs#util#GetVcsFunction('ViewFileRevision')
+    if type(ViewFileRevision) != 2
+      return
+    endif
+    let lines = ViewFileRevision(path, revision)
+  finally
+    exec 'lcd ' . escape(cwd, ' ')
+  endtry
 
   call append(1, lines)
   silent 1,1delete
@@ -417,6 +380,12 @@ function! s:ApplyAnnotations(annotations)
 
     let user = substitute(annotation, '^.\{-})\s\+\(.\{-}\)\s*$', '\1', '')
     let user_abbrv = user[:1]
+    let name_parts = split(user)
+    " if the user name appears to be in the form of First Last, then try using
+    " using the first letter of each as initials
+    if len(name_parts) > 1 && name_parts[0] =~ '^\w' && name_parts[1] =~ '^\w'
+      let user_abbrv = name_parts[0][0] . name_parts[1][0]
+    endif
     let sign_name = 'vcs_annotate_' . substitute(user[:5], ' ', '_', 'g')
     if index(defined, sign_name) == -1
       call eclim#display#signs#Define(sign_name, user_abbrv, g:EclimInfoHighlight)

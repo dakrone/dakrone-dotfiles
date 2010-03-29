@@ -93,8 +93,8 @@ word via an online reference.
 
   Adding the above command to your vimrc or similar provides you with
   a new :Google command allowing you to start a search on google.com
-  in your browser from vim.  This command can be invoked in a few
-  ways.
+  (http://google.com) in your browser from vim.  This command can be
+  invoked in a few ways.
 
   1. First by supplying the word or words to search for as arguments
      to the command.
@@ -132,8 +132,8 @@ word via an online reference.
 
   Adding the above command to your vimrc or similar provides you with
   a new :Dictionary command which can be used to look up a word on
-  dictionary.reference.com.  You can either supply the word to lookup
-  as an argument to the command or it will otherwise use the word
-  under the cursor.
+  dictionary.reference.com (http://dictionary.reference.com).  You can
+  either supply the word to lookup as an argument to the command or it
+  will otherwise use the word under the cursor.
 
 vim:ft=eclimhelp

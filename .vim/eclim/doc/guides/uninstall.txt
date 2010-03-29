@@ -16,6 +16,12 @@ plugins installed:
     /.eclipse/org.eclipse.platform_<version>/configuration/eclipse/plu
     gins
 
+  - On Windows systems you can also remove all the eclim* files and
+    ng.exe from your eclipse home directory.
+
+  - On Linux, BSD, OSX, etc., you can remove the symlinks created to
+    eclim and eclimd found in your eclipse home directory.
+
 - <vimfiles>/eclim
 
   Remove the eclim directory under your vimfiles dir.

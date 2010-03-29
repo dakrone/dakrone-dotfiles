@@ -1,11 +1,11 @@
 " Author:  Eric Van Dewoestine
 "
 " Description: {{{
-"   see http://eclim.sourceforge.net/vim/common/vcs.html
+"   see http://eclim.org/vim/common/vcs.html
 "
 " License:
 "
-" Copyright (C) 2005 - 2009  Eric Van Dewoestine
+" Copyright (C) 2005 - 2010  Eric Van Dewoestine
 "
 " This program is free software: you can redistribute it and/or modify
 " it under the terms of the GNU General Public License as published by
@@ -111,6 +111,21 @@ function eclim#vcs#impl#hg#GetRoot()
   return root
 endfunction " }}}
 
+" GetInfo() {{{
+function eclim#vcs#impl#hg#GetInfo()
+  let branch = substitute(eclim#vcs#impl#hg#Hg('branch'), '\n$', '', '')
+  if branch == '0'
+    return ''
+  endif
+
+  let bmarks = split(eclim#vcs#impl#hg#Hg('bookmarks'), '\n')
+  let bmarks = filter(bmarks, 'v:val =~ "^\\s*\\*"')
+  let bmark = len(bmarks) == 1 ?
+    \ substitute(bmarks[0], '^\s*\*\s*\(\w\+\)\s.*', '\1', '') : ''
+  let info = 'hg:' . branch . (bmark != '' ? (':' . bmark) : '')
+  return info
+endfunction " }}}
+
 " GetEditorFile() {{{
 function eclim#vcs#impl#hg#GetEditorFile()
   let line = getline('.')
@@ -121,6 +136,13 @@ function eclim#vcs#impl#hg#GetEditorFile()
     let file = substitute(line, '^HG: added\s\+\(.*\)\s*', '\1', '')
   endif
   return file
+endfunction " }}}
+
+" GetModifiedFiles() {{{
+function eclim#vcs#impl#hg#GetModifiedFiles()
+  let status = eclim#vcs#impl#hg#Hg('status -m -a -u -n')
+  let root = eclim#vcs#impl#hg#GetRoot()
+  return map(split(status, "\n"), 'root . "/" . v:val')
 endfunction " }}}
 
 " GetVcsWebPath() {{{

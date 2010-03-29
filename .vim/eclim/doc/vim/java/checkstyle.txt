@@ -7,7 +7,8 @@ Checkstyle
 *:Checkstyle*
 
 When editing a java source file, eclim provides the command
-:Checkstyle which will invoke checkstyle on the current file.
+:Checkstyle which will invoke checkstyle
+(http://checkstyle.sourceforge.net/) on the current file.
 
 Additionally, you can configure vim to execute checkstyle
 automatically when you save a java source file.  Simply set the vim

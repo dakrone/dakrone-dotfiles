@@ -5,11 +5,12 @@ C/C++ Project Configuration
 ***************************
 
 Note: This feature is currently considered alpha.  If you have any issues
-  or suggestions please submit them to the eclim user mailing
-  list.Also, please note that should you need access to the full set
-  of cdt configuration options, you can always open the eclipse gui
-  (after stopping any headless eclimd instance you may have running)
-  and access those options via the standard cdt project dialogs.
+  or suggestions please submit them to the eclim user
+  (http://groups.google.com/group/eclim-user) mailing list.Also,
+  please note that should you need access to the full set of cdt
+  configuration options, you can always open the eclipse gui (after
+  stopping any headless eclimd instance you may have running) and
+  access those options via the standard cdt project dialogs.
 
 The eclipse cdt provides a large set of configuration support for your
 c/c++ projects.  Eclim exposes a subset of these to you using the

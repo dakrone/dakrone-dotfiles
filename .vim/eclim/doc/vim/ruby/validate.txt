@@ -16,8 +16,9 @@ g:EclimRubyValidate variable (described below).  If you choose to
 disable automatic validation, you can still use the :Validate command
 to manually validate the current file.
 
-Note: This feature depends on the eclipse dltk ruby plugin which should be
-  installed for you when choosing ruby support in the eclim installer.
+Note: This feature depends on the eclipse dltk (http://eclipse.org/dltk)
+  ruby plugin which should be installed for you when choosing ruby
+  support in the eclim installer.
 
 
 Configuration

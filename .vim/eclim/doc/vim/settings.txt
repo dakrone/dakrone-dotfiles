@@ -152,13 +152,17 @@ The following is a list of some of the common Vim variables available.
   system, but if it cannot find a compatible browser, you will need to
   set one in your vimrc.
 
-  - Firefoxlet g:EclimBrowser = 'firefox'
+  - Firefox
+    let g:EclimBrowser = 'firefox'
 
-  - Mozillalet g:EclimBrowser = 'mozilla'
+  - Mozilla
+    let g:EclimBrowser = 'mozilla'
 
-  - Operalet g:EclimBrowser = 'opera'
+  - Opera
+    let g:EclimBrowser = 'opera'
 
-  - IElet g:EclimBrowser = 'iexplore'
+  - IE
+    let g:EclimBrowser = 'iexplore'
 
   Note: The above examples assume that the browser executable is in
   your path. On windows machines they won't be by default, so you will

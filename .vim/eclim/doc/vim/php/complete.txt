@@ -26,7 +26,8 @@ Php code completion uses the standard Vim code completion mechanism
 <
 
 
-Note: This feature depends on the eclipse pdt which should be installed
-  for you when choosing php support in the eclim installer.
+Note: This feature depends on the eclipse pdt (http://eclipse.org/pdt)
+  which should be installed for you when choosing php support in the
+  eclim installer.
 
 vim:ft=eclimhelp

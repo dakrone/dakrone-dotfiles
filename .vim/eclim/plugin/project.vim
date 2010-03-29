@@ -4,7 +4,7 @@
 "
 " License:
 "
-" Copyright (C) 2005 - 2009  Eric Van Dewoestine
+" Copyright (C) 2005 - 2010  Eric Van Dewoestine
 "
 " This program is free software: you can redistribute it and/or modify
 " it under the terms of the GNU General Public License as published by
@@ -42,6 +42,10 @@ endif
 
 if !exists('g:EclimProjectTreeExpandPathOnOpen')
   let g:EclimProjectTreeExpandPathOnOpen = 0
+endif
+
+if !exists('g:EclimProjectTreeSharedInstance')
+  let g:EclimProjectTreeSharedInstance = 0
 endif
 
 if g:EclimProjectTreeAutoOpen && !exists('g:EclimProjectTreeAutoOpenProjects')
@@ -111,7 +115,9 @@ if !exists(":ProjectCreate")
     \ -complete=customlist,eclim#project#util#CommandCompleteProject
     \ ProjectRefresh :call eclim#project#util#ProjectRefresh('<args>')
   command ProjectRefreshAll :call eclim#project#util#ProjectRefreshAll()
-  command ProjectList :call eclim#project#util#ProjectList()
+  command ProjectCacheClear :call eclim#project#util#ClearProjectsCache()
+  command -nargs=? -complete=customlist,eclim#eclipse#CommandCompleteWorkspaces
+    \ ProjectList :call eclim#project#util#ProjectList('<args>')
   command -nargs=?
     \ -complete=customlist,eclim#project#util#CommandCompleteProject
     \ ProjectSettings :call eclim#project#util#ProjectSettings('<args>')
@@ -149,6 +155,9 @@ if !exists(":ProjectTree")
     \ ProjectTree :call eclim#project#tree#ProjectTree(<f-args>)
   command -nargs=0 ProjectsTree
     \ :call eclim#project#tree#ProjectTree(eclim#project#util#GetProjectNames())
+  command -nargs=1
+    \ -complete=customlist,eclim#project#util#CommandCompleteProject
+    \ ProjectTab :call eclim#project#util#ProjectTab('<args>')
 endif
 
 if !exists(":ProjectCD")

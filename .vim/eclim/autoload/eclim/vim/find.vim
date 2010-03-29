@@ -1,7 +1,7 @@
 " Author:  Eric Van Dewoestine
 "
 " Description: {{{
-"   see http://eclim.sourceforge.net/vim/vim/find.html
+"   see http://eclim.org/vim/vim/find.html
 "
 " License:
 "
@@ -28,7 +28,7 @@ if !exists("g:EclimVimPaths")
 endif
 if !exists("g:EclimVimFindSingleResult")
   " possible values ('split', 'edit', 'lopen')
-  let g:EclimVimFindSingleResult = "split"
+  let g:EclimVimFindSingleResult = g:EclimDefaultFileOpenAction
 endif
 " }}}
 
@@ -199,7 +199,9 @@ function! s:Find(name, bang, context)
   try
     " if a script local function search current file.
     if name =~ '^s:.*'
-      silent! exec cnt . 'lvimgrepadd /' . search . '/gj' . ' ' . expand('%:p')
+      let command = cnt . 'lvimgrepadd /' . search . '/gj %'
+      call eclim#util#EchoTrace(command)
+      silent! exec command
 
     " search globally
     else
@@ -210,7 +212,9 @@ function! s:Find(name, bang, context)
         endif
 
         let path = escape(substitute(path, '\', '/', 'g'), ' ')
-        silent! exec cnt . 'lvimgrepadd /' . search . '/gj' . ' ' . path . '/**/*.vim'
+        let command = cnt . 'lvimgrepadd /' . search . '/gj' . ' ' . path . '/**/*.vim'
+        call eclim#util#EchoTrace(command)
+        silent! exec command
         if a:context == 'def' && len(getloclist(0)) > 0
           break
         endif

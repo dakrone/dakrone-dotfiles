@@ -16,8 +16,9 @@ g:EclimPhpValidate variable (described below).  If you choose to
 disable automatic validation, you can still use the :Validate command
 to manually validate the current file.
 
-Note: This feature depends on the eclipse pdt which should be installed
-  for you when choosing php support in the eclim installer.
+Note: This feature depends on the eclipse pdt (http://eclipse.org/pdt)
+  which should be installed for you when choosing php support in the
+  eclim installer.
 
 
 Configuration

@@ -1,11 +1,11 @@
 " Author:  Eric Van Dewoestine
 "
 " Description: {{{
-"   see http://eclim.sourceforge.net/vim/common/vcs.html
+"   see http://eclim.org/vim/common/vcs.html
 "
 " License:
 "
-" Copyright (C) 2005 - 2009  Eric Van Dewoestine
+" Copyright (C) 2005 - 2010  Eric Van Dewoestine
 "
 " This program is free software: you can redistribute it and/or modify
 " it under the terms of the GNU General Public License as published by
@@ -190,6 +190,27 @@ function eclim#vcs#util#GetRevisions()
   return revisions
 endfunction " }}}
 
+" GetModifiedFiles() {{{
+" Gets a list of modified files, including untracked files that are not
+" ignored.
+function eclim#vcs#util#GetModifiedFiles()
+  let files = []
+
+  let cwd = getcwd()
+  let dir = eclim#vcs#util#GetRoot('')
+  exec 'lcd ' . escape(dir, ' ')
+  try
+    let GetModifiedFiles = eclim#vcs#util#GetVcsFunction('GetModifiedFiles')
+    if type(GetModifiedFiles) == 2
+      let files = GetModifiedFiles()
+    endif
+  finally
+    exec 'lcd ' . escape(cwd, ' ')
+  endtry
+
+  return files
+endfunction " }}}
+
 " GetRoot(dir) {{{
 " Gets the absolute path to the repository root on the local file system.
 function eclim#vcs#util#GetRoot(dir)
@@ -208,6 +229,28 @@ function eclim#vcs#util#GetRoot(dir)
   endtry
 
   return root
+endfunction " }}}
+
+" GetInfo(dir) {{{
+" Gets some displayable info for the specified vcs directory (branch info, etc.)
+function eclim#vcs#util#GetInfo(dir)
+  let info = ''
+
+  let cwd = getcwd()
+  let dir = a:dir == '' ? expand('%:p:h') : a:dir
+  exec 'lcd ' . escape(dir, ' ')
+  try
+    let GetInfo = eclim#vcs#util#GetVcsFunction('GetInfo')
+    if type(GetInfo) == 2
+      let info = GetInfo()
+    endif
+  catch /E117/
+    " function not found
+  finally
+    exec 'lcd ' . escape(cwd, ' ')
+  endtry
+
+  return info
 endfunction " }}}
 
 " Vcs(cmd, args) {{{

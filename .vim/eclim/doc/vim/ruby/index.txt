@@ -12,8 +12,8 @@ Ruby
 
 - Ruby Search (|vim-ruby-search|)
 
-Note: These features depends on the eclipse dltk ruby plugin which should
-  be installed for you when choosing ruby support in the eclim
-  installer.
+Note: These features depends on the eclipse dltk (http://eclipse.org/dltk)
+  ruby plugin which should be installed for you when choosing ruby
+  support in the eclim installer.
 
 vim:ft=eclimhelp

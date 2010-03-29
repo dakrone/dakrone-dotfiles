@@ -1,11 +1,11 @@
 " Author:  Eric Van Dewoestine
 "
 " Description: {{{
-"   see http://eclim.sourceforge.net/vim/java/classpath.html
+"   see http://eclim.org/vim/java/classpath.html
 "
 " License:
 "
-" Copyright (C) 2005 - 2009  Eric Van Dewoestine
+" Copyright (C) 2005 - 2010  Eric Van Dewoestine
 "
 " This program is free software: you can redistribute it and/or modify
 " it under the terms of the GNU General Public License as published by
@@ -83,9 +83,13 @@ endfunction " }}}
 " VariableCreate(name, path) {{{
 " Create or update a variable.
 function! eclim#java#classpath#VariableCreate(name, path)
+  let path = substitute(fnamemodify(a:path, ':p'), '\', '/', 'g')
+  if has('win32unix')
+    let path = eclim#cygwin#WindowsPath(path)
+  endif
   let command = s:command_variable_create
   let command = substitute(command, '<name>', a:name, '')
-  let command = substitute(command, '<path>', fnamemodify(a:path, ':p'), '')
+  let command = substitute(command, '<path>', path, '')
 
   let result = eclim#ExecuteEclim(command)
   if result != '0'
@@ -112,7 +116,7 @@ function! eclim#java#classpath#CommandCompleteVar(argLead, cmdLine, cursorPos)
   let argLead = substitute(a:argLead, cmdTail . '$', '', '')
 
   let vars = eclim#java#classpath#GetVariableNames()
-  call filter(vars, 'v:val =~ "^' . argLead . '"')
+  call filter(vars, 'v:val =~ "\\M^' . argLead . '"')
 
   return vars
 endfunction " }}}
@@ -126,16 +130,20 @@ function! eclim#java#classpath#CommandCompleteVarPath(argLead, cmdLine, cursorPo
   let args = eclim#util#ParseCmdLine(cmdLine)
   let argLead = cmdLine =~ '\s$' ? '' : args[len(args) - 1]
 
-  let var_names = deepcopy(vars)
-  call filter(var_names, 'v:val =~ "^' . argLead . '"')
-  if len(var_names) > 0
-    call map(var_names,
-      \ "isdirectory(substitute(v:val, '.\\{-}\\s\\+- \\(.*\\)', '\\1', '')) ? " .
-      \ "substitute(v:val, '\\(.\\{-}\\)\\s\\+-.*', '\\1', '') . '/' : " .
-      \ "substitute(v:val, '\\(.\\{-}\\)\\s\\+-.*', '\\1', '')")
+  " just the variable name
+  if argLead !~ '/'
+    let var_names = deepcopy(vars)
+    call filter(var_names, 'v:val =~ "^' . argLead . '"')
+    if len(var_names) > 0
+      call map(var_names,
+        \ "isdirectory(substitute(v:val, '.\\{-}\\s\\+- \\(.*\\)', '\\1', '')) ? " .
+        \ "substitute(v:val, '\\(.\\{-}\\)\\s\\+-.*', '\\1', '') . '/' : " .
+        \ "substitute(v:val, '\\(.\\{-}\\)\\s\\+-.*', '\\1', '')")
+    endif
     return var_names
   endif
 
+  " variable name + path
   let var = substitute(argLead, '\(.\{-}\)/.*', '\1', '')
   let var_dir = ""
   for cv in vars
@@ -144,9 +152,15 @@ function! eclim#java#classpath#CommandCompleteVarPath(argLead, cmdLine, cursorPo
       break
     endif
   endfor
+  if var_dir == ''
+    return []
+  endif
+
+  let var_dir = escape(substitute(var_dir, '\', '/', 'g'), ' ')
   let argLead = substitute(argLead, var, var_dir, '')
   let files = eclim#util#CommandCompleteFile(argLead, a:cmdLine, a:cursorPos)
-  call map(files, "substitute(v:val, '" . var_dir . "', '" . var . "', '')")
+  let replace = escape(var_dir, '\')
+  call map(files, "substitute(v:val, '" . replace . "', '" . var . "', '')")
 
   return files
 endfunction " }}}
@@ -158,12 +172,12 @@ function! eclim#java#classpath#CommandCompleteVarAndDir(argLead, cmdLine, cursor
   let args = eclim#util#ParseCmdLine(cmdLine)
   let argLead = cmdLine =~ '\s$' ? '' : args[len(args) - 1]
 
-  " complete dirs for first arg
+  " complete vars for first arg
   if cmdLine =~ '^' . args[0] . '\s*' . escape(argLead, '~.\') . '$'
     return eclim#java#classpath#CommandCompleteVar(argLead, a:cmdLine, a:cursorPos)
   endif
 
-  return eclim#util#CommandCompleteDir(argLead, a:cmdLine, a:cursorPos)
+  return eclim#util#CommandCompleteDir(a:argLead, a:cmdLine, a:cursorPos)
 endfunction " }}}
 
 " vim:ft=vim:fdm=marker

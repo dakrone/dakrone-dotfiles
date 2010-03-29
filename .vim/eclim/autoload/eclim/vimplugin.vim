@@ -5,7 +5,7 @@
 "
 " License:
 "
-" Copyright (C) 2005 - 2009  Eric Van Dewoestine
+" Copyright (C) 2005 - 2010  Eric Van Dewoestine
 "
 " This program is free software: you can redistribute it and/or modify
 " it under the terms of the GNU General Public License as published by
@@ -23,11 +23,13 @@
 " }}}
 
 " BufferWritten() {{{
-" Invoked when a buffer opened from eclipse is saved, to notifiy eclipse of
-" the save.
+" Invoked when a buffer opened from eclipse is saved, to notify eclipse of the
+" save.
 function eclim#vimplugin#BufferWritten()
   if has('netbeans_enabled')
-    unlet b:eclim_file_modified
+    if exists('b:eclim_file_modified')
+      unlet b:eclim_file_modified
+    endif
     nbkey unmodified
   endif
 endfunction " }}}
@@ -50,12 +52,22 @@ function eclim#vimplugin#BufferUnmodified()
   endif
 endfunction " }}}
 
-" FeedKeys(keys) {{{
+" BufferClosed() {{{
+" Invoked when a buffer is removed from a window to signal that eclipse should
+" close the associated editor tab.
+function eclim#vimplugin#BufferClosed()
+  if has('netbeans_enabled')
+    exec 'nbkey fileClosed ' . expand('<afile>:p')
+  endif
+endfunction " }}}
+
+" FeedKeys(keys, [refocusGvim]) {{{
 " Feeds eclipse compatible key string to eclipse if current gvim instance is
 " attached via the netbeans protocol.
-function eclim#vimplugin#FeedKeys(keys)
+function eclim#vimplugin#FeedKeys(keys, ...)
   if has('netbeans_enabled')
-    silent exec 'nbkey feedkeys ' . a:keys
+    let refocus = a:0 > 0 && a:1 ? ',refocus' : ''
+    silent exec 'nbkey feedkeys ' . a:keys . refocus
   endif
 endfunction " }}}
 

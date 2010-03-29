@@ -1,11 +1,11 @@
 " Author:  Eric Van Dewoestine
 "
 " Description: {{{
-"   see http://eclim.sourceforge.net/vim/java/doc.html
+"   see http://eclim.org/vim/java/doc.html
 "
 " License:
 "
-" Copyright (C) 2005 - 2009  Eric Van Dewoestine
+" Copyright (C) 2005 - 2010  Eric Van Dewoestine
 "
 " This program is free software: you can redistribute it and/or modify
 " it under the terms of the GNU General Public License as published by
@@ -38,7 +38,7 @@ function! eclim#java#doc#Comment()
   call eclim#java#util#SilentUpdate()
 
   let project = eclim#project#util#GetCurrentProjectName()
-  let file = eclim#java#util#GetFilename()
+  let file = eclim#project#util#GetProjectRelativeFilePath()
   let offset = eclim#util#GetCurrentElementOffset()
 
   let command = s:command_comment
@@ -73,8 +73,7 @@ function! eclim#java#doc#Javadoc(bang, ...)
   let cwd = getcwd()
   try
     exec 'lcd ' . escape(project_path, ' ')
-    let exec = has('win32') || has('win64')
-    call eclim#util#MakeWithCompiler('eclim_javadoc', a:bang, args, exec)
+    call eclim#util#MakeWithCompiler('eclim_javadoc', a:bang, args)
   finally
     exec 'lcd ' . escape(cwd, ' ')
   endtry

@@ -5,7 +5,7 @@
 "
 " License:
 "
-" Copyright (C) 2005 - 2009  Eric Van Dewoestine
+" Copyright (C) 2005 - 2010  Eric Van Dewoestine
 "
 " This program is free software: you can redistribute it and/or modify
 " it under the terms of the GNU General Public License as published by
@@ -129,7 +129,7 @@ function eclim#common#util#OpenRelative(command, arg, ...)
   let dir = expand('%:p:h')
   let files = eclim#common#util#GetFiles(dir, a:arg)
   for file in files
-    let file = escape(eclim#util#Simplify(file), ' ')
+    let file = eclim#util#Simplify(file)
     if len(a:000) && a:000[0]
       call eclim#util#GoToBufferWindowOrOpen(file, a:command)
     else
@@ -150,8 +150,7 @@ endfunction " }}}
 " OtherWorkingCopy(project, action) {{{
 " Opens the same file from another project using the supplied action
 function! eclim#common#util#OtherWorkingCopy(project, action)
-  let path = eclim#project#util#GetProjectRelativeFilePath(expand('%:p'))
-  let projects = eclim#project#util#GetProjects()
+  let path = eclim#project#util#GetProjectRelativeFilePath()
   let project_path = s:OtherWorkingCopyPath(a:project)
   if project_path == ''
     return
@@ -183,19 +182,26 @@ endfunction " }}}
 
 " s:OtherWorkingCopyPath(project) {{{
 function s:OtherWorkingCopyPath(project)
-  let path = eclim#project#util#GetProjectRelativeFilePath(expand('%:p'))
-  let projects = eclim#project#util#GetProjects()
+  let path = eclim#project#util#GetProjectRelativeFilePath()
 
   let project_name = a:project
   if project_name =~ '[\\/]$'
     let project_name = project_name[:-2]
   endif
 
-  if !has_key(projects, project_name)
+  let project = {}
+  for p in eclim#project#util#GetProjects()
+    if p.name == project_name
+      let project = p
+      break
+    endif
+  endfor
+
+  if len(project) == 0
     call eclim#util#EchoWarning("Project '" . project_name . "' not found.")
     return ''
   endif
-  return projects[project_name] . '/' . path
+  return eclim#project#util#GetProjectRoot(project_name) . '/' . path
 endfunction " }}}
 
 " SwapTypedArguments() {{{
@@ -225,6 +231,69 @@ function! eclim#common#util#SwapWords()
 
   " restore the last search pattern
   let @/ = save_search
+
+  silent! call repeat#set(":call eclim#common#util#SwapWords()\<cr>", v:count)
+endfunction " }}}
+
+" Tcd(dir) {{{
+" Like vim's :lcd, but tab local instead of window local.
+function eclim#common#util#Tcd(dir)
+  let t:cwd = fnamemodify(a:dir, ':p')
+
+  " initialize the tab cwd for all other tabs if not already set
+  let curtab = tabpagenr()
+  try
+    let index = 1
+    while index <= tabpagenr('$')
+      if index != curtab
+        exec 'tabn ' . index
+        if !exists('t:cwd')
+          let t:cwd = getcwd()
+          " try to find a window without a localdir if necessary
+          if haslocaldir()
+            let curwin = winnr()
+            let windex = 1
+            while windex <= winnr('$')
+              if windex != curwin
+                exec windex . 'winc w'
+                if !haslocaldir()
+                  let t:cwd = getcwd()
+                  break
+                endif
+              endif
+              let windex += 1
+            endwhile
+            exec curwin . 'winc w'
+          endif
+        endif
+      endif
+      let index += 1
+    endwhile
+  finally
+    exec 'tabn ' . curtab
+  endtry
+
+  call s:ApplyTcd(0)
+
+  augroup tcd
+    autocmd!
+    autocmd TabEnter * call <SID>ApplyTcd(1)
+  augroup END
+endfunction " }}}
+
+" s:ApplyTcd(honor_lcd) {{{
+function s:ApplyTcd(honor_lcd)
+  if !exists('t:cwd')
+    return
+  endif
+
+  if a:honor_lcd && haslocaldir()
+    let lcwd = getcwd()
+    exec 'cd ' . escape(t:cwd, ' ')
+    exec 'lcd ' . escape(lcwd, ' ')
+  else
+    exec 'cd ' . escape(t:cwd, ' ')
+  endif
 endfunction " }}}
 
 " CommandCompleteRelative(argLead, cmdLine, cursorPos) {{{

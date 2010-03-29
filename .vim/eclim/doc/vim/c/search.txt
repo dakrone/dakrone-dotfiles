@@ -117,7 +117,9 @@ search depending on the context of the element under the cursor.
 - If the cursor is on an #include name, it will search the configured
   include path for the file.
 
-- Otherwise, it will search for the declaration of the element.
+- Otherwise, it will search for the definition of the element (if the
+  cursor is on the definition, then it will search for the
+  declaration).
 
 
 Configuration
@@ -138,7 +140,8 @@ Vim Variables
 
   - 'lopen' - open the location list to display the result.
 
-Note: Search support depends on the eclipse cdt which should be installed
-  for you when choosing c/c++ support in the eclim installer.
+Note: Search support depends on the eclipse cdt (http://eclipse.org/cdt)
+  which should be installed for you when choosing c/c++ support in the
+  eclim installer.
 
 vim:ft=eclimhelp

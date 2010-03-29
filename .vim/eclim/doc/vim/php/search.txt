@@ -110,7 +110,8 @@ Vim Variables
 
   - 'lopen' - open the location list to display the result.
 
-Note: Search support depends on the eclipse pdt which should be installed
-  for you when choosing php support in the eclim installer.
+Note: Search support depends on the eclipse pdt (http://eclipse.org/pdt)
+  which should be installed for you when choosing php support in the
+  eclim installer.
 
 vim:ft=eclimhelp

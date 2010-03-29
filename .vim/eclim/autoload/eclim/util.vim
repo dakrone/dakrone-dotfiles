@@ -8,7 +8,7 @@
 "
 " License:
 "
-" Copyright (C) 2005 - 2009  Eric Van Dewoestine
+" Copyright (C) 2005 - 2010  Eric Van Dewoestine
 "
 " This program is free software: you can redistribute it and/or modify
 " it under the terms of the GNU General Public License as published by
@@ -49,7 +49,7 @@ function! eclim#util#Balloon(message)
   return message
 endfunction " }}}
 
-" DelayedCommand(command [, delay]) {{{
+" DelayedCommand(command, [delay]) {{{
 " Executes a delayed command.  Useful in cases where one would expect an
 " autocommand event (WinEnter, etc) to fire, but doesn't, or you need a
 " command to execute after other autocommands have finished.
@@ -74,9 +74,13 @@ function! eclim#util#DelayedCommand(command, ...)
   exec 'augroup END'
 endfunction " }}}
 
-" EchoTrace(message) {{{
-function! eclim#util#EchoTrace(message)
-  call s:EchoLevel(a:message, 6, g:EclimTraceHighlight)
+" EchoTrace(message, [time_elapsed]) {{{
+function! eclim#util#EchoTrace(message, ...)
+  if a:0 > 0
+    call s:EchoLevel('(' . a:1 . 's) ' . a:message, 6, g:EclimTraceHighlight)
+  else
+    call s:EchoLevel(a:message, 6, g:EclimTraceHighlight)
+  endif
 endfunction " }}}
 
 " EchoDebug(message) {{{
@@ -136,7 +140,12 @@ endfunction " }}}
 " Escapes the supplied buffer name so that it can be safely used by buf*
 " functions.
 function! eclim#util#EscapeBufferName(name)
-  let name = escape(a:name, ' ')
+  let name = a:name
+  " escaping the space in cygwin could lead to the dos path error message that
+  " cygwin throws when a dos path is referenced.
+  if !has('win32unix')
+    let name = escape(a:name, ' ')
+  endif
   return substitute(name, '\(.\{-}\)\[\(.\{-}\)\]\(.\{-}\)', '\1[[]\2[]]\3', 'g')
 endfunction " }}}
 
@@ -175,7 +184,7 @@ function! eclim#util#FindFileInPath(file, exclude_relative)
   return split(eclim#util#Globpath(path, "**/" . a:file), '\n')
 endfunction " }}}
 
-" Findfile(name, [, path [, count]]) {{{
+" Findfile(name, [path, count]) {{{
 " Used to issue a findfile() handling any vim options that may otherwise
 " disrupt it.
 function! eclim#util#Findfile(name, ...)
@@ -272,16 +281,32 @@ function! eclim#util#GetCurrentElementOffset()
   return offset
 endfunction " }}}
 
-" GetIndent(indent) {{{
-" Gets an indentation string for the supplied number of spaces the indent
-" consists of.  Ex. eclim#util#GetIndent(indent(line('.')))
-function! eclim#util#GetIndent(indent)
+" GetIndent(level) {{{
+" Gets an indentation string for the supplied indentation level.
+function! eclim#util#GetIndent(level)
   let result = ''
 
-  if a:indent
-    let num = a:indent / &sw
-    while num >= 0
-      let result .= g:EclimIndent
+  if a:level
+    if !exists('b:eclim_indent')
+      if exists('g:EclimIndent')
+        let b:eclim_indent = g:EclimIndent
+      else
+        if !&expandtab
+          let b:eclim_indent = "\t"
+        else
+          let b:eclim_indent = ''
+          let index = 0
+          while index < &shiftwidth
+            let b:eclim_indent = b:eclim_indent . " "
+            let index = index + 1
+          endwhile
+        endif
+      endif
+    endif
+
+    let num = a:level
+    while num > 0
+      let result .= b:eclim_indent
       let num -= 1
     endwhile
   endif
@@ -363,9 +388,10 @@ function! eclim#util#GetVisualSelection(line1, line2, default)
     endif
     if mode == "v"
       let start = col("'<") - 1
-      let end = col("'>")
-      let lines[0] = lines[0][start :]
+      let end = col("'>") - 1
+      " slice in end before start in case the selection is only one line
       let lines[-1] = lines[-1][: end]
+      let lines[0] = lines[0][start :]
     elseif mode == "\<c-v>"
       let start = col("'<")
       if col("'>") < start
@@ -447,16 +473,23 @@ function! eclim#util#GoToBufferWindowOrOpen(name, cmd)
     exec winnr . "winc w"
     call eclim#util#DelayedCommand('doautocmd WinEnter')
   else
-    silent exec a:cmd . ' ' . escape(eclim#util#Simplify(a:name), ' ')
+    let cmd = a:cmd
+    " if splitting and the buffer is a unamed empty buffer, then switch to an
+    " edit.
+    if cmd == 'split' && expand('%') == '' &&
+     \ !&modified && line('$') == 1 && getline(1) == ''
+      let cmd = 'edit'
+    endif
+    silent exec cmd . ' ' . escape(eclim#util#Simplify(a:name), ' ')
   endif
 endfunction " }}}
 
-" GoToBufferWindowRegister(bufname) {{{
+" GoToBufferWindowRegister(buf) {{{
 " Registers the autocmd for returning the user to the supplied buffer when the
 " current buffer is closed.
-function! eclim#util#GoToBufferWindowRegister(bufname)
+function! eclim#util#GoToBufferWindowRegister(buf)
   exec 'autocmd BufWinLeave <buffer> ' .
-    \ 'call eclim#util#GoToBufferWindow("' . escape(a:bufname, '\') . '") | ' .
+    \ 'call eclim#util#GoToBufferWindow("' . escape(a:buf, '\') . '") | ' .
     \ 'doautocmd BufEnter'
 endfunction " }}}
 
@@ -499,11 +532,11 @@ function! eclim#util#ListContains(list, element)
   return 0
 endfunction " }}}
 
-" MakeWithCompiler(compiler, bang, args, [exec]) {{{
+" MakeWithCompiler(compiler, bang, args) {{{
 " Executes :make using the supplied compiler.
-" If the 'exec' arg is > 0, then instead of using :make, this function will
-" execute the make program using exec (useful if the make program doesn't
-" behave on windows).
+" Note: on windows the make program will be executed manually if the 'tee'
+" progam is available (only the cygwin version is currenty supported) to allow
+" the display of the make program output while running.
 function! eclim#util#MakeWithCompiler(compiler, bang, args, ...)
   if exists('g:current_compiler')
     let saved_compiler = g:current_compiler
@@ -525,22 +558,11 @@ function! eclim#util#MakeWithCompiler(compiler, bang, args, ...)
     exec 'compiler ' . a:compiler
     let make_cmd = substitute(&makeprg, '\$\*', a:args, '')
 
-    let exec = len(a:000) > 0 ? a:000[0] : 0
-    if !exec
-      call eclim#util#EchoTrace('make: ' . make_cmd)
-      exec 'make' . a:bang . ' ' . a:args
-    else
-      let command = '!' . make_cmd
+    " windows machines where 'tee' is available
+    if (has('win32') || has('win64')) && executable('tee')
       let outfile = g:EclimTempDir . '/eclim_make_output.txt'
-      if has("win32") || has("win64")
-        if executable("tee")
-          let command .= ' | tee "' . outfile . '" 2>&1"'
-        else
-          let command .= ' >"' . outfile . '" 2>&1"'
-        endif
-      else
-        let command .= ' 2>&1| tee "' . outfile . '"'
-      endif
+      let teefile = eclim#cygwin#CygwinPath(outfile)
+      let command = '!cmd /c "' . make_cmd . ' 2>&1 | tee "' . teefile . '" "'
 
       doautocmd QuickFixCmdPre make
       call eclim#util#Exec(command)
@@ -553,6 +575,11 @@ function! eclim#util#MakeWithCompiler(compiler, bang, args, ...)
         call delete(outfile)
       endif
       doautocmd QuickFixCmdPost make
+
+    " all other platforms
+    else
+      call eclim#util#EchoTrace('make: ' . make_cmd)
+      exec 'make' . a:bang . ' ' . a:args
     endif
   finally
     if exists('saved_compiler')
@@ -702,6 +729,10 @@ function! s:ParseLocationEntry(entry)
   let type = substitute(entry, '.*|\(e\|w\)$', '\1', '')
   if type == entry
     let type = ''
+  endif
+
+  if has('win32unix')
+    let file = eclim#cygwin#CygwinPath(file)
   endif
 
   let dict = {
@@ -950,7 +981,7 @@ function! eclim#util#Simplify(file)
   return file
 endfunction " }}}
 
-" System(cmd [, exec]) {{{
+" System(cmd, [exec]) {{{
 " Executes system() accounting for possibly disruptive vim options.
 function! eclim#util#System(cmd, ...)
   let saveshell = &shell
@@ -989,11 +1020,19 @@ function! eclim#util#System(cmd, ...)
 
   if len(a:000) > 0 && a:000[0]
     let result = ''
-    call eclim#util#EchoTrace('exec: ' . a:cmd)
-    exec a:cmd
+    let begin = localtime()
+    try
+      exec a:cmd
+    finally
+      call eclim#util#EchoTrace('exec: ' . a:cmd, localtime() - begin)
+    endtry
   else
-    call eclim#util#EchoTrace('system: ' . a:cmd)
-    let result = system(a:cmd)
+    let begin = localtime()
+    try
+      let result = system(a:cmd)
+    finally
+      call eclim#util#EchoTrace('system: ' . a:cmd, localtime() - begin)
+    endtry
   endif
 
   let &shell = saveshell
@@ -1029,7 +1068,7 @@ function! eclim#util#System(cmd, ...)
   return result
 endfunction " }}}
 
-" TempWindow(name, lines [, readonly]) {{{
+" TempWindow(name, lines, [readonly]) {{{
 " Opens a temp window w/ the given name and contents which is readonly unless
 " specified otherwise.
 function! eclim#util#TempWindow(name, lines, ...)
@@ -1058,8 +1097,8 @@ function! eclim#util#TempWindow(name, lines, ...)
     exec bufwinnr(name) . "winc w"
   endif
 
-  set modifiable
-  set noreadonly
+  setlocal modifiable
+  setlocal noreadonly
   call append(1, a:lines)
   retab
   silent 1,1delete _
@@ -1070,7 +1109,7 @@ function! eclim#util#TempWindow(name, lines, ...)
     setlocal readonly
   endif
 
-  doautocmd BufEnter
+  silent doautocmd BufEnter
 
   " Store filename and window number so that plugins can use it if necessary.
   if filename != expand('%:p')
@@ -1098,10 +1137,10 @@ function! eclim#util#TempWindowClear(name)
   endif
 endfunction " }}}
 
-" TempWindowCommand(command, name) {{{
+" TempWindowCommand(command, name, [port]) {{{
 " Opens a temp window w/ the given name and contents from the result of the
 " supplied command.
-function! eclim#util#TempWindowCommand(command, name)
+function! eclim#util#TempWindowCommand(command, name, ...)
   let name = eclim#util#EscapeBufferName(a:name)
 
   let line = 1
@@ -1113,7 +1152,14 @@ function! eclim#util#TempWindowCommand(command, name)
     let col = col('.')
   endif
 
-  let results = split(eclim#ExecuteEclim(a:command), '\n')
+  if len(a:000) > 0
+    let port = a:000[0]
+    let result = eclim#ExecuteEclim(a:command, port)
+  else
+    let result = eclim#ExecuteEclim(a:command)
+  endif
+
+  let results = split(result, '\n')
   if len(results) == 1 && results[0] == '0'
     return 0
   endif
@@ -1172,10 +1218,10 @@ endfunction " }}}
 " CommandCompleteDir(argLead, cmdLine, cursorPos) {{{
 " Custom command completion for directories.
 function! eclim#util#CommandCompleteDir(argLead, cmdLine, cursorPos)
-  let cmdTail = strpart(a:cmdLine, a:cursorPos)
-  let argLead = substitute(a:argLead, cmdTail . '$', '', '')
-  let argLead = expand(argLead)
-  let results = split(eclim#util#Glob(argLead . '*', 1), '\n')
+  let cmdLine = strpart(a:cmdLine, 0, a:cursorPos)
+  let args = eclim#util#ParseCmdLine(cmdLine)
+  let argLead = cmdLine =~ '\s$' ? '' : args[len(args) - 1]
+  let results = split(eclim#util#Glob(expand(argLead) . '*', 1), '\n')
   let index = 0
   for result in results
     if !isdirectory(result)

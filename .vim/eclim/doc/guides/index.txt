@@ -5,8 +5,8 @@ Guides
 ******
 
 
-Installing / Upgrading / Troubleshooting
-========================================
+Installing, Upgrading, Troubleshooting, etc.
+============================================
 
 - Installing / Upgrading (|guides-install|)
 
@@ -14,35 +14,9 @@ Installing / Upgrading / Troubleshooting
 
 - Troubleshooting (|guides-troubleshoot|)
 
+- Eclim Headless Server Guide (|guides-headless|)
 
-Java
-====
-
-- Creating A Java Project (|guides-java-project|)
-
-- Ivy: Maintain Classpath (|guides-java-ivy-classpath|)
-
-- Maven: Maintain Classpath (|guides-java-maven-maven-classpath|)
-
-- Mvn: Maintain Classpath (|guides-java-maven-mvn-classpath|)
-
-
-Php
-===
-
-- Creating A Php Project (|guides-php-project|)
-
-
-Python
-======
-
-- Creating A Python Project (|guides-python-project|)
-
-
-Ruby
-====
-
-- Creating A Ruby Project (|guides-ruby-project|)
+- Multiple Workspace Guide (|guides-multi-workspace|)
 
 
 Eclim Developers

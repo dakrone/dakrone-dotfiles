@@ -1,11 +1,11 @@
 " Author:  Eric Van Dewoestine
 "
 " Description: {{{
-"   see http://eclim.sourceforge.net/vim/common/vcs.html
+"   see http://eclim.org/vim/common/vcs.html
 "
 " License:
 "
-" Copyright (C) 2005 - 2009  Eric Van Dewoestine
+" Copyright (C) 2005 - 2010  Eric Van Dewoestine
 "
 " This program is free software: you can redistribute it and/or modify
 " it under the terms of the GNU General Public License as published by
@@ -79,24 +79,22 @@ endfunction " }}}
 
 " GetPreviousRevision([file, revision]) {{{
 function eclim#vcs#impl#git#GetPreviousRevision(...)
-  let revision = ''
+  let revision = 'HEAD'
   if len(a:000)
     let path = fnamemodify(a:000[0], ':t')
-    let revision = a:000[1]
+    if a:000[1] != ''
+      let revision = a:000[1]
+    endif
   else
     let path = expand('%:t')
   endif
 
-  let cmd = 'log --pretty=oneline -2 ' . revision . ' "' . path . '"'
-  let log = eclim#vcs#impl#git#Git(cmd)
-  if type(log) == 0
+  let cmd = 'rev-list -n 1 --skip=1 ' . revision . ' "' . path . '"'
+  let prev = eclim#vcs#impl#git#Git(cmd)
+  if type(prev) == 0
     return
   endif
-  let revisions = split(log, '\n')
-  if len(revisions) > 1
-    return substitute(revisions[1], '\(.\{-}\)\s.*', '\1', '')
-  endif
-  return 0
+  return substitute(prev, '\n', '', 'g')
 endfunction " }}}
 
 " GetRevision(file) {{{
@@ -114,22 +112,20 @@ function eclim#vcs#impl#git#GetRevision(file)
     let path = substitute(path, '\<index_blob_[a-z0-9]\{40}_', '', '')
   endif
 
-  let log = eclim#vcs#impl#git#Git('log --pretty=oneline -1 "' . path . '"')
-  if type(log) == 0
+  let rev = eclim#vcs#impl#git#Git('rev-list -n 1 HEAD "' . path . '"')
+  if type(rev) == 0
     return
   endif
-  return substitute(log, '\(.\{-}\)\s.*', '\1', '')
+  return substitute(rev, '\n', '', '')
 endfunction " }}}
 
 " GetRevisions() {{{
 function eclim#vcs#impl#git#GetRevisions()
-  let log = eclim#vcs#impl#git#Git('log --pretty=oneline "' . expand('%:t') . '"')
-  if type(log) == 0
+  let revs = eclim#vcs#impl#git#Git('rev-list HEAD "' . expand('%:t') . '"')
+  if type(revs) == 0
     return
   endif
-  let revisions = split(log, '\n')
-  call map(revisions, "substitute(v:val, '\\(.\\{-}\\)\\s.*', '\\1', '')")
-  return revisions
+  return split(revs, '\n')
 endfunction " }}}
 
 " GetRoot() {{{
@@ -141,6 +137,16 @@ function eclim#vcs#impl#git#GetRoot()
   let root = fnamemodify(root, ':p:h:h')
   let root = substitute(root, '\', '/', 'g')
   return root
+endfunction " }}}
+
+" GetInfo() {{{
+function eclim#vcs#impl#git#GetInfo()
+  let info = eclim#vcs#impl#git#Git('branch')
+  if info == '0'
+    return ''
+  endif
+  let info = 'git:' . substitute(info, '.*\*\s*\(.\{-}\)\(\n.*\|$\)', '\1', 'g')
+  return info
 endfunction " }}}
 
 " GetEditorFile() {{{
@@ -168,6 +174,25 @@ function eclim#vcs#impl#git#GetEditorFile()
     return substitute(line, '^#\s*new file:\s\+\(.*\)\s*', '\1', '')
   endif
   return ''
+endfunction " }}}
+
+" GetModifiedFiles() {{{
+function eclim#vcs#impl#git#GetModifiedFiles()
+  let root = eclim#vcs#impl#git#GetRoot()
+  let status = eclim#vcs#impl#git#Git('diff --name-status HEAD')
+  let files = []
+  for file in split(status, "\n")
+    if file !~ '^[AM]\s\+'
+      continue
+    endif
+    let file = substitute(file, '^[AM]\s\+', '', '')
+    call add(files, root . '/' . file)
+  endfor
+
+  let untracked = eclim#vcs#impl#git#Git('ls-files --others --exclude-standard')
+  let files += map(split(untracked, "\n"), 'root . "/" . v:val')
+
+  return files
 endfunction " }}}
 
 " GetVcsWebPath() {{{

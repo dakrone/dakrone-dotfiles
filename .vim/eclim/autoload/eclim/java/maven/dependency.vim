@@ -1,11 +1,11 @@
 " Author:  Eric Van Dewoestine
 "
 " Description: {{{
-"   see http://eclim.sourceforge.net/vim/java/maven/dependency.html
+"   see http://eclim.org/vim/java/maven/dependency.html
 "
 " License:
 "
-" Copyright (C) 2005 - 2009  Eric Van Dewoestine
+" Copyright (C) 2005 - 2010  Eric Van Dewoestine
 "
 " This program is free software: you can redistribute it and/or modify
 " it under the terms of the GNU General Public License as published by
@@ -53,10 +53,11 @@ function! eclim#java#maven#dependency#Search(query, type)
 
   let filename = substitute(expand('%:p'), '\', '/', 'g')
   let project = eclim#project#util#GetCurrentProjectName()
+  let file = eclim#project#util#GetProjectRelativeFilePath()
 
   let command = s:command_search
   let command = substitute(command, '<project>', project, '')
-  let command = substitute(command, '<file>', eclim#java#util#GetFilename(), '')
+  let command = substitute(command, '<file>', file, '')
   let command = substitute(command, '<type>', a:type, '')
   let command = substitute(command, '<query>', a:query, '')
 
@@ -107,13 +108,24 @@ function! s:InsertDependency(type, group, artifact, vrsn)
   let dependency = split(depend, '\n')
 
   let lnum = search('</dependencies>', 'cnw')
+  let insertDependenciesNode = 0
   if !lnum
-    call eclim#util#EchoError('No <dependencies> node found.')
-    return
+    let lnum = search('<build>', 'cnw')
+    if !lnum
+      call eclim#util#EchoError('No <dependencies> node found.')
+      return
+    endif
+    let insertDependenciesNode = 1
   endif
 
   let indent = substitute(getline(lnum), '^\(\s*\).*', '\1', '')
   call map(dependency, 'indent . v:val')
+
+  if insertDependenciesNode
+    call append(lnum - 1, indent . '</dependencies>')
+    call append(lnum - 1, indent . '<dependencies>')
+    let lnum += 1
+  endif
 
   call append(lnum - 1, dependency)
 

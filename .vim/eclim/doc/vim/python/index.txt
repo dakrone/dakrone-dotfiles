@@ -28,6 +28,7 @@ inclusion in eclim.
 
 After evaluating the eclipse plugins, attention turned to pure python
 solutions, which then lead to the eventual choice: rope
+(http://rope.sourceforge.net/)
 
 Minimum Requirements:
    - python 2.5 or greater
@@ -39,7 +40,9 @@ Minimum Requirements:
        So if you want to leverage eclim's rope support, you will need
        to recompile gvim against python 2.5 or higher or find a site
        which provides a pre-compiled version for you.  Here are is one
-       such site providing binaries for python 2.5 and 2.6: gooli.org
+       such site providing binaries for python 2.5 and 2.6: gooli.org 
+       (http://www.gooli.org/blog/gvim-72-with-python-2526-support-win
+       dows-binaries/)
 
 Functionality Utilizing Rope
    - code completion (|vim-python-complete|)

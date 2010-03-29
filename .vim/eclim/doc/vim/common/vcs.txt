@@ -141,6 +141,12 @@ Eclim Settings
 
   - redmine
 
+  - github
+
+  - googlecode
+
+  - bitbucket
+
     Note: Currenlty redmine is only partially supported with mercurial
       since redmine uses local revision numbers instead of the
       universal change set ids.
@@ -175,6 +181,15 @@ Eclim Settings
      # <cmd> placeholder in your configured url so that the :VcsWeb commands can
      # replace it with the proper value.
      org.eclim.project.vcs.web.url=http://redmine.myhost/repositories/<cmd>/myrepos
+
+     # github
+     org.eclim.project.vcs.web.url=http://github.com/username/my-project
+
+     # googlecode
+     org.eclim.project.vcs.web.url=http://code.google.com/p/my-project
+
+     # bitbucket
+     org.eclim.project.vcs.web.url=http://bitbucket.org/username/my-project
 
   <
 

@@ -83,6 +83,10 @@ Project Commands
 
 - |:ProjectsTree| - Opens a tree containing all projects.
 
+- |:ProjectTab| <project> - Opens a new tab containing the project
+  tree and the tab local working directory set to the supplied
+  project's root.
+
 - |:ProjectGrep| /<pattern>/ file_pattern [file_pattern ...] - Issues
   a vimgrep starting at the root of the current project.
 
@@ -129,6 +133,9 @@ C/C++ Commands
 
 - |:CProjectConfigs| [project] - Open a temp buffer to view/modify the
   current projects cdt configurations.
+
+- |:CCallHierarchy| - Display the call hierarchy for the function or
+  method under the cursor.
 
 
 Css Commands
@@ -221,6 +228,8 @@ Java Commands
 - |:Javadoc| [file, file, ...] - Executes the javadoc utility against
   all or just the supplied source files.
 
+- |:JavaListInstalls| - List known JDK/JRE installs.
+
 - |:JavaFormat| - Formats java source code.
 
 - |:Checkstyle| - Invokes checkstyle on the current file.
@@ -312,9 +321,10 @@ Python Commands
   its context.
 
 - :Validate (|validate-python|) - Validates the current file using
-  pyflakes.
+  pyflakes (http://www.divmod.org/trac/wiki/DivmodPyflakes).
 
-- |:PyLint| - Runs pylint on the current file.
+- |:PyLint| - Runs pylint (http://www.logilab.org/857) on the current
+  file.
 
 - |:PythonRegex| - Opens a window for testing python regular
   expressions.
@@ -491,6 +501,8 @@ Misc. Commands
 - |:CdRelative| dir - Executes :cd relative to the current file.
 
 - |:LcdRelative| dir - Executes :lcd relative to the current file.
+
+- |:Tcd| dir - Like :lcd but sets the tab's local working directory.
 
 - |:DiffLastSaved| - Performs a diffsplit with the last saved version
   of the currently modifed file.

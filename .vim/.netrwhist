@@ -1,5 +1,5 @@
 let g:netrw_dirhistmax  =10
-let g:netrw_dirhist_cnt =8
+let g:netrw_dirhist_cnt =9
 let g:netrw_dirhist_1='/etc/apt'
 let g:netrw_dirhist_2='/home/hinmanm/.vim'
 let g:netrw_dirhist_3='/home/hinmanm/src/ruby/twitter/lib/twitter/cli'
@@ -8,3 +8,4 @@ let g:netrw_dirhist_5='scp://root@10.5.141.31//opt/EMC/IMF/apache-tomcat/imf/'
 let g:netrw_dirhist_6='scp://root@10.5.141.31//opt/EMC/IMF/apache-tomcat/imf/securityeventviewer/'
 let g:netrw_dirhist_7='/Users/hinmanm/src/ruby/churn/.git'
 let g:netrw_dirhist_8='/Users/hinmanm/src/ruby/rphfos'
+let g:netrw_dirhist_9='/Users/hinmanm/src/vimclojure-dev/vimclojure/build'

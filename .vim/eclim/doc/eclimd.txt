@@ -26,9 +26,17 @@ Linux / Mac / BSD (and other unix based systems): To start eclimd from
 linux, simply execute the eclimd script found in your eclipse root
 directory: $ECLIPSE_HOME/eclimd
 
+Note: When starting the eclim daemon, you must start it as the same user
+  who will be running vim.
+
 Windows: The easiest way to start eclimd in windows is to double click
 on the eclimd.bat file found in your eclipse root directory:
 %ECLIPSE_HOME%/eclimd.bat
+
+Note: Even though an eclipse gui is not started in eclim's headless mode,
+  eclipse still requires a running X server to function.  To run
+  eclimd on a truely headless server, please see the headless guide
+  (|guides-headless|).
 
 Stopping eclimd
 
@@ -109,13 +117,15 @@ Embedded gvim
 =============
 
 Note: Please note that this feature is currently considered alpha.  Please
-  post any issues on the eclim user mailing list.
+  post any issues on the eclim user
+  (http://groups.google.com/group/eclim-user) mailing list.
 
 Another feature provided by eclim for those who prefer to work inside
 of the eclipse gui, is the embedding of gvim inside of eclipse.  This
-feature is provided by an eclim local fork of vimplugin.  The feature
-adds a new editor to eclipse which allows you to open files in gvim by
-right clicking the file name in the eclipse tree and then selecting:
+feature is provided by an eclim local fork of vimplugin
+(http://vimplugin.org).  The feature adds a new editor to eclipse
+which allows you to open files in gvim by right clicking the file name
+in the eclipse tree and then selecting:
 
    Open With -> Vim
 
@@ -130,6 +140,18 @@ vimplugin preferences located under the Windows menu at:
 
 Note: If you have vimplugin installed you should remove it prior to using
   the eclim version.
+
+Note: Some users have reported issues with the embedded gvim's command
+  line being cut off or possible rendering issues when scrolling
+  through the file.  If you experience either of these issues, try
+  adding the following to your vimrc file, which should hopefully
+  resolve those problems:>
+
+     set guioptions-=m " turn off menu bar
+     set guioptions-=T " turn off toolbar
+
+  <
+
 
 Eclipse/Vim key shortcuts in embedded gvim
 
@@ -172,6 +194,8 @@ focus, you will fall into one of two groups:
      - Ctrl+U: in eclipse this run "Execute", but in gvim this is
        needed to run code completion (ex. ctrl-x ctrl-u).
 
+*FeedKeys*
+
 1. In the second group, all key presses are received by gvim and not
    evaluated at all by eclipse.
 
@@ -194,6 +218,9 @@ focus, you will fall into one of two groups:
          " maps Ctrl-F to eclipse's Ctrl-Shift-R key binding (find resource)
          nmap <silent> <c-f> :call eclim#vimplugin#FeedKeys('Ctrl+Shift+R')<cr>
 
+         " maps Ctrl-M to eclipse's Ctrl-M binding to maximize the editor
+         nmap <silent> <c-m> :call eclim#vimplugin#FeedKeys('Ctrl+M', 1)<cr>
+
       <
 
 
@@ -201,6 +228,10 @@ focus, you will fall into one of two groups:
    compatible key binding string as found in:
 
       Windows -> Preferences -> General -> Keys
+
+   Be sure to notice the extra argument to the FeedKeys function in
+   the last mapping. Supplying 1 as the arg will result in the
+   refocusing of gvim after the eclipse key binding has been executed.
 
 
 ~/.eclimrc
@@ -240,6 +271,17 @@ the nailgun server port should you choose to change the default.
 Note: Your system must have sed available so that eclim can process your
   .eclimrc file.
 
+Both the eclim and eclimd scripts also support a -f argument allowing
+you to specify an alternate location for your .eclimrc:
+
+>
+
+   $ eclimd -f ~/.my_eclimrc
+   $ eclim -f ~/.my_eclimrc -command ping
+
+<
+
+
 
 eclimd logging
 ==============
@@ -248,8 +290,8 @@ Eclimd utilizes log4j for all of its logging.  As such, the logging
 can be configured via the
 $ECLIPSE_HOME/plugins/org.eclim_version/log4j.xml file.
 
-By default, eclimd writes all logging info to both the console and
-$ECLIPSE_HOME/plugins/org.eclim_<version>/log/eclimd.log.
+By default, eclimd writes all logging info to both the console and to
+a log file in your workspace: <workspace>/.metadata/.log.eclimd
 
 *eclimd_extdir*
 
@@ -270,7 +312,7 @@ Linux / BSD / OSX:
 
    >
 
-      ~/.vim/eclim/resources/ext
+      ~/.eclim/resources/ext
 
    <
 
@@ -279,7 +321,7 @@ Windows:
 
    >
 
-      $HOME/vimfiles/eclim/resources/ext
+      $HOME/.eclim/resources/ext
 
    <
 

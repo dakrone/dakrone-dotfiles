@@ -1,11 +1,11 @@
 " Author:  Eric Van Dewoestine
 "
 " Description: {{{
-"   see http://eclim.sourceforge.net/vim/java/import.html
+"   see http://eclim.org/vim/java/import.html
 "
 " License:
 "
-" Copyright (C) 2005 - 2009  Eric Van Dewoestine
+" Copyright (C) 2005 - 2010  Eric Van Dewoestine
 "
 " This program is free software: you can redistribute it and/or modify
 " it under the terms of the GNU General Public License as published by
@@ -117,7 +117,7 @@ function! eclim#java#import#ImportMissing()
   call eclim#java#util#SilentUpdate()
 
   let project = eclim#project#util#GetCurrentProjectName()
-  let file = eclim#java#util#GetFilename()
+  let file = eclim#project#util#GetProjectRelativeFilePath()
   let command = s:command_import_missing
   let command = substitute(command, '<project>', project, '')
   let command = substitute(command, '<file>', file, '')
@@ -164,6 +164,9 @@ function! eclim#java#import#InsertImports(classes)
   endif
 
   call s:InitImportOrder()
+  if !exists('s:import_order')
+    return
+  endif
 
   let line = line('.')
   let col = col('.')
@@ -257,6 +260,11 @@ function! eclim#java#import#SortImports()
     return
   endif
 
+  call s:InitImportOrder()
+  if !exists('s:import_order')
+    return
+  endif
+
   let line = line('.')
   let col = col('.')
 
@@ -266,8 +274,6 @@ function! eclim#java#import#SortImports()
   let line -= prevlen - len(imports)
 
   if len(imports) > 0
-    call s:InitImportOrder()
-
     " sort the imports and put them back in the file
     call sort(imports, function('s:CompareImports'))
 
@@ -304,7 +310,7 @@ function! eclim#java#import#CleanImports()
   if project != ''
     call eclim#java#util#SilentUpdate()
 
-    let file = eclim#java#util#GetFilename()
+    let file = eclim#project#util#GetProjectRelativeFilePath()
 
     let command = s:command_unused_imports
     let command = substitute(command, '<project>', project, '')
@@ -414,9 +420,13 @@ function! s:CutImports()
   endif
 
   " create list of the imports
-  let save = @"
-  silent exec firstImport . "," . lastImport . "delete"
-  return split(@", '\n')
+  let save = @e
+  try
+    silent exec firstImport . "," . lastImport . "delete e"
+    return split(@e, '\n')
+  finally
+    let @e = save
+  endtry
 endfunction " }}}
 
 " s:PasteImports(imports) {{{

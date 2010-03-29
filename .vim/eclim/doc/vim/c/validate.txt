@@ -16,8 +16,9 @@ g:EclimCValidate variable (described below).  If you choose to disable
 automatic validation, you can still use the :Validate command to
 manually validate the current file.
 
-Note: This feature depends on the eclipse cdt which should be installed
-  for you when choosing c/c++ support in the eclim installer.
+Note: This feature depends on the eclipse cdt (http://eclipse.org/cdt)
+  which should be installed for you when choosing c/c++ support in the
+  eclim installer.
 
 
 Configuration

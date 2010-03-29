@@ -102,10 +102,10 @@ HTML 指令集
 Ivy Commands
 ============
 
-- Initial Setup (|ivyrepo|) <路徑> - 設定必須的 IVY_REPO classpath 參數予會自動更新
-  .classpath 檔案的 ivy.xml 設定檔.
+- |:IvyRepo| <路徑> - 設定必須的 IVY_REPO classpath 參數予會自動更新 .classpath 檔案的
+  ivy.xml 設定檔.
 
-- Search Online Maven Repository (|ivydependencysearch|) <artifact> -
+- |:IvyDependencySearch| <artifact> -
   尋找線上的資料庫，並將結果列示在一個視窗內，使用者可經由按下<Enter>鍵將結果加入目前專案內。在編輯 ivy.xml
   檔案時可以使用本指令.
 
@@ -165,11 +165,11 @@ Maven 指令集
 
 - |:Mvn| [<目標> ...] - 在目前的專案設定下執行 maven 2.x.
 
-- Initial Setup (|mavenrepo|) - 設定必須的 MAVEN_REPO classpath 參數予帶有
-  eclipse 支持的 maven's (1.x).
+- |:MavenRepo| - 設定必須的 MAVEN_REPO classpath 參數予帶有 eclipse 支持的 maven's
+  (1.x).
 
-- Initial Setup (|mvnrepo|) - 設定必須的 M2_REPO classpath 參數予帶有 eclipse
-  支持的 maven's (2.x).
+- |:MvnRepo| - 設定必須的 M2_REPO classpath 參數予帶有 eclipse 支持的 maven's
+  (2.x).
 
 - |:MavenDependencySearch| <artifact> -
   尋找線上的資料庫，並將結果列示在一個視窗內，使用者可經由按下<Enter>鍵將結果加入目前專案內。在編輯 maven 1.x

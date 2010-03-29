@@ -1,11 +1,11 @@
 " Author:  Eric Van Dewoestine
 "
 " Description: {{{
-"   see http://eclim.sourceforge.net/vim/java/junit.html
+"   see http://eclim.org/vim/java/junit.html
 "
 " License:
 "
-" Copyright (C) 2005 - 2009  Eric Van Dewoestine
+" Copyright (C) 2005 - 2010  Eric Van Dewoestine
 "
 " This program is free software: you can redistribute it and/or modify
 " it under the terms of the GNU General Public License as published by
@@ -65,7 +65,7 @@ endfunction " }}}
 "   The results dir relative results file name: TEST-org.foo.TestMe.xml
 function! eclim#java#junit#JUnitResult(test)
   let path = s:GetResultsDir()
-  if path == '' || path == '/'
+  if path == ''
     call eclim#util#EchoWarning(
       \ "Output directory setting for 'junit' not set. " .
       \ "Use :EclimSettings or :ProjectSettings to set it.")
@@ -119,10 +119,11 @@ function! eclim#java#junit#JUnitImpl()
   call eclim#java#util#SilentUpdate()
 
   let project = eclim#project#util#GetCurrentProjectName()
+  let file = eclim#project#util#GetProjectRelativeFilePath()
 
   let command = s:command_impl
   let command = substitute(command, '<project>', project, '')
-  let command = substitute(command, '<file>', eclim#java#util#GetFilename(), '')
+  let command = substitute(command, '<file>', file, '')
   let base = substitute(expand('%:t'), 'Test', '', '')
   let base = substitute(eclim#java#util#GetPackage(), '\.', '/', 'g') . "/" . base
   if eclim#java#util#FileExists(base)
@@ -140,8 +141,12 @@ endfunction " }}}
 
 " JUnitImplWindow(command) {{{
 function! eclim#java#junit#JUnitImplWindow(command)
-  let name = eclim#java#util#GetFilename() . "_impl"
-  if eclim#util#TempWindowCommand(a:command, name)
+  let name = eclim#project#util#GetProjectRelativeFilePath() . "_impl"
+  let project = eclim#project#util#GetCurrentProjectName()
+  let workspace = eclim#project#util#GetProjectWorkspace(project)
+  let port = eclim#client#nailgun#GetNgPort(workspace)
+
+  if eclim#util#TempWindowCommand(a:command, name, port)
     setlocal ft=java
     call eclim#java#impl#ImplWindowFolding()
 
@@ -172,7 +177,10 @@ function s:GetResultsDir()
 
   let root = eclim#project#util#GetCurrentProjectRoot()
   let path = substitute(path, '<project>', root, '')
-  let path = path !~ '/$' ? path . '/' : path
+  let path = path != '' && path !~ '/$' ? path . '/' : path
+  if path != '' && has('win32unix')
+    let path = eclim#cygwin#CygwinPath(path)
+  endif
   return path
 endfunction " }}}
 
@@ -189,7 +197,7 @@ function! eclim#java#junit#CommandCompleteResult(argLead, cmdLine, cursorPos)
   let argLead = substitute(a:argLead, cmdTail . '$', '', '')
 
   let path = s:GetResultsDir()
-  if path == '' || path == '/'
+  if path == ''
     call eclim#util#EchoWarning(
       \ "Output directory setting for 'junit' not set. " .
       \ "Use :EclimSettings or :ProjectSettings to set it.")

@@ -4,7 +4,7 @@
 "
 " License:
 "
-" Copyright (C) 2005 - 2009  Eric Van Dewoestine
+" Copyright (C) 2005 - 2010  Eric Van Dewoestine
 "
 " This program is free software: you can redistribute it and/or modify
 " it under the terms of the GNU General Public License as published by
@@ -28,35 +28,42 @@
     " this flag in run-time has no effect.
     let g:EclimNailgunKeepAlive = 0
   endif
-
-  " used during development only.
-  "${vim.eclim.path}"
 " }}}
 
-" Execute(command) {{{
+" Execute(port, command) {{{
 " Function which invokes nailgun.
-function! eclim#client#nailgun#Execute(command)
+function! eclim#client#nailgun#Execute(port, command)
   if !exists('g:EclimNailgunClient')
     call s:DetermineClient()
   endif
 
   if g:EclimNailgunClient == 'python'
-    return eclim#client#python#nailgun#Execute(a:command)
+    return eclim#client#python#nailgun#Execute(a:port, a:command)
   endif
 
-  let command = eclim#client#nailgun#GetEclimCommand()
-  if string(command) == '0'
+  let eclim = eclim#client#nailgun#GetEclimCommand()
+  if string(eclim) == '0'
     return [1, g:EclimErrorReason]
   endif
 
-  let command = command . ' ' . a:command
-
-  " for windows, need to add a trailing quote to complete the command.
-  if command =~ '^"[a-zA-Z]:'
-    let command = command . '"'
+  let command = a:command
+  " on windows/cygwin where cmd.exe is used, we need to escape any '^'
+  " characters in the command args.
+  if has('win32') || has('win64') || has('win32unix')
+    let command = substitute(command, '\^', '^^', 'g')
   endif
 
-  let result = eclim#util#System(command)
+  let eclim .= ' --nailgun-port ' . a:port . ' ' . command
+
+  " for windows/cygwin, need to add a trailing quote to complete the command.
+  if has('win32') || has('win64') || has('win32unix')
+    " for some reason, in cywin, if two double quotes are next to each other,
+    " then the preceding arg isn't quoted correctly, so add a space to prevent
+    " this.
+    let eclim = eclim . ' "'
+  endif
+
+  let result = eclim#util#System(eclim)
   return [v:shell_error, result]
 endfunction " }}}
 
@@ -64,32 +71,35 @@ endfunction " }}}
 " Gets the command to exexute eclim.
 function! eclim#client#nailgun#GetEclimCommand()
   if !exists('g:EclimPath')
-    let eclim_home = eclim#GetEclimHome()
-    if eclim_home == '' || string(eclim_home) == '0'
-      return
-    endif
+    let g:EclimPath = g:EclimEclipseHome . '/eclim'
 
-    let g:EclimPath = substitute(eclim_home, '\', '/', 'g') .
-      \ '/bin/' . g:EclimCommand
-
-    if has("win32") || has("win64")
+    if has('win32') || has('win64') || has('win32unix')
       let g:EclimPath = g:EclimPath . (has('win95') ? '.bat' : '.cmd')
-    elseif has("win32unix")
-      let g:EclimPath = system('cygpath "' . g:EclimPath . '"')
-      let g:EclimPath = substitute(g:EclimPath, '\n.*', '', '')
     endif
 
     if !filereadable(g:EclimPath)
       let g:EclimErrorReason = 'Could not locate file: ' . g:EclimPath
+      unlet g:EclimPath
       return
     endif
 
-    " on windows, the command must be executed on the drive where eclipse is
-    " installed.
-    if has("win32") || has("win64")
-      let g:EclimPath =
-        \ '"' . substitute(g:EclimPath, '^\([a-zA-Z]:\).*', '\1', '') .
-        \ ' && "' . g:EclimPath . '"'
+    " jump through the windows hoops
+    if has('win32') || has('win64') || has('win32unix')
+      if has("win32unix")
+        let g:EclimPath = eclim#cygwin#WindowsPath(g:EclimPath, 1)
+      endif
+
+      " on windows, the command must be executed on the drive where eclipse is
+      " installed.
+      let drive = substitute(g:EclimPath, '^\([a-zA-Z]:\).*', '\1', '')
+      let g:EclimPath = '" ' . drive . ' && "' . g:EclimPath . '"'
+
+      " in cygwin, we must use 'cmd /c' to prevent issues with eclim script +
+      " some arg containing spaces causing a failure to invoke the script.
+      if has('win32unix')
+        let g:EclimPath = 'cmd /c ' . g:EclimPath
+      endif
+
     else
       let g:EclimPath = '"' . g:EclimPath . '"'
     endif
@@ -101,19 +111,14 @@ endfunction " }}}
 " Gets path to the ng executable.
 function! eclim#client#nailgun#GetNgCommand()
   if !exists('g:EclimNgPath')
-    let eclim_home = eclim#GetEclimHome()
-    if eclim_home == '' || string(eclim_home) == '0'
-      return
-    endif
+    let g:EclimNgPath = substitute(g:EclimHome, '\', '/', 'g') .  '/bin/ng'
 
-    let g:EclimNgPath = substitute(eclim_home, '\', '/', 'g') .  '/bin/ng'
-
-    if has("win32") || has("win64")
-      let g:EclimNgPath = g:EclimNgPath . '.exe'
-      let g:EclimNgPath = substitute(g:EclimNgPath, '/', '\', 'g')
-    elseif has("win32unix")
-      let g:EclimNgPath = system('cygpath "' . g:EclimNgPath . '"')
-      let g:EclimNgPath = substitute(g:EclimNgPath, '\n.*', '', '')
+    " on windows, ng.exe is at the eclipse root
+    if has('win32') || has('win64') || has('win32unix')
+      let g:EclimNgPath = g:EclimEclipseHome . '/ng.exe'
+      if !has('win32unix')
+        let g:EclimNgPath = substitute(g:EclimNgPath, '/', '\', 'g')
+      endif
     endif
 
     if !filereadable(g:EclimNgPath)
@@ -134,9 +139,9 @@ function! eclim#client#nailgun#GetNgCommand()
   return g:EclimNgPath
 endfunction " }}}
 
-" GetNgPort() {{{
+" GetNgPort([workspace]) {{{
 " Gets port that the nailgun server is configured to run on.
-function! eclim#client#nailgun#GetNgPort()
+function! eclim#client#nailgun#GetNgPort(...)
   let port = 9091
   let eclimrc = expand('~/.eclimrc')
   if filereadable(eclimrc)
@@ -148,6 +153,52 @@ function! eclim#client#nailgun#GetNgPort()
         \ substitute(lines[0], '^\s*.\{-}=\s*\(\d\+\).*', '\1', '')
     endif
   endif
+  let default = port
+
+  let instances = has('win32unix') ?
+    \ eclim#cygwin#WindowsHome() . '/.eclim/.eclimd_instances' :
+    \ expand('~/.eclim/.eclimd_instances')
+  if filereadable(instances)
+    let workspaces = {}
+    let entries = readfile(instances)
+    for entry in entries
+      let workspace = substitute(entry, '\(.*\):.*', '\1', '')
+      let workspace = substitute(workspace, '\', '/', 'g')
+      let workspace .= workspace !~ '/$' ? '/' : ''
+      exec 'let port = ' . substitute(entry, '.*:\(\d\+\).*', '\1', '')
+      let workspaces[workspace] = port
+    endfor
+
+    " a specific workspace was supplied
+    if len(a:000) > 0
+      let workspace = a:000[0]
+      let workspace = substitute(workspace, '\', '/', 'g')
+      let workspace .= workspace !~ '/$' ? '/' : ''
+      return get(workspaces, workspace, default)
+    endif
+
+    let path = expand('%:p')
+    " when we are in a temp window, use the initiating filename
+    if exists('b:eclim_temp_window') && exists('b:filename')
+      let path = b:filename
+    endif
+
+    " project inside of a workspace dir
+    for workspace in keys(workspaces)
+      if path =~ '^' . workspace
+        return workspaces[workspace]
+      endif
+    endfor
+
+    " project outside of a workspace dir
+    for workspace in keys(workspaces)
+      let project = eclim#project#util#GetProject(path)
+      if len(project) > 0
+        return get(workspaces, project.workspace, default)
+      endif
+    endfor
+  endif
+
   return port
 endfunction " }}}
 

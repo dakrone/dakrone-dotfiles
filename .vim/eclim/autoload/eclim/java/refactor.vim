@@ -1,11 +1,11 @@
 " Author:  Eric Van Dewoestine
 "
 " Description: {{{
-"   see http://eclim.sourceforge.net/vim/java/refactor.html
+"   see http://eclim.org/vim/java/refactor.html
 "
 " License:
 "
-" Copyright (C) 2005 - 2009  Eric Van Dewoestine
+" Copyright (C) 2005 - 2010  Eric Van Dewoestine
 "
 " This program is free software: you can redistribute it and/or modify
 " it under the terms of the GNU General Public License as published by
@@ -65,14 +65,14 @@ function eclim#java#refactor#Rename(name)
   wall
 
   let project = eclim#project#util#GetCurrentProjectName()
-  let filename = eclim#java#util#GetFilename()
+  let file = eclim#project#util#GetProjectRelativeFilePath()
   let position = eclim#util#GetCurrentElementPosition()
   let offset = substitute(position, '\(.*\);\(.*\)', '\1', '')
   let length = substitute(position, '\(.*\);\(.*\)', '\2', '')
 
   let command = s:command_rename
   let command = substitute(command, '<project>', project, '')
-  let command = substitute(command, '<file>', filename, '')
+  let command = substitute(command, '<file>', file, '')
   let command = substitute(command, '<offset>', offset, '')
   let command = substitute(command, '<length>', length, '')
   let command = substitute(command, '<encoding>', eclim#util#GetEncoding(), '')
@@ -206,9 +206,12 @@ function s:PreviewLink()
       " split relative to the original window
       exec b:winnr . 'winc w'
 
+      if has('win32unix')
+        let file = eclim#cygwin#CygwinPath(file)
+      endif
       let name = fnamemodify(file, ':t:r')
       let ext = fnamemodify(file, ':e')
-      exec printf('silent new %s.current.%s', name, ext)
+      exec printf('silent below new %s.current.%s', name, ext)
       silent 1,$delete _ " counter-act any templating plugin
       exec 'read ' . escape(file, ' ')
       silent 1,1delete _
@@ -240,9 +243,6 @@ function s:Refactor(command)
   let cwd_return = 1
 
   try
-    " cd to the project root to avoid folder renaming issues on windows.
-    exec 'cd ' . eclim#project#util#GetCurrentProjectRoot()
-
     " turn off swap files temporarily to avoid issues with folder/file
     " renaming.
     let bufend = bufnr('$')
@@ -254,6 +254,9 @@ function s:Refactor(command)
       endif
       let bufnum = bufnum + 1
     endwhile
+
+    " cd to the project root to avoid folder renaming issues on windows.
+    exec 'cd ' . escape(eclim#project#util#GetCurrentProjectRoot(), ' ')
 
     let result = eclim#ExecuteEclim(a:command)
     if result == "0"
@@ -275,7 +278,13 @@ function s:Refactor(command)
         " handle file renames
         if file =~ '\s->\s'
           let newfile = substitute(file, '.*->\s*', '', '')
+          if has('win32unix')
+            let newfile = eclim#cygwin#CygwinPath(newfile)
+          endif
           let file = substitute(file, '\s*->.*', '', '')
+        endif
+        if has('win32unix')
+          let file = eclim#cygwin#CygwinPath(file)
         endif
 
         " ignore unchanged directories
@@ -288,6 +297,7 @@ function s:Refactor(command)
           if file =~ '^' . cwd . '\(/\|$\)'
             while cwd !~ '^' . file . '\(/\|$\)'
               let file = fnamemodify(file, ':h')
+              let newfile = fnamemodify(newfile, ':h')
             endwhile
           endif
 

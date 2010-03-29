@@ -1,11 +1,11 @@
 " Author:  Eric Van Dewoestine
 "
 " Description: {{{
-"   see http://eclim.sourceforge.net/vim/html/index.html
+"   see http://eclim.org/vim/html/index.html
 "
 " License:
 "
-" Copyright (C) 2005 - 2009  Eric Van Dewoestine
+" Copyright (C) 2005 - 2010  Eric Van Dewoestine
 "
 " This program is free software: you can redistribute it and/or modify
 " it under the terms of the GNU General Public License as published by
@@ -36,9 +36,7 @@ endif
 
 " Options {{{
 
-if !has('win32') && !has('win64')
-  setlocal completefunc=eclim#html#complete#CodeComplete
-endif
+setlocal completefunc=eclim#html#complete#CodeComplete
 
 " }}}
 

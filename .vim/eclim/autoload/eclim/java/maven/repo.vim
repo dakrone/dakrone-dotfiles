@@ -1,12 +1,12 @@
 " Author:  Eric Van Dewoestine
 "
 " Description: {{{
-"   see http://eclim.sourceforge.net/guides/java/maven/maven_eclipse.html
-"   see http://eclim.sourceforge.net/guides/java/maven/mvn_eclipse.html
+"   see http://eclim.org/guides/java/maven/maven_eclipse.html
+"   see http://eclim.org/guides/java/maven/mvn_eclipse.html
 "
 " License:
 "
-" Copyright (C) 2005 - 2009  Eric Van Dewoestine
+" Copyright (C) 2005 - 2010  Eric Van Dewoestine
 "
 " This program is free software: you can redistribute it and/or modify
 " it under the terms of the GNU General Public License as published by
@@ -25,8 +25,8 @@
 
 " SetClasspathVariable(cmd variable) {{{
 function eclim#java#maven#repo#SetClasspathVariable(cmd, variable)
-  let workspace = eclim#eclipse#GetWorkspaceDir()
-  if workspace == ''
+  let workspace = eclim#eclipse#ChooseWorkspace()
+  if workspace == '0'
     return
   endif
 

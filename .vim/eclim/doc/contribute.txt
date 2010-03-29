@@ -42,7 +42,7 @@ community.  There are several ways in which you can contribute:
   that would benefit from the same addition or modification.
 
   To see what features I have already thought about, you can view my
-  todo list.
+  todo list (http://github.com/ervandew/eclim/blob/master/notes.txt).
 
 - Code Contributions: In addition to reporting bugs or requesting
   features, you can also take that next step and implement a fix or
@@ -60,8 +60,8 @@ community.  There are several ways in which you can contribute:
 - Monetary Contributions: I am not currently accepting any donations.
   My day job pays well, and I work on eclim for the love of it.  If
   you have money you would like to donate, it would go to much better
-  use if you donated to vim, where it is used to help children in
-  Uganda.  Feel free to mention your referral from eclim if
-  appropriate.
+  use if you donated to vim (http://www.vim.org/sponsor/index.php),
+  where it is used to help children in Uganda.  Feel free to mention
+  your referral from eclim if appropriate.
 
 vim:ft=eclimhelp

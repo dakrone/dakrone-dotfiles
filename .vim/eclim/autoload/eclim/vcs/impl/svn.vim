@@ -1,7 +1,7 @@
 " Author:  Eric Van Dewoestine
 "
 " Description: {{{
-"   see http://eclim.sourceforge.net/vim/common/vcs.html
+"   see http://eclim.org/vim/common/vcs.html
 "
 " License:
 "
@@ -161,6 +161,21 @@ function eclim#vcs#impl#svn#GetEditorFile()
     let file = substitute(line, '^A\s\+\(.*\)\s*', '\1', '')
   endif
   return file
+endfunction " }}}
+
+" GetModifiedFiles() {{{
+function eclim#vcs#impl#svn#GetModifiedFiles()
+  let root = eclim#vcs#impl#svn#GetRoot()
+  let status = eclim#vcs#impl#svn#Svn('status')
+  let files = []
+  for file in split(status, "\n")
+    if file !~ '^[?AM]\s\+'
+      continue
+    endif
+    let file = substitute(file, '^[?AM]\s\+', '', '')
+    call add(files, root . '/' . file)
+  endfor
+  return files
 endfunction " }}}
 
 " GetVcsWebPath() {{{

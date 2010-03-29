@@ -5,7 +5,7 @@
 "
 " License:
 "
-" Copyright (C) 2005 - 2009  Eric Van Dewoestine
+" Copyright (C) 2005 - 2010  Eric Van Dewoestine
 "
 " This program is free software: you can redistribute it and/or modify
 " it under the terms of the GNU General Public License as published by
@@ -29,6 +29,7 @@
 
   let s:update_command = '-command java_src_update -p "<project>" -f "<file>"'
   let s:command_src_exists = '-command java_src_exists -f "<file>"'
+  let s:command_list_installs = '-command java_list_installs'
 
   let s:import_pattern = '^\s*import\_s\+<import>\_s*;'
 " }}}
@@ -74,14 +75,6 @@ function! eclim#java#util#GetFullyQualifiedClassname(...)
     return eclim#java#util#GetPackage(a:1) . '.' . eclim#java#util#GetClassname(a:1)
   endif
   return eclim#java#util#GetPackage() . '.' . eclim#java#util#GetClassname()
-endfunction " }}}
-
-" GetFilename() {{{
-" Gets the src dir relative file name.
-function! eclim#java#util#GetFilename()
-  "let filename = substitute(eclim#java#util#GetPackage(), '\.', '/', 'g')
-  "return filename . '/' . expand('%:t')
-  return eclim#project#util#GetProjectRelativeFilePath(expand('%:p'))
 endfunction " }}}
 
 " GetPackage(...) {{{
@@ -249,7 +242,7 @@ endfunction " }}}
 function! eclim#java#util#UpdateSrcFile(validate)
   let project = eclim#project#util#GetCurrentProjectName()
   if project != ""
-    let file = eclim#java#util#GetFilename()
+    let file = eclim#project#util#GetProjectRelativeFilePath()
     let command = s:update_command
     let command = substitute(command, '<project>', project, '')
     let command = substitute(command, '<file>', file, '')
@@ -307,16 +300,15 @@ function! eclim#java#util#Javac(bang)
   let cwd = getcwd()
   try
     exec 'lcd ' . escape(project_path, ' ')
-    let exec = has('win32') || has('win64')
-    call eclim#util#MakeWithCompiler('eclim_javac', a:bang, args, exec)
+    call eclim#util#MakeWithCompiler('eclim_javac', a:bang, args)
   finally
     exec 'lcd ' . escape(cwd, ' ')
   endtry
 endfunction " }}}
 
-" Java([args]) {{{
+" Java(classname, [args]) {{{
 " Run a projects main class.
-function! eclim#java#util#Java(args)
+function! eclim#java#util#Java(classname, args)
   let project = eclim#project#util#GetCurrentProjectName()
   if project == '' && exists('b:project')
     let project = b:project
@@ -327,15 +319,32 @@ function! eclim#java#util#Java(args)
     return
   endif
 
+  let workspace = eclim#project#util#GetProjectWorkspace(project)
+  let port = eclim#client#nailgun#GetNgPort(workspace)
+  let args = eclim#util#ParseArgs(a:args)
+  let classname = a:classname
+  if classname == '' && len(args)
+    let arg1 = args[0]
+    if arg1 == '%'
+      let args = args[1:]
+      let classname = exists('b:filename') ?
+        \ eclim#java#util#GetFullyQualifiedClassname(b:filename) :
+        \ eclim#java#util#GetFullyQualifiedClassname()
+    endif
+  endif
+
   let command = '!'
   let command .= eclim#client#nailgun#GetEclimCommand()
+  let command .= ' --nailgun-port ' . port
   let command .= ' -command java -p "' . project . '"'
+  if classname != ''
+    let command .= ' -c ' . classname
+  endif
 
-  let args = eclim#util#ParseArgs(a:args)
   if len(args)
     let command .= ' -a'
     for arg in args
-      let command .= ' "' . arg . '"'
+      let command .= ' "' . escape(arg, '"') . '"'
     endfor
   endif
 
@@ -343,9 +352,9 @@ function! eclim#java#util#Java(args)
 
   let outfile = g:EclimTempDir . '/eclim_java_output.txt'
 
-  if has("win32") || has("win64")
-    if executable("tee")
-      let command .= ' | tee "' . outfile . '" 2>&1"'
+  if has('win32') || has('win64') || has('win32unix')
+    if executable('tee')
+      let command .= ' ^| tee "' . eclim#cygwin#CygwinPath(outfile) . '" 2>&1"'
     else
       let command .= ' >"' . outfile . '" 2>&1"'
     endif
@@ -357,17 +366,30 @@ function! eclim#java#util#Java(args)
   " all the escaping necessary to test against buffer name).
   if len(getline(1)) == 0 && line('$') == 1
     call eclim#util#Exec(command)
-    set modifiable noreadonly
+    setlocal modifiable noreadonly
     exec 'silent read ' . escape(outfile, ' ')
     1,1delete _
     $,$delete _
-    set nomodifiable readonly
+    setlocal nomodifiable readonly
     let b:project = project
 
     if exists(":Java") != 2
-      command -buffer -nargs=* Java :call eclim#java#util#Java(<q-args>)
+      command -buffer -nargs=* Java :call eclim#java#util#Java('', <q-args>)
     endif
   endif
+endfunction " }}}
+
+" ListInstalls() {{{
+" Lists all installed jdks/jres.
+function! eclim#java#util#ListInstalls()
+  let installs = split(eclim#ExecuteEclim(s:command_list_installs), '\n')
+  if len(installs) == 0
+    call eclim#util#Echo("No jdk/jre installs found.")
+  endif
+  if len(installs) == 1 && installs[0] == '0'
+    return
+  endif
+  call eclim#util#Echo(join(installs, "\n"))
 endfunction " }}}
 
 " CommandCompleteProject(argLead, cmdLine, cursorPos) {{{

@@ -15,7 +15,8 @@ This command will only lookup element names, not attribute names or
 values.
 
 By default this plugin is configured to find all the standard ant
-tasks, types, etc, as well as those defined by the antcontrib project.
+tasks, types, etc, as well as those defined by the antcontrib
+(http://ant-contrib.sourceforge.net) project.
 
 *:AntUserDoc*
 

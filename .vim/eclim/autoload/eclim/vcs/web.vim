@@ -1,7 +1,7 @@
 " Author:  Eric Van Dewoestine
 "
 " Description: {{{
-"   see http://eclim.sourceforge.net/vim/common/vcs.html
+"   see http://eclim.org/vim/common/vcs.html
 "
 " License:
 "
@@ -27,6 +27,22 @@ if !exists('g:eclim_vcs_web_loaded')
 else
   finish
 endif
+
+" Script Variables {{{
+let s:vcs_viewers = {
+    \ 'viewvc': 'http://${host}/viewvc/${path}',
+    \ 'trac': 'http://${host}/${path}',
+    \ 'redmine': 'http://${host}/repositories/<cmd>/${path}',
+    \ 'hgcgi': 'http://${host}/${path}',
+    \ 'hgserve': 'http://${host}/${path}',
+    \ 'gitweb': 'http://${host}/git/gitweb.cgi?p=${path}',
+    \ 'github': 'http://github.com/${username}/${project}',
+    \ 'bitbucket': 'http://bitbucket.org/${username}/${project}',
+    \ 'googlecode': 'http://code.google.com/p/${project}',
+  \ }
+
+let s:vcs_viewer_saved = {}
+" }}}
 
 " GetVcsWebFunction(type, func_name) {{{
 " Gets a reference to the proper vcs web function.
@@ -56,15 +72,81 @@ endfunction " }}}
 
 " VcsWeb(url_func, ...) {{{
 function eclim#vcs#web#VcsWeb(url_func, ...)
+  let vcs = eclim#vcs#util#GetVcsType()
+  if vcs == ''
+    return
+  endif
+
   let type = eclim#project#util#GetProjectSetting('org.eclim.project.vcs.web.viewer')
   let root = eclim#project#util#GetProjectSetting('org.eclim.project.vcs.web.url')
 
   if type(type) == 0 || type(root) == 0 || type == '' || root == ''
-    call eclim#util#EchoWarning(
-      \ "VcsWeb commands requires the following project settings\n" .
-      \ "  org.eclim.project.vcs.web.viewer\n" .
-      \ "  org.eclim.project.vcs.web.url")
-    return
+    let type = get(s:vcs_viewer_saved, 'type', '')
+    let root = get(s:vcs_viewer_saved, 'root', '')
+    let prompt = 1
+
+    if root == ''
+      let response = eclim#util#PromptConfirm(
+        \ "VcsWeb commands requires the following project settings\n" .
+        \ "  org.eclim.project.vcs.web.viewer\n" .
+        \ "  org.eclim.project.vcs.web.url\n\n" .
+        \ "Would you like to enter these values?", g:EclimInfoHighlight)
+      if response != 1
+        return
+      endif
+    else
+      let response = eclim#util#PromptConfirm(
+        \ "Using values\n" .
+        \ "  viewer: " . type . "\n" .
+        \ "     url: " . root . "\n" .
+        \ "Continue using these values?", g:EclimInfoHighlight)
+      let prompt = response != 1
+    endif
+
+    if prompt
+      " TODO: maybe filter types by the vcs
+      let types = sort(keys(s:vcs_viewers))
+      let response = eclim#util#PromptList(
+        \ 'Choose the appropriate web viewer', types, g:EclimInfoHighlight)
+      if response < 0
+        return
+      endif
+
+      let type = types[response]
+      let root = s:vcs_viewers[type]
+      let vars = split(substitute(root, '.\{-}\(\${\w\+}\).\{-}\|.*', '\1 ', 'g'))
+      exec "echohl " . g:EclimInfoHighlight
+      try
+        for var in vars
+          redraw
+          echo "Building url: " . root . "\n"
+          let varname = substitute(var, '\${\|}', '', 'g')
+          let response = input("Please enter the " . varname . ": ")
+          if response == ''
+            return
+          endif
+          let root = substitute(root, var, response, '')
+        endfor
+      finally
+        echohl None
+      endtry
+
+      let s:vcs_viewer_saved = {'type': type, 'root': root}
+
+      if eclim#project#util#IsCurrentFileInProject(0)
+        let response = eclim#util#PromptConfirm(
+          \ "  org.eclim.project.vcs.web.viewer=" . type . "\n" .
+          \ "  org.eclim.project.vcs.web.url=" . root . "\n\n" .
+          \ "Would you like to persist these values?", g:EclimInfoHighlight)
+        if response > 0
+          call eclim#project#util#SetProjectSetting(
+            \ 'org.eclim.project.vcs.web.viewer', type)
+          call eclim#project#util#SetProjectSetting(
+            \ 'org.eclim.project.vcs.web.url', root)
+        endif
+      endif
+
+    endif
   endif
 
   if root =~ '/$'
@@ -96,13 +178,20 @@ function eclim#vcs#web#VcsWeb(url_func, ...)
   if type(GetUrl) != 2
     return
   endif
-  call eclim#web#OpenUrl(GetUrl(root, path, a:000))
+
+  let url = GetUrl(root, path, a:000)
+  if url == '0'
+    return
+  endif
+
+  call eclim#web#OpenUrl(url, 1)
 endfunction " }}}
 
-" VcsWebLog() {{{
+" VcsWebLog(revision) {{{
 " View the vcs web log.
-function eclim#vcs#web#VcsWebLog()
-  call eclim#vcs#web#VcsWeb('GetLogUrl', eclim#vcs#util#GetRevision())
+function eclim#vcs#web#VcsWebLog(revision)
+  let revision = a:revision != '' ? a:revision : eclim#vcs#util#GetRevision()
+  call eclim#vcs#web#VcsWeb('GetLogUrl', revision)
 endfunction " }}}
 
 " VcsWebChangeSet(revision) {{{

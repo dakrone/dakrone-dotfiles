@@ -1,11 +1,11 @@
 " Author:  Eric Van Dewoestine
 "
 " Description: {{{
-"   see http://eclim.sourceforge.net/vim/java/hierarchy.html
+"   see http://eclim.org/vim/java/hierarchy.html
 "
 " License:
 "
-" Copyright (C) 2005 - 2009  Eric Van Dewoestine
+" Copyright (C) 2005 - 2010  Eric Van Dewoestine
 "
 " This program is free software: you can redistribute it and/or modify
 " it under the terms of the GNU General Public License as published by
@@ -24,7 +24,7 @@
 
 " Global Variables {{{
 if !exists('g:EclimJavaHierarchyDefaultAction')
-  let g:EclimJavaHierarchyDefaultAction = 'split'
+  let g:EclimJavaHierarchyDefaultAction = g:EclimDefaultFileOpenAction
 endif
 " }}}
 
@@ -41,9 +41,10 @@ function! eclim#java#hierarchy#Hierarchy()
   endif
 
   let project = eclim#project#util#GetCurrentProjectName()
+  let file = eclim#project#util#GetProjectRelativeFilePath()
   let command = s:command_hierarchy
   let command = substitute(command, '<project>', project, '')
-  let command = substitute(command, '<file>', eclim#java#util#GetFilename(), '')
+  let command = substitute(command, '<file>', file, '')
   let command = substitute(command, '<offset>', eclim#util#GetOffset(), '')
   let command = substitute(command, '<encoding>', eclim#util#GetEncoding(), '')
   let result = eclim#ExecuteEclim(command)
@@ -56,36 +57,61 @@ function! eclim#java#hierarchy#Hierarchy()
   let info = []
   call s:FormatHierarchy(hierarchy, lines, info, '')
   call eclim#util#TempWindow('[Hierarchy]', lines)
-
   set ft=java
+
+  setlocal modifiable noreadonly
+  call append(line('$'), ['', '" use ? to view help'])
+  setlocal nomodifiable readonly
+  syntax match Comment /^".*/
+
   let b:hierarchy_info = info
   call eclim#util#Echo(b:hierarchy_info[line('.') - 1])
 
   augroup eclim_java_hierarchy
     autocmd!
     autocmd CursorMoved <buffer>
-      \ call eclim#util#Echo(b:hierarchy_info[line('.') - 1])
+      \ if line('.') <= len(b:hierarchy_info) |
+      \   call eclim#util#Echo(b:hierarchy_info[line('.') - 1]) |
+      \ else |
+      \   echo '' |
+      \ endif
   augroup END
 
-  noremap <buffer> <silent> <cr>
+  nnoremap <buffer> <silent> <cr>
     \ :call <SID>Open(g:EclimJavaHierarchyDefaultAction)<cr>
-  noremap <buffer> <silent> <c-e> :call <SID>Open('edit')<cr>
-  noremap <buffer> <silent> <c-s> :call <SID>Open('split')<cr>
-  noremap <buffer> <silent> <c-t> :call <SID>Open("tablast \| tabnew")<cr>
+  nnoremap <buffer> <silent> E :call <SID>Open('edit')<cr>
+  nnoremap <buffer> <silent> S :call <SID>Open('split')<cr>
+  nnoremap <buffer> <silent> T :call <SID>Open("tablast \| tabnew")<cr>
+
+  " assign to buffer var to get around weird vim issue passing list containing
+  " a string w/ a '<' in it on execution of mapping.
+  let b:hierarchy_help = [
+      \ '<cr> - open file with default action',
+      \ 'E - open with :edit',
+      \ 'S - open in a new split window',
+      \ 'T - open in a new tab',
+    \ ]
+  nnoremap <buffer> <silent> ?
+    \ :call eclim#help#BufferHelp(b:hierarchy_help, 'vertical', 40)<cr>
 endfunction " }}}
 
 " s:FormatHierarchy(hierarchy, lines, indent) {{{
 function! s:FormatHierarchy(hierarchy, lines, info, indent)
   call add(a:lines, a:indent . a:hierarchy.name)
   call add(a:info, a:hierarchy.qualified)
+  let indent = eclim#util#GetIndent(1)
   for child in a:hierarchy.children
-    call s:FormatHierarchy(child, a:lines, a:info, a:indent . g:EclimIndent)
+    call s:FormatHierarchy(child, a:lines, a:info, a:indent . indent)
   endfor
 endfunction " }}}
 
 " s:Open(action) {{{
 function! s:Open(action)
   let line = line('.')
+  if line > len(b:hierarchy_info)
+    return
+  endif
+
   let type = b:hierarchy_info[line - 1]
   " go to the buffer that initiated the hierarchy
   exec b:winnr . 'winc w'

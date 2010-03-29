@@ -99,7 +99,7 @@ Java Integration
 JavaScript Integration
 ======================
 
-- File validation using jsl.
+- File validation using jsl (http://www.javascriptlint.com/).
 
 - Improved taglist (outline) support.
 
@@ -139,7 +139,9 @@ Python Integration
 
 - Django functionality.
 
-- Validation via python compiler, pyflakes, and pylint.
+- Validation via python compiler, pyflakes
+  (http://www.divmod.org/trac/wiki/DivmodPyflakes), and pylint
+  (http://www.logilab.org/857).
 
 
 Ruby Integration

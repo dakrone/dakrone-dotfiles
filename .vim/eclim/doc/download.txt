@@ -1,0 +1,36 @@
+*download*
+
+
+Download
+********
+
+
+Official Installer
+==================
+
+You can find the eclim installer for your system on eclim's
+sourceforge downloads
+(http://sourceforge.net/project/showfiles.php?group_id=145869) page:
+
+- Linux / Mac / BSD: eclim_version.sh (http://sourceforge.net/project/
+  platformdownload.php?group_id=145869&sel_platform=15823)
+
+- Windows: eclim_version.exe (http://sourceforge.net/project/platformd
+  ownload.php?group_id=145869&sel_platform=15821)
+
+
+Third Party Packages
+====================
+
+As an alternative to the official installer, there are also some
+packages maintained by third parties for some popular linux
+distributions:
+
+- Arch: aur (http://aur.archlinux.org/packages.php?ID=33120)
+
+- Gentoo: sunrise overlay (http://gpo.zugaina.org/dev-util/eclim)
+
+- Fedora (12.x and maybe higher): grond repository
+  (http://www.grond.org/downloads/repository/grond/fedora/)
+
+vim:ft=eclimhelp

@@ -301,7 +301,7 @@ autocmd FileType php set omnifunc=phpcomplete#CompletePHP
 autocmd FileType c set omnifunc=ccomplete#Complete
 autocmd FileType ruby,eruby set omnifunc=rubycomplete#Complete
 autocmd FileType ruby,eruby let g:rubycomplete_rails = 1  " Rails support
-autocmd FileType java set noexpandtab
+autocmd FileType java setlocal noexpandtab
 " put these lines in ~/.vim/.compiler_info
 "au FileType ruby let b:{g:ctk_ext_var} = 'rb'
 "au FileType ruby SetCompilerInfo ruby title='Ruby 1.9.1 - Matz' cmd='ruby $flags $input' run='ruby $input' flags='-wc' debug_flags='-rdebug $flags'
@@ -324,6 +324,8 @@ function! YRRunAfterMaps()
 endfunction
 " toggle list mode
 nmap <LocalLeader>tl :set list!<cr>
+" Use the same symbols as TextMate for tabstops and EOLs
+set listchars=tab:▸\ ,eol:¬,trail:-
 " toggle paste mode
 nmap <LocalLeader>pp :set paste!<cr>
 " toggle wrapping
@@ -360,6 +362,34 @@ nmap F zf%
 nmap <LocalLeader>sf :set foldcolumn=6 foldmethod=syntax<cr>
 " ruby helpers
 iab rbang #!/usr/bin/env ruby -w<cr> encoding: UTF-8<cr>
+" For mac users (using the 'apple' key)
+"map <D-S-]> gt " MacVim already does this
+"map <D-S-[> gT " MacVim already does this
+map <D-1> 1gt
+map <D-2> 2gt
+map <D-3> 3gt
+map <D-4> 4gt
+map <D-5> 5gt
+map <D-6> 6gt
+map <D-7> 7gt
+map <D-8> 8gt
+map <D-9> 9gt
+map <D-0> :tablast<CR>
+ 
+" for linux and windows users (using the control key)
+"map <C-S-]> gt
+"map <C-S-[> gT
+"map <C-1> 1gt
+"map <C-2> 2gt
+"map <C-3> 3gt
+"map <C-4> 4gt
+"map <C-5> 5gt
+"map <C-6> 6gt
+"map <C-7> 7gt
+"map <C-8> 8gt
+"map <C-9> 9gt
+"map <C-0> :tablast<CR>
+
 
 " Remove the '# => ' lines that xmpfilter adds
 function! RemoveRubyEval() range

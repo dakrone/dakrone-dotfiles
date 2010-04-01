@@ -1,0 +1,13 @@
+""" .vromerc example file
+
+map <C-e> j
+map <C-y> k
+map <C-j> j
+map <C-k> k
+
+set editor=gvim -f
+"" use it like vimperator, the first search engine is the default.
+set searchengines={ 'g':'https://ssl.scroogle.org/cgi-bin/nbbwssl.cgi?Gw={{keyword}}','gg':'http://www.google.com/search?q={{keyword}}', ,'wiki':'http://en.wikipedia.org/wiki/{{keyword}}''yubnub':'http://yubnub.org/parser/parse?command={{keyword}}'}
+
+" vim: set ft=vim
+

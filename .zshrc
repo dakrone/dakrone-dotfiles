@@ -38,7 +38,14 @@ export EDITOR=vim
 export PAGER=less
 
 # CVS for HeX
-export CVSROOT=:ext:dakrone@cvsup.rawpacket.org:/home/project/rawpacket/cvs
+#export CVSROOT=:ext:dakrone@cvsup.rawpacket.org:/home/project/rawpacket/cvs
+
+# CVS for Avamar
+export CVSROOT=:ext:hinmam@cvs.avamar.com:/antimatter/home/codebase/repository
+export CVS_RSH=ssh
+export CVS_SERVER=/opt/sfw/bin/cvs
+export CVSEDITOR=vim
+
 
 # RSPEC for autotest
 export RSPEC=true
@@ -262,10 +269,6 @@ bindkey "^d" delete-word
 bindkey "^k" kill-line
 bindkey ' ' magic-space    # also do history expansion on space
 bindkey '^I' complete-word # complete on tab, leave expansion to _expand
-
-
-
-source /Users/hinmanm/.profile
 
 # Remove ctrl+y from the keybinds for delayed suspend
 stty dsusp undef

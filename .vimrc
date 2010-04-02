@@ -20,7 +20,7 @@ set showmode                  " show the mode all the time
 set showcmd                   " Show us the command we're typing
 set nocompatible              " vim, not vi
 set autoindent smartindent    " auto/smart indent
-set expandtab                 " expand tabs to spaces
+set expandtab                 " expand tabs to spaces (except java, see autocmd below)
 set smarttab                  " tab and backspace are smart
 set tabstop=6                 " 6 spaces
 set shiftwidth=6              " shift width
@@ -32,7 +32,7 @@ set noerrorbells              " no error bells please
 set linebreak                 " wrap at 'breakat' instead of last char
 set tw=500                    " default textwidth is a max of 500
 set cmdheight=2               " command line two lines high
-set undolevels=1000           " 1000 undos
+set undolevels=500            " 500 undos
 set updatecount=100           " switch every 100 chars
 set complete=.,w,b,u,U,t,i,d  " do lots of scanning on tab completion
 set ttyfast                   " we have a fast terminal
@@ -77,7 +77,6 @@ if has("gui_running")
       colorscheme rdark
       let rdark_current_line=1  " highlight current line
       set background=dark
-      "set noantialias          " If I use ir_black_new, no antialiasing
       set noantialias
       set guioptions-=T        " no toolbar
       set guioptions-=l        " no left scrollbar
@@ -161,7 +160,7 @@ let ri_prompt_complete='on'
 
 " Supertab settings
 " supertab + eclim == java win
-let g:SuperTabDefaultCompletionType = "<c-x><c-i>"
+let g:SuperTabDefaultCompletionType = "context"
 let g:SuperTabDefaultCompletionTypeDiscovery = [
                   \ "&completefunc:<c-x><c-u>",
                   \ "&omnifunc:<c-x><c-o>",
@@ -197,7 +196,7 @@ nnoremap <silent> <LocalLeader>jc :JavaCorrect<cr>
 " 'open' on OSX will open the url in the default browser without issue
 let g:EclimBrowser='open'
 " Disable Eclim's taglisttoo because I use the regular taglist plugin
-let g:taglisttoo_disabled = 1
+"let g:taglisttoo_disabled = 1
 
 
 " ---------------------------------------------------------------------------
@@ -301,7 +300,7 @@ autocmd FileType php set omnifunc=phpcomplete#CompletePHP
 autocmd FileType c set omnifunc=ccomplete#Complete
 autocmd FileType ruby,eruby set omnifunc=rubycomplete#Complete
 autocmd FileType ruby,eruby let g:rubycomplete_rails = 1  " Rails support
-autocmd FileType java setlocal noexpandtab
+autocmd FileType java setlocal noexpandtab " don't expand tabs to spaces for Java
 " put these lines in ~/.vim/.compiler_info
 "au FileType ruby let b:{g:ctk_ext_var} = 'rb'
 "au FileType ruby SetCompilerInfo ruby title='Ruby 1.9.1 - Matz' cmd='ruby $flags $input' run='ruby $input' flags='-wc' debug_flags='-rdebug $flags'
@@ -391,18 +390,6 @@ map <D-0> :tablast<CR>
 "map <C-0> :tablast<CR>
 
 
-" Remove the '# => ' lines that xmpfilter adds
-function! RemoveRubyEval() range
-  let begv = a:firstline
-  let endv = a:lastline
-  normal Hmt
-  set lz
-  execute ":" . begv . "," . endv . 's/\s*# \(=>\|!!\).*$//e'
-  normal 'tzt`s
-  set nolz
-  redraw
-endfunction
-
 " Compile Ruby code after writing (show warnings/errors)
 function! Compile()
   " don't compile if it's an Rspec file (extra warnings)
@@ -423,6 +410,22 @@ function! s:DiffWithSaved()
 endfunction
 com! DiffSaved call s:DiffWithSaved()
 
+
+" ---------------------------------------------------------------------------
+"  xmpfilter ruby stuff
+"  `gem install rcodetools`
+
+" Remove the '# => ' lines that xmpfilter adds
+function! RemoveRubyEval() range
+  let begv = a:firstline
+  let endv = a:lastline
+  normal Hmt
+  set lz
+  execute ":" . begv . "," . endv . 's/\s*# \(=>\|!!\).*$//e'
+  normal 'tzt`s
+  set nolz
+  redraw
+endfunction
 
 " Add # => markers
 " ,m for "Add mark"

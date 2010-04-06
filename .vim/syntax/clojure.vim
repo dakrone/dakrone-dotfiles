@@ -24,7 +24,7 @@ catch /.*/
 	echohl None
 endtry
 
-if exists("g:clj_highlight_builtins") && g:clj_highlight_builtins != 0
+if g:vimclojure#HighlightBuiltins != 0
 	let s:builtins_map = {
 		\ "Constant":  "nil",
 		\ "Boolean":   "true false",
@@ -138,14 +138,14 @@ if exists("g:clj_highlight_builtins") && g:clj_highlight_builtins != 0
 	call vimclojure#ColorNamespace(s:builtins_map)
 endif
 
-if exists("g:clj_dynamic_highlighting") && g:clj_dynamic_highlighting != 0
-			\ && exists("b:vimclojure_namespace")
+if g:vimclojure#DynamicHighlighting != 0 && exists("b:vimclojure_namespace")
 	try
 		let s:result = vimclojure#ExecuteNailWithInput("DynamicHighlighting",
 					\ b:vimclojure_namespace)
-		execute "let s:highlights = " . s:result
-		call vimclojure#ColorNamespace(s:highlights)
-		unlet s:result s:highlights
+		if s:result.stderr == ""
+			call vimclojure#ColorNamespace(s:result.value)
+			unlet s:result
+		endif
 	catch /.*/
 		" We ignore errors here. If the file is messed up, we at least get
 		" the basic syntax highlighting.
@@ -180,6 +180,7 @@ for radix in range(2, 36)
 endfor
 
 syn match   clojureNumber "\<-\?[0-9]\+M\?\>"
+syn match   clojureHexNumber "\<-\?0x[0-9a-fA-F]\+\>"
 syn match   clojureRational "\<-\?[0-9]\+/[0-9]\+\>"
 syn match   clojureFloat "\<-\?[0-9]\+\.[0-9]\+\([eE][-+]\=[0-9]\+\)\=\>"
 
@@ -190,7 +191,7 @@ syn match   clojureDispatch "\(#^\|#'\)"
 syn match   clojureAnonArg contained "%\(\d\|&\)\?"
 syn match   clojureVarArg contained "&"
 
-if exists("g:clj_paren_rainbow") && g:clj_paren_rainbow != 0
+if vimclojure#ParenRainbow != 0
 	syn region clojureSexpLevel0 matchgroup=clojureParen0 start="(" matchgroup=clojureParen0 end=")"           contains=@clojureTopCluster,clojureSexpLevel1
 	syn region clojureSexpLevel1 matchgroup=clojureParen1 start="(" matchgroup=clojureParen1 end=")" contained contains=@clojureTopCluster,clojureSexpLevel2
 	syn region clojureSexpLevel2 matchgroup=clojureParen2 start="(" matchgroup=clojureParen2 end=")" contained contains=@clojureTopCluster,clojureSexpLevel3
@@ -209,7 +210,8 @@ syn region  clojureAnonFn  matchgroup=clojureParen0 start="#(" matchgroup=clojur
 syn region  clojureVector  matchgroup=clojureParen0 start="\[" matchgroup=clojureParen0 end="\]" contains=@clojureTopCluster,clojureVarArg,clojureSexpLevel0
 syn region  clojureMap     matchgroup=clojureParen0 start="{"  matchgroup=clojureParen0 end="}"  contains=@clojureTopCluster,clojureSexpLevel0
 syn region  clojureSet     matchgroup=clojureParen0 start="#{" matchgroup=clojureParen0 end="}"  contains=@clojureTopCluster,clojureSexpLevel0
-syn region  clojurePattern                          start=/#"/                          end=/"/  skip=/\\"/
+
+syn region  clojurePattern start=/L\=\#"/ skip=/\\\\\|\\"/ end=/"/
 
 syn region  clojureCommentSexp                          start="("                                       end=")" transparent contained contains=clojureCommentSexp
 syn region  clojureComment     matchgroup=clojureParen0 start="(comment"rs=s+1 matchgroup=clojureParen0 end=")"                       contains=clojureCommentSexp
@@ -229,6 +231,7 @@ HiLink clojureBoolean   Boolean
 HiLink clojureCharacter Character
 HiLink clojureKeyword   Operator
 HiLink clojureNumber    Number
+HiLink clojureHexNumber Number
 HiLink clojureRational  Number
 HiLink clojureFloat     Float
 HiLink clojureString    String
@@ -256,7 +259,7 @@ HiLink clojureError     Error
 
 HiLink clojureParen0    Delimiter
 
-if exists("g:clj_paren_rainbow") && g:clj_paren_rainbow != 0
+if vimclojure#ParenRainbow != 0
 	if &background == "dark"
 		highlight default clojureParen1 ctermfg=yellow      guifg=orange1
 		highlight default clojureParen2 ctermfg=green       guifg=yellow1

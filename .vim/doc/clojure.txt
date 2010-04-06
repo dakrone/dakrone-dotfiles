@@ -27,9 +27,9 @@ argument.
 >
         ng ng-stop
 <
-Set the clj_want_gorilla variable in your vimrc.
+Set the vimclojure#WantNailgun variable in your vimrc.
 >
-        let g:clj_want_gorilla = 1
+        let vimclojure#WantNailgun = 1
 <
 Note: Should there be an error when executing an interactive command
 and the error message goes away to quickly, you can use |:messages| to
@@ -50,32 +50,29 @@ Syntax Highlighting                 *ft-clj-syntax*
 
 The clojure syntax highlighting provides several options:
 >
-        g:clj_highlight_builtins
-                If it exists and is nonzero, then Clojure's builtin functions
-                are highlighted. This useful to distuingish macros and special
-                forms from functions.
+        g:vimclojure#HighlightBuiltins
+                If it is nonzero, then Clojure's builtin functions are
+                highlighted. This useful to distuingish macros and special
+                forms from functions. Enabled by default.
 
-        g:clj_highlight_contrib
-                If it exists and is nonzero, then Clojure-Contrib's functions
-                are highlighted. (Currently incomplete)
+        g:vimclojure#ParenRainbow
+                Controls the colorisation of the differing levels of
+                parenthesisation. If non-zero, different levels will be
+                colored differently.
 
-        g:clj_paren_rainbow
-                If it exists and is nonzero, then differing levels of
-                parenthesisation will receive different highlighting.
-
-        g:clj_dynamic_highlighting
+        g:vimclojure#DynamicHighlighting
                 Uses the dynamic features of VimClojure to dynamically add
                 the symbols of required and used namespaces. The file needs
                 to be correct (ie. w/o syntax errors and on the classpath)
-                for this to work. If this is not the case, that dynamic
-                highlighting is not done.
+                for this to work. If this is not the case, dynamic
+                highlighting is not done. Disable by default.
 <
-The g:clj_paren_rainbow option provides 10 levels of individual colorisation
-for the parentheses. Because of the quantity of colorisation levels, unlike
-non-rainbow highlighting, the rainbow mode specifies its highlighting using
-ctermfg and guifg, thereby bypassing the usual colorscheme control using
-standard highlighting groups. The actual highlighting used depends on the
-dark/bright setting (see |'bg'|).
+The g:vimclojure#ParenRainbow option provides 10 levels of individual
+colorisation for the parentheses. Because of the quantity of colorisation
+levels, unlike non-rainbow highlighting, the rainbow mode specifies its
+highlighting using ctermfg and guifg, thereby bypassing the usual colorscheme
+control using standard highlighting groups. The actual highlighting used
+depends on the dark/bright setting (see |'bg'|).
 
 Preview Window
 --------------
@@ -247,6 +244,10 @@ The following convenience commands are provided:
  - ,st - print a stack trace of *e as with clojure.contrib.stacktrace
  - ,ct - print a cause trace of *e as with clojure.contrib.stacktrace
  - ,toggle-pprint - toggle pretty-printing of evaluated values
+
+You can also start a Repl with the :ClojureRepl command. This command works
+regardless of the type of the current buffer, while the shortcuts only work in
+Clojure buffers.
 
 Pretty Printing
 ---------------

@@ -121,9 +121,12 @@ let html_use_css=1
 let use_xhtml=1
 
 " Settings for VimClojure
-let g:clj_highlight_builtins=1      " Highlight Clojure's builtins
-let g:clj_paren_rainbow=1           " Rainbow parentheses'!
-let g:clj_want_gorilla=1            " Bananas! (Make sure nailgun in is your path)
+let g:vimclojure#HighlightBuiltins=1   " Highlight Clojure's builtins
+let g:vimclojure#ParenRainbow=1        " Rainbow parentheses'!
+let g:vimclojure#DynamicHighlighting=1 " Dynamically highlight functions
+let vimclojure#NailgunClient="/Users/hinmanm/bin/ng" " Nailgun location
+let vimclojure#WantNailgun=1
+"let g:clj_want_gorilla=1            " Bananas! (Make sure nailgun in is your path)
 
 " Settings for yankring
 let g:yankring_history_dir="/Users/hinmanm/.vim/"
@@ -161,6 +164,8 @@ let ri_prompt_complete='on'
 " Supertab settings
 " supertab + eclim == java win
 let g:SuperTabDefaultCompletionType = "context"
+" Omni for vimclojure
+autocmd FileType clojure let g:SuperTabDefaultCompletionType = "<c-x><c-o>"
 let g:SuperTabDefaultCompletionTypeDiscovery = [
                   \ "&completefunc:<c-x><c-u>",
                   \ "&omnifunc:<c-x><c-o>",
@@ -326,7 +331,7 @@ nmap <LocalLeader>tl :set list!<cr>
 " Use the same symbols as TextMate for tabstops and EOLs
 set listchars=tab:▸\ ,eol:¬,trail:-
 " toggle paste mode
-nmap <LocalLeader>pp :set paste!<cr>
+nmap <LocalLeader>pm :set paste!<cr>
 " toggle wrapping
 nmap <LocalLeader>ww :set wrap!<cr>
 " change directory to that of current file
@@ -346,7 +351,7 @@ nmap <LocalLeader>tt :Tlist<cr>
 " ,nn will toggle NERDTree on and off
 nmap <LocalLeader>n :NERDTreeToggle<cr>
 " When I'm pretty sure that the first suggestion is correct
-map <LocalLeader>sr 1z=
+map <LocalLeader>st 1z=
 " q: sucks
 nmap q: :q
 " If I forgot to sudo vim a file, do that with :w!!

@@ -30,6 +30,10 @@ export PATH=$PATH:~/src/chrisbin:~/src/chrisbin/ruby
 # I'm using java 1.6 on OSX
 export JAVA_HOME=/System/Library/Frameworks/JavaVM.framework/Versions/1.6/Home
 
+# VimClojure stuff (for nailgun server)
+export CLOJURE_EXT=/Users/hinmanm/.clojure:./lib:.
+export CLOJURE_OPTS="-server -Xmx1024m -XX:+UseConcMarkSweepGC -XX:+HeapDumpOnOutOfMemoryError"
+
 # manpath
 export MANPATH=$MANPATH:/usr/local/man:/opt/local/share/man
 

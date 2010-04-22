@@ -126,6 +126,7 @@ let g:vimclojure#ParenRainbow=1        " Rainbow parentheses'!
 let g:vimclojure#DynamicHighlighting=1 " Dynamically highlight functions
 let vimclojure#NailgunClient="/Users/hinmanm/bin/ng" " Nailgun location
 let vimclojure#WantNailgun=1
+let vimclojure#SplitPos = "right"
 "let g:clj_want_gorilla=1            " Bananas! (Make sure nailgun in is your path)
 
 " Settings for yankring
@@ -186,6 +187,10 @@ let g:clojure_simplefold_nestable_end_expr = '\v^\s*$'
 " Showmarks settings
 let g:showmarks_ignore_type="hmprq"
 let g:showmarks_enable=0
+
+" Changes.vim settings
+let g:changes_autocmd=1      " Autoshow changes on cursorpause
+let g:changes_verbose=0      " Don't show what symbols mean
 
 " Eclim settings
 " ,i imports whatever is needed for current line
@@ -380,6 +385,18 @@ map <D-8> 8gt
 map <D-9> 9gt
 map <D-0> :tablast<CR>
  
+" Command + movement for wrapped lines.
+vmap <D-j> gj
+vmap <D-k> gk
+vmap <D-4> g$
+vmap <D-6> g^
+vmap <D-0> g^
+nmap <D-j> gj
+nmap <D-k> gk
+nmap <D-4> g$
+nmap <D-6> g^
+nmap <D-0> g^
+
 " for linux and windows users (using the control key)
 "map <C-S-]> gt
 "map <C-S-[> gT

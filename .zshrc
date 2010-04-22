@@ -59,6 +59,8 @@ source ~/bin/j.sh
 
 # rvm stuff:
 if [ -s ~/.rvm/scripts/rvm ] ; then source ~/.rvm/scripts/rvm ; fi
+# Set default ruby install
+rvm default
 
 # path for maven
 export PATH=$PATH:/opt/apache-maven-2.2.1

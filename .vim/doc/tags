@@ -97,13 +97,9 @@
 :CVSWatchRemove	vcscommand.txt	/*:CVSWatchRemove*
 :CVSWatchers	vcscommand.txt	/*:CVSWatchers*
 :Cligs	twitvim.txt	/*:Cligs*
-:DC	changesPlugin.txt	/*:DC*
 :DMSentTwitter	twitvim.txt	/*:DMSentTwitter*
 :DMTwitter	twitvim.txt	/*:DMTwitter*
-:DisableChanges	changesPlugin.txt	/*:DisableChanges*
-:EC	changesPlugin.txt	/*:EC*
 :EditCompilerInfo	ctk.txt	/*:EditCompilerInfo*
-:EnableChanges	changesPlugin.txt	/*:EnableChanges*
 :Explore	pi_netrw.txt	/*:Explore*
 :ForwardTwitter	twitvim.txt	/*:ForwardTwitter*
 :FriendsTwitter	twitvim.txt	/*:FriendsTwitter*
@@ -206,7 +202,6 @@
 :Snipurl	twitvim.txt	/*:Snipurl*
 :StartCTK	ctk.txt	/*:StartCTK*
 :StopCTK	ctk.txt	/*:StopCTK*
-:TCV	changesPlugin.txt	/*:TCV*
 :Texplore	pi_netrw.txt	/*:Texplore*
 :TinyURL	twitvim.txt	/*:TinyURL*
 :TlistAddFiles	taglist.txt	/*:TlistAddFiles*
@@ -225,7 +220,6 @@
 :TlistUndebug	taglist.txt	/*:TlistUndebug*
 :TlistUnlock	taglist.txt	/*:TlistUnlock*
 :TlistUpdate	taglist.txt	/*:TlistUpdate*
-:ToggleChangesView	changesPlugin.txt	/*:ToggleChangesView*
 :Trim	twitvim.txt	/*:Trim*
 :Tweetburner	twitvim.txt	/*:Tweetburner*
 :UrlBorg	twitvim.txt	/*:UrlBorg*
@@ -536,11 +530,6 @@ b:match_words	matchit.txt	/*b:match_words*
 b:narrow_original_state	narrow.txt	/*b:narrow_original_state*
 b:netrw_lastfile	pi_netrw.txt	/*b:netrw_lastfile*
 c-support	csupport.txt	/*c-support*
-changesPlugin	changesPlugin.txt	/*changesPlugin*
-changesPlugin-Config	changesPlugin.txt	/*changesPlugin-Config*
-changesPlugin-copyright	changesPlugin.txt	/*changesPlugin-copyright*
-changesPlugin-history	changesPlugin.txt	/*changesPlugin-history*
-changesPlugin.txt	changesPlugin.txt	/*changesPlugin.txt*
 clj-nailgun-server	clojure.txt	/*clj-nailgun-server*
 clojure.vim	clojure.txt	/*clojure.vim*
 cocoa	cocoa.txt	/*cocoa*

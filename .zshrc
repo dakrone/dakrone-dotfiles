@@ -134,7 +134,8 @@ alias cspec='spec -c --format specdoc'
 # force 256 color mode
 alias tmux='tmux -2'
 alias screen='TERM=xterm-color && /opt/local/bin/screen'
-alias todo='gvim ~/vimwiki/ToDo.wiki'
+alias rvim='gvim --remote-tab-silent'
+alias todo='rvim ~/vimwiki/ToDo.wiki'
 
 
 # history

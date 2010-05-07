@@ -40,7 +40,5 @@ if [ -n "${clj_lib}" ]; then
     export LD_LIBRARY_PATH=${clj_lib}:$LD_LIBRARY_PATH
 fi
 
-#echo "java -Dpid=$$ -Xbootclasspath/a:${clj} ${clj_opts} -cp ${clj_cp}:${clj} ${clj_wrapper} ${clj_class} ${clj_rc} $*"
-echo "java -Dpid=$$ ${clj_opts} -cp ${clj_cp}:${clj} ${clj_wrapper} ${clj_class} ${clj_rc} $*"
-#exec java -Dpid=$$ -Xbootclasspath/a:${clj} ${clj_opts} -cp ${clj_cp}:${clj} ${clj_wrapper} ${clj_class} ${clj_rc} $*
+#echo "java -Dpid=$$ ${clj_opts} -cp ${clj_cp}:${clj} ${clj_wrapper} ${clj_class} ${clj_rc} $*"
 exec java -Dpid=$$ ${clj_opts} -cp ${clj_cp}:${clj} ${clj_wrapper} ${clj_class} ${clj_rc} $*

@@ -55,6 +55,9 @@ set matchpairs+=<:>           " add < and > to match pairs
 set tags=tags;/               " search recursively up for tags
 
 
+" Use 'par' (sudo port install par) to format paragraphs with a width of 90
+set formatprg=par\ -w80
+
 " highlight over 80 columns
 "highlight OverLength ctermbg=darkred ctermfg=white guibg=#FFD9D9
 highlight OverLength cterm=reverse
@@ -214,11 +217,22 @@ let g:EclimBrowser='open'
 " find in buffer is ,b
 nmap <LocalLeader>b :FuzzyFinderBuffer<CR>
 " see: http://github.com/viperinthought/fuzzyfinder_textmate/
-nmap <LocalLeader>f :FuzzyFinderTextMate<CR>
+" FuzzyFinderTextMate is broken at the moment due to vim patches
+"nmap <LocalLeader>f :FuzzyFinderTextMate<CR>
+nmap <LocalLeader>f :FuzzyFinderFile<CR>
 " find in file is ,F
 nmap <LocalLeader>F :FuzzyFinderFile<CR>
 " find in tag is ,t
 nmap <LocalLeader>t :FuzzyFinderTag<CR>
+
+
+
+" ---------------------------------------------------------------------------
+"  configuration for localvimrc.vim
+" don't ask, just source
+let g:localvimrc_ask=0
+" only source a max of 2 files
+let g:localvimrc_count=2
 
 
 " ---------------------------------------------------------------------------

@@ -1,5 +1,14 @@
 ;(use 'clojure.contrib.repl-utils)
 
+(use 'clojure.stacktrace) 
+
+; Use pprint, depending on what version of Clojure I'm in
+(if (< (:minor *clojure-version*) 2)
+  (use 'clojure.contrib.pprint)
+  (use 'clojure.pprint)) 
+
+
+; Show class methods for an object
 (defn class-methods [x]
   (let [c (if (class? x) x (class x))]
     (distinct (sort (seq 

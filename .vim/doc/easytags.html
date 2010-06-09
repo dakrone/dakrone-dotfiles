@@ -1,0 +1,167 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+"http://www.w3.org/TR/html4/strict.dtd">
+<html>
+ <head>
+  <title>easytags.vim - Automated tag generation and syntax highlighting in Vim</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <style type="text/css">
+   body { font-family: sans-serif; padding: 1em 30% 4em 1em; }
+   a:link, a:visited { color: #000080; }
+   a:hover, a:active { color: #8B0000; }
+   pre, code, tt { font-family: Monaco, Consolas, monospace; }
+   pre { margin-left: 2em; }
+   code { background: #F6F6F6; padding: .1em .3em; }
+   p { text-align: justify; line-height: 1.75em; }
+   h1 { padding: 0 30% 0 0; }
+   h2, h3 { border-bottom: 2px solid #F6F6F6; margin: 2em 0 -0.5em 0; padding-left: 0.5em; }
+   hr { height: 0; border: none; border: 1px solid #F6F6F6; }
+  </style>
+ </head>
+ <body>
+<h1>Automated tag generation and syntax highlighting in Vim</h1>
+
+<p><a href="http://www.vim.org/">Vim</a> has long been my favorite text editor and combined with <a href="http://ctags.sourceforge.net/">Exuberant
+Ctags</a> it has the potential to provide most of what I expect
+from an <a href="http://en.wikipedia.org/wiki/Integrated_development_environment">integrated development environment</a>. Exuberant Ctags is the
+latest incarnation of a <a href="http://en.wikipedia.org/wiki/Ctags">family of computer programs</a> that scan
+source code files to create an index of identifiers (tags) and where they are
+defined. Vim uses this index (a so-called tags file) to enable you to jump to
+the definition of any identifier using the <code>Ctrl-]</code> mapping.</p>
+
+<p>When you&#8217;re familiar with integrated development environments you may recognize
+this feature as &#8220;Go-to definition&#8221;. One advantage of the combination of Vim and
+Exuberant Ctags over integrated development environments is that Vim supports
+syntax highlighting for <a href="http://ftp.vim.org/vim/runtime/syntax/">over 500 file types</a> (!) and Exuberant
+Ctags can generate tags for <a href="http://ctags.sourceforge.net/languages.html">over 40 file types</a> as well&#8230;</p>
+
+<p>There&#8217;s just one problem: You have to manually keep your tags files up-to-date
+and this turns out to be a royal pain in the ass! So I set out to write a Vim
+plug-in that would do this boring work for me. When I finished the plug-in&#8217;s
+basic functionality (one automatic command and a call to <code>system()</code>) I became
+interested in dynamic syntax highlighting, so I added that as well to see if it
+would work &#8212; surprisingly well I&#8217;m happy to report!</p>
+
+<h2>Install &amp; first use</h2>
+
+<p>Unzip the most recent <a href="http://peterodding.com/code/vim/download.php?script=easytags">ZIP archive</a> file inside your Vim profile
+directory (usually this is <code>~/.vim</code> on UNIX and <code>%USERPROFILE%\vimfiles</code> on
+Windows), restart Vim and try it out: Edit any file type supported by Exuberant
+Ctags and within ten seconds the plug-in should create/update your tags file
+(<code>~/.vimtags</code> on UNIX, <code>~/_vimtags</code> on Windows) with the tags defined in the
+file you just edited! This means that whatever file you&#8217;re editing in Vim (as
+long as its on the local file system), tags will always be available by the
+time you need them!</p>
+
+<p>Additionally if the file you just opened is a C, Lua, PHP, Python or Vim source
+file you should also notice that the function and type names defined in the
+file have been syntax highlighted.</p>
+
+<p>If the plug-in warns you that <code>ctags</code> isn&#8217;t installed you can download it from
+its <a href="http://ctags.sourceforge.net/">homepage</a>, or if you&#8217;re running Debian/Ubuntu you can
+install it by executing the following shell command:</p>
+
+<pre><code>sudo apt-get install exuberant-ctags
+</code></pre>
+
+<h2>Configuration</h2>
+
+<p>The plug-in is intended to work without configuration but can be customized by
+changing the following options:</p>
+
+<h3>The <code>easytags_file</code> option</h3>
+
+<p>As mentioned above the plug-in will store your tags in <code>~/.vimtags</code> on UNIX and
+<code>~/_vimtags</code> on Windows. To change the location of this file, set the global
+variable <code>easytags_file</code>, e.g.:</p>
+
+<pre><code>:let g:easytags_file = '~/.vim/tags'
+</code></pre>
+
+<p>A leading <code>~</code> in the <code>easytags_file</code> variable is expanded to your current home
+directory (<code>$HOME</code> on UNIX, <code>%USERPROFILE%</code> on Windows).</p>
+
+<h3>The <code>easytags_always_enabled</code> option</h3>
+
+<p>By default the plug-in automatically generates and highlights tags when you
+stop typing for a few seconds. This means that when you edit a file, the
+dynamic highlighting won&#8217;t appear until you pause for a moment. If you don&#8217;t
+want this you can configure the plug-in to always enable dynamic highlighting:</p>
+
+<pre><code>:let g:easytags_always_enabled = 1
+</code></pre>
+
+<p>Be warned that after setting this option you&#8217;ll probably notice why it&#8217;s
+disabled by default: Every time you edit a file in Vim, the plug-in will first
+run Exuberant Ctags and then highlight the tags, which slows Vim down quite a
+lot. I have some ideas on how to improve this latency by executing Exuberant
+Ctags in the background, so stay tuned!</p>
+
+<p>Note: If you change this option it won&#8217;t apply until you restart Vim, so you&#8217;ll
+have to set this option in your <code>~/.vimrc</code> script (<code>~/_vimrc</code> on Windows).</p>
+
+<h3>The <code>easytags_on_cursorhold</code> option</h3>
+
+<p>As I explained above the plug-in by default doesn&#8217;t update or highlight your
+tags until you stop typing for a moment. The plug-in tries hard to do the least
+amount of work possible in this break but it might still interrupt your
+workflow. If it does you can disable the periodic update:</p>
+
+<pre><code>:let g:easytags_on_cursorhold = 0
+</code></pre>
+
+<p>Note: Like the <code>easytags_always_enabled</code> option, if you change this option it
+won&#8217;t apply until you restart Vim, so you&#8217;ll have to set this option in your
+<code>~/.vimrc</code> script (<code>~/_vimrc</code> on Windows).</p>
+
+<h3>The <code>easytags_resolve_links</code> option</h3>
+
+<p>UNIX has <a href="http://en.wikipedia.org/wiki/Symbolic_link">symbolic links</a> and <a href="http://en.wikipedia.org/wiki/Hard_link">hard links</a>, both of
+which conflict with the concept of having one unique location for every
+identifier. With regards to hard links there&#8217;s not much anyone can do, but
+because I use symbolic links quite a lot I&#8217;ve added this option. It&#8217;s disabled
+by default since it has a small performance impact and might not do what
+unknowing users expect it to: When you enable this option the plug-in will
+resolve symbolic links in pathnames, which means your tags file will only
+contain entries with <a href="http://en.wikipedia.org/wiki/Canonicalization">canonical pathnames</a>. To enable this option
+(which I strongly suggest doing when you run UNIX and use symbolic links)
+execute the following Vim command:</p>
+
+<pre><code>:let g:easytags_resolve_links = 1
+</code></pre>
+
+<h2>Troubleshooting</h2>
+
+<p>Once or twice now in several years I&#8217;ve experienced Exuberant Ctags getting
+into an infinite loop when given garbage input. In my case this happened by
+accident a few days ago :-|. Because my plug-in executes <code>ctags</code> in the
+foreground this will block Vim indefinitely! If this happens you might be
+able to kill <code>ctags</code> by pressing <code>Ctrl-C</code> but if that doesn&#8217;t work you can also
+kill it without stopping Vim using a task manager or the <code>pkill</code> command:</p>
+
+<pre><code>pkill -KILL ctags
+</code></pre>
+
+<p>If Vim seems very slow and you suspect this plug-in might be the one to blame,
+increase Vim&#8217;s verbosity level:</p>
+
+<pre><code>:set vbs=1
+</code></pre>
+
+<p>Every time the plug-in executes it will time how long the execution takes and
+add the results to Vim&#8217;s message history, which you can view by executing the
+<code>:messages</code> command.</p>
+
+<h2>Contact</h2>
+
+<p>If you have questions, bug reports, suggestions, etc. the author can be
+contacted at <a href="&#109;&#97;&#105;&#108;&#x74;&#x6F;:&#112;&#101;&#116;&#x65;&#114;&#64;&#x70;&#x65;&#x74;&#101;&#x72;&#111;&#100;&#x64;&#x69;&#110;&#103;&#x2E;&#99;&#x6F;&#x6D;">&#112;&#101;&#116;&#x65;&#114;&#64;&#x70;&#x65;&#x74;&#101;&#x72;&#111;&#100;&#x64;&#x69;&#110;&#103;&#x2E;&#99;&#x6F;&#x6D;</a>. The latest version is available at
+<a href="http://peterodding.com/code/vim/easytags">http://peterodding.com/code/vim/easytags</a> and
+<a href="http://github.com/xolox/vim-easytags">http://github.com/xolox/vim-easytags</a>. If you like this plug-in please vote
+for it on <a href="http://www.vim.org/scripts/script.php?script_id=3114">www.vim.org</a>.</p>
+
+<h2>License</h2>
+
+<p>This software is licensed under the <a href="http://en.wikipedia.org/wiki/MIT_License">MIT license</a>. <br />
+© 2010 Peter Odding &lt;<a href="&#x6D;&#x61;&#105;&#108;&#116;&#111;:&#x70;&#101;&#x74;&#x65;&#114;&#64;p&#101;&#x74;&#x65;&#x72;&#111;&#x64;&#x64;&#105;&#110;&#x67;.&#x63;&#x6F;m">&#x70;&#101;&#x74;&#x65;&#114;&#64;p&#101;&#x74;&#x65;&#x72;&#111;&#x64;&#x64;&#105;&#110;&#x67;.&#x63;&#x6F;m</a>&gt;.</p>
+ </body>
+</html>

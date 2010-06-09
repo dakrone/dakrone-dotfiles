@@ -1,7 +1,7 @@
+" vim:tabstop=2:shiftwidth=2:expandtab:foldmethod=marker:textwidth=79
 " Vimwiki syntax file
 " Author: Maxim Kim <habamax@gmail.com>
 " Home: http://code.google.com/p/vimwiki/
-" vim:tw=79:
 
 " Quit if syntax file is already loaded
 if version < 600
@@ -14,17 +14,18 @@ endif
 if VimwikiGet('maxhi')
   " Every WikiWord is nonexistent
   if g:vimwiki_camel_case
-    execute 'syntax match VimwikiNoExistsWord /\%(^\|[^!]\)\@<='.g:vimwiki_word1.'/'
+    execute 'syntax match VimwikiNoExistsLink /'.g:vimwiki_rxWikiWord.'/'
   endif
-  execute 'syntax match VimwikiNoExistsWord /'.g:vimwiki_word2.'/'
-  execute 'syntax match VimwikiNoExistsWord /'.g:vimwiki_word3.'/'
+  execute 'syntax match VimwikiNoExistsLink /'.g:vimwiki_rxWikiLink1.'/'
+  execute 'syntax match VimwikiNoExistsLink /'.g:vimwiki_rxWikiLink2.'/'
   " till we find them in vimwiki's path
-  call vimwiki#WikiHighlightWords()
+  call vimwiki#WikiHighlightLinks()
 else
   " A WikiWord (unqualifiedWikiName)
-  execute 'syntax match VimwikiWord /\%(^\|[^!]\)\@<=\<'.g:vimwiki_word1.'\>/'
+  execute 'syntax match VimwikiLink /\<'.g:vimwiki_rxWikiWord.'\>/'
   " A [[bracketed wiki word]]
-  execute 'syntax match VimwikiWord /'.g:vimwiki_word2.'/'
+  execute 'syntax match VimwikiLink /'.g:vimwiki_rxWikiLink1.'/'
+  execute 'syntax match VimwikiLink /'.g:vimwiki_rxWikiLink2.'/'
 endif
 
 execute 'syntax match VimwikiLink `'.g:vimwiki_rxWeblink.'`'
@@ -32,14 +33,21 @@ execute 'syntax match VimwikiLink `'.g:vimwiki_rxWeblink.'`'
 " Emoticons
 syntax match VimwikiEmoticons /\%((.)\|:[()|$@]\|:-[DOPS()\]|$@]\|;)\|:'(\)/
 
-let g:vimwiki_rxTodo = '\C\%(TODO:\|DONE:\|FIXME:\|FIXED:\|XXX:\)'
+let g:vimwiki_rxTodo = '\C\%(TODO:\|DONE:\|STARTED:\|FIXME:\|FIXED:\|XXX:\)'
 execute 'syntax match VimwikiTodo /'. g:vimwiki_rxTodo .'/'
 
 " Load concrete Wiki syntax
 execute 'runtime! syntax/vimwiki_'.VimwikiGet('syntax').'.vim'
 
 " Tables
-execute 'syntax match VimwikiTable /'.g:vimwiki_rxTable.'/'
+" execute 'syntax match VimwikiTable /'.g:vimwiki_rxTable.'/'
+syntax match VimwikiTableRow /\s*|.\+|\s*/
+      \ transparent contains=VimwikiCellSeparator,VimwikiLink,
+      \ VimwikiNoExistsLink,VimwikiEmoticons,VimwikiTodo,
+      \ VimwikiBold,VimwikiItalic,VimwikiBoldItalic,VimwikiItalicBold,
+      \ VimwikiDelText,VimwikiSuperScript,VimwikiSubScript,VimwikiCode
+syntax match VimwikiCellSeparator
+      \ /\%(|\)\|\%(-\@<=+\-\@=\)\|\%([|+]\@<=-\+\)/ contained
 
 " List items
 execute 'syntax match VimwikiList /'.g:vimwiki_rxListBullet.'/'
@@ -72,23 +80,33 @@ execute 'syntax region VimwikiPre start=/'.g:vimwiki_rxPreStart.
 syntax match VimwikiCheckBox /\[.\?\]/
 if g:vimwiki_hl_cb_checked
   execute 'syntax match VimwikiCheckBoxDone /'.
-        \ g:vimwiki_rxListBullet.'\s*\['.g:vimwiki_listsyms[4].'\].*$/'
+        \ g:vimwiki_rxListBullet.'\s*\['.g:vimwiki_listsyms[4].'\].*$/'.
+        \ ' contains=VimwikiNoExistsLink,VimwikiLink'
   execute 'syntax match VimwikiCheckBoxDone /'.
-        \ g:vimwiki_rxListNumber.'\s*\['.g:vimwiki_listsyms[4].'\].*$/'
+        \ g:vimwiki_rxListNumber.'\s*\['.g:vimwiki_listsyms[4].'\].*$/'.
+        \ ' contains=VimwikiNoExistsLink,VimwikiLink'
 endif
+
+" placeholders
+syntax match VimwikiPlaceholder /^\s*%toc\%(\s.*\)\?$/
+syntax match VimwikiPlaceholder /^\s*%nohtml\s*$/
+
+" html tags
+syntax match VimwikiHTMLtag '<br\s*/\?>'
+syntax match VimwikiHTMLtag '<hr\s*/\?>'
 
 syntax region VimwikiComment start='<!--' end='-->'
 
 if !vimwiki#hl_exists("VimwikiHeader1")
-  execute 'syntax match VimwikiHeader /'.g:vimwiki_rxHeader.'/'
+  execute 'syntax match VimwikiHeader /'.g:vimwiki_rxHeader.'/ contains=VimwikiTodo'
 else
   " Header levels, 1-6
-  execute 'syntax match VimwikiHeader1 /'.g:vimwiki_rxH1.'/'
-  execute 'syntax match VimwikiHeader2 /'.g:vimwiki_rxH2.'/'
-  execute 'syntax match VimwikiHeader3 /'.g:vimwiki_rxH3.'/'
-  execute 'syntax match VimwikiHeader4 /'.g:vimwiki_rxH4.'/'
-  execute 'syntax match VimwikiHeader5 /'.g:vimwiki_rxH5.'/'
-  execute 'syntax match VimwikiHeader6 /'.g:vimwiki_rxH6.'/'
+  execute 'syntax match VimwikiHeader1 /'.g:vimwiki_rxH1.'/ contains=VimwikiTodo'
+  execute 'syntax match VimwikiHeader2 /'.g:vimwiki_rxH2.'/ contains=VimwikiTodo'
+  execute 'syntax match VimwikiHeader3 /'.g:vimwiki_rxH3.'/ contains=VimwikiTodo'
+  execute 'syntax match VimwikiHeader4 /'.g:vimwiki_rxH4.'/ contains=VimwikiTodo'
+  execute 'syntax match VimwikiHeader5 /'.g:vimwiki_rxH5.'/ contains=VimwikiTodo'
+  execute 'syntax match VimwikiHeader6 /'.g:vimwiki_rxH6.'/ contains=VimwikiTodo'
 endif
 
 " group names "{{{
@@ -109,21 +127,23 @@ hi def VimwikiBoldItalic term=bold cterm=bold gui=bold,italic
 hi def link VimwikiItalicBold VimwikiBoldItalic
 
 hi def link VimwikiCode PreProc
-hi def link VimwikiWord Underlined
-hi def link VimwikiNoExistsWord Error
+hi def link VimwikiNoExistsLink Error
 
-hi def link VimwikiPre SpecialComment
+hi def link VimwikiPre PreProc
 hi def link VimwikiLink Underlined
 hi def link VimwikiList Function
 hi def link VimwikiCheckBox VimwikiList
 hi def link VimwikiCheckBoxDone Comment
-hi def link VimwikiTable PreProc
 hi def link VimwikiEmoticons Character
 hi def link VimwikiDelText Constant
 hi def link VimwikiSuperScript Number
 hi def link VimwikiSubScript Number
 hi def link VimwikiTodo Todo
 hi def link VimwikiComment Comment
+
+hi def link VimwikiCellSeparator SpecialKey
+hi def link VimwikiPlaceholder SpecialKey
+hi def link VimwikiHTMLtag SpecialKey
 "}}}
 
 let b:current_syntax="vimwiki"

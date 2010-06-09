@@ -57,6 +57,9 @@ export RSPEC=true
 # Source j.sh
 source ~/bin/j.sh
 
+# Resty
+. ~/bin/resty
+
 # rvm stuff:
 if [ -s ~/.rvm/scripts/rvm ] ; then source ~/.rvm/scripts/rvm ; fi
 # Set default ruby install
@@ -127,7 +130,7 @@ alias givm='gvim'
 # Hate perforce.
 alias pd='p4 diff | p4c'
 alias pc='p4 changes //dtlt/... -l | maxhead'
-alias pchange='p4 changes //dtlt/... -l | maxhead'
+alias pac='p4 changes //aam/... -l | maxhead'
 # Colored rspec
 alias cspec='spec -c --format specdoc'
 # Tmux stuff

@@ -1,8 +1,8 @@
 "=============================================================================
 " File: gist.vim
 " Author: Yasuhiro Matsumoto <mattn.jp@gmail.com>
-" Last Change: 28-Mar-2010.
-" Version: 3.4
+" Last Change: 04-Jun-2010.
+" Version: 3.7
 " WebPage: http://github.com/mattn/gist-vim/tree/master
 " Usage:
 "
@@ -179,6 +179,8 @@ function! s:GistList(user, token, gistls)
     exec 'silent split gist:'.a:gistls
   endif
 
+  setlocal foldmethod=manual
+
   if g:gist_show_privates
     let password = inputsecret('Password:')
     if len(password) == 0
@@ -197,6 +199,9 @@ function! s:GistList(user, token, gistls)
   else
     silent %d _
     exec 'silent r! curl -s '.url
+  endif
+  if exists("g:hoge")
+      return
   endif
 
   silent normal! ggdd
@@ -243,9 +248,20 @@ endfunction
 
 function! s:GistDetectFiletype(gistid)
   let url = 'http://gist.github.com/'.a:gistid
+  let mx = '^.*<div class="data syntax type-\([^"]\+\)">.*$'
   let res = system('curl -s '.url)
-  let res = substitute(res, '^.*<div class="meta">[\r\n ]*<div class="info">[\r\n ]*<span>\([^>]\+\)</span>.*$', '\1', '')
+  let res = substitute(matchstr(res, mx), mx, '\1', '')
   let res = substitute(res, '.*\(\.[^\.]\+\)$', '\1', '')
+  let res = substitute(res, '-', '', 'g')
+  " TODO: more filetype detection that is specified in html.
+  if res == 'bat' | let res = 'dosbatch' | endif
+  if res == 'as' | let res = 'actionscript' | endif
+  if res == 'bash' | let res = 'sh' | endif
+  if res == 'cl' | let res = 'lisp' | endif
+  if res == 'rb' | let res = 'ruby' | endif
+  if res == 'viml' | let res = 'vim' | endif
+  if res == 'plain' || res == 'text' | let res = '' | endif
+
   if res =~ '^\.'
     silent! exec "doau BufRead *".res
   else
@@ -424,7 +440,7 @@ function! s:GistPost(user, token, content, private)
   " find GistID: in content , then we should just update
   for l in split( a:content , "\n" )
     if l =~ '\<GistID:'
-      let gistid = matchstr( l , '\(GistID:\s*\)\@<=[0-9]\+')
+      let gistid = matchstr( l , 'GistID:\s*\zs\d\+')
 
       if strlen(gistid) == 0
         echohl WarningMsg | echo "GistID error" | echohl None
@@ -435,7 +451,7 @@ function! s:GistPost(user, token, content, private)
       cal s:GistUpdate( a:user , a:token ,  a:content , gistid , '' )
       return
     elseif l =~ '\<Gist:'
-      let gistid = matchstr( l , '\(Gist:\s*http://gist.github.com/\)\@<=[0-9]\+')
+      let gistid = matchstr( l , 'Gist:\s*http://gist.github.com/\zs\d\+')
 
       if strlen(gistid) == 0
         echohl WarningMsg | echo "GistID error" | echohl None

@@ -187,6 +187,15 @@ let g:gist_clip_command = 'pbcopy'
 let g:clojure_simplefold_nestable_start_expr = '\v\(defn'
 let g:clojure_simplefold_nestable_end_expr = '\v^\s*$'
 
+" Remap up and down arrow in VimClojure REPL
+"function CustomiseClojureRepl()
+  "if exists("b:vimclojure_repl")
+    "inoremap <buffer> <Up> <Plug>ClojureReplUpHistory
+    "inoremap <buffer> <Down> <Plug>ClojureReplDownHistory
+  "endif
+"endfunction
+"autocmd FileType clojure call CustomiseClojureRepl()
+
 " Showmarks settings
 let g:showmarks_ignore_type="hmprq"
 let g:showmarks_enable=0
@@ -233,6 +242,11 @@ nmap <LocalLeader>t :FuzzyFinderTag<CR>
 let g:localvimrc_ask=0
 " only source a max of 2 files
 let g:localvimrc_count=2
+
+
+" ---------------------------------------------------------------------------
+"  config for easytags
+let g:easytags_file = '~/.vtags'
 
 
 " ---------------------------------------------------------------------------

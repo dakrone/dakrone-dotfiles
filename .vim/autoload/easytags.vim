@@ -1,19 +1,18 @@
 " Vim script
 " Maintainer: Peter Odding <peter@peterodding.com>
-" Last Change: June 9, 2010
+" Last Change: June 10, 2010
 " URL: http://peterodding.com/code/vim/easytags
 
 function! easytags#autoload() " {{{1
   try
     " Update the entries for the current file in the global tags file?
-    let start = xolox#timer#start()
-    if getftime(expand('%')) > getftime(easytags#get_tagsfile())
+    let pathname = expand('%')
+    let tags_outdated = getftime(pathname) > getftime(easytags#get_tagsfile())
+    if tags_outdated || !easytags#file_has_tags(pathname)
       UpdateTags
-      call xolox#timer#stop(start, "easytags.vim: Automatically updated tags in %s second(s)")
     endif
     " Apply highlighting of tags in global tags file to current buffer?
     if &eventignore !~? '\<syntax\>'
-      let start = xolox#timer#start()
       if !exists('b:easytags_last_highlighted')
         HighlightTags
       else
@@ -25,7 +24,6 @@ function! easytags#autoload() " {{{1
         endfor
       endif
       let b:easytags_last_highlighted = localtime()
-      call xolox#timer#stop(start, "easytags.vim: Automatically highlighted tags in %s second(s)")
     endif
   catch
     call xolox#warning("easytags.vim: %s (at %s)", v:exception, v:throwpoint)
@@ -39,18 +37,15 @@ function! easytags#update_cmd(filter_invalid_tags) " {{{1
     if (ft_supported && !ft_ignored) || a:filter_invalid_tags
       let start = xolox#timer#start()
       let tagsfile = easytags#get_tagsfile()
-      let filename = expand('%:p')
-      if g:easytags_resolve_links
-        let filename = resolve(filename)
-      endif
-      let command = [g:easytags_cmd, '-f', shellescape(tagsfile)]
+      let filename = s:resolve(expand('%:p'))
+      let command = [g:easytags_cmd, '-f', shellescape(tagsfile), '--fields=+l']
       if filereadable(tagsfile)
         call add(command, '-a')
-        let start_filter = xolox#timer#start()
         let lines = readfile(tagsfile)
+        call s:update_tagged_files(lines)
         let filters = []
         if ft_supported && !ft_ignored
-          let filename_pattern = '\s' . xolox#escape#pattern(filename) . '\s'
+          let filename_pattern = '\t' . xolox#escape#pattern(filename) . '\t'
           call add(filters, 'v:val !~ filename_pattern')
         endif
         if a:filter_invalid_tags
@@ -58,12 +53,11 @@ function! easytags#update_cmd(filter_invalid_tags) " {{{1
         endif
         let filter = 'v:val =~ "^!_TAG_" || (' . join(filters, ' && ') . ')'
         let filtered = filter(copy(lines), filter)
-        if lines != filtered
+        if len(lines) != len(filtered)
           if writefile(filtered, tagsfile) != 0
             throw "Failed to write filtered tags file!"
           endif
         endif
-        call xolox#timer#stop(start_filter, "easytags.vim: Filtered tags file in %s second(s)")
       endif
       if ft_supported && !ft_ignored
         call add(command, '--language-force=' . easytags#to_ctags_ft(&ft))
@@ -72,6 +66,7 @@ function! easytags#update_cmd(filter_invalid_tags) " {{{1
         if v:shell_error
           throw "Failed to update tags file! (Ctags output: `" . listing . "')"
         endif
+        call easytags#add_tagged_file(filename)
       endif
       call xolox#timer#stop(start, "easytags.vim: Updated tags in %s second(s)")
       return 1
@@ -114,10 +109,12 @@ function! easytags#highlight_cmd() " {{{1
           execute 'highlight def link' hlgroup_tagged tagkind.hlgroup
         endif
         let matches = filter(copy(taglist), tagkind.filter)
-        call map(matches, 'xolox#escape#pattern(get(v:val, "name"))')
-        let pattern = tagkind.pattern_prefix . '\%(' . join(xolox#unique(matches), '\|') . '\)' . tagkind.pattern_suffix
-        let command = 'syntax match %s /%s/ containedin=ALLBUT,.*String.*,.*Comment.*'
-        execute printf(command, hlgroup_tagged, escape(pattern, '/'))
+        if matches != []
+          call map(matches, 'xolox#escape#pattern(get(v:val, "name"))')
+          let pattern = tagkind.pattern_prefix . '\%(' . join(xolox#unique(matches), '\|') . '\)' . tagkind.pattern_suffix
+          let command = 'syntax match %s /%s/ containedin=ALLBUT,.*String.*,.*Comment.*'
+          execute printf(command, hlgroup_tagged, escape(pattern, '/'))
+        endif
       endfor
       redraw
       call xolox#timer#stop(start, "easytags.vim: Highlighted tags in %s second(s)")
@@ -186,6 +183,48 @@ function! easytags#to_ctags_ft(vim_ft) " {{{1
   let type = tolower(a:vim_ft)
   let index = index(s:vim_filetypes, type)
   return index >= 0 ? s:ctags_filetypes[index] : type
+endfunction
+
+" Miscellaneous script-local functions. {{{1
+
+function! s:resolve(pathname) " {{{2
+  if g:easytags_resolve_links
+    return resolve(a:pathname)
+  else
+    return a:pathname
+  endif
+endfunction
+
+function! s:cache_tagged_files() " {{{2
+  if !exists('s:tagged_files')
+    let tagsfile = easytags#get_tagsfile()
+    call s:update_tagged_files(readfile(tagsfile))
+  endif
+endfunction
+
+function! easytags#file_has_tags(pathname) " {{{2
+  call s:cache_tagged_files()
+  return has_key(s:tagged_files, s:resolve(a:pathname))
+endfunction
+
+function! easytags#add_tagged_file(pathname) " {{{2
+  call s:cache_tagged_files()
+  let pathname = s:resolve(a:pathname)
+  let s:tagged_files[pathname] = 1
+endfunction
+
+function! s:update_tagged_files(lines) " {{{2
+  " Update the dictionary of 
+  let s:tagged_files = {}
+  for line in a:lines
+    if line !~ '^!_TAG_'
+      let pathname = matchstr(line, '^[^\t]\+\t\zs[^\t]\+')
+      if pathname != ''
+        let pathname = s:resolve(pathname)
+        let s:tagged_files[pathname] = 1
+      endif
+    endif
+  endfor
 endfunction
 
 " Built-in file type & tag kind definitions. {{{1
@@ -295,6 +334,21 @@ if !exists('s:tagkinds')
         \ 'pattern_prefix': '\.\@<='})
 
   highlight def link pythonMethodTag pythonFunction
+
+  " Java. {{{2
+
+  call easytags#define_tagkind({
+        \ 'filetype': 'java',
+        \ 'hlgroup': 'javaClass',
+        \ 'filter': 'get(v:val, "kind") ==# "c"'})
+
+  call easytags#define_tagkind({
+        \ 'filetype': 'java',
+        \ 'hlgroup': 'javaMethod',
+        \ 'filter': 'get(v:val, "kind") ==# "m"'})
+
+  highlight def link javaClass Identifier
+  highlight def link javaMethod Function
 
   " Restore "cpoptions".
   let &cpo = s:cpo_save

@@ -14,8 +14,6 @@ export PATH=/usr/local/bin/blackbag:$PATH
 export PATH=$PATH:/usr/local/git/bin
 # Path for ruby gems
 export PATH=$PATH:/var/lib/gems/1.8/bin
-# Path for jruby
-export PATH=$PATH:~/src/ruby/jruby/bin
 # Path for postgres
 export PATH=$PATH:/opt/local/lib/postgresql84/bin
 # Path for local gems

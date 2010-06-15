@@ -3,76 +3,19 @@ servers = (
     address = "irc.freenode.net";
     chatnet = "Freenode";
     port = "6667";
-    autoconnect = "Yes";
-  },
-  {
-    address = "localhost";
-    chatnet = "bitlbee";
-    port = "6667";
-    autoconnect = "yes";
-    use_ssl = "no";
-    ssl_verify = "no";
+    autoconnect = "No";
   }
 );
 
-chatnets = { Freenode = { type = "IRC"; }; bitlbee = { type = "IRC"; }; };
+chatnets = { Freenode = { type = "IRC"; }; };
 
 channels = (
   { name = "#rawpacket"; chatnet = "Freenode"; autojoin = "yes"; },
   { name = "#newsbeuter"; chatnet = "Freenode"; autojoin = "yes"; },
-  { name = "#boulder.rb"; chatnet = "Freenode"; autojoin = "yes"; ),
+  { name = "#boulder.rb"; chatnet = "Freenode"; autojoin = "yes"; },
   { name = "#clojure"; chatnet = "Freenode"; autojoin = "yes"; },
   { name = "#ruby"; chatnet = "Freenode"; autojoin = "yes"; }
 );
-
-aliases = {
-  J = "join";
-  WJOIN = "join -window";
-  WQUERY = "query -window";
-  LEAVE = "part";
-  BYE = "quit";
-  EXIT = "quit";
-  SIGNOFF = "quit";
-  DESCRIBE = "action";
-  DATE = "time";
-  HOST = "userhost";
-  LAST = "lastlog";
-  SAY = "msg *";
-  WI = "whois";
-  WII = "whois $0 $0";
-  WW = "whowas";
-  W = "who";
-  N = "names";
-  M = "msg";
-  T = "topic";
-  C = "clear";
-  CL = "clear";
-  K = "kick";
-  KB = "kickban";
-  KN = "knockout";
-  BANS = "ban";
-  B = "ban";
-  MUB = "unban *";
-  UB = "unban";
-  IG = "ignore";
-  UNIG = "unignore";
-  SB = "scrollback";
-  UMODE = "mode $N";
-  WC = "window close";
-  WN = "window new hide";
-  SV = "say Irssi $J ($V) - http://irssi.org/";
-  GOTO = "sb goto";
-  CHAT = "dcc chat";
-  RUN = "SCRIPT LOAD";
-  CALC = "exec - if which bc &>/dev/null\\; then echo '$*' | bc | awk '{print \"$*=\"$$1}'\\; else echo bc was not found\\; fi";
-  SBAR = "STATUSBAR";
-  INVITELIST = "mode $C +I";
-  Q = "QUERY";
-  "MANUAL-WINDOWS" = "set use_status_window off;set autocreate_windows off;set autocreate_query_level none;set autoclose_windows off;set reuse_unused_windows on;save";
-  EXEMPTLIST = "mode $C +e";
-  ATAG = "WINDOW SERVER";
-  clr = "clear -all"
-};
 
 statusbar = {
   # formats:

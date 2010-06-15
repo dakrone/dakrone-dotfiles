@@ -52,7 +52,8 @@ set magic                     " Enable the "magic"
 set visualbell t_vb=          " Disable ALL bells
 set cursorline                " show the cursor line
 set matchpairs+=<:>           " add < and > to match pairs
-set tags=tags;/               " search recursively up for tags
+"set tags=tags;/               " search recursively up for tags
+set tags=~/.vtags,tags        " tag filenames
 
 
 " Use 'par' (sudo port install par) to format paragraphs with a width of 90

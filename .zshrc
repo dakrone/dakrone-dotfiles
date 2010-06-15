@@ -10,8 +10,6 @@ promptinit
 export PATH=~/bin:/usr/local/bin:$PATH:/usr/local/sbin:/usr/local/sbin:/usr/libexec:/opt/local/bin:/opt/local/sbin:/usr/local/mysql/bin
 # Path for Matasano's blackbag
 export PATH=/usr/local/bin/blackbag:$PATH
-# Path for git
-export PATH=$PATH:/usr/local/git/bin
 # Path for ruby gems
 export PATH=$PATH:/var/lib/gems/1.8/bin
 # Path for postgres
@@ -19,6 +17,8 @@ export PATH=$PATH:/opt/local/lib/postgresql84/bin
 # Path for local gems
 export PATH=$PATH:~/.gem/ruby/1.8/bin
 export PATH=$PATH:~/.gem/ruby/1.9/bin
+# Path for git
+#export PATH=$PATH:/usr/local/git/bin
 
 # Chris' ruby stuff
 export RUBYLIB=~/src/chrisbin/ruby
@@ -29,7 +29,7 @@ export PATH=$PATH:~/src/chrisbin:~/src/chrisbin/ruby
 export JAVA_HOME=/System/Library/Frameworks/JavaVM.framework/Versions/1.6/Home
 
 # VimClojure stuff (for nailgun server)
-export CLOJURE_EXT=/Users/hinmanm/.clojure:./lib:.
+export CLOJURE_EXT=/Users/hinmanm/.clojure:./lib:./classes:./src:.
 export CLOJURE_OPTS="-server -Xmx1024m -XX:+UseConcMarkSweepGC -XX:+HeapDumpOnOutOfMemoryError"
 
 # manpath
@@ -73,7 +73,7 @@ export IRBRC=~/.irbrc
 export P4PORT=137.69.227.201:1666
 export P4USER=hinmam
 export P4CLIENT=hinmam_Xanadu
-#export P4DIFF=vimdiff
+export P4DIFF=colordiff
 
 # Term settings, if we exist as a screen term, use xterm-color instead of screen-bce.
 # Otherwise, leave the TERM var alone, because we need it to set terminal titles correctly
@@ -126,9 +126,9 @@ alias jr='j --r'
 alias js='j --s'
 alias givm='gvim'
 # Hate perforce.
-alias pd='p4 diff | p4c'
-alias pc='p4 changes //dtlt/... -l | maxhead'
-alias pac='p4 changes //aam/... -l | maxhead'
+alias pd='p4 diff -du'
+alias pc='p4 changes //dtlt/... | maxhead'
+alias pac='p4 changes //aam/... | maxhead'
 # Colored rspec
 alias cspec='spec -c --format specdoc'
 # Tmux stuff

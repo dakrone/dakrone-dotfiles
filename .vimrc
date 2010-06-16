@@ -56,7 +56,7 @@ set matchpairs+=<:>           " add < and > to match pairs
 set tags=~/.vtags,tags        " tag filenames
 
 
-" Use 'par' (sudo port install par) to format paragraphs with a width of 90
+" Use 'par' (sudo port install par) to format paragraphs with a width of 80
 set formatprg=par\ -w80
 
 " highlight over 80 columns
@@ -248,6 +248,13 @@ let g:localvimrc_count=2
 " ---------------------------------------------------------------------------
 "  config for easytags
 let g:easytags_file = '~/.vtags'
+" tag-related keybinds:
+" open tag in new tab
+map <C-\> :tab split<CR>:exec("tag ".expand("<cword>"))<CR>
+" open tag in split with ,\
+map <LocalLeader>\ :split <CR>:exec("tag ".expand("<cword>"))<CR>
+" open tag in vsplit with ,]
+map <LocalLeader>] :vsplit <CR>:exec("tag ".expand("<cword>"))<CR>
 
 
 " ---------------------------------------------------------------------------
@@ -420,11 +427,6 @@ vmap <D-k> gk
 "vmap <D-4> g$
 vmap <D-6> g^
 vmap <D-0> g^
-nmap <D-j> gj
-nmap <D-k> gk
-"nmap <D-4> g$
-nmap <D-6> g^
-nmap <D-0> g^
 
 " for linux and windows users (using the control key)
 "map <C-S-]> gt

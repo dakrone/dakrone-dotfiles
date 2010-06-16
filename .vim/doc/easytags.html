@@ -68,6 +68,19 @@ install it by executing the following shell command:</p>
 <p>The plug-in is intended to work without configuration but can be customized by
 changing the following options:</p>
 
+<h3>The <code>easytags_cmd</code> option</h3>
+
+<p>The plug-in will try to determine the location where Exuberant Ctags is
+installed on its own but this might not always work because any given
+executable named <code>ctags</code> in your <code>$PATH</code> might not in fact be Exuberant Ctags
+but some older, more primitive <code>ctags</code> implementation which doesn&#8217;t support the
+same command-line options and thus breaks the <code>easytags.vim</code> plug-in. If this
+is the case you can set the global variable <code>g:easytags_cmd</code> to the location
+where you&#8217;ve installed Exuberant Ctags, e.g.:</p>
+
+<pre><code>:let g:easytags_cmd = '/usr/local/bin/ctags'
+</code></pre>
+
 <h3>The <code>easytags_file</code> option</h3>
 
 <p>As mentioned above the plug-in will store your tags in <code>~/.vimtags</code> on UNIX and
@@ -131,6 +144,37 @@ execute the following Vim command:</p>
 
 <h2>Troubleshooting</h2>
 
+<h3>The plug-in complains that Exuberant Ctags isn&#8217;t installed</h3>
+
+<p>After a Mac OS X user found out the hard way that the <code>ctags</code> executable isn&#8217;t
+always Exuberant Ctags and we spend a few hours debugging the problem I added
+proper version detection: The plug-in executes <code>ctags --version</code> when Vim is
+started to verify that Exuberant Ctags 5.5 or newer is installed. If it isn&#8217;t
+Vim will show the following message on startup:</p>
+
+<pre><code>easytags.vim: Plug-in not loaded because Exuberant Ctags isn't installed!
+Please download &amp; install Exuberant Ctags from http://ctags.sf.net
+</code></pre>
+
+<p>If the installed Exuberant Ctags version is too old the plug-in will complain:</p>
+
+<pre><code>easytags.vim: Plug-in not loaded because Exuberant Ctags 5.5
+or newer is required while you have version %s installed!
+</code></pre>
+
+<p>If you have the right version of Exuberant Ctags installed but the plug-in
+still complains, try executing the following command from inside Vim:</p>
+
+<pre><code>:!which ctags
+</code></pre>
+
+<p>If this doesn&#8217;t print the location where you installed Exuberant Ctags it means
+your system already had a <code>ctags</code> executable but it isn&#8217;t compatible with
+Exuberant Ctags 5.5 and you&#8217;ll need to set the <code>g:easytags_cmd</code> option (see
+above) so the plug-in knows which <code>ctags</code> to run.</p>
+
+<h3>Vim locks up while the plug-in is running</h3>
+
 <p>Once or twice now in several years I&#8217;ve experienced Exuberant Ctags getting
 into an infinite loop when given garbage input. In my case this happened by
 accident a few days ago :-|. Because my plug-in executes <code>ctags</code> in the
@@ -154,7 +198,7 @@ add the results to Vim&#8217;s message history, which you can view by executing 
 <h2>Contact</h2>
 
 <p>If you have questions, bug reports, suggestions, etc. the author can be
-contacted at <a href="&#x6D;&#x61;&#105;&#108;&#116;&#x6F;:&#112;&#x65;&#116;e&#x72;&#64;&#x70;&#101;&#x74;&#101;&#x72;&#111;ddi&#x6E;&#103;&#x2E;&#99;&#111;&#x6D;">&#112;&#x65;&#116;e&#x72;&#64;&#x70;&#101;&#x74;&#101;&#x72;&#111;ddi&#x6E;&#103;&#x2E;&#99;&#111;&#x6D;</a>. The latest version is available at
+contacted at <a href="&#109;&#97;&#105;&#108;&#x74;&#x6F;:&#112;&#101;&#x74;&#x65;&#114;&#64;&#112;e&#116;&#x65;&#114;&#111;&#100;&#x64;&#x69;&#x6E;&#x67;&#x2E;&#x63;&#x6F;&#109;">&#112;&#101;&#x74;&#x65;&#114;&#64;&#112;e&#116;&#x65;&#114;&#111;&#100;&#x64;&#x69;&#x6E;&#x67;&#x2E;&#x63;&#x6F;&#109;</a>. The latest version is available at
 <a href="http://peterodding.com/code/vim/easytags">http://peterodding.com/code/vim/easytags</a> and
 <a href="http://github.com/xolox/vim-easytags">http://github.com/xolox/vim-easytags</a>. If you like this plug-in please vote
 for it on <a href="http://www.vim.org/scripts/script.php?script_id=3114">www.vim.org</a>.</p>
@@ -162,6 +206,6 @@ for it on <a href="http://www.vim.org/scripts/script.php?script_id=3114">www.vim
 <h2>License</h2>
 
 <p>This software is licensed under the <a href="http://en.wikipedia.org/wiki/MIT_License">MIT license</a>. <br />
-© 2010 Peter Odding &lt;<a href="&#x6D;&#x61;&#105;&#x6C;&#116;&#x6F;:&#112;&#x65;&#116;&#x65;&#x72;&#64;&#112;&#x65;&#x74;&#x65;&#x72;&#111;&#x64;&#x64;&#x69;n&#x67;&#x2E;&#99;&#x6F;&#x6D;">&#112;&#x65;&#116;&#x65;&#x72;&#64;&#112;&#x65;&#x74;&#x65;&#x72;&#111;&#x64;&#x64;&#x69;n&#x67;&#x2E;&#99;&#x6F;&#x6D;</a>&gt;.</p>
+© 2010 Peter Odding &lt;<a href="&#109;&#x61;&#x69;&#x6C;&#116;&#x6F;:&#x70;&#x65;&#116;e&#x72;&#64;&#x70;&#101;&#116;e&#x72;od&#100;&#x69;&#110;g&#46;c&#x6F;&#x6D;">&#x70;&#x65;&#116;e&#x72;&#64;&#x70;&#101;&#116;e&#x72;od&#100;&#x69;&#110;g&#46;c&#x6F;&#x6D;</a>&gt;.</p>
  </body>
 </html>

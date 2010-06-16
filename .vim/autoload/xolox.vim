@@ -1,9 +1,19 @@
 " Vim script
 " Maintainer: Peter Odding <peter@peterodding.com>
-" Last Change: June 6, 2010
+" Last Change: June 16, 2010
 " URL: http://peterodding.com/code/vim/profile/autoload/xolox.vim
 
 " Miscellaneous functions used throughout my Vim profile and plug-ins.
+
+" Lately I've been losing my message history a lot so I've added this option
+" which keeps a ring buffer with the last N messages in "g:xolox_messages".
+if !exists('g:xolox_message_buffer')
+  let g:xolox_message_buffer = 100
+endif
+
+if !exists('g:xolox_messages')
+  let g:xolox_messages = []
+endif
 
 function! xolox#trim(s) " -- trim whitespace from start/end of string {{{1
   return substitute(a:s, '^\s*\(.\{-}\)\s*$', '\1', '')
@@ -39,10 +49,19 @@ function! s:message(hlgroup, args) " -- implementation of message() and warning(
 		redraw
     let nargs = len(a:args)
 		if nargs >= 2
-			echomsg call('printf', a:args)
+      let message = call('printf', a:args)
 		elseif nargs == 1
-			echomsg a:args[0]
+			let message = a:args[0]
 		endif
+    if exists('message')
+      echomsg message
+      if g:xolox_message_buffer > 0
+        call add(g:xolox_messages, message)
+        if len(g:xolox_messages) > g:xolox_message_buffer
+          call remove(g:xolox_messages, 0)
+        endif
+      endif
+    endif
 	finally
     " Always clear message highlighting -- even when interrupted by Ctrl-C.
 		echohl none

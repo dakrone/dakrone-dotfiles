@@ -5,7 +5,7 @@
 "
 " License:
 "
-" Copyright (C) 2005 - 2009  Eric Van Dewoestine
+" Copyright (C) 2005 - 2010  Eric Van Dewoestine
 "
 " This program is free software: you can redistribute it and/or modify
 " it under the terms of the GNU General Public License as published by
@@ -405,7 +405,8 @@ function! eclim#taglist#taglisttoo#AutoOpen()
   let buf_num = winbufnr(i)
   while buf_num != -1
     let filename = fnamemodify(bufname(buf_num), ':p')
-    if s:FileSupported(filename, getbufvar(buf_num, '&filetype'))
+    if !getbufvar(buf_num, '&diff') &&
+     \ s:FileSupported(filename, getbufvar(buf_num, '&filetype'))
       let open_window = 1
       break
     endif
@@ -448,7 +449,7 @@ function! eclim#taglist#taglisttoo#Taglist(...)
   endif
 
   if action == -1 || action == 1
-    call s:ProcessTags()
+    call s:ProcessTags(1)
     call s:StartAutocmds()
 
     augroup taglisttoo
@@ -485,9 +486,13 @@ endfunction " }}}
 function! s:StartAutocmds()
   augroup taglisttoo_file
     autocmd!
-    autocmd BufEnter,BufWritePost *
+    autocmd BufEnter *
       \ if bufwinnr(g:TagList_title) != -1 |
-      \   call s:ProcessTags() |
+      \   call s:ProcessTags(0) |
+      \ endif
+    autocmd BufWritePost *
+      \ if bufwinnr(g:TagList_title) != -1 |
+      \   call s:ProcessTags(1) |
       \ endif
     " bit of a hack to re-process tags if the filetype changes after the tags
     " have been processed.
@@ -495,7 +500,7 @@ function! s:StartAutocmds()
       \ if exists('b:ft') |
       \   if b:ft != &ft |
       \     if bufwinnr(g:TagList_title) != -1 |
-      \       call s:ProcessTags() |
+      \       call s:ProcessTags(1) |
       \     endif |
       \   endif |
       \ else |
@@ -532,12 +537,22 @@ function! s:Cleanup()
   augroup END
 endfunction " }}}
 
-" s:ProcessTags() {{{
-function! s:ProcessTags()
+" s:ProcessTags(on_open_or_write) {{{
+function! s:ProcessTags(on_open_or_write)
   " on insert completion prevent vim's jumping back and forth from the
   " completion preview window from triggering a re-processing of tags
   if pumvisible()
     return
+  endif
+
+  " if we are entering a buffer whose taglist list is already loaded, then
+  " don't do anything.
+  if !a:on_open_or_write
+    let bufnr = bufnr(g:TagList_title)
+    let filebuf = getbufvar(bufnr, 'taglisttoo_file_bufnr')
+    if filebuf == bufnr('%')
+      return
+    endif
   endif
 
   let filename = expand('%:p')
@@ -576,6 +591,10 @@ function! s:ProcessTags()
         let command = substitute(g:Tlist_Ctags_Cmd_Eclim, '<port>', port, '')
       endif
 
+      if has('win32unix')
+        let file = eclim#cygwin#WindowsPath(file)
+      endif
+
       let command .= ' -f - --format=2 --excmd=pattern ' .
           \ '--fields=nks --sort=no --language-force=<lang> ' .
           \ '--<lang>-types=<types> "<file>"'
@@ -583,11 +602,14 @@ function! s:ProcessTags()
       let command = substitute(command, '<types>', types, 'g')
       let command = substitute(command, '<file>', file, '')
 
-      if (has('win32') || has('win64')) && command =~ '^"'
+      if has('win32') || has('win64') || has('win32unix')
         let command .= ' "'
       endif
 
       let response = eclim#util#System(command)
+      if has('win32unix')
+        let response = substitute(response, "\<c-m>\n", '\n', 'g')
+      endif
     finally
       if tempfile != ''
         call delete(tempfile)
@@ -617,10 +639,6 @@ function! s:ProcessTags()
         let truncated = 1
       endif
 
-      if g:Tlist_Sort_Type == 'name'
-        call sort(results)
-      endif
-
       for result in results
         let values = s:ParseOutputLine(result)
 
@@ -648,6 +666,10 @@ function! s:ProcessTags()
       exec 'call s:Window(settings.tags, tags, ' .
         \ s:tlist_format_{&ft} . '(settings.tags, tags))'
     else
+      if g:Tlist_Sort_Type == 'name'
+        call sort(tags)
+      endif
+
       call s:Window(settings.tags, tags, s:FormatDefault(settings.tags, tags))
     endif
 
@@ -743,7 +765,7 @@ function! s:JumpToTag()
 
   " account for my plugin which removes trailing spaces from the file
   let pattern = escape(pattern, '.~*[]')
-  let pattern = substitute(pattern, '\s\+\$$', '\s*$', '')
+  let pattern = substitute(pattern, '\s\+\$$', '\\s*$', '')
 
   if getline(lnum) =~ pattern
     mark '

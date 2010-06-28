@@ -766,6 +766,10 @@ function! eclim#project#util#GetProject(file)
   endif
 
   let projects = eclim#project#util#GetProjects()
+
+  " sort projects depth wise by path to properly support nested projects.
+  call sort(projects, 's:ProjectSortPathDepth')
+
   for project in projects
     if dir =~ '^' . project.path . pattern
       return project
@@ -779,6 +783,11 @@ function! eclim#project#util#GetProject(file)
     endfor
   endfor
   return {}
+endfunction " }}}
+
+" s:ProjectSortPathDepth(p1, p2) {{{
+function! s:ProjectSortPathDepth(p1, p2)
+  return len(a:p2.path) - len(a:p1.path)
 endfunction " }}}
 
 " GetProjectDirs() {{{
@@ -1109,9 +1118,11 @@ function! eclim#project#util#CommandCompleteAbsoluteOrProjectRelative(
     \ argLead, cmdLine, cursorPos)
   let cmdLine = strpart(a:cmdLine, 0, a:cursorPos)
   let args = eclim#util#ParseCmdLine(cmdLine)
-  let argLead = cmdLine =~ '\s$' ? '' : args[len(args) - 1]
-  if argLead =~ '^\(/\|[a-zA-Z]:\)'
-    return eclim#util#CommandCompleteDir(a:argLead, a:cmdLine, a:cursorPos)
+  if len(args) > 0
+    let argLead = cmdLine =~ '\s$' ? '' : args[len(args) - 1]
+    if argLead =~ '^\(/\|[a-zA-Z]:\)'
+      return eclim#util#CommandCompleteDir(a:argLead, a:cmdLine, a:cursorPos)
+    endif
   endif
   return eclim#project#util#CommandCompleteProjectRelative(
     \ a:argLead, a:cmdLine, a:cursorPos)

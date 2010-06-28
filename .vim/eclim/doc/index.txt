@@ -75,12 +75,21 @@ News
 ====
 
 
+2010-06-20
+----------
+
+Eclim 1.5.7 is now available.
+The main focus of this release is bug fixes and improving the installer.
+
+You can view the release notes (|id1|) for more info.
+
+
 2010-03-06
 ----------
 
 Eclim 1.5.6 is now available.
 
-You can view the release notes (|id1|) for more info.
+You can view the release notes (|id2|) for more info.
 
 
 2010-02-22
@@ -89,7 +98,7 @@ You can view the release notes (|id1|) for more info.
 Eclim 1.5.5 is now available.
 This is a bug fix release for the eclim installer.
 
-You can view the release notes (|id2|) for more info.
+You can view the release notes (|id3|) for more info.
 
 
 2009-12-18
@@ -98,7 +107,7 @@ You can view the release notes (|id2|) for more info.
 Eclim 1.5.4 is now available.
 This is primarily a bug fix release for OSX users.
 
-You can view the release notes (|id3|) for more info.
+You can view the release notes (|id4|) for more info.
 
 
 2009-12-12
@@ -106,7 +115,7 @@ You can view the release notes (|id3|) for more info.
 
 Eclim 1.5.3 is now available.
 
-You can view the release notes (|id4|) for more info.
+You can view the release notes (|id5|) for more info.
 
 
 2009-08-30
@@ -114,7 +123,7 @@ You can view the release notes (|id4|) for more info.
 
 Eclim 1.5.2 is now available.
 
-You can view the release notes (|id5|) for more info.
+You can view the release notes (|id6|) for more info.
 
 
 2009-07-18
@@ -123,7 +132,7 @@ You can view the release notes (|id5|) for more info.
 Eclim 1.5.1 is now available.
 This is primarily a bug fix release
 
-You can view the release notes (|id6|) for more info.
+You can view the release notes (|id7|) for more info.
 
 
 2009-07-12
@@ -139,7 +148,7 @@ The most notable changes are:
 - Ruby support has been added using the eclipse dltk
   (http://eclipse.org/dltk/).
 
-You can view the release notes (|id7|) for more info.
+You can view the release notes (|id8|) for more info.
 
 
 2009-06-14
@@ -148,7 +157,7 @@ You can view the release notes (|id7|) for more info.
 Eclim 1.4.9 is now available.
 This is primarily a bug fix release, with a few refinements.
 
-You can view the release notes (|id8|) for more info.
+You can view the release notes (|id9|) for more info.
 
 
 2009-05-30
@@ -157,7 +166,7 @@ You can view the release notes (|id8|) for more info.
 Eclim 1.4.8 is now available.
 This is primarily a bug fix release with a few enhancements.
 
-You can view the release notes (|id9|) for more info.
+You can view the release notes (|id10|) for more info.
 
 
 2009-05-02
@@ -175,7 +184,7 @@ Eclim 1.4.6 is now available.
 The major highlight of this release is support for c/c++ using the
 eclipse cdt (http://eclipse.org/cdt/) plugin.
 
-You can view the release notes (|id11|) for more info.
+You can view the release notes (|id12|) for more info.
 
 
 2009-04-04
@@ -184,7 +193,7 @@ You can view the release notes (|id11|) for more info.
 Eclim 1.4.5 is now available.
 This is primarily a bug fix release.
 
-You can view the release notes (|id13|) for more info.
+You can view the release notes (|id14|) for more info.
 
 
 2009-01-10
@@ -199,7 +208,7 @@ Highlights of this release include:
 
 - added support for embedding gvim in eclipse
 
-You can view the release notes (|id14|) for more info.
+You can view the release notes (|id15|) for more info.
 
 
 2008-11-15
@@ -209,7 +218,7 @@ Eclim 1.4.3 is now available.
 This release focuses on updating the installer to support ganymede's p2 for
 upgrading / installing external dependencies and adding additional python
 support.
-You can view the release notes (|id15|) for more info.
+You can view the release notes (|id16|) for more info.
 
 
 2008-09-30
@@ -217,7 +226,7 @@ You can view the release notes (|id15|) for more info.
 
 Eclim 1.4.2 is now available.
 This is primary a bug fix release.
-You can view the release notes (|id16|) for more info.
+You can view the release notes (|id17|) for more info.
 
 
 2008-08-24
@@ -226,7 +235,7 @@ You can view the release notes (|id16|) for more info.
 Eclim 1.4.1 is now available.
 This is primary a bug fix release, but there are some new features included
 as well.
-You can view the release notes (|id17|) for more info.
+You can view the release notes (|id18|) for more info.
 
 
 2008-07-27
@@ -246,14 +255,14 @@ Another major change worth noting, is that eclim is now licensed under
 the GPLv3.  This was done to give eclim the freedom to integrate with
 other GPL projects in the future.
 
-You can view the release notes (|id18|) for more info.
+You can view the release notes (|id19|) for more info.
 
 
 2008-03-11
 ----------
 
 Eclim 1.3.5 is now available.
-You can view the release notes (|id19|) for
+You can view the release notes (|id20|) for
 more info.
 
 
@@ -263,7 +272,7 @@ more info.
 Eclim 1.3.4 is now available.
 This release fixes a few minor bugs, improves the installer to account for
 eclipse installs with per user plugin locations, and adds php support.
-You can view the release notes (|id20|) for more info.
+You can view the release notes (|id21|) for more info.
 
 
 2007-12-15
@@ -278,7 +287,7 @@ This release fixes some installer issues.  If you have already installed
 ----------
 
 Eclim 1.3.2 is now available.
-You can view the release notes (|id22|) for more info.
+You can view the release notes (|id23|) for more info.
 
 
 2007-07-13
@@ -286,7 +295,7 @@ You can view the release notes (|id22|) for more info.
 
 Eclim 1.3.1 is now available.
 This is only a bug fix release.
-You can view the release notes (|id23|) for more info.
+You can view the release notes (|id24|) for more info.
 
 
 2007-07-01
@@ -305,8 +314,8 @@ The most notable changes are:
 - New functionality based on and requiring the eclipse wst
   (http://eclipse.org/webtools/).
 
-- Many more changes (|id24|).
+- Many more changes (|id25|).
 
-View the release notes (|id24|) for more info.
+View the release notes (|id25|) for more info.
 
 vim:ft=eclimhelp

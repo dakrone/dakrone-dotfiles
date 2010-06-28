@@ -5,7 +5,7 @@
 "
 " License:
 "
-" Copyright (C) 2005 - 2009  Eric Van Dewoestine
+" Copyright (C) 2005 - 2010  Eric Van Dewoestine
 "
 " This program is free software: you can redistribute it and/or modify
 " it under the terms of the GNU General Public License as published by
@@ -35,6 +35,10 @@ function! eclim#taglist#lang#python#FormatPython(types, tags)
       \ a:tags, a:types['f'], functions, lines, content, "\t")
 
   let classes = filter(copy(a:tags), 'len(v:val) > 3 && v:val[3] == "c"')
+  if g:Tlist_Sort_Type == 'name'
+    call sort(classes)
+  endif
+
   for class in classes
     call add(content, "")
     call add(lines, -1)
@@ -43,10 +47,8 @@ function! eclim#taglist#lang#python#FormatPython(types, tags)
 
     let members = filter(copy(a:tags),
         \ 'len(v:val) > 5 && v:val[3] == "m" && v:val[5] == "class:" . class[0]')
-    for member in members
-      call add(content, "\t\t" . member[0])
-      call add(lines, index(a:tags, member))
-    endfor
+    call eclim#taglist#util#FormatType(
+        \ a:tags, a:types['m'], members, lines, content, "\t\t")
   endfor
 
   return [lines, content]

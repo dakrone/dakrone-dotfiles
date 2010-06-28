@@ -431,6 +431,7 @@ TwitVim-Leader-g	twitvim.txt	/*TwitVim-Leader-g*
 TwitVim-Leader-p	twitvim.txt	/*TwitVim-Leader-p*
 TwitVim-Leader-r	twitvim.txt	/*TwitVim-Leader-r*
 TwitVim-LongURL	twitvim.txt	/*TwitVim-LongURL*
+TwitVim-OAuth	twitvim.txt	/*TwitVim-OAuth*
 TwitVim-add	twitvim.txt	/*TwitVim-add*
 TwitVim-cURL	twitvim.txt	/*TwitVim-cURL*
 TwitVim-contents	twitvim.txt	/*TwitVim-contents*
@@ -442,6 +443,7 @@ TwitVim-hide-header	twitvim.txt	/*TwitVim-hide-header*
 TwitVim-highlight	twitvim.txt	/*TwitVim-highlight*
 TwitVim-history	twitvim.txt	/*TwitVim-history*
 TwitVim-hotkeys	twitvim.txt	/*TwitVim-hotkeys*
+TwitVim-identica	twitvim.txt	/*TwitVim-identica*
 TwitVim-inreplyto	twitvim.txt	/*TwitVim-inreplyto*
 TwitVim-install	twitvim.txt	/*TwitVim-install*
 TwitVim-intro	twitvim.txt	/*TwitVim-intro*
@@ -653,6 +655,7 @@ davs	pi_netrw.txt	/*davs*
 ds	surround.txt	/*ds*
 easytags.txt	easytags.txt	/*easytags.txt*
 easytags_always_enabled	easytags.txt	/*easytags_always_enabled*
+easytags_cmd	easytags.txt	/*easytags_cmd*
 easytags_file	easytags.txt	/*easytags_file*
 easytags_on_cursorhold	easytags.txt	/*easytags_on_cursorhold*
 easytags_resolve_links	easytags.txt	/*easytags_resolve_links*
@@ -1601,7 +1604,6 @@ taglist-session	taglist.txt	/*taglist-session*
 taglist-todo	taglist.txt	/*taglist-todo*
 taglist-using	taglist.txt	/*taglist-using*
 taglist.txt	taglist.txt	/*taglist.txt*
-twitvim-identi.ca	twitvim.txt	/*twitvim-identi.ca*
 twitvim.txt	twitvim.txt	/*twitvim.txt*
 twitvim_api_root	twitvim.txt	/*twitvim_api_root*
 twitvim_bitly_key	twitvim.txt	/*twitvim_bitly_key*
@@ -1610,6 +1612,7 @@ twitvim_browser_cmd	twitvim.txt	/*twitvim_browser_cmd*
 twitvim_cert_insecure	twitvim.txt	/*twitvim_cert_insecure*
 twitvim_cligs_key	twitvim.txt	/*twitvim_cligs_key*
 twitvim_count	twitvim.txt	/*twitvim_count*
+twitvim_disable_token_file	twitvim.txt	/*twitvim_disable_token_file*
 twitvim_enable_perl	twitvim.txt	/*twitvim_enable_perl*
 twitvim_enable_python	twitvim.txt	/*twitvim_enable_python*
 twitvim_enable_ruby	twitvim.txt	/*twitvim_enable_ruby*
@@ -1622,6 +1625,7 @@ twitvim_proxy_login	twitvim.txt	/*twitvim_proxy_login*
 twitvim_proxy_login_b64	twitvim.txt	/*twitvim_proxy_login_b64*
 twitvim_retweet_format	twitvim.txt	/*twitvim_retweet_format*
 twitvim_show_header	twitvim.txt	/*twitvim_show_header*
+twitvim_token_file	twitvim.txt	/*twitvim_token_file*
 twitvim_trim_login	twitvim.txt	/*twitvim_trim_login*
 twitvim_urlborg_key	twitvim.txt	/*twitvim_urlborg_key*
 v_#	visualstar.txt	/*v_#*

@@ -19,6 +19,8 @@ export PATH=$PATH:~/.gem/ruby/1.8/bin
 export PATH=$PATH:~/.gem/ruby/1.9/bin
 # Path for git
 #export PATH=$PATH:/usr/local/git/bin
+# Path for liebke's clj - http://github.com/liebke/clj
+export PATH=/Users/hinmanm/.cljr/bin:$PATH
 
 # Chris' ruby stuff
 export RUBYLIB=~/src/chrisbin/ruby
@@ -29,8 +31,11 @@ export PATH=$PATH:~/src/chrisbin:~/src/chrisbin/ruby
 export JAVA_HOME=/System/Library/Frameworks/JavaVM.framework/Versions/1.6/Home
 
 # VimClojure stuff (for nailgun server)
-export CLOJURE_EXT=/Users/hinmanm/.clojure:./lib:./classes:./src:.
+export CLOJURE_EXT=/Users/hinmanm/.clojure:/Users/hinmanm/.cljr/lib:./lib:./classes:./src:.
 export CLOJURE_OPTS="-server -Xmx1024m -XX:+UseConcMarkSweepGC -XX:+HeapDumpOnOutOfMemoryError"
+
+# cljr options
+export JVM_OPTS="-server -Xmx1024m -XX:+UseConcMarkSweepGC -XX:+HeapDumpOnOutOfMemoryError"
 
 # manpath
 export MANPATH=$MANPATH:/usr/local/man:/opt/local/share/man
@@ -137,6 +142,7 @@ alias tmux='tmux -2'
 alias screen='TERM=xterm-color && /opt/local/bin/screen'
 alias rvim='gvim --remote-tab-silent'
 alias todo='rvim ~/vimwiki/ToDo.wiki'
+alias msync='rsync -av --ignore-existing --delete ~/Music/iTunes/iTunes\ Music/* dagger:~/Music/'
 
 
 # history

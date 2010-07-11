@@ -69,6 +69,13 @@ License: The Vim License applies to twitvim.vim and twitvim.txt (see
 	     :PreviousTwitter.....................: |:PreviousTwitter|
 	     :SetLoginTwitter.....................: |:SetLoginTwitter|
 	     :ResetLoginTwitter...................: |:ResetLoginTwitter|
+	     :FollowTwitter.......................: |:FollowTwitter|
+	     :UnfollowTwitter.....................: |:UnfollowTwitter|
+	     :BlockTwitter........................: |:BlockTwitter|
+	     :UnblockTwitter......................: |:UnblockTwitter|
+	     :ReportSpamTwitter...................: |:ReportSpamTwitter|
+	     :AddToListTwitter....................: |:AddToListTwitter|
+	     :RemoveFromListTwitter...............: |:RemoveFromListTwitter|
 	4.3. Mappings.............................: |TwitVim-mappings|
 	     Alt-T................................: |TwitVim-A-t|
 	     Ctrl-T...............................: |TwitVim-C-t|
@@ -625,6 +632,10 @@ License: The Vim License applies to twitvim.vim and twitvim.txt (see
 	This command will prompt you for a direct message to send to user
 	{username}.
 
+	Note: If you get a "403 Forbidden" error when you try to send a direct
+	message, check if the user you're messaging is following you. That is
+	the most common reason for this error when sending a direct message.
+
 ------------------------------------------------------------------------------
 4.2. Timeline Commands				*TwitVim-timeline-commands*
 
@@ -797,6 +808,47 @@ License: The Vim License applies to twitvim.vim and twitvim.txt (see
 	services that use Basic authentication.
 
 
+	:FollowTwitter {username}			*:FollowTwitter*
+
+	Start following user {username}'s timeline. If the user's timeline is
+	protected, this command makes a request to follow that user.
+
+	Note: This command does not enable notifications for the target user.
+	If you need that, you'll have to do that separately through the web
+	interface.
+
+
+	:UnfollowTwitter {username}			*:UnfollowTwitter*
+
+	Stop following user {username}'s timeline.
+
+
+	:BlockTwitter {username}			*:BlockTwitter*
+
+	Block user {username}.
+
+
+	:UnblockTwitter {username}			*:UnblockTwitter*
+
+	Unblock user {username}.
+
+
+	:ReportSpamTwitter {username}			*:ReportSpamTwitter*
+
+	Reports user {username} for spam. This command will also block the
+	user.
+
+
+	:AddToListTwitter {listname} {username}		*:AddToListTwitter*
+
+	Adds user {username} to list {listname}.
+
+
+	:RemoveFromListTwitter {listname} {username}	*:RemoveFromListTwitter*
+
+	Removes user {username} from list {listname}.
+
+
 ------------------------------------------------------------------------------
 4.3. Mappings						*TwitVim-mappings*
 
@@ -881,6 +933,10 @@ License: The Vim License applies to twitvim.vim and twitvim.txt (see
 	Under Cygwin, Alt-D is not recognized so you can use <Leader>d as an
 	alternative. The <Leader> character defaults to \ (backslash) but see
 	|mapleader| for information on customizing that.
+
+	Note: If you get a "403 Forbidden" error when you try to send a direct
+	message, check if the user you're messaging is following you. That is
+	the most common reason for this error when sending a direct message.
 
 
 							*TwitVim-goto*
@@ -1434,6 +1490,12 @@ License: The Vim License applies to twitvim.vim and twitvim.txt (see
 ==============================================================================
 7. TwitVim History					*TwitVim-history*
 
+	0.5.3 : 2010-06-23 * Improved error messages for most commands if 
+			     using Perl, Python, Ruby, or Tcl interfaces.
+			   * Added |:FollowTwitter|, |:UnfollowTwitter|,
+			     |:BlockTwitter|, |:UnblockTwitter|,
+			     |:ReportSpamTwitter|, |:AddToListTwitter|,
+			     |:RemoveFromListTwitter|.
 	0.5.2 : 2010-06-22 * More fixes for Twitter OAuth.
 	0.5.1 : 2010-06-19 * Shorten auth URL with is.gd/Bitly if we need
 			     to ask the user to visit it manually.

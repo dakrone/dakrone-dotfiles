@@ -37,13 +37,31 @@ recall the message and read it conveniently without time pressure.
 
 VimClojure might pop up windows, like the preview window or the Repl.
 The place where this is done may be controlled with the SplitPos variable.
-Possible values are "left", "right", "top" and "bottom". Thedefault is
+Possible values are "left", "right", "top" and "bottom". The default is
 "top".
 
 Example:
 >
         let vimclojure#SplitPos = "left"
 <
+It is also possible to specify the size of the new window. The size is
+specified in lines/columns.
+>
+        let vimclojure#SplitSize = 10
+<
+
+Errors
+------
+
+Errors are reported in a temporary buffer. This is to make error messages
+more readable. In particular when they contain stacktraces from the Java
+side. However this may interfer with scripts which do not expect that a
+new buffer pops up. So one can go back to the old behaviour.
+>
+        let vimclojure#UseErrorBuffer = 0
+<
+Note: the error might not be shown by vim. Check the output of |:message|
+for errors.
 
 Syntax Highlighting                 *ft-clj-syntax*
 -------------------
@@ -58,14 +76,14 @@ The clojure syntax highlighting provides several options:
         g:vimclojure#ParenRainbow
                 Controls the colorisation of the differing levels of
                 parenthesisation. If non-zero, different levels will be
-                colored differently.
+                colored differently. Disabled by default.
 
         g:vimclojure#DynamicHighlighting
                 Uses the dynamic features of VimClojure to dynamically add
                 the symbols of required and used namespaces. The file needs
                 to be correct (ie. w/o syntax errors and on the classpath)
                 for this to work. If this is not the case, dynamic
-                highlighting is not done. Disable by default.
+                highlighting is not done. Disabled by default.
 <
 The g:vimclojure#ParenRainbow option provides 10 levels of individual
 colorisation for the parentheses. Because of the quantity of colorisation

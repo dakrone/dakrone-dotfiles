@@ -64,7 +64,7 @@ fi
 if [ -f .clojure ]; then
     for path in `cat .clojure`; do
         if [ -n "${CLASSPATH:-}" ]; then
-            export CLASSPATH="${path}${CLASSPATH}"
+            export CLASSPATH="${path}:${CLASSPATH}"
         else
             export CLASSPATH="${path%:}"
         fi

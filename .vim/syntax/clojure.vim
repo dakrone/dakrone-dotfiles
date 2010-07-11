@@ -29,28 +29,30 @@ if g:vimclojure#HighlightBuiltins != 0
 		\ "Constant":  "nil",
 		\ "Boolean":   "true false",
 		\ "Cond":      "if if-not if-let when when-not when-let "
-		\            . "when-first cond condp",
+		\            . "when-first cond condp case",
 		\ "Exception": "try catch finally throw",
 		\ "Repeat":    "recur map mapcat reduce filter for doseq dorun "
-		\            . "doall dotimes",
+		\            . "doall dotimes map-indexed keep keep-indexed",
 		\ "Special":   ". def do fn if let new quote var loop",
-		\ "Variable":  "*warn-on-reflection* this *assert*"
+		\ "Variable":  "*warn-on-reflection* this *assert* "
 		\            . "*agent* *ns* *in* *out* *err* *command-line-args* "
 		\            . "*print-meta* *print-readably* *print-length* "
 		\            . "*allow-unresolved-args* *compile-files* "
 		\            . "*compile-path* *file* *flush-on-newline* "
-		\            . "*macro-meta* *math-context* *print-dup* "
+		\            . "*math-context* *print-dup* "
 		\            . "*print-level* *use-context-classloader* "
 		\            . "*source-path* *clojure-version* *read-eval* "
 		\            . "*1 *2 *3 *e",
 		\ "Define":    "def- defn defn- defmacro defmulti defmethod "
-		\            . "defstruct defonce declare definline ",
+		\            . "defstruct defonce declare definline definterface "
+		\            . "defprotocol defrecord deftype",
 		\ "Macro":     "and or -> assert with-out-str with-in-str with-open "
 		\            . "locking destructure ns dosync binding delay "
 		\            . "lazy-cons lazy-cat time assert doc with-precision "
 		\            . "with-local-vars .. doto memfn proxy amap areduce "
 		\            . "refer-clojure future lazy-seq letfn "
-		\            . "with-loading-context",
+		\            . "with-loading-context bound-fn extend extend-protocol "
+		\            . "extend-type reify with-bindings ->>",
 		\ "Func":      "= not= not nil? false? true? complement identical? "
 		\            . "string? symbol? map? seq? vector? keyword? var? "
 		\            . "special-symbol? apply partial comp constantly "
@@ -117,16 +119,30 @@ if g:vimclojure#HighlightBuiltins != 0
 		\            . "atom compare-and-set! ifn? gen-interface "
 		\            . "intern init-proxy io! memoize proxy-name swap! "
 		\            . "release-pending-sends the-ns unquote while "
-		\            . "unchecked-remainder add-watcher alter-meta! "
+		\            . "unchecked-remainder alter-meta! "
 		\            . "future-call methods mod pcalls prefers pvalues "
-		\            . "print-namespace-doc remove-watcher reset! "
+		\            . "print-namespace-doc reset! "
 		\            . "reset-meta! type vary-meta unquote-splicing "
-		\            . "sequence clojure-version counted? stream? "
+		\            . "sequence clojure-version counted? "
 		\            . "chunk-buffer chunk-append chunk chunk-first "
 		\            . "chunk-rest chunk-next chunk-cons chunked-seq? "
 		\            . "deliver future? future-done? future-cancel "
 		\            . "future-cancelled? get-method promise "
-		\            . "ref-history-count ref-min-history ref-max-history"
+		\            . "ref-history-count ref-min-history ref-max-history "
+		\            . "agent-error assoc!  boolean-array booleans bound-fn* "
+		\            . "bound?  byte-array bytes char-array char? chars "
+		\            . "conj!  denominator disj!  dissoc!  error-handler "
+		\            . "error-mode extenders extends?  find-protocol-impl "
+		\            . "find-protocol-method flatten frequencies "
+		\            . "get-thread-bindings group-by hash-combine juxt "
+		\            . "munge namespace-munge numerator object-array "
+		\            . "partition-all partition-by persistent! pop! "
+		\            . "pop-thread-bindings push-thread-bindings rand-nth "
+		\            . "reductions remove-all-methods restart-agent "
+		\            . "satisfies?  set-error-handler!  set-error-mode! "
+		\            . "short-array shorts shuffle sorted-set-by take-last "
+		\            . "thread-bound? transient vector-of with-bindings* fnil "
+		\            . "spit"
 		\ }
 
 	for category in keys(s:builtins_map)
@@ -152,10 +168,10 @@ if g:vimclojure#DynamicHighlighting != 0 && exists("b:vimclojure_namespace")
 	endtry
 endif
 
-syn cluster clojureAtomCluster   contains=clojureError,clojureFunc,clojureMacro,clojureCond,clojureDefine,clojureRepeat,clojureException,clojureConstant,clojureVariable,clojureSpecial,clojureKeyword,clojureString,clojureCharacter,clojureNumber,clojureRational,clojureFloat,clojureBoolean,clojureQuote,clojureUnquote,clojureDispatch,clojurePattern
+syn cluster clojureAtomCluster   contains=clojureError,clojureFunc,clojureMacro,clojureCond,clojureDefine,clojureRepeat,clojureException,clojureConstant,clojureVariable,clojureSpecial,clojureKeyword,clojureString,clojureCharacter,clojureNumber,clojureBoolean,clojureQuote,clojureUnquote,clojureDispatch,clojurePattern
 syn cluster clojureTopCluster    contains=@clojureAtomCluster,clojureComment,clojureSexp,clojureAnonFn,clojureVector,clojureMap,clojureSet
 
-syn keyword clojureTodo contained FIXME XXX
+syn keyword clojureTodo contained FIXME XXX TODO FIXME: XXX: TODO:
 syn match   clojureComment contains=clojureTodo ";.*$"
 
 syn match   clojureKeyword "\c:\{1,2}[a-z?!\-_+*./=<>#$][a-z0-9?!\-_+*\./=<>#$]*"
@@ -179,10 +195,9 @@ for radix in range(2, 36)
 				\ . ']\+\>"'
 endfor
 
-syn match   clojureNumber "\<-\?[0-9]\+M\?\>"
-syn match   clojureHexNumber "\<-\?0x[0-9a-fA-F]\+\>"
-syn match   clojureRational "\<-\?[0-9]\+/[0-9]\+\>"
-syn match   clojureFloat "\<-\?[0-9]\+\.[0-9]\+\([eE][-+]\=[0-9]\+\)\=\>"
+syn match   clojureNumber "\<-\=[0-9]\+\(M\|\(\.[0-9]*\)\=\([eE][-+]\=[0-9]\+\)\=\)\=\>"
+syn match   clojureNumber "\<-\=0x[0-9a-fA-F]\+\>"
+syn match   clojureNumber "\<-\=[0-9]\+/[0-9]\+\>"
 
 syn match   clojureQuote "\('\|`\)"
 syn match   clojureUnquote "\(\~@\|\~\)"
@@ -231,9 +246,6 @@ HiLink clojureBoolean   Boolean
 HiLink clojureCharacter Character
 HiLink clojureKeyword   Operator
 HiLink clojureNumber    Number
-HiLink clojureHexNumber Number
-HiLink clojureRational  Number
-HiLink clojureFloat     Float
 HiLink clojureString    String
 HiLink clojurePattern   Constant
 

@@ -1,6 +1,6 @@
 " Vim script
 " Maintainer: Peter Odding <peter@peterodding.com>
-" Last Change: June 16, 2010
+" Last Change: July 5, 2010
 " URL: http://peterodding.com/code/vim/profile/autoload/xolox.vim
 
 " Miscellaneous functions used throughout my Vim profile and plug-ins.
@@ -15,11 +15,22 @@ if !exists('g:xolox_messages')
   let g:xolox_messages = []
 endif
 
-function! xolox#trim(s) " -- trim whitespace from start/end of string {{{1
+function! xolox#trim(s) " -- trim whitespace from start/end of {s} {{{1
   return substitute(a:s, '^\s*\(.\{-}\)\s*$', '\1', '')
 endfunction
 
-function! xolox#unique(list) " -- remove duplicate values from list (in-place) {{{1
+function! xolox#quote_pattern(s) " -- convert {s} to pattern that matches {s} literally (on word boundaries!) {{{1
+  let patt = xolox#escape#pattern(a:s)
+  if patt =~ '^\w'
+    let patt = '\<' . patt
+  endif
+  if patt =~ '\w$'
+    let patt = patt . '\>'
+  endif
+  return patt
+endfunction
+
+function! xolox#unique(list) " -- remove duplicate values from {list} (in-place) {{{1
 	let index = 0
 	while index < len(a:list)
 		let value = a:list[index]

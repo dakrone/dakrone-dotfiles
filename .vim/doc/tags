@@ -82,9 +82,11 @@
 :Ack	ack.txt	/*:Ack*
 :AckAdd	ack.txt	/*:AckAdd*
 :AddFlags	ctk.txt	/*:AddFlags*
+:AddToListTwitter	twitvim.txt	/*:AddToListTwitter*
 :BPosttoTwitter	twitvim.txt	/*:BPosttoTwitter*
 :BackTwitter	twitvim.txt	/*:BackTwitter*
 :BitLy	twitvim.txt	/*:BitLy*
+:BlockTwitter	twitvim.txt	/*:BlockTwitter*
 :BuildMethods	cocoa.txt	/*:BuildMethods*
 :CPosttoTwitter	twitvim.txt	/*:CPosttoTwitter*
 :CVSEdit	vcscommand.txt	/*:CVSEdit*
@@ -101,6 +103,7 @@
 :DMTwitter	twitvim.txt	/*:DMTwitter*
 :EditCompilerInfo	ctk.txt	/*:EditCompilerInfo*
 :Explore	pi_netrw.txt	/*:Explore*
+:FollowTwitter	twitvim.txt	/*:FollowTwitter*
 :ForwardTwitter	twitvim.txt	/*:ForwardTwitter*
 :FriendsTwitter	twitvim.txt	/*:FriendsTwitter*
 :FufAddBookmark	fuf.txt	/*:FufAddBookmark*
@@ -185,7 +188,9 @@
 :RateLimitTwitter	twitvim.txt	/*:RateLimitTwitter*
 :RefreshCTK	ctk.txt	/*:RefreshCTK*
 :RefreshTwitter	twitvim.txt	/*:RefreshTwitter*
+:RemoveFromListTwitter	twitvim.txt	/*:RemoveFromListTwitter*
 :RepliesTwitter	twitvim.txt	/*:RepliesTwitter*
+:ReportSpamTwitter	twitvim.txt	/*:ReportSpamTwitter*
 :ResetLoginTwitter	twitvim.txt	/*:ResetLoginTwitter*
 :RetweetedByMeTwitter	twitvim.txt	/*:RetweetedByMeTwitter*
 :RetweetedToMeTwitter	twitvim.txt	/*:RetweetedToMeTwitter*
@@ -222,6 +227,8 @@
 :TlistUpdate	taglist.txt	/*:TlistUpdate*
 :Trim	twitvim.txt	/*:Trim*
 :Tweetburner	twitvim.txt	/*:Tweetburner*
+:UnblockTwitter	twitvim.txt	/*:UnblockTwitter*
+:UnfollowTwitter	twitvim.txt	/*:UnfollowTwitter*
 :UrlBorg	twitvim.txt	/*:UrlBorg*
 :UseVimball	pi_vimball.txt	/*:UseVimball*
 :UserTwitter	twitvim.txt	/*:UserTwitter*

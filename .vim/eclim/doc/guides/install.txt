@@ -14,7 +14,7 @@ following requirements.
 - Java Development Kit
   (http://java.sun.com/javase/downloads/index.html) 1.5 or greater
 
-- Eclipse 3.5.x (Galileo) (http://eclipse.org/downloads/index.php)
+- Eclipse 3.6.x (Helios) (http://eclipse.org/downloads/index.php)
 
 - Vim 7.1.x (http://www.vim.org/download.php)
 
@@ -77,7 +77,7 @@ Note: If you have eclipse running, please close it prior to starting the
     so (be sure to take a look at the related faq (|eclim-proxy|) as
     well):>
 
-       $ java -jar eclim_<version>.jar -Dhttp.proxyHost=my.proxy -Dhttp.proxyPort=8080
+       $ java -Dhttp.proxyHost=my.proxy -Dhttp.proxyPort=8080 -jar eclim_<version>.jar
 
     <
 
@@ -87,7 +87,7 @@ Note: If you have eclipse running, please close it prior to starting the
     can also try the following which may be able to use your system
     proxy settings:>
 
-       $ java -jar eclim_<version>.jar -Djava.net.useSystemProxies=true
+       $ java -Djava.net.useSystemProxies=true -jar eclim_<version>.jar
 
     <
 
@@ -125,7 +125,7 @@ Note: In some rare cases you might encounter one of the following errors:
      installer like so:
 
      >
-        $ java -jar eclim_<version>.jar -Djava.ext.dirs
+        $ java -Djava.ext.dirs -jar eclim_<version>.jar
 
      <
 
@@ -260,11 +260,12 @@ using this method:
 
 >
 
-   $ java -jar eclim_<version>.jar install \
+   $ java
      -Declipse.home=/opt/eclipse \
      -Dvim.files=$HOME/.vim \
      -DfeatureList.ant=true \
-     -DfeatureList.jdt=true
+     -DfeatureList.jdt=true \
+     -jar eclim_<version>.jar install \
 
 <
 

@@ -61,7 +61,7 @@ instances:
    Note: The -f argument is not supported by eclipse so the above option
      is only available when using a headless eclimd instance.
 
-- Windows Users: Create Windows shortcuts:
+1. Windows Users: Create Windows shortcuts:
 
    - In Windows Explorer, open your eclipse folder.
 

@@ -163,12 +163,6 @@ Vim Script Integration
 - Quickly lookup help topic for a keyword, functions, command, etc.
 
 
-Wsdl Integration
-================
-
-- Automatic validation (w/ visual marking of errors and warnings).
-
-
 Xml Integration
 ===============
 

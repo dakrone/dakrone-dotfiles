@@ -215,12 +215,6 @@ WebXml 指令集
 - :Validate (|validate-webxml|) - 驗證目前的 web.xml 檔案.
 
 
-Wsdl 指令集
-========
-
-- :Validate (|validate-wsdl|) - 驗證目前的檔案.
-
-
 Xml 指令集
 =======
 

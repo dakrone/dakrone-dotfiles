@@ -37,7 +37,7 @@ home directory.
 For Windows users there are a couple alternatives to the unsupported
 .eclimrc:
 
-   - Your first option is to add a new environment variable:
+   1. Your first option is to add a new environment variable:
 
       - Windows 2000: Control Panel > System > Advanced > Environment Variables
         Windows XP: Control Panel > Performance And Maintenance > System >
@@ -49,20 +49,21 @@ For Windows users there are a couple alternatives to the unsupported
 
       - Then you can start eclimd as normal (via the eclimd.bat file).
 
-   - The second option is to create a shortcut to the eclimd.bat file:
+   2. The second option is to create a shortcut to the eclimd.bat
+      file:
 
-     - In Windows Explorer, open your eclipse folder.
+      - In Windows Explorer, open your eclipse folder.
 
-     - Hold down the right mouse button and drag the eclimd.bat file
-       to where you want the shortcut to exist (like your desktop) and
-       release the right mouse button.
+      - Hold down the right mouse button and drag the eclimd.bat file
+        to where you want the shortcut to exist (like your desktop)
+        and release the right mouse button.
 
-     - Choose "Create Shortcut(s) Here"
+      - Choose "Create Shortcut(s) Here"
 
-     - Right click the shortcut and choose "Properties"
+      - Right click the shortcut and choose "Properties"
 
-     - On the "Shortcut" tab edit the "Target:" field and append:
-       -Dosgi.instance.area.default=@user.home/another_workspace
+      - On the "Shortcut" tab edit the "Target:" field and append:
+        -Dosgi.instance.area.default=@user.home/another_workspace
 
 *eclim_proxy*
 

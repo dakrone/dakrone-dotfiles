@@ -44,8 +44,6 @@ Documentation
 
 - Vim (|vim-vim-index|)
 
-- Wsdl (|vim-wsdl-index|)
-
 - Xml (|vim-xml-index|)
 
 - Xsd (|vim-xsd-index|)

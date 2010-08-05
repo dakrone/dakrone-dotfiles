@@ -82,7 +82,7 @@ word via an online reference.
 
 *eclim#web#SearchEngine*
 
-2. eclim#web#SearchEngine This function provides the functionality
+- eclim#web#SearchEngine This function provides the functionality
   needed to create search engine commands or mappings.
 
   >

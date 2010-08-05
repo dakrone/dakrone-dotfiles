@@ -125,7 +125,7 @@ to:
    command, copy the command text from "-command" to the end of the
    command arguments.
 
-- The next step is to run the command on a command line.
+2. The next step is to run the command on a command line.
 
    - Linux / Mac / BSD:
 

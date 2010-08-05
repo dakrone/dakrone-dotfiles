@@ -23,7 +23,7 @@ cp -f -rv ~/.config/irb .config/
 cp -f -v ~/.irbrc .
 cp -f -v ~/.autotest .
 cp -f -v ~/.config/fish/config.fish .config/fish/
-cp -f -v ~/.newsbeuter/config .newsbeuter/config
+#cp -f -v ~/.newsbeuter/config .newsbeuter/config
 cp -f -v ~/bin/putenv .
 cp -f -v ~/bin/putvim .
 cp -f -v ~/bin/putzsh .

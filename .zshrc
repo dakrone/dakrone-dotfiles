@@ -31,7 +31,7 @@ export PATH=$PATH:~/src/chrisbin:~/src/chrisbin/ruby
 export JAVA_HOME=/System/Library/Frameworks/JavaVM.framework/Versions/1.6/Home
 
 # VimClojure stuff (for nailgun server)
-export CLOJURE_EXT=/Users/hinmanm/.clojure:/Users/hinmanm/.cljr/lib:./lib:./classes:./src:.
+export CLOJURE_EXT=/Users/hinmanm/.vimclojure:/Users/hinmanm/.cljr/lib:./lib:./classes:./src:.
 export CLOJURE_OPTS="-server -Xmx1024m -XX:+UseConcMarkSweepGC -XX:+HeapDumpOnOutOfMemoryError"
 
 # cljr options

@@ -46,7 +46,7 @@ set wildmenu                  " menu has tab completion
 let maplocalleader=','        " all my macros start with ,
 " Deprecated, using SimpleFold with '\f' now. ,sf to revert
 "set foldmethod=syntax         " fold on syntax automagically, always
-set foldcolumn=2              " 2 lines of column for fold showing, always
+set foldcolumn=4              " 4 lines of column for fold showing, always
 set whichwrap+=<,>,h,l        " backspaces and cursor keys wrap to
 set magic                     " Enable the "magic"
 set visualbell t_vb=          " Disable ALL bells
@@ -55,6 +55,10 @@ set matchpairs+=<:>           " add < and > to match pairs
 "set tags=tags;/               " search recursively up for tags
 set tags=~/.vtags,tags        " tag filenames
 
+" disable yankring for now
+let g:loaded_yankring = 1
+" disable paredit for now
+let g:paredit_mode = 0
 
 " Use 'par' (sudo port install par) to format paragraphs with a width of 80
 set formatprg=par\ -w80
@@ -74,8 +78,9 @@ if !has("gui_running")
       " (http://www.culater.net/software/TerminalColors/TerminalColors.php)
       " to change the really hard-to-read dark blue into a lighter shade.
       " Or; Use iterm with Tango colors
-      colorscheme Mustang
+      "colorscheme Mustang
       "colorscheme rdark
+      colorscheme ir_black_new
 end
 if has("gui_running")
       colorscheme rdark
@@ -370,7 +375,8 @@ endfunction
 " toggle list mode
 nmap <LocalLeader>tl :set list!<cr>
 " Use the same symbols as TextMate for tabstops and EOLs
-set listchars=tab:▸\ ,eol:¬,trail:-
+"set listchars=tab:▸\ ,eol:¬,trail:-
+set listchars=eol:\ ,tab:»-,trail:·,precedes:…,extends:…,nbsp:‗
 " toggle paste mode
 nmap <LocalLeader>pm :set paste!<cr>
 " toggle wrapping
@@ -420,6 +426,8 @@ map <D-7> 7gt
 map <D-8> 8gt
 map <D-9> 9gt
 map <D-0> :tablast<CR>
+map <C-p> :tabprev<CR>
+map <C-n> :tabnext<CR>
  
 " Command + movement for wrapped lines.
 vmap <D-j> gj
@@ -442,6 +450,16 @@ vmap <D-0> g^
 "map <C-9> 9gt
 "map <C-0> :tablast<CR>
 
+" Vimperator-like bindings for a tab switches.
+nmap b1 1gt
+nmap b2 2gt
+nmap b3 3gt
+nmap b4 4gt
+nmap b5 5gt
+nmap b6 6gt
+nmap b7 7gt
+nmap b8 8gt
+nmap b9 9gt
 
 " Compile Ruby code after writing (show warnings/errors)
 function! Compile()

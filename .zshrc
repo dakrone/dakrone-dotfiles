@@ -7,7 +7,7 @@ compinit
 promptinit
 
 # path
-export PATH=~/bin:/usr/local/bin:$PATH:/usr/local/sbin:/usr/local/sbin:/usr/libexec:/opt/local/bin:/opt/local/sbin:/usr/local/mysql/bin
+export PATH=~/bin:/opt/local/bin:/usr/local/bin:$PATH:/usr/local/sbin:/usr/local/sbin:/usr/libexec:/opt/local/sbin:/usr/local/mysql/bin
 # Path for Matasano's blackbag
 export PATH=/usr/local/bin/blackbag:$PATH
 # Path for ruby gems

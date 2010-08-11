@@ -1,6 +1,6 @@
 " Vim script
 " Maintainer: Peter Odding <peter@peterodding.com>
-" Last Change: July 5, 2010
+" Last Change: August 10, 2010
 " URL: http://peterodding.com/code/vim/profile/autoload/xolox.vim
 
 " Miscellaneous functions used throughout my Vim profile and plug-ins.
@@ -46,35 +46,60 @@ function! xolox#unique(list) " -- remove duplicate values from {list} (in-place)
 endfunction
 
 function! xolox#message(...) " -- show a formatted informational message to the user {{{1
-	return s:message('title', a:000)
+	call s:message('title', a:000)
 endfunction
 
 function! xolox#warning(...) " -- show a formatted warning message to the user {{{1
-	return s:message('warningmsg', a:000)
+	call s:message('warningmsg', a:000)
+endfunction
+
+function! xolox#debug(...) " -- show a formatted debugging message to the user {{{1
+  if &vbs >= 1
+	  call s:message('question', a:000)
+  endif
 endfunction
 
 function! s:message(hlgroup, args) " -- implementation of message() and warning() {{{1
-	try
-		execute 'echohl' a:hlgroup
-    " Redraw to avoid the |hit-enter| prompt.
-		redraw
-    let nargs = len(a:args)
-		if nargs >= 2
-      let message = call('printf', a:args)
-		elseif nargs == 1
-			let message = a:args[0]
-		endif
-    if exists('message')
-      echomsg message
+  let nargs = len(a:args)
+  if nargs == 1
+    let message = a:args[0]
+  elseif nargs >= 2
+    let message = call('printf', a:args)
+  endif
+  if exists('message')
+    try
+      " Temporarily disable Vim's |hit-enter| prompt and mode display.
+      if !exists('s:more_save')
+        let s:more_save = &more
+        let s:ruler_save = &ruler
+        let s:smd_save = &showmode
+      endif
+      set nomore noruler noshowmode
+      augroup PluginXoloxHideMode
+        autocmd! CursorHold,CursorHoldI * call s:clear_message()
+      augroup END
+	  	execute 'echohl' a:hlgroup
+      " Redraw to avoid |hit-enter| prompt.
+      redraw | echomsg message
       if g:xolox_message_buffer > 0
         call add(g:xolox_messages, message)
         if len(g:xolox_messages) > g:xolox_message_buffer
           call remove(g:xolox_messages, 0)
         endif
       endif
-    endif
-	finally
-    " Always clear message highlighting -- even when interrupted by Ctrl-C.
-		echohl none
-	endtry
+	  finally
+      " Always clear message highlighting -- even when interrupted by Ctrl-C.
+  		echohl none
+	  endtry
+  endif
+endfunction
+
+function! s:clear_message()
+  echo ''
+  let &more = s:more_save
+  let &showmode = s:smd_save
+  let &ruler = s:ruler_save
+  unlet s:more_save s:ruler_save s:smd_save
+  autocmd! PluginXoloxHideMode
+  augroup! PluginXoloxHideMode
 endfunction

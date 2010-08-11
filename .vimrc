@@ -225,6 +225,9 @@ nnoremap <silent> <LocalLeader>jc :JavaCorrect<cr>
 let g:EclimBrowser='open'
 " Disable Eclim's taglisttoo because I use the regular taglist plugin
 "let g:taglisttoo_disabled = 1
+" Disable HTML & PHP validation
+let g:EclimHtmlValidate = 0
+let g:EclimPhpValidate = 0
 
 
 " ---------------------------------------------------------------------------
@@ -234,9 +237,12 @@ nmap <LocalLeader>b :FuzzyFinderBuffer<CR>
 " see: http://github.com/viperinthought/fuzzyfinder_textmate/
 " FuzzyFinderTextMate is broken at the moment due to vim patches
 "nmap <LocalLeader>f :FuzzyFinderTextMate<CR>
-nmap <LocalLeader>f :FuzzyFinderFile<CR>
+"nmap <LocalLeader>f :FuzzyFinderFile<CR>
+" Switching to Command-T
+nmap <LocalLeader>f :CommandT<CR>
 " find in file is ,F
-nmap <LocalLeader>F :FuzzyFinderFile<CR>
+"nmap <LocalLeader>F :FuzzyFinderFile<CR>
+nmap <LocalLeader>F :CommandT<CR>
 " find in tag is ,t
 nmap <LocalLeader>t :FuzzyFinderTag<CR>
 
@@ -260,6 +266,50 @@ map <C-\> :tab split<CR>:exec("tag ".expand("<cword>"))<CR>
 map <LocalLeader>\ :split <CR>:exec("tag ".expand("<cword>"))<CR>
 " open tag in vsplit with ,]
 map <LocalLeader>] :vsplit <CR>:exec("tag ".expand("<cword>"))<CR>
+
+
+
+" ---------------------------------------------------------------------------
+"  Automagic Clojure folding on defn's and defmacro's
+"
+function GetClojureFold()
+      if getline(v:lnum) =~ '^\s*(defn.*\s'
+            return ">1"
+      elseif getline(v:lnum) =~ '^\s*(defmacro.*\s'
+            return ">1"
+      elseif getline(v:lnum) =~ '^\s*(defmethod.*\s'
+            return ">1"
+      elseif getline(v:lnum) =~ '^\s*$'
+            let my_cljnum = v:lnum
+            let my_cljmax = line("$")
+
+            while (1)
+                  let my_cljnum = my_cljnum + 1
+                  if my_cljnum > my_cljmax
+                        return "<1"
+                  endif
+
+                  let my_cljdata = getline(my_cljnum)
+
+                  " If we match an empty line, stop folding
+                  if my_cljdata =~ '^$'
+                        return "<1"
+                  else
+                        return "="
+                  endif
+            endwhile
+      else
+            return "="
+      endif
+endfunction
+
+function TurnOnClojureFolding()
+      setlocal foldexpr=GetClojureFold()
+      setlocal foldmethod=expr
+endfunction
+
+autocmd FileType clojure call TurnOnClojureFolding()
+
 
 
 " ---------------------------------------------------------------------------
@@ -426,8 +476,13 @@ map <D-7> 7gt
 map <D-8> 8gt
 map <D-9> 9gt
 map <D-0> :tablast<CR>
+
 map <C-p> :tabprev<CR>
 map <C-n> :tabnext<CR>
+
+" Switch tabs with ctrl-tab and ctrl-shift-tab like most browsers
+map <C-Tab> gt
+map <C-S-Tab> gT 
  
 " Command + movement for wrapped lines.
 vmap <D-j> gj

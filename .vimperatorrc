@@ -1,7 +1,8 @@
+" vim: set filetype=vim
 " Menu bar (I use a hiding extension for this anyway)
 set guioptions+=m
 " I want bookmarks toolbar
-set guioptions+=B
+"set guioptions+=B
 
 " Source noscript plugin
 source ~/.vimperator/noscript.js

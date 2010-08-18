@@ -8,6 +8,7 @@ set cpo&vim
 function! vimclojure#WarnDeprecated(old, new)
 	echohl WarningMsg
 	echomsg a:old . " is deprecated! Use " . a:new . "!"
+	echomsg "eg. let " . a:new . " = <desired value here>"
 	echohl None
 endfunction
 
@@ -22,6 +23,12 @@ if !exists("g:vimclojure#HighlightBuiltins")
 	endif
 endif
 
+if exists("g:clj_highlight_contrib")
+	echohl WarningMsg
+	echomsg "clj_highlight_contrib is deprecated! It's removed without replacement!"
+	echohl None
+endif
+
 if !exists("g:vimclojure#DynamicHighlighting")
 	if exists("g:clj_dynamic_highlighting")
 		call vimclojure#WarnDeprecated("g:clj_dynamic_highlighting",
@@ -34,7 +41,7 @@ endif
 
 if !exists("g:vimclojure#ParenRainbow")
 	if exists("g:clj_paren_rainbow")
-		call vimclojure#WarnDeprecated("g:clj_paren_rainbow"
+		call vimclojure#WarnDeprecated("g:clj_paren_rainbow",
 					\ "vimclojure#ParenRainbow")
 		let vimclojure#ParenRainbow = g:clj_paren_rainbow
 	else
@@ -357,6 +364,17 @@ function! vimclojure#ResultBuffer.CloseBuffer() dict
 	endif
 endfunction
 
+function! s:InvalidateResultBufferIfNecessary(buf)
+	if g:vimclojure#ResultBuffer.__instance != []
+				\ && g:vimclojure#ResultBuffer.__instance[0]._buffer == a:buf
+		let g:vimclojure#ResultBuffer.__instance = []
+	endif
+endfunction
+
+augroup VimClojureResultBuffer
+	" au BufDelete * call s:InvalidateResultBufferIfNecessary(expand("<abuf>"))
+augroup END
+
 " A special result buffer for clojure output.
 let vimclojure#ClojureResultBuffer = copy(vimclojure#ResultBuffer)
 let vimclojure#ClojureResultBuffer["__superResultBufferInit"] =
@@ -407,11 +425,15 @@ function! vimclojure#ExecuteNailWithInput(nail, input, ...)
 					\ [g:vimclojure#NailgunClient, "vimclojure.Nail", a:nail]
 					\ + a:000)
 		let cmd = join(cmdline, " ") . " <" . inputfile
+		" Add hardcore quoting for Windows
+		if has("win32") || has("win64")
+			let cmd = '"' . cmd . '"'
+		endif
 
 		let output = system(cmd)
 
 		if v:shell_error
-			throw "Couldn't execute Nail!\n" . output
+			throw "Error executing Nail! (" . v:shell_error . ")\n" . output
 		endif
 	finally
 		call delete(inputfile)

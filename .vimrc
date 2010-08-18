@@ -43,7 +43,7 @@ compiler ruby                 " Enable compiler support for ruby
 set wildmode=longest:full     " *wild* mode
 set wildignore+=*.o,*~,.lo    " ignore object files
 set wildmenu                  " menu has tab completion
-let maplocalleader=','        " all my macros start with ,
+let maplocalleader=','        " all my shortcuts start with ,
 " Deprecated, using SimpleFold with '\f' now. ,sf to revert
 "set foldmethod=syntax         " fold on syntax automagically, always
 set foldcolumn=4              " 4 lines of column for fold showing, always
@@ -428,7 +428,7 @@ nmap <LocalLeader>tl :set list!<cr>
 "set listchars=tab:▸\ ,eol:¬,trail:-
 set listchars=eol:\ ,tab:»-,trail:·,precedes:…,extends:…,nbsp:‗
 " toggle paste mode
-nmap <LocalLeader>pm :set paste!<cr>
+nmap <LocalLeader>pp :set paste!<cr>
 " toggle wrapping
 nmap <LocalLeader>ww :set wrap!<cr>
 " change directory to that of current file
@@ -445,7 +445,7 @@ nmap <LocalLeader>o  :%foldopen!<cr>
 nmap <LocalLeader>c  :%foldclose!<cr>
 " ,tt will toggle taglist on and off
 nmap <LocalLeader>tt :Tlist<cr>
-" ,nn will toggle NERDTree on and off
+" ,n will toggle NERDTree on and off
 nmap <LocalLeader>n :NERDTreeToggle<cr>
 " When I'm pretty sure that the first suggestion is correct
 map <LocalLeader>st 1z=

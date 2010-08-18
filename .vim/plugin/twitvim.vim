@@ -2,12 +2,12 @@
 " TwitVim - Post to Twitter from Vim
 " Based on Twitter Vim script by Travis Jeffery <eatsleepgolf@gmail.com>
 "
-" Version: 0.5.3
+" Version: 0.5.4
 " License: Vim license. See :help license
 " Language: Vim script
 " Maintainer: Po Shan Cheah <morton@mortonfox.com>
 " Created: March 28, 2008
-" Last updated: June 23, 2010
+" Last updated: August 11, 2010
 "
 " GetLatestVimScripts: 2204 1 twitvim.vim
 " ==============================================================
@@ -464,6 +464,67 @@ EOF
     return signature
 endfunction
 
+" Check if we can use Ruby for HMAC-SHA1 digests.
+function! s:check_ruby_hmac()
+    let can_ruby = 1
+    ruby <<EOF
+begin
+    require 'openssl'
+    require 'base64'
+rescue LoadError
+    VIM.command('let can_ruby = 0')
+end
+EOF
+    return can_ruby
+endfunction
+
+" Compute HMAC-SHA1 digest. (Ruby version)
+function! s:ruby_hmac_sha1_digest(key, str)
+    ruby <<EOF
+require 'openssl'
+require 'base64'
+
+key = VIM.evaluate('a:key')
+str = VIM.evaluate('a:str')
+
+digest = OpenSSL::HMAC.digest(OpenSSL::Digest::Digest.new('sha1'), key, str)
+signature = Base64.encode64(digest).chomp
+
+VIM.command("let signature='#{signature}'")
+EOF
+    return signature
+endfunction
+
+" Check if we can use Tcl for HMAC-SHA1 digests.
+function! s:check_tcl_hmac()
+    let can_tcl = 1
+    tcl <<EOF
+if [catch {
+    package require sha1
+    package require base64
+} result] {
+    ::vim::command "let can_tcl = 0"
+}
+EOF
+    return can_tcl
+endfunction
+
+" Compute HMAC-SHA1 digest. (Tcl version)
+function! s:tcl_hmac_sha1_digest(key, str)
+    tcl <<EOF
+package require sha1
+package require base64
+
+set key [::vim::expr a:key]
+set str [::vim::expr a:str]
+
+set signature [base64::encode [sha1::hmac -bin $key $str]]
+
+::vim::command "let signature = '$signature'"
+EOF
+    return signature
+endfunction
+
 " Find out which method we can use to compute a HMAC-SHA1 digest.
 function! s:get_hmac_method()
     if !exists('s:hmac_method')
@@ -472,6 +533,10 @@ function! s:get_hmac_method()
 	    let s:hmac_method = 'perl'
 	elseif s:get_enable_python() && has('python') && s:check_python_hmac()
 	    let s:hmac_method = 'python'
+	elseif s:get_enable_ruby() && has('ruby') && s:check_ruby_hmac()
+	    let s:hmac_method = 'ruby'
+	elseif s:get_enable_tcl() && has('tcl') && s:check_tcl_hmac()
+	    let s:hmac_method = 'tcl'
 	endif
     endif
     return s:hmac_method
@@ -480,6 +545,25 @@ endfunction
 function! s:hmac_sha1_digest(key, str)
     return s:{s:get_hmac_method()}_hmac_sha1_digest(a:key, a:str)
 endfunction
+
+function! s:reset_hmac_method()
+    unlet! s:hmac_method
+endfunction
+
+function! s:show_hmac_method()
+    echo 'Hmac Method:' s:get_hmac_method()
+endfunction
+
+" For debugging. Reset Hmac method.
+if !exists(":TwitVimResetHmacMethod")
+    command TwitVimResetHmacMethod :call <SID>reset_hmac_method()
+endif
+
+" For debugging. Show current Hmac method.
+if !exists(":TwitVimShowHmacMethod")
+    command TwitVimShowHmacMethod :call <SID>show_hmac_method()
+endif
+
 
 let s:gc_consumer_key = "HyshEU8SbcsklPQ6ouF0g"
 let s:gc_consumer_secret = "U1uvxLjZxlQAasy9Kr5L2YAFnsvYTOqx1bk7uJuezQ"
@@ -729,7 +813,7 @@ function! s:curl_curl(url, login, proxy, proxylogin, parms)
     let error = ""
     let output = ""
 
-    let curlcmd = "curl -s -f -S "
+    let curlcmd = "curl -s -S "
 
     if s:get_twitvim_cert_insecure()
 	let curlcmd .= "-k "
@@ -764,8 +848,11 @@ function! s:curl_curl(url, login, proxy, proxylogin, parms)
     let curlcmd .= '"'.a:url.'"'
 
     let output = system(curlcmd)
+    let errormsg = s:xml_get_element(output, 'error')
     if v:shell_error != 0
 	let error = output
+    elseif errormsg != ''
+	let error = errormsg
     endif
 
     return [ error, output ]
@@ -1083,6 +1170,12 @@ proc make_base64 {s} {
 
 set url [::vim::expr a:url]
 
+if {[string tolower [string range $url 0 7]] == "https://"} {
+    # Load and register support for https URLs.
+    package require tls
+    ::http::register https 443 ::tls::socket
+}
+
 set headers [list]
 
 ::http::config -proxyhost ""
@@ -1168,13 +1261,11 @@ function! s:run_curl(url, login, proxy, proxylogin, parms)
 endfunction
 
 function! s:reset_curl_method()
-    if exists('s:curl_method')	
-	unlet s:curl_method
-    endif
+    unlet! s:curl_method
 endfunction
 
 function! s:show_curl_method()
-    echo 'Method:' s:get_curl_method()
+    echo 'Net Method:' s:get_curl_method()
 endfunction
 
 " For debugging. Reset networking method.
@@ -1186,6 +1277,7 @@ endif
 if !exists(":TwitVimShowMethod")
     command TwitVimShowMethod :call <SID>show_curl_method()
 endif
+
 
 " === End of networking code ===
 
@@ -1344,10 +1436,10 @@ function! s:add_update(output)
 	if twit_bufnr > 0
 	    let curwin = winnr()
 	    execute twit_bufnr . "wincmd w"
-	    set modifiable
+	    setlocal modifiable
 	    call append(insline - 1, line)
 	    execute "normal! ".insline."G"
-	    set nomodifiable
+	    setlocal nomodifiable
 	    let s:curbuffer.buffer = getline(1, '$')
 	    execute curwin .  "wincmd w"
 	endif
@@ -1595,9 +1687,9 @@ function! s:show_inreplyto()
     call insert(s:curbuffer.inreplyto, s:xml_get_element(output, 'in_reply_to_status_id'), lineno + 1)
 
     " Already in the correct buffer so no need to search or switch buffers.
-    set modifiable
+    setlocal modifiable
     call append(lineno, '+ '.line)
-    set nomodifiable
+    setlocal nomodifiable
     let s:curbuffer.buffer = getline(1, '$')
 
     redraw
@@ -1646,9 +1738,9 @@ function! s:do_delete_tweet()
     endif
 
     " Already in the correct buffer so no need to search or switch buffers.
-    set modifiable
+    setlocal modifiable
     normal! dd
-    set nomodifiable
+    setlocal nomodifiable
     let s:curbuffer.buffer = getline(1, '$')
 
     redraw
@@ -1984,7 +2076,7 @@ function! s:twitter_wintext_view(text, wintype, view)
     let curwin = winnr()
     let newwin = s:twitter_win(a:wintype)
 
-    set modifiable
+    setlocal modifiable
 
     " Overwrite the entire buffer.
     " Need to use 'silent' or a 'No lines in buffer' message will appear.
@@ -1993,7 +2085,7 @@ function! s:twitter_wintext_view(text, wintype, view)
     call setline('.', a:text)
     normal! 1G
 
-    set nomodifiable
+    setlocal nomodifiable
 
     " Restore the saved view if provided.
     if a:view != {}

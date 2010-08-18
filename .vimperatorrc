@@ -8,6 +8,9 @@ set guioptions+=m
 source ~/.vimperator/noscript.js
 nnoremap ,n :noscript popup<CR>
 
+" Show status bar in fullscreen mode
+nmap ,ss :js document.getElementById("status-bar").setAttribute("moz-collapsed", false)<CR>
+
 " Download a video from gametrailers
 nmap ,d <C-d>fdownload;squicktime
 

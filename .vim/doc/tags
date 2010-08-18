@@ -475,6 +475,7 @@ TwitVim-ssl-curl	twitvim.txt	/*TwitVim-ssl-curl*
 TwitVim-ssl-perl	twitvim.txt	/*TwitVim-ssl-perl*
 TwitVim-ssl-python	twitvim.txt	/*TwitVim-ssl-python*
 TwitVim-ssl-ruby	twitvim.txt	/*TwitVim-ssl-ruby*
+TwitVim-ssl-tcl	twitvim.txt	/*TwitVim-ssl-tcl*
 TwitVim-switch	twitvim.txt	/*TwitVim-switch*
 TwitVim-timeline-commands	twitvim.txt	/*TwitVim-timeline-commands*
 TwitVim-tips	twitvim.txt	/*TwitVim-tips*
@@ -909,6 +910,7 @@ g:easytags_always_enabled	easytags.txt	/*g:easytags_always_enabled*
 g:easytags_autorecurse	easytags.txt	/*g:easytags_autorecurse*
 g:easytags_cmd	easytags.txt	/*g:easytags_cmd*
 g:easytags_file	easytags.txt	/*g:easytags_file*
+g:easytags_include_members	easytags.txt	/*g:easytags_include_members*
 g:easytags_on_cursorhold	easytags.txt	/*g:easytags_on_cursorhold*
 g:easytags_resolve_links	easytags.txt	/*g:easytags_resolve_links*
 g:fuf_abbrevMap	fuf.txt	/*g:fuf_abbrevMap*

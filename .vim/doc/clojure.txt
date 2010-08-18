@@ -16,9 +16,9 @@ Nailgun Server                      *clj-nailgun-server*
 
 To use the interactive part you have to start the nailgun server via the jar
 file. Make sure, that clojure and clojure-contrib are in your classpath and
-start the com.martiansoftware.nailgun.NGServer class. Example invocation:
+start the vimclojure.nailgun.NGServer class. Example invocation:
 >
-        java -cp clojure.jar:clojure-contrib.jar:vimclojure.jar com.martiansoftware.nailgun.NGServer 127.0.0.1
+        java -cp clojure.jar:clojure-contrib.jar:vimclojure.jar vimclojure.nailgun.NGServer 127.0.0.1
 <
 This may look different depending on your system.
 
@@ -308,6 +308,13 @@ hyphens and (for namespaces) dots. So r-s<C-x><C-o> matches read-string.
 
 Note: Completion of symbols and keywords is also provided via the <C-N>
 functionality of Vim.
+
+Known Issues
+------------
+
+There seems to be a race condition in nailgun. At the moment there is
+no solution to this problem. In case you get errors with valid looking
+input for vim, please contact me.
 
 License
 -------

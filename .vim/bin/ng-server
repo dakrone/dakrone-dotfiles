@@ -74,4 +74,4 @@ fi
 JAVA=${CLOJURE_JAVA:-java}
 OPTS=${CLOJURE_OPTS:-}
 
-exec ${JAVA} ${OPTS} com.martiansoftware.nailgun.NGServer 127.0.0.1 "$@"
+exec ${JAVA} ${OPTS} vimclojure.nailgun.NGServer 127.0.0.1 "$@"

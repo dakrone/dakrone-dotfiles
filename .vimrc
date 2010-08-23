@@ -12,7 +12,8 @@ syntax on
 set ruler                     " show the line number on the bar
 set more                      " use more prompt
 set autoread                  " watch for file changes
-set number                    " line numbers
+"set number                    " line numbers
+set nonumber                  " trying out no line numbers
 set nohidden                  " close the buffer when I close a tab (I use tabs more than buffers)
 set noautowrite               " don't automagically write on :next
 set lazyredraw                " don't redraw when don't have to
@@ -92,7 +93,7 @@ if has("gui_running")
       set guioptions-=L        " no left scrollbar
       set guioptions-=r        " no right scrollbar
       set guioptions-=R        " no right scrollbar
-      set lines=64
+      set lines=66
       set columns=135
       set transparency=0
       set gfn=Monaco:h9.0
@@ -136,6 +137,7 @@ let g:vimclojure#DynamicHighlighting=1 " Dynamically highlight functions
 let vimclojure#NailgunClient="/Users/hinmanm/bin/ng" " Nailgun location
 let vimclojure#WantNailgun=1
 let vimclojure#SplitPos = "right"
+"let vimclojure#SplitSize = 15
 "let g:clj_want_gorilla=1            " Bananas! (Make sure nailgun in is your path)
 
 " Settings for yankring
@@ -306,6 +308,7 @@ endfunction
 function TurnOnClojureFolding()
       setlocal foldexpr=GetClojureFold()
       setlocal foldmethod=expr
+      setlocal foldcolumn=2
 endfunction
 
 autocmd FileType clojure call TurnOnClojureFolding()
@@ -461,6 +464,10 @@ imap jj <Esc>
 nmap F zf%
 " When I use ,sf - return to syntax folding with a big foldcolumn
 nmap <LocalLeader>sf :set foldcolumn=6 foldmethod=syntax<cr>
+" GPG helpers
+nmap <LocalLeader>E :1,$!gpg --armor --encrypt 2>/dev/null<CR>
+nmap <LocalLeader>ES :1,$!gpg --armor --encrypt --sign 2>/dev/null<CR>
+nmap <LocalLeader>S :1,$!gpg --clearsign 2>/dev/null<CR>
 " ruby helpers
 iab rbang #!/usr/bin/env ruby -w<cr> encoding: UTF-8<cr>
 " For mac users (using the 'apple' key)

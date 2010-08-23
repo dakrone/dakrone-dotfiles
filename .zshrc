@@ -35,7 +35,7 @@ export CLOJURE_EXT=/Users/hinmanm/.vimclojure:/Users/hinmanm/.cljr/lib:./lib:./c
 export CLOJURE_OPTS="-server -Xmx1024m -XX:+UseConcMarkSweepGC -XX:+HeapDumpOnOutOfMemoryError"
 
 # cljr options
-export JVM_OPTS="-server -Xmx1024m -XX:+UseConcMarkSweepGC -XX:+HeapDumpOnOutOfMemoryError"
+export JVM_OPTS="-server -Xmx512m -XX:+UseConcMarkSweepGC -XX:+HeapDumpOnOutOfMemoryError"
 
 # manpath
 export MANPATH=$MANPATH:/usr/local/man:/opt/local/share/man
@@ -143,6 +143,8 @@ alias screen='TERM=xterm-color && /opt/local/bin/screen'
 alias rvim='gvim --remote-tab-silent'
 alias todo='rvim ~/vimwiki/ToDo.wiki'
 alias msync='rsync -av --ignore-existing --delete ~/Music/iTunes/iTunes\ Music/* dagger:~/Music/'
+# Use MacVim's vim for terminal sessions, since it has everything compiled in.
+alias vim='/Applications/MacVim.app/Contents/MacOS/Vim'
 
 
 # history

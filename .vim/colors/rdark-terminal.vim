@@ -12,13 +12,13 @@
 "
 " Info: As the original background color is not available in 256 color mode
 " I've set it to black. But you can set the color your terminal should display
-" for black to #263033 and you will have almost a 1:1 copy of the gui scheme.
-" I also suggest to set the second black color to #2E3436. (It is the
+" for black to #1e2426 and you will have almost a 1:1 copy of the gui scheme.
+" I also suggest to set the second black color to #2c3032. (It is the
 " background color which ist used for NonText)
 " If you're using a terminal which reads from Xdefaults (e.g. urxvt) you just
 " do this in your .Xdefaults:
-" "*color0:	rgb:26/30/33"
-" "*color8:	rgb:2E/34/36"
+" "*color0:	rgb:1e/24/26"
+" "*color8:	rgb:2c/30/32"
 "
 
 hi clear
@@ -82,7 +82,7 @@ hi Title term=bold cterm=bold ctermbg=bg ctermfg=215
 hi VisualNOS term=bold,underline cterm=bold,underline ctermbg=bg ctermfg=fg
 hi WarningMsg term=NONE cterm=NONE ctermbg=bg ctermfg=196
 hi WildMenu term=NONE cterm=NONE ctermbg=233 ctermfg=255
-hi Folded term=NONE cterm=NONE ctermbg=24 ctermfg=188
+hi Folded term=NONE cterm=NONE ctermbg=25 ctermfg=188
 hi phpSemicolon term=NONE cterm=NONE ctermbg=bg ctermfg=102
 hi phpFunctions term=NONE cterm=NONE ctermbg=bg ctermfg=188
 hi phpParent term=NONE cterm=NONE ctermbg=bg ctermfg=102

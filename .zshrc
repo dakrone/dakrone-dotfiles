@@ -169,23 +169,25 @@ function git_dirty_flag() {
 function parse_git_branch() {
   git branch --no-color 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/ (\1)/'
 }
+
+get-git-branch() {
+      ref=$(git symbolic-ref HEAD 2>/dev/null | cut -d'/' -f3,4,5)
+      echo $ref
+}
+
 # Perforce describe (with color)
 function pdesc() {
       p4 describe $1 | p4c
 }
 
 
-# prompt (if running screen, show window #)
-#if [ x$WINDOW != x ]; then
-    # [5:hinmanm@dagger:~]% 
-    #export PS1="%{$fg[blue]%}[%{$fg[cyan]%}$WINDOW%{$fg[blue]%}:%{$fg[green]%}%n%{$fg[cyan]%}@%{$fg[green]%}%m%{$fg[blue]%}:%{$fg[magenta]%}%~%{$fg[blue]%}]%{$reset_color%}%# "
-    #export PS1="%{$fg[magenta]%}$WINDOW %{$fg[blue]%}‹ %{$fg[green]%}%~%{$fg[blue]%} › %{$fg[green]%}∴%{$reset_color%} "
-#else
-    # [hinmanm@dagger:~]% 
-    #export PS1="%{$fg[blue]%}[%{$fg[green]%}%n%{$fg[cyan]%}@%{$fg[green]%}%m%{$fg[blue]%}:%{$fg[magenta]%}%~%{$fg[blue]%}]%{$reset_color%}%# "
-    export PS1="%{$fg[grey]%}‹ %{$fg[blue]%}%~%{$fg[grey]%} › %{$fg[green]%}∴%{$reset_color%} "
-#fi
-export RPRMOPT="%{$reset_color%}"
+### Prompt ###
+setopt prompt_subst
+export PS1="%{$fg[grey]%}‹ %{$fg[blue]%}%~%{$fg[grey]%} %{$fg[green]%}$(get-git-branch)%{$fg[grey]%}› %{$fg[green]%}∴%{$reset_color%} "
+autoload -U promptinit
+promptinit
+
+export RPROMPT="%{$reset_color%}"
 
 # format titles for screen and rxvt
 function title() {
@@ -212,13 +214,8 @@ function title() {
 function precmd() {
   title "zsh" "$USER@%m" "%55<...<%~"
 
-  # Print the regular prompt, or the lightning bolt if uncommitted git files
-  #flag=`git_dirty_flag`
-  #if [ -n "$flag" ]; then
-    #export PS1="$PS1`git_dirty_flag`"
-  #else
-    #export PS1="$PS1%# "
-  #fi
+  # Set the git branch in prompt
+  export PS1="%{$fg[grey]%}‹ %{$fg[blue]%}%~%{$fg[grey]%} %{$fg[green]%}$(get-git-branch)%{$fg[grey]%}› %{$fg[green]%}∴%{$reset_color%} "
 }
 
 # preexec is called just before any command line is executed

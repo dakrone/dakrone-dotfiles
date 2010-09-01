@@ -98,6 +98,16 @@ if has("gui_running")
       set transparency=0
       set gfn=Monaco:h9.0
       set clipboard=unnamed
+
+      function Fullscreen()
+            set lines=69
+            set columns=239
+      endfunction
+
+      function Restorescreen()
+            set lines=66
+            set columns=135
+      endfunction
 end
 
 if exists('&t_SI')
@@ -147,7 +157,8 @@ let g:yankring_history_file="yank.txt"
 " Settings for twitvim
 let twitvim_login=''                " Requires using ,ts to input your username/password
 let g:twitvim_enable_python=1       " Use python for fetchinng the tweets
-let g:twitvim_count=30              " Grab 30 tweets
+let g:twitvim_count=50              " Grab 50 tweets
+let g:twitvim_browser_cmd = 'open'  " browser to use
 " Use SSL for twitter
 let twitvim_api_root = "https://twitter.com"
 map <LocalLeader>tf :FriendsTwitter<cr>

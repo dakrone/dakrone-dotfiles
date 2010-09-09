@@ -19,8 +19,8 @@ export PATH=$PATH:~/.gem/ruby/1.8/bin
 export PATH=$PATH:~/.gem/ruby/1.9/bin
 # Path for git
 #export PATH=$PATH:/usr/local/git/bin
-# Path for liebke's clj - http://github.com/liebke/clj
-export PATH=/Users/hinmanm/.cljr/bin:$PATH
+# Path for liebke's cljr - http://github.com/liebke/cljr
+#export PATH=/Users/hinmanm/.cljr/bin:$PATH
 
 # Chris' ruby stuff
 export RUBYLIB=~/src/chrisbin/ruby

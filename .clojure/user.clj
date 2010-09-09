@@ -1,12 +1,18 @@
 ;(use 'clojure.contrib.repl-utils)
 
 (use 'clojure.stacktrace) 
+(require '[clj-stacktrace.repl :as stacktrace])
 
 ; Use pprint, depending on what version of Clojure I'm in
 (if (< (:minor *clojure-version*) 2)
   (use 'clojure.contrib.pprint)
   (use 'clojure.pprint)) 
 
+
+; debug macro
+(defmacro dbg
+  [x]
+  `(let [x# ~x] (println "dbg:" '~x "=" x#) x#))
 
 ; Show class methods for an object
 (defn class-methods [x]
@@ -39,3 +45,5 @@ values."
   `(clojure.main/repl
     :prompt #(print "dr => ")
     :eval (partial eval-with-locals (local-bindings))))
+
+

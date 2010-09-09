@@ -48,9 +48,9 @@ export PAGER=less
 #export CVSROOT=:ext:dakrone@cvsup.rawpacket.org:/home/project/rawpacket/cvs
 
 # CVS for Avamar
-export CVSROOT=:ext:hinmam@cvs.avamar.com:/antimatter/home/codebase/repository
-export CVS_RSH=ssh
-export CVS_SERVER=/opt/sfw/bin/cvs
+export CVSROOT=:pserver:hinmam@avsource.asl.lab.emc.com:/home/cvsroot/repository
+#export CVS_RSH=ssh
+#export CVS_SERVER=/opt/sfw/bin/cvs
 export CVSEDITOR=vim
 
 

@@ -1,6 +1,6 @@
 " Vim script
 " Maintainer: Peter Odding <peter@peterodding.com>
-" Last Change: June 5, 2010
+" Last Change: August 31, 2010
 " URL: http://peterodding.com/code/vim/profile/autoload/xolox/escape.vim
 
 " pattern() -- convert a string into a :substitute pattern that matches the string literally {{{1
@@ -17,7 +17,7 @@ endfunction
 
 function! xolox#escape#substitute(string)
   if type(a:string) == type('')
-    let string = escape(a:string, '\&~')
+    let string = escape(a:string, '\&~%')
     return substitute(string, '\n', '\\r', 'g')
   endif
   return ''

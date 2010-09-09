@@ -1,6 +1,6 @@
 " Vim script
 " Author: Peter Odding <peter@peterodding.com>
-" Last Change: August 11, 2010
+" Last Change: September 6, 2010
 " URL: http://peterodding.com/code/vim/easytags/
 
 let s:script = expand('<sfile>:p:~')
@@ -14,7 +14,7 @@ function! easytags#autoload() " {{{2
     if pathname != ''
       let tags_outdated = getftime(pathname) > getftime(easytags#get_tagsfile())
       if tags_outdated || !easytags#file_has_tags(pathname)
-        call easytags#update(1, 0)
+        call easytags#update(1, 0, [])
       endif
     endif
     " Apply highlighting of tags in global tags file to current buffer?
@@ -36,13 +36,14 @@ function! easytags#autoload() " {{{2
   endtry
 endfunction
 
-function! easytags#update(silent, filter_tags, ...) " {{{2
+function! easytags#update(silent, filter_tags, filenames) " {{{2
   try
+    let s:cached_filenames = {}
     let starttime = xolox#timer#start()
-    let cfile = s:check_cfile(a:silent, a:filter_tags, a:0 > 0)
+    let cfile = s:check_cfile(a:silent, a:filter_tags, !empty(a:filenames))
     let tagsfile = easytags#get_tagsfile()
     let firstrun = !filereadable(tagsfile)
-    let cmdline = s:prep_cmdline(cfile, tagsfile, firstrun, a:000)
+    let cmdline = s:prep_cmdline(cfile, tagsfile, firstrun, a:filenames)
     let output = s:run_ctags(starttime, cfile, tagsfile, firstrun, cmdline)
     if !firstrun
       let num_filtered = s:filter_merge_tags(a:filter_tags, tagsfile, output)
@@ -60,6 +61,8 @@ function! easytags#update(silent, filter_tags, ...) " {{{2
     return 1
   catch
     call xolox#warning("%s: %s (at %s)", s:script, v:exception, v:throwpoint)
+  finally
+    unlet s:cached_filenames
   endtry
 endfunction
 
@@ -114,11 +117,17 @@ function! s:prep_cmdline(cfile, tagsfile, firstrun, arguments) " {{{3
     endif
     let have_args = 1
   else
-    for fname in a:arguments
-      let matches = split(expand(fname), "\n")
-      if !empty(matches)
-        call extend(cmdline, map(matches, 'shellescape(v:val)'))
+    for arg in a:arguments
+      if arg =~ '^-'
+        call add(cmdline, arg)
         let have_args = 1
+      else
+        let matches = split(expand(arg), "\n")
+        if !empty(matches)
+          call map(matches, 'shellescape(s:canonicalize(v:val))')
+          call extend(cmdline, matches)
+          let have_args = 1
+        endif
       endif
     endfor
   endif
@@ -156,7 +165,6 @@ function! s:filter_merge_tags(filter_tags, tagsfile, output) " {{{3
   let [headers, entries] = easytags#read_tagsfile(a:tagsfile)
   call s:set_tagged_files(entries)
   let filters = []
-  let s:cached_filenames = {}
   let tagged_files = s:find_tagged_files(a:output)
   if !empty(tagged_files)
     call add(filters, '!has_key(tagged_files, s:canonicalize(get(v:val, 1)))')
@@ -168,7 +176,6 @@ function! s:filter_merge_tags(filter_tags, tagsfile, output) " {{{3
   if !empty(filters)
     call filter(entries, join(filters, ' && '))
   endif
-  unlet s:cached_filenames
   let num_filtered = num_old_entries - len(entries)
   call map(entries, 'join(v:val, "\t")')
   call extend(entries, a:output)

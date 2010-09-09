@@ -1,10 +1,10 @@
 " Vim plug-in
 " Author: Peter Odding <peter@peterodding.com>
-" Last Change: August 11, 2010
+" Last Change: September 6, 2010
 " URL: http://peterodding.com/code/vim/easytags/
 " Requires: Exuberant Ctags (http://ctags.sf.net)
 " License: MIT
-" Version: 2.1.3
+" Version: 2.1.7
 
 " Support for automatic update using the GLVS plug-in.
 " GetLatestVimScripts: 3114 1 :AutoInstall: easytags.zip
@@ -59,7 +59,7 @@ function! s:InitEasyTags(version)
   " On Ubuntu Linux, Exuberant Ctags is installed as `ctags'. On Debian Linux,
   " Exuberant Ctags is installed as `exuberant-ctags'. On Free-BSD, Exuberant
   " Ctags is installed as `exctags'.
-  for name in ['ctags', 'exuberant-ctags', 'esctags']
+  for name in ['ctags', 'exuberant-ctags', 'exctags']
     if s:CheckCtags(name, a:version)
       let g:easytags_cmd = name
       return 1
@@ -150,7 +150,7 @@ call s:RegisterTagsFile()
 
 " The :UpdateTags and :HighlightTags commands. {{{1
 
-command! -bar -bang -nargs=* -complete=file UpdateTags call easytags#update(0, <q-bang> == '!', <f-args>)
+command! -bar -bang -nargs=* -complete=file UpdateTags call easytags#update(0, <q-bang> == '!', [<f-args>])
 command! -bar HighlightTags call easytags#highlight()
 
 " Automatic commands. {{{1
@@ -165,7 +165,6 @@ augroup PluginEasyTags
     autocmd CursorHold,CursorHoldI * call easytags#autoload()
     autocmd BufReadPost * unlet! b:easytags_last_highlighted
   endif
-  autocmd User PublishPre HighlightTags
 augroup END
 
 " }}}1

@@ -38,3 +38,4 @@ cp -f -v ~/.irssi/default.theme .irssi/
 cp -f -v ~/.irssi/tzu.theme .irssi/
 cp -f -v ~/.tmux.conf .
 cp -f -v ~/.config/uzbl/config .config/uzbl/
+cp -f -v ~/.cljr/user.clj .

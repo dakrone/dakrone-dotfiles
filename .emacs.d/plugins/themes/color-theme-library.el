@@ -989,7 +989,7 @@ widget, custom, latex, ediff."
   (color-theme-install
    '(color-theme-billw
      ((foreground-color . "cornsilk")
-      (background-color . "#222222")
+      (background-color . "#1E2426")
       (mouse-color . "black")
       (cursor-color . "white")
       (border-color . "black")
@@ -1016,9 +1016,10 @@ widget, custom, latex, ediff."
      (holiday-face ((t (:background "red"))))
      (show-paren-match-face ((t (:background "deepskyblue4"))))
      (show-paren-mismatch-face ((t (:foreground "white" :background "red"))))
-     (font-lock-comment-face ((t (:foreground "orange"))))
+     (font-lock-comment-face ((t (:foreground "#656763"))))
 ;;     (font-lock-comment-face ((t (:foreground "gold"))))
-     (font-lock-string-face ((t (:foreground "lightsalmon"))))
+     ;(font-lock-string-face ((t (:foreground "lightsalmon"))))
+     (font-lock-string-face ((t (:foreground "#8AE234"))))
 ;;     (font-lock-string-face ((t (:foreground "orange"))))
      (font-lock-keyword-face ((t (:foreground "cyan1"))))
      (font-lock-builtin-face ((t (:foreground "LightSteelBlue"))))

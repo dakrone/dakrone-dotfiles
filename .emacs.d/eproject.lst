@@ -1,0 +1,15 @@
+;; -*- mode: Lisp; -*-
+
+(setq prj-version nil)
+
+(setq prj-list
+      '(("eproject-0.3" "/Users/zkim/.emacs.d/elpa/eproject-0.3/")))
+
+(setq prj-last-open nil)
+
+(setq prj-frame-pos
+      '((top . 24)
+	(left . 0)
+	(width . 176)
+	(height . 50)))
+

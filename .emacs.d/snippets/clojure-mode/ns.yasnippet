@@ -1,0 +1,10 @@
+# -*- mode: snippet -*-
+# name: ns
+# key: ns
+# binding: "keybinding"
+# --
+(ns ${1:`(clojure-namespace-for-buffer)`}
+  (:use $2)
+  (:import $3))
+
+$0

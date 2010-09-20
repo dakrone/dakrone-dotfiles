@@ -39,5 +39,5 @@ cp -f -v ~/.irssi/tzu.theme .irssi/
 cp -f -v ~/.tmux.conf .
 cp -f -v ~/.config/uzbl/config .config/uzbl/
 
-mkmdir -p .emacs.d
+mkdir -p .emacs.d
 cp -f -rv ~/.emacs.d .

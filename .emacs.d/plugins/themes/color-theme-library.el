@@ -981,6 +981,7 @@ Includes faces for font-lock, widget, custom, speedbar."
      (show-paren-mismatch-face ((t (:foreground "white" :background "purple")))))))
 
 ;; Modified zkim March 2010
+;; Modified dakrone Sept 2010
 (defun color-theme-billw ()
   "Cornsilk on black.
 Includes info, diary, font-lock, eshell, sgml, message, gnus,
@@ -1029,7 +1030,8 @@ widget, custom, latex, ediff."
      (font-lock-type-face ((t (:foreground "yellow1"))))
      (font-lock-constant-face ((t (:foreground "salmon"))))
      (font-lock-warning-face ((t (:foreground "gold" :bold t))))
-     (blank-space-face ((t (:background "LightGray"))))
+     ;(blank-space-face ((t (:background "LightGray"))))
+     (blank-space-face ((t (:background "#1e2426"))))
      (blank-tab-face ((t (:foreground "black" :background "cornsilk"))))
      (highline-face ((t (:background "gray35"))))
      (eshell-ls-directory-face ((t (:foreground "green" :bold t))))

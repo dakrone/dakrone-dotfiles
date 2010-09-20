@@ -48,6 +48,8 @@
 (require 'parenface)
 
 ; Clojure stuff
+(eval-after-load 'slime '(setq slime-protocol-version 'ignore))
+
 (defun lisp-enable-paredit-hook () (paredit-mode 1))
 (add-hook 'clojure-mode-hook 'lisp-enable-paredit-hook)
 
@@ -59,7 +61,7 @@
 (defclojureface clojure-brackets     "SteelBlue" "Clojure brackets")
 (defclojureface clojure-keyword      "#729FCF"   "Clojure keywords")
 (defclojureface clojure-namespace    "#c476f1"   "Clojure namespace")
-(defclojureface clojure-java-call    "#4B7ECF"   "Clojure Java calls")
+(defclojureface clojure-java-call    "#729FCF"   "Clojure Java calls")
 (defclojureface clojure-special      "#1BF21B"   "Clojure special")
 (defclojureface clojure-double-quote "#1BF21B"   "Clojure special" (:background "unspecified"))
 
@@ -76,6 +78,81 @@
 
 (add-hook 'clojure-mode-hook 'tweak-clojure-syntax)
 
+; This code makes % act like the buffer name, similar to Vim
+(define-key minibuffer-local-map "%"
+  (function
+   (lambda ()
+     (interactive)
+     (insert (file-name-nondirectory 
+	      (buffer-file-name 
+	       (window-buffer (minibuffer-selected-window))))))))
+
+
+; Anti-aliasing
+;(setq mac-allow-anti-aliasing t)    ;; turn on anti-aliasing (default)
+(setq mac-allow-anti-aliasing nil)  ;; turn off anti-aliasing
+
+; Growl support on OSX
+(defun bja-growl-notification (title message &optional sticky)
+  "Send a Growl notification"
+  (do-applescript
+   (format "tell application \"GrowlHelperApp\"
+              notify with name \"Emacs Notification\" title \"%s\" description \"%s\" application name \"Emacs.app\" sticky %s
+           end tell"
+           title
+           (replace-regexp-in-string "\"" "''" message)
+           (if sticky "yes" "no"))))
+
+
+;; ERC stuff
+; Only track my nick(s)
+(defadvice erc-track-find-face (around erc-track-find-face-promote-query activate)
+  (if (erc-query-buffer-p)
+      (setq ad-return-value (intern "erc-current-nick-face"))
+    ad-do-it))
+
+(setq erc-keywords '("dakrone" "dakrone_" "dakrone__"))
+
+(setq erc-track-exclude-types '("JOIN" "NICK" "PART" "QUIT" "MODE"
+                                "324" "329" "332" "333" "353" "477"))
+
+(defun clean-message (s)
+  (setq s (replace-regexp-in-string "'" "&apos;"
+  (replace-regexp-in-string "\"" "&quot;"
+  (replace-regexp-in-string "&" "&"
+  (replace-regexp-in-string "<" "&lt;"
+  (replace-regexp-in-string ">" "&gt;" s)))))))
+
+(defun call-growl (matched-type nick msg)
+  (let* ((cmsg  (split-string (clean-message msg)))
+        (nick   (first (split-string nick "!")))
+        (msg    (mapconcat 'identity (rest cmsg) " ")))
+    (bja-growl-notification nick msg)))
+
+(add-hook 'erc-text-matched-hook 'call-growl)
+
+(setq erc-button-url-regexp
+      "\\([-a-zA-Z0-9_=!?#$@~`%&*+\\/:;,]+\\.\\)+[-a-zA-Z0-9_=!?#$@~`%&*+\\/:;,]*[-a-zA-Z0-9\\/]")
+
+(and
+  (require 'erc-highlight-nicknames)
+  (add-to-list 'erc-modules 'highlight-nicknames)
+  (erc-update-modules))
+
+;; Enable logging
+
+(setq erc-log-channels-directory "~/.erc/logs/")
+(setq erc-save-buffer-on-part t)
+(defadvice save-buffers-kill-emacs (before save-logs (arg) activate)
+(save-some-buffers t (lambda () (when (eq major-mode 'erc-mode) t))))
+
+;; Launch
+
+;(setq erc-autojoin-channels-alist
+      ;'(("freenode.net" "#clojure")))
+
+;(erc-select :server "irc.freenode.net" :port 6667 :nick "yournick")
+
 
 ; Kill and Yank lines intelligently,
 ; causes:
@@ -83,9 +160,11 @@
 ; C-y to yank whole line
 (require 'whole-line-or-region)
 
+; Gist support
+(require 'gist)
 
 (set-default-font "Monaco")
-(set-face-attribute 'default nil :height 95)
+(set-face-attribute 'default nil :height 90)
 
 (global-set-key [C-tab] 'other-window)
 (global-set-key [C-S-tab] 
@@ -100,8 +179,8 @@
 
 ;; Appearance
 ;;; Transparency
-(set-frame-parameter (selected-frame) 'alpha '(96 50))
-(add-to-list 'default-frame-alist '(alpha 96 50))
+(set-frame-parameter (selected-frame) 'alpha '(100 25))
+(add-to-list 'default-frame-alist '(alpha 100 25))
 
 ;;; Color Theme
 (color-theme-initialize)
@@ -457,3 +536,9 @@
 
 (load-file "~/.emacs.d/.keys")
 
+; Viper-mode
+(require 'viper)
+(setq viper-mode t)
+(setq viper-always t)
+(add-hook 'fundamental-mode-hook '(lambda () (viper-mode t)))
+(add-to-list 'viper-vi-state-mode-list 'help-mode)

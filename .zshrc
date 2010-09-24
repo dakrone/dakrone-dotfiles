@@ -1,3 +1,5 @@
+OS=$(uname)
+
 # autoloads
 autoload -U compinit
 autoload -U promptinit
@@ -7,7 +9,7 @@ compinit
 promptinit
 
 # path
-export PATH=~/bin:/opt/local/bin:/usr/local/bin:$PATH:/usr/local/sbin:/usr/local/sbin:/usr/libexec:/opt/local/sbin:/usr/local/mysql/bin
+export PATH=/opt/local/bin:/usr/local/bin:$PATH:/usr/local/sbin:/usr/local/sbin:/usr/libexec:/opt/local/sbin:/usr/local/mysql/bin
 # Path for Matasano's blackbag
 export PATH=/usr/local/bin/blackbag:$PATH
 # Path for ruby gems
@@ -21,6 +23,8 @@ export PATH=$PATH:~/.gem/ruby/1.9/bin
 #export PATH=$PATH:/usr/local/git/bin
 # Path for liebke's cljr - http://github.com/liebke/cljr
 #export PATH=/Users/hinmanm/.cljr/bin:$PATH
+# path for maven
+export PATH=$PATH:/opt/apache-maven-2.2.1
 
 # Chris' ruby stuff
 export RUBYLIB=~/src/chrisbin/ruby
@@ -36,6 +40,9 @@ export CLOJURE_OPTS="-server -Xmx1024m -XX:+UseConcMarkSweepGC -XX:+HeapDumpOnOu
 
 # cljr options
 export JVM_OPTS="-server -Xmx512m -XX:+UseConcMarkSweepGC -XX:+HeapDumpOnOutOfMemoryError"
+
+# Java opts (leiningen uses these)
+export JAVA_OPTS="-server -Xmx512m -XX:+UseConcMarkSweepGC -XX:+HeapDumpOnOutOfMemoryError"
 
 # manpath
 export MANPATH=$MANPATH:/usr/local/man:/opt/local/share/man
@@ -60,18 +67,15 @@ export RSPEC=true
 # Source j.sh
 source ~/bin/j.sh
 
-# Resty
-. ~/bin/resty
-
 # rvm stuff:
 if [ -s ~/.rvm/scripts/rvm ] ; then source ~/.rvm/scripts/rvm ; fi
 # Set default ruby install
 rvm default
 
-# path for maven
-export PATH=$PATH:/opt/apache-maven-2.2.1
+# Always override with my personal bin
+export PATH=~/bin:$PATH
 
-# IRBRC
+# IRBRC for RVM
 export IRBRC=~/.irbrc
 
 # Perforce
@@ -142,9 +146,14 @@ alias tmux='tmux -2'
 alias screen='TERM=xterm-color && /opt/local/bin/screen'
 alias rvim='gvim --remote-tab-silent'
 alias todo='rvim ~/vimwiki/ToDo.wiki'
-alias msync='rsync -av --ignore-existing --delete ~/Music/iTunes/iTunes\ Music/* dagger:~/Music/'
-# Use MacVim's vim for terminal sessions, since it has everything compiled in.
-alias vim='/Applications/MacVim.app/Contents/MacOS/Vim'
+
+if [[ $OS == "Darwin" ]]; then
+	# Use MacVim's vim for terminal sessions, since it has everything compiled in.
+	alias msync='rsync -av --ignore-existing --delete ~/Music/iTunes/iTunes\ Music/* dagger:~/Music/'
+	alias vim='/Applications/MacVim.app/Contents/MacOS/Vim'
+	alias emacs='/Applications/Emacs.app/Contents/MacOS/Emacs'
+	alias emacsclient='/Applications/Emacs.app/Contents/MacOS/bin/emacsclient'
+fi
 
 
 # history

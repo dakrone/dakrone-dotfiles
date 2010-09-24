@@ -1,20 +1,25 @@
 servers = (
   {
-    address = "irc.freenode.net";
-    chatnet = "Freenode";
+    address = "p4fsi4ockecnea7l.onion";
+    chatnet = "freenode";
     port = "6667";
-    autoconnect = "No";
+    autoconnect = "yes";
   }
 );
+#servers = (
+#  {
+#    address = "irc.freenode.net";
+#    chatnet = "Freenode";
+#    port = "6667";
+#    autoconnect = "No";
+#  }
+#);
 
-chatnets = { Freenode = { type = "IRC"; }; };
+chatnets = { freenode = { type = "IRC"; }; };
 
 channels = (
-  { name = "#rawpacket"; chatnet = "Freenode"; autojoin = "yes"; },
-  { name = "#newsbeuter"; chatnet = "Freenode"; autojoin = "yes"; },
-  { name = "#boulder.rb"; chatnet = "Freenode"; autojoin = "yes"; },
-  { name = "#clojure"; chatnet = "Freenode"; autojoin = "yes"; },
-  { name = "#ruby"; chatnet = "Freenode"; autojoin = "yes"; }
+  { name = "#rawpacket"; chatnet = "freenode"; autojoin = "yes"; },
+  { name = "#clojure"; chatnet = "freenode"; autojoin = "yes"; }
 );
 
 statusbar = {
@@ -129,17 +134,17 @@ statusbar = {
   };
 };
 settings = {
-  core = {
-    real_name = "Lee";
-    user_name = "dakrone";
-    nick = "dakrone";
-  };
+  core = { real_name = "Lee"; user_name = "dakrone"; nick = "dakrone"; };
   "fe-text" = { actlist_sort = "refnum"; };
   "fe-common/core" = {
     autolog = "yes";
     theme = "tzu.theme";
     timestamps = "yes";
     completion_char = ",";
+    activity_hide_level = "parts joins quits nicks modes";
   };
 };
 logs = { };
+ignores = (
+  { level = "JOINS PARTS QUITS MODES"; channels = ( "#clojure" ); }
+);

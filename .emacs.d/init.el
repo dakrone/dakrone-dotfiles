@@ -37,6 +37,7 @@
 (require 'paredit)
 (require 'yasnippet-bundle)
 (require 'clojure-mode)
+(require 'durendal)
 
 ;; TODELETE: (require 'project-buffer-mode) 
 
@@ -77,6 +78,14 @@
             )))
 
 (add-hook 'clojure-mode-hook 'tweak-clojure-syntax)
+
+;; Collapse fn declarations into fancy 'f', stolen shamelessly from Technomancy:
+(eval-after-load 'clojure-mode
+  '(font-lock-add-keywords
+    'clojure-mode `(("(\\(fn\\>\\)"
+                     (0 (progn (compose-region (match-beginning 1)
+                                               (match-end 1) "ƒ")
+                               nil))))))
 
 ; This code makes % act like the buffer name, similar to Vim
 (define-key minibuffer-local-map "%"

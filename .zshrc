@@ -155,6 +155,8 @@ if [[ $OS == "Darwin" ]]; then
 	alias emacsclient='/Applications/Emacs.app/Contents/MacOS/bin/emacsclient'
 fi
 
+alias ec='emacsclient'
+
 
 # history
 HISTFILE=$HOME/.zsh-history

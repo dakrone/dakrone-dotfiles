@@ -2,6 +2,7 @@
 
 (use 'clojure.stacktrace) 
 (require '[clj-stacktrace.repl :as stacktrace])
+;(use 'cd-client.core)
 
 ; Use pprint, depending on what version of Clojure I'm in
 (if (< (:minor *clojure-version*) 2)

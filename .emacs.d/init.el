@@ -42,7 +42,7 @@
 ;; TODELETE: (require 'project-buffer-mode) 
 
 ;; Command-enter -> fullscreen
-(global-set-key (kbd "M-RET") 'ns-toggle-fullscreen)
+(global-set-key (kbd "M-S-RET") 'ns-toggle-fullscreen)
 
 
 ; Dim parens
@@ -86,6 +86,18 @@
                      (0 (progn (compose-region (match-beginning 1)
                                                (match-end 1) "ƒ")
                                nil))))))
+
+;; use spaces instead of smart tabs for clojure-mode
+(eval-after-load 'clojure-mode '(setq-default indent-tabs-mode nil))
+
+;; Lazytest indention in clojure
+(eval-after-load 'clojure-mode
+  '(define-clojure-indent
+     (describe 'defun)
+     (testing 'defun)
+     (given 'defun)
+     (it 'defun)
+     (do-it 'defun)))
 
 ; This code makes % act like the buffer name, similar to Vim
 (define-key minibuffer-local-map "%"
@@ -351,7 +363,7 @@
 (define-key global-map "\C-ca" 'org-agenda)
 (setq org-log-done t)
 
-(setq journal-root-dir "/Users/zkim/Dropbox/org/")
+(setq journal-root-dir "/Users/hinmanm/Dropbox/org/")
 (defun today-file-name () (concat journal-root-dir (format-time-string "%Y-%m-%d") ".org"))
 
 (defun today-org ()
@@ -494,20 +506,20 @@
 
 (require 'yaml-mode)
 
-(load-file "~/.emacs.d/plugins/cedet/common/cedet.el")
-(global-ede-mode t)
-(semantic-load-enable-minimum-features)
-(require 'semantic-ia)
+;(load-file "~/.emacs.d/plugins/cedet/common/cedet.el")
+;(global-ede-mode t)
+;(semantic-load-enable-minimum-features)
+;(require 'semantic-ia)
 
-(add-to-list 'load-path "~/.emacs.d/plugins/ecb240")
-(require 'ecb)
-(require 'ecb-autoloads)
-(setq ecb-tip-of-the-day nil)
+;(add-to-list 'load-path "~/.emacs.d/plugins/ecb240")
+;(require 'ecb)
+;(require 'ecb-autoloads)
+;(setq ecb-tip-of-the-day nil)
 ;(ecb-activate)
 
 (setq inhibit-startup-screen t)
-(today-org)
-(setq initial-buffer-choice (today-file-name))
+;(today-org)
+;(setq initial-buffer-choice (today-file-name))
 
 (custom-set-variables
   ;; custom-set-variables was added by Custom.
@@ -515,7 +527,8 @@
   ;; Your init file should contain only one such instance.
   ;; If there is more than one, they won't work right.
  '(ecb-layout-window-sizes (quote (("left8" (0.24203821656050956 . 0.2857142857142857) (0.24203821656050956 . 0.22448979591836735) (0.24203821656050956 . 0.2857142857142857) (0.24203821656050956 . 0.1836734693877551)))))
- '(ecb-options-version "2.40"))
+ '(ecb-options-version "2.40")
+ '(org-agenda-files (quote ("~/Dropbox/org/2010-10-07.org"))))
 (custom-set-faces
   ;; custom-set-faces was added by Custom.
   ;; If you edit it by hand, you could mess it up, so be careful.
@@ -546,8 +559,8 @@
 (load-file "~/.emacs.d/.keys")
 
 ; Viper-mode
-(require 'viper)
-(setq viper-mode t)
-(setq viper-always t)
-(add-hook 'fundamental-mode-hook '(lambda () (viper-mode t)))
-(add-to-list 'viper-vi-state-mode-list 'help-mode)
+;(require 'viper)
+;(setq viper-mode t)
+;(setq viper-always t)
+;(add-hook 'fundamental-mode-hook '(lambda () (viper-mode t)))
+;(add-to-list 'viper-vi-state-mode-list 'help-mode)

@@ -2,12 +2,12 @@
 " TwitVim - Post to Twitter from Vim
 " Based on Twitter Vim script by Travis Jeffery <eatsleepgolf@gmail.com>
 "
-" Version: 0.5.5
+" Version: 0.5.6
 " License: Vim license. See :help license
 " Language: Vim script
 " Maintainer: Po Shan Cheah <morton@mortonfox.com>
 " Created: March 28, 2008
-" Last updated: August 16, 2010
+" Last updated: September 19, 2010
 "
 " GetLatestVimScripts: 2204 1 twitvim.vim
 " ==============================================================
@@ -383,7 +383,7 @@ function! s:parse_time(str)
 endfunction
 
 " Convert the Twitter timestamp to local time and simplify it.
-function s:time_filter(str)
+function! s:time_filter(str)
     if !exists("*strftime")
 	return a:str
     endif
@@ -587,7 +587,7 @@ let s:gc_access_url = "http://api.twitter.com/oauth/access_token"
 let s:gc_authorize_url = "http://api.twitter.com/oauth/authorize"
 
 " Simple nonce value generator. This needs to be randomized better.
-function s:nonce()
+function! s:nonce()
     if !exists("s:nonce_val") || s:nonce_val < 1
 	let s:nonce_val = localtime() + 109
     endif
@@ -599,7 +599,7 @@ function s:nonce()
 endfunction
 
 " Split a URL into base and params.
-function s:split_url(url)
+function! s:split_url(url)
     let urlarray = split(a:url, '?')
     let baseurl = urlarray[0]
     let parms = {}
@@ -615,7 +615,7 @@ endfunction
 " Produce signed content using the parameters provided via parms using the
 " chosen method, url and provided token secret. Note that in the case of
 " getting a new Request token, the secret will be ""
-function s:getOauthResponse(url, method, parms, token_secret)
+function! s:getOauthResponse(url, method, parms, token_secret)
     let parms = copy(a:parms)
 
     " Add some constants to hash
@@ -881,6 +881,7 @@ try:
     import urllib
     import urllib2
     import base64
+    import sys
 except:
     vim.command('let can_python = 0')
 EOF
@@ -895,6 +896,7 @@ function! s:python_curl(url, login, proxy, proxylogin, parms)
 import urllib
 import urllib2
 import base64
+import sys
 import vim
 
 def make_base64(s):
@@ -927,6 +929,11 @@ try:
 except urllib2.HTTPError, (httperr):
     vim.command("let error='%s'" % str(httperr).replace("'", "''"))
     vim.command("let output='%s'" % httperr.read().replace("'", "''"))
+except:
+    exctype, value = sys.exc_info()[:2]
+    errmsg = (exctype.__name__ + ': ' + str(value)).replace("'", "''")
+    vim.command("let error='%s'" % errmsg)
+    vim.command("let output='%s'" % errmsg)
 else:
     vim.command("let output='%s'" % out.replace("'", "''"))
 EOF
@@ -1270,8 +1277,27 @@ function! s:get_curl_method()
     return s:curl_method
 endfunction
 
+" We need to convert our parameters to UTF-8. In curl_curl() this is already
+" handled as part of our url_encode() function, so we only need to do this for
+" other net methods. Also, of course, we don't have to do anything if the
+" encoding is already UTF-8.
+function! s:iconv_parms(parms)
+    if s:get_curl_method() == 'curl' || &encoding == 'utf-8'
+	return a:parms
+    endif
+    let parms2 = {}
+    for k in keys(a:parms)
+	let v = iconv(a:parms[k], &encoding, 'utf-8')
+	if v == ''
+	    let v = a:parms[k]
+	endif
+	let parms2[k] = v
+    endfor
+    return parms2
+endfunction
+
 function! s:run_curl(url, login, proxy, proxylogin, parms)
-    return s:{s:get_curl_method()}_curl(a:url, a:login, a:proxy, a:proxylogin, a:parms)
+    return s:{s:get_curl_method()}_curl(a:url, a:login, a:proxy, a:proxylogin, s:iconv_parms(a:parms))
 endfunction
 
 function! s:reset_curl_method()
@@ -1299,7 +1325,7 @@ endif
 
 " Each buffer record holds the following fields:
 "
-" buftype: Buffer type = dmrecv, dmsent, search, public, friends, user, replies, list
+" buftype: Buffer type = dmrecv, dmsent, search, public, friends, user, replies, list, retweeted_by_me, retweeted_to_me, favorites
 " user: For user buffers if other than current user
 " list: List slug if displaying a Twitter list.
 " page: Keep track of pagination.
@@ -1786,6 +1812,34 @@ function! s:delete_tweet()
     endif
 endfunction
 
+" Fave or Unfave tweet on current line.
+function! s:fave_tweet(unfave)
+    let id = get(s:curbuffer.statuses, line('.'))
+    if id == 0
+	call s:warnmsg('Nothing to '.(a:unfave ? 'unfavorite' : 'favorite').' on current line.')
+	return
+    endif
+
+    redraw
+    echo (a:unfave ? 'Unfavoriting' : 'Favoriting') 'the tweet...'
+
+    " favorites/create and favorites/destroy both require POST, not GET, so we
+    " supply a fake parameter to force run_curl() to use POST.
+    let parms = {}
+    let parms['id'] = id
+
+    let url = s:get_api_root().'/favorites/'.(a:unfave ? 'destroy' : 'create').'/'.id.'.xml'
+    let [error, output] = s:run_curl_oauth(url, s:ologin, s:get_proxy(), s:get_proxy_login(), parms)
+    if error != ''
+	let errormsg = s:xml_get_element(output, 'error')
+	call s:errormsg("Error ".(a:unfave ? 'unfavoriting' : 'favoriting')." the tweet: ".(errormsg != '' ? errormsg : error))
+	return
+    endif
+
+    redraw
+    echo 'Tweet' (a:unfave ? 'unfavorited.' : 'favorited.')
+endfunction
+
 " Prompt user for tweet.
 if !exists(":PosttoTwitter")
     command PosttoTwitter :call <SID>CmdLine_Twitter('', 0)
@@ -1950,6 +2004,36 @@ function! s:do_user_info(s)
     call s:get_user_info(s)
 endfunction
 
+" nr2byte() and nr2enc_char() converter functions for non-UTF8 encoding
+" provided by @mattn_jp
+
+" Get bytes from character code.
+function! s:nr2byte(nr)
+    if a:nr < 0x80
+	return nr2char(a:nr)
+    elseif a:nr < 0x800
+	return nr2char(a:nr/64+192).nr2char(a:nr%64+128)
+    else
+	return nr2char(a:nr/4096%16+224).nr2char(a:nr/64%64+128).nr2char(a:nr%64+128)
+    endif
+endfunction
+
+" Convert character code from utf-8 to encoding.
+function! s:nr2enc_char(charcode)
+    if &encoding == 'utf-8'
+	return nr2char(a:charcode)
+    endif
+    let char = s:nr2byte(a:charcode)
+    if strlen(char) > 1
+	let iconv_str = iconv(char, 'utf-8', &encoding)
+	if iconv_str != ""
+	    let char = strtrans(iconv_str)
+	endif
+    endif
+    return char
+endfunction
+
+
 " Decode HTML entities. Twitter gives those to us a little weird. For example,
 " a '<' character comes to us as &amp;lt;
 function! s:convert_entity(str)
@@ -1958,7 +2042,8 @@ function! s:convert_entity(str)
     let s = substitute(s, '&lt;', '<', 'g')
     let s = substitute(s, '&gt;', '>', 'g')
     let s = substitute(s, '&quot;', '"', 'g')
-    let s = substitute(s, '&#\(\d\+\);','\=nr2char(submatch(1))', 'g')
+    " let s = substitute(s, '&#\(\d\+\);','\=nr2char(submatch(1))', 'g')
+    let s = substitute(s, '&#\(\d\+\);','\=s:nr2enc_char(submatch(1))', 'g')
     return s
 endfunction
 
@@ -2072,6 +2157,11 @@ function! s:twitter_win(wintype)
 
 	    " Previous page in timeline.
 	    nnoremap <buffer> <silent> <C-PageUp> :call <SID>PrevPageTimeline()<cr>
+
+	    " Favorite a tweet.
+	    nnoremap <buffer> <silent> <Leader>f :call <SID>fave_tweet(0)<cr>
+	    " Unfavorite a tweet.
+	    nnoremap <buffer> <silent> <Leader><C-f> :call <SID>fave_tweet(1)<cr>
 
 	endif
 
@@ -2214,7 +2304,7 @@ function! s:get_timeline(tline_name, username, page)
 	let login = s:ologin
     endif
 
-    let url_fname = (a:tline_name == "retweeted_to_me" || a:tline_name == "retweeted_by_me") ? a:tline_name.".xml" : a:tline_name == "friends" ? "home_timeline.xml" : a:tline_name == "replies" ? "mentions.xml" : a:tline_name."_timeline.xml"
+    let url_fname = (a:tline_name == "favorites" || a:tline_name == "retweeted_to_me" || a:tline_name == "retweeted_by_me") ? a:tline_name.".xml" : a:tline_name == "friends" ? "home_timeline.xml" : a:tline_name == "replies" ? "mentions.xml" : a:tline_name."_timeline.xml"
 
     " Support pagination.
     if a:page > 1
@@ -2230,8 +2320,8 @@ function! s:get_timeline(tline_name, username, page)
 	let url_fname = s:add_to_url(url_fname, 'screen_name='.a:username)
     endif
 
-    " Support count parameter in friends, user, mentions, and retweet timelines.
-    if a:tline_name == 'friends' || a:tline_name == 'user' || a:tline_name == 'replies' || a:tline_name == 'retweeted_to_me' || a:tline_name == 'retweeted_by_me'
+    " Support count parameter in favorites, friends, user, mentions, and retweet timelines.
+    if a:tline_name == 'favorites' || a:tline_name == 'friends' || a:tline_name == 'user' || a:tline_name == 'replies' || a:tline_name == 'retweeted_to_me' || a:tline_name == 'retweeted_by_me'
 	let tcount = s:get_count()
 	if tcount > 0
 	    let url_fname = s:add_to_url(url_fname, 'count='.tcount)
@@ -2243,7 +2333,7 @@ function! s:get_timeline(tline_name, username, page)
     redraw
     echo "Sending" tl_name "timeline request to Twitter..."
 
-    let url = s:get_api_root()."/statuses/".url_fname
+    let url = s:get_api_root().(a:tline_name == 'favorites' ? '/' : "/statuses/").url_fname
 
     let [error, output] = s:run_curl_oauth(url, login, s:get_proxy(), s:get_proxy_login(), {})
 
@@ -2377,16 +2467,22 @@ function! s:Direct_Messages(mode, page)
     let sent = (a:mode == "dmsent")
     let s_or_r = (sent ? "sent" : "received")
 
-    " Support pagination.
-    let pagearg = ''
-    if a:page > 1
-	let pagearg = '?page='.a:page
-    endif
-
     redraw
     echo "Sending direct messages ".s_or_r." timeline request to Twitter..."
 
-    let url = s:get_api_root()."/direct_messages".(sent ? "/sent" : "").".xml".pagearg
+    let url = s:get_api_root()."/direct_messages".(sent ? "/sent" : "").".xml"
+
+    " Support pagination.
+    let pagearg = ''
+    if a:page > 1
+	let url = s:add_to_url(url, 'page='.a:page)
+    endif
+
+    " Support count parameter.
+    let tcount = s:get_count()
+    if tcount > 0
+	let url = s:add_to_url(url, 'count='.tcount)
+    endif
 
     let [error, output] = s:run_curl_oauth(url, s:ologin, s:get_proxy(), s:get_proxy_login(), {})
 
@@ -2410,7 +2506,7 @@ endfunction
 " Function to load a timeline from the given parameters. For use by refresh and
 " next/prev pagination commands.
 function! s:load_timeline(buftype, user, list, page)
-    if a:buftype == "public" || a:buftype == "friends" || a:buftype == "user" || a:buftype == "replies" || a:buftype == "retweeted_by_me" || a:buftype == "retweeted_to_me"
+    if a:buftype == "public" || a:buftype == "friends" || a:buftype == "user" || a:buftype == "replies" || a:buftype == "retweeted_by_me" || a:buftype == "retweeted_to_me" || a:buftype == 'favorites'
 	call s:get_timeline(a:buftype, a:user, a:page)
     elseif a:buftype == "list"
 	call s:get_list_timeline(a:user, a:list, a:page)
@@ -2494,6 +2590,9 @@ endif
 if !exists(":RetweetedToMeTwitter")
     command -count=1 RetweetedToMeTwitter :call <SID>get_timeline("retweeted_to_me", '', <count>)
 endif
+if !exists(":FavTwitter")
+    command -count=1 FavTwitter :call <SID>get_timeline('favorites', '', <count>)
+endif
 
 nnoremenu Plugin.TwitVim.-Sep1- :
 nnoremenu Plugin.TwitVim.&Friends\ Timeline :call <SID>get_timeline("friends", '', 1)<cr>
@@ -2505,6 +2604,7 @@ nnoremenu Plugin.TwitVim.&Public\ Timeline :call <SID>get_timeline("public", '',
 
 nnoremenu Plugin.TwitVim.Retweeted\ &By\ Me :call <SID>get_timeline("retweeted_by_me", '', 1)<cr>
 nnoremenu Plugin.TwitVim.Retweeted\ &To\ Me :call <SID>get_timeline("retweeted_to_me", '', 1)<cr>
+nnoremenu Plugin.TwitVim.Fa&vorites :call <SID>get_timeline("favorites", '', 1)<cr>
 
 if !exists(":RefreshTwitter")
     command RefreshTwitter :call <SID>RefreshTimeline()
@@ -2821,13 +2921,13 @@ function! s:format_user_info(output)
     let text = []
     let output = a:output
 
-    let name = s:xml_get_element(output, 'name')
+    let name = s:convert_entity(s:xml_get_element(output, 'name'))
     let screen = s:xml_get_element(output, 'screen_name')
     call add(text, 'Name: '.screen.' ('.name.')')
 
-    call add(text, 'Location: '.s:xml_get_element(output, 'location'))
+    call add(text, 'Location: '.s:convert_entity(s:xml_get_element(output, 'location')))
     call add(text, 'Website: '.s:xml_get_element(output, 'url'))
-    call add(text, 'Bio: '.s:xml_get_element(output, 'description'))
+    call add(text, 'Bio: '.s:convert_entity(s:xml_get_element(output, 'description')))
     call add(text, '')
     call add(text, 'Following: '.s:xml_get_element(output, 'friends_count'))
     call add(text, 'Followers: '.s:xml_get_element(output, 'followers_count'))

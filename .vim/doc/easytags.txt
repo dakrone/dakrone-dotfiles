@@ -210,7 +210,7 @@ run UNIX and use symbolic links) execute the following Vim command:
 Troubleshooting ~
 
 ------------------------------------------------------------------------------
-*:HighlightTags* only works for the tags file created by :UpdateTags
+:HighlightTags only works for the tags file created by :UpdateTags ~
 
 If you want to create tags files and have their tags highlighted by the
 'easytags.vim' plug-in then you'll have to create the tags file with certain

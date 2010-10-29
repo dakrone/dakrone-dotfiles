@@ -1,6 +1,0 @@
-# -*- mode: snippet -*-
-# name: defn
-# key: 
-# binding: "keybinding"
-# expand-env: ((some-var some-value))
-# --

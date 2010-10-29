@@ -2,3 +2,7 @@
 *.swp
 .vim/yank.*
 .vimperator/info/*
+.vim/bin/*
+.vim/spell/*
+.vim/*.txt
+.vim/README*

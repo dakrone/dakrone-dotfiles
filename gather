@@ -9,8 +9,8 @@ cp -f -v ~/.zshrc .
 cp -f -v ~/.screenrc .
 mkdir -p .vim
 cp -f -rv ~/.vim .
-mkdir -p .zg
-cp -f -v ~/.zg/zg.conf .zg/
+#mkdir -p .zg
+#cp -f -v ~/.zg/zg.conf .zg/
 cp -f -v ~/.nsmcrc .
 cp -f -v ~/.vimperatorrc .
 cp -f -v ~/.vromerc .

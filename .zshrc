@@ -36,13 +36,10 @@ export JAVA_HOME=/System/Library/Frameworks/JavaVM.framework/Versions/1.6/Home
 
 # VimClojure stuff (for nailgun server)
 export CLOJURE_EXT=/Users/hinmanm/.vimclojure:/Users/hinmanm/.cljr/lib:./lib:./classes:./src:.
-export CLOJURE_OPTS="-server -Xmx1024m -XX:+UseConcMarkSweepGC -XX:+HeapDumpOnOutOfMemoryError"
-
-# cljr options
-export JVM_OPTS="-server -Xmx512m -XX:+UseConcMarkSweepGC -XX:+HeapDumpOnOutOfMemoryError"
+export CLOJURE_OPTS="-server -Dfile.encoding=UTF-8 -Dslime.encoding=UTF-8 -Xmx512 -XX:+HeapDumpOnOutOfMemoryError"
 
 # Java opts (leiningen uses these)
-export JAVA_OPTS="-server -Xmx512m -XX:+UseConcMarkSweepGC -XX:+HeapDumpOnOutOfMemoryError"
+export JAVA_OPTS="-server -Dfile.encoding=UTF-8 -Dslime.encoding=UTF-8 -Xmx512m -XX:+HeapDumpOnOutOfMemoryError"
 
 # manpath
 export MANPATH=$MANPATH:/usr/local/man:/opt/local/share/man
@@ -54,35 +51,27 @@ export PAGER=less
 # CVS for HeX
 #export CVSROOT=:ext:dakrone@cvsup.rawpacket.org:/home/project/rawpacket/cvs
 
-# CVS for Avamar
-export CVSROOT=:pserver:hinmam@avsource.asl.lab.emc.com:/home/cvsroot/repository
-#export CVS_RSH=ssh
-#export CVS_SERVER=/opt/sfw/bin/cvs
+# CVS options
 export CVSEDITOR=vim
-
 
 # RSPEC for autotest
 export RSPEC=true
 
 # Source j.sh
-source ~/bin/j.sh
+if [ -s ~/bin/j.sh ] ; then source ~/bin/j.sh ; fi
 
 # rvm stuff:
-if [ -s ~/.rvm/scripts/rvm ] ; then source ~/.rvm/scripts/rvm ; fi
-# Set default ruby install
-rvm default
+if [ -s ~/.rvm/scripts/rvm ] ; then
+      source ~/.rvm/scripts/rvm
+      # Set default ruby install
+      rvm default
+fi
 
 # Always override with my personal bin
 export PATH=~/bin:$PATH
 
 # IRBRC for RVM
 export IRBRC=~/.irbrc
-
-# Perforce
-export P4PORT=137.69.227.201:1666
-export P4USER=hinmam
-export P4CLIENT=hinmam_Xanadu
-export P4DIFF=colordiff
 
 # Term settings, if we exist as a screen term, use xterm-color instead of screen-bce.
 # Otherwise, leave the TERM var alone, because we need it to set terminal titles correctly
@@ -116,7 +105,6 @@ alias serv='cat /etc/services | grep'
 alias pg='ps aux | grep'
 alias nl='sudo netstat -tunapl'
 alias dmesg='sudo dmesg'
-alias gv='cd /media/VAULT/'
 alias remhex='ssh -i ~/.ssh/id_rawpacket dakrone@localhost -p 6666'
 alias remblack='ssh -i ~/.ssh/id_rawpacket hinmanm@localhost -p 7777'
 alias remstyx='ssh -i ~/.ssh/id_rawpacket lee@localhost -p 6666'
@@ -134,28 +122,23 @@ alias jl='j --l'
 alias jr='j --r'
 alias js='j --s'
 alias givm='gvim'
-# Hate perforce.
-alias pd='p4 diff -du'
-alias pc='p4 changes //dtlt/... | maxhead'
-alias pac='p4 changes //aam/... | maxhead'
 # Colored rspec
 alias cspec='spec -c --format specdoc'
 # Tmux stuff
 # force 256 color mode
 alias tmux='tmux -2'
-alias screen='TERM=xterm-color && /opt/local/bin/screen'
 alias rvim='gvim --remote-tab-silent'
-alias todo='rvim ~/vimwiki/ToDo.wiki'
 
 if [[ $OS == "Darwin" ]]; then
+      alias screen='TERM=xterm-color && /opt/local/bin/screen'
 	# Use MacVim's vim for terminal sessions, since it has everything compiled in.
-	alias msync='rsync -av --ignore-existing --delete ~/Music/iTunes/iTunes\ Music/* dagger:~/Music/'
 	alias vim='/Applications/MacVim.app/Contents/MacOS/Vim'
 	alias emacs='/Applications/Emacs.app/Contents/MacOS/Emacs'
 	alias emacsclient='/Applications/Emacs.app/Contents/MacOS/bin/emacsclient'
 fi
 
-alias ec='emacsclient'
+alias -g ec='emacsclient'
+alias todo='ec -n ~/work.org'
 
 
 # history
@@ -184,11 +167,6 @@ function parse_git_branch() {
 get-git-branch() {
       ref=$(git symbolic-ref HEAD 2>/dev/null | cut -d'/' -f3,4,5)
       echo $ref
-}
-
-# Perforce describe (with color)
-function pdesc() {
-      p4 describe $1 | p4c
 }
 
 
@@ -232,11 +210,6 @@ function precmd() {
 # preexec is called just before any command line is executed
 function preexec() {
   title "$1" "$USER@%m" "%35<...<%~"
-}
-
-## For the "ZoomGo" ruby file
-function zg () {
-  eval cd `zg.rb $1`
 }
 
 # Make w/growl support
@@ -295,4 +268,6 @@ bindkey ' ' magic-space    # also do history expansion on space
 bindkey '^I' complete-word # complete on tab, leave expansion to _expand
 
 # Remove ctrl+y from the keybinds for delayed suspend
-stty dsusp undef
+if [[ $OS == "Darwin" ]]; then
+      stty dsusp undef
+fi

@@ -3,7 +3,7 @@
 ;;; Code:
 
 
-;;;### (autoloads (paredit-mode) "paredit" "paredit.el" (19343 21657))
+;;;### (autoloads (paredit-mode) "paredit" "paredit.el" (19652 44219))
 ;;; Generated autoloads from paredit.el
 
 (autoload 'paredit-mode "paredit" "\
@@ -14,7 +14,7 @@ Minor mode for pseudo-structurally editing Lisp code.
 
 ;;;***
 
-;;;### (autoloads nil nil ("paredit-pkg.el") (19343 21658 289670))
+;;;### (autoloads nil nil ("paredit-pkg.el") (19652 44219 392371))
 
 ;;;***
 

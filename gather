@@ -13,6 +13,7 @@ cp -f -rv ~/.vim .
 #cp -f -v ~/.zg/zg.conf .zg/
 cp -f -v ~/.nsmcrc .
 cp -f -v ~/.vimperatorrc .
+cp -f -v ~/.pentadactylrc .
 cp -f -v ~/.vromerc .
 mkdir -p .vimperator
 cp -f -rv ~/.vimperator .

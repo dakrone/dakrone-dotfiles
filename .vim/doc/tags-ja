@@ -5,6 +5,12 @@
 :FufBookmarkFileAdd	fuf.jax	/*:FufBookmarkFileAdd*
 :FufBookmarkFileAddAsSelectedText	fuf.jax	/*:FufBookmarkFileAddAsSelectedText*
 :FufBuffer	fuf.jax	/*:FufBuffer*
+:FufBufferTag	fuf.jax	/*:FufBufferTag*
+:FufBufferTagAll	fuf.jax	/*:FufBufferTagAll*
+:FufBufferTagAllWithCursorWord	fuf.jax	/*:FufBufferTagAllWithCursorWord*
+:FufBufferTagAllWithSelectedText	fuf.jax	/*:FufBufferTagAllWithSelectedText*
+:FufBufferTagWithCursorWord	fuf.jax	/*:FufBufferTagWithCursorWord*
+:FufBufferTagWithSelectedText	fuf.jax	/*:FufBufferTagWithSelectedText*
 :FufChangeList	fuf.jax	/*:FufChangeList*
 :FufCoverageFileChange	fuf.jax	/*:FufCoverageFileChange*
 :FufCoverageFileRegister	fuf.jax	/*:FufCoverageFileRegister*
@@ -20,6 +26,7 @@
 :FufLine	fuf.jax	/*:FufLine*
 :FufMruCmd	fuf.jax	/*:FufMruCmd*
 :FufMruFile	fuf.jax	/*:FufMruFile*
+:FufMruFileInCwd	fuf.jax	/*:FufMruFileInCwd*
 :FufQuickfix	fuf.jax	/*:FufQuickfix*
 :FufRenewCache	fuf.jax	/*:FufRenewCache*
 :FufTag	fuf.jax	/*:FufTag*
@@ -34,6 +41,7 @@ fuf-author	fuf.jax	/*fuf-author*
 fuf-bookmarkdir-mode	fuf.jax	/*fuf-bookmarkdir-mode*
 fuf-bookmarkfile-mode	fuf.jax	/*fuf-bookmarkfile-mode*
 fuf-buffer-mode	fuf.jax	/*fuf-buffer-mode*
+fuf-buffertag-mode	fuf.jax	/*fuf-buffertag-mode*
 fuf-cache	fuf.jax	/*fuf-cache*
 fuf-callbackfile-mode	fuf.jax	/*fuf-callbackfile-mode*
 fuf-callbackitem-mode	fuf.jax	/*fuf-callbackitem-mode*
@@ -66,6 +74,7 @@ fuf-options-for-all-modes	fuf.jax	/*fuf-options-for-all-modes*
 fuf-options-for-bookmarkdir-mode	fuf.jax	/*fuf-options-for-bookmarkdir-mode*
 fuf-options-for-bookmarkfile-mode	fuf.jax	/*fuf-options-for-bookmarkfile-mode*
 fuf-options-for-buffer-mode	fuf.jax	/*fuf-options-for-buffer-mode*
+fuf-options-for-buffertag-mode	fuf.jax	/*fuf-options-for-buffertag-mode*
 fuf-options-for-changelist-mode	fuf.jax	/*fuf-options-for-changelist-mode*
 fuf-options-for-coveragefile-mode	fuf.jax	/*fuf-options-for-coveragefile-mode*
 fuf-options-for-dir-mode	fuf.jax	/*fuf-options-for-dir-mode*
@@ -102,6 +111,9 @@ g:fuf_buffer_keyDelete	fuf.jax	/*g:fuf_buffer_keyDelete*
 g:fuf_buffer_mruOrder	fuf.jax	/*g:fuf_buffer_mruOrder*
 g:fuf_buffer_prompt	fuf.jax	/*g:fuf_buffer_prompt*
 g:fuf_buffer_switchOrder	fuf.jax	/*g:fuf_buffer_switchOrder*
+g:fuf_buffertag_ctagsPath	fuf.jax	/*g:fuf_buffertag_ctagsPath*
+g:fuf_buffertag_prompt	fuf.jax	/*g:fuf_buffertag_prompt*
+g:fuf_buffertag_switchOrder	fuf.jax	/*g:fuf_buffertag_switchOrder*
 g:fuf_changelist_prompt	fuf.jax	/*g:fuf_changelist_prompt*
 g:fuf_changelist_switchOrder	fuf.jax	/*g:fuf_changelist_switchOrder*
 g:fuf_coveragefile_exclude	fuf.jax	/*g:fuf_coveragefile_exclude*

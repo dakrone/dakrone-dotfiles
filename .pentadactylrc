@@ -1,0 +1,27 @@
+" vim: set filetype=vim
+" Menu bar (I use a hiding extension for this anyway)
+set guioptions+=m
+" I want bookmarks toolbar
+set guioptions+=B
+
+" Source noscript plugin
+source ~/.vimperator/noscript.js
+nnoremap ,n :noscript popup<CR>
+
+" Show status bar in fullscreen mode
+nmap ,ss :js document.getElementById("status-bar").setAttribute("moz-collapsed", false)<CR>
+
+" Download a video from gametrailers
+nmap ,d <C-d>fdownload;squicktime
+
+" change tabs with ,tp and ,tn (I use this in Vim also)
+nmap ,tp <C-p>
+nmap ,tn <C-n>
+
+map <C-j> <Nop>
+map <C-k> <Nop>
+" Silly screen, I'm always hitting ctrl-x on accident
+map <C-x> <Nop>
+
+" Disbale beep. Drives me crazy because I still use Apple+#
+javascript liberator.beep = function() { return false; }

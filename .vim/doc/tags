@@ -115,6 +115,12 @@
 :FufBookmarkFileAdd	fuf.txt	/*:FufBookmarkFileAdd*
 :FufBookmarkFileAddAsSelectedText	fuf.txt	/*:FufBookmarkFileAddAsSelectedText*
 :FufBuffer	fuf.txt	/*:FufBuffer*
+:FufBufferTag	fuf.txt	/*:FufBufferTag*
+:FufBufferTagAll	fuf.txt	/*:FufBufferTagAll*
+:FufBufferTagAllWithCursorWord	fuf.txt	/*:FufBufferTagAllWithCursorWord*
+:FufBufferTagAllWithSelectedText	fuf.txt	/*:FufBufferTagAllWithSelectedText*
+:FufBufferTagWithCursorWord	fuf.txt	/*:FufBufferTagWithCursorWord*
+:FufBufferTagWithSelectedText	fuf.txt	/*:FufBufferTagWithSelectedText*
 :FufChangeList	fuf.txt	/*:FufChangeList*
 :FufCoverageFile	fuf.txt	/*:FufCoverageFile*
 :FufCoverageFileChange	fuf.txt	/*:FufCoverageFileChange*
@@ -131,6 +137,7 @@
 :FufLine	fuf.txt	/*:FufLine*
 :FufMruCmd	fuf.txt	/*:FufMruCmd*
 :FufMruFile	fuf.txt	/*:FufMruFile*
+:FufMruFileInCwd	fuf.txt	/*:FufMruFileInCwd*
 :FufQuickfix	fuf.txt	/*:FufQuickfix*
 :FufRenewCache	fuf.txt	/*:FufRenewCache*
 :FufTag	fuf.txt	/*:FufTag*
@@ -715,6 +722,7 @@ fuf-author	fuf.txt	/*fuf-author*
 fuf-bookmarkdir-mode	fuf.txt	/*fuf-bookmarkdir-mode*
 fuf-bookmarkfile-mode	fuf.txt	/*fuf-bookmarkfile-mode*
 fuf-buffer-mode	fuf.txt	/*fuf-buffer-mode*
+fuf-buffertag-mode	fuf.txt	/*fuf-buffertag-mode*
 fuf-cache	fuf.txt	/*fuf-cache*
 fuf-callbackfile-mode	fuf.txt	/*fuf-callbackfile-mode*
 fuf-callbackitem-mode	fuf.txt	/*fuf-callbackitem-mode*
@@ -748,6 +756,7 @@ fuf-options-for-all-modes	fuf.txt	/*fuf-options-for-all-modes*
 fuf-options-for-bookmarkdir-mode	fuf.txt	/*fuf-options-for-bookmarkdir-mode*
 fuf-options-for-bookmarkfile-mode	fuf.txt	/*fuf-options-for-bookmarkfile-mode*
 fuf-options-for-buffer-mode	fuf.txt	/*fuf-options-for-buffer-mode*
+fuf-options-for-buffertag-mode	fuf.txt	/*fuf-options-for-buffertag-mode*
 fuf-options-for-changelist-mode	fuf.txt	/*fuf-options-for-changelist-mode*
 fuf-options-for-coveragefile-mode	fuf.txt	/*fuf-options-for-coveragefile-mode*
 fuf-options-for-dir-mode	fuf.txt	/*fuf-options-for-dir-mode*
@@ -951,6 +960,9 @@ g:fuf_buffer_keyDelete	fuf.txt	/*g:fuf_buffer_keyDelete*
 g:fuf_buffer_mruOrder	fuf.txt	/*g:fuf_buffer_mruOrder*
 g:fuf_buffer_prompt	fuf.txt	/*g:fuf_buffer_prompt*
 g:fuf_buffer_switchOrder	fuf.txt	/*g:fuf_buffer_switchOrder*
+g:fuf_buffertag_ctagsPath	fuf.txt	/*g:fuf_buffertag_ctagsPath*
+g:fuf_buffertag_prompt	fuf.txt	/*g:fuf_buffertag_prompt*
+g:fuf_buffertag_switchOrder	fuf.txt	/*g:fuf_buffertag_switchOrder*
 g:fuf_changelist_prompt	fuf.txt	/*g:fuf_changelist_prompt*
 g:fuf_changelist_switchOrder	fuf.txt	/*g:fuf_changelist_switchOrder*
 g:fuf_coveragefile_exclude	fuf.txt	/*g:fuf_coveragefile_exclude*

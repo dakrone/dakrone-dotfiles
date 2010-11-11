@@ -4,7 +4,8 @@
 
 
 ;; Command-enter -> fullscreen
-(global-set-key (kbd "M-S-F") 'ns-toggle-fullscreen)
+;; It's not that hard to manually toggle
+;;(global-set-key (kbd "M-S-F") 'ns-toggle-fullscreen)
 
 
 
@@ -76,12 +77,6 @@
 
 
 
-;; Anti-aliasing
-(setq mac-allow-anti-aliasing t)    ;; turn on anti-aliasing (default)
-;;(setq mac-allow-anti-aliasing nil)  ;; turn off anti-aliasing
-
-
-
 ;; Growl support on OSX
 (defun bja-growl-notification (title message &optional sticky)
   "Send a Growl notification"
@@ -100,7 +95,7 @@
 
 
 ;; ERC stuff
-; Only track my nick(s)
+;; Only track my nick(s)
 (defadvice erc-track-find-face (around erc-track-find-face-promote-query activate)
   (if (erc-query-buffer-p)
       (setq ad-return-value (intern "erc-current-nick-face"))
@@ -108,15 +103,7 @@
 
 (setq erc-keywords '("dakrone"
                      "dakrone_"
-                     "dakrone__"
-                     "technomancy"
-                     "hiredman"
-                     "danlarkin"
-                     "drewr"
-                     "scgilardi"
-                     "dysinger"
-                     "pjstadig"
-                     "wooby"))
+                     "dakrone__"))
 (setq erc-hide-list '("JOIN" "PART" "QUIT"))
 
 (setq erc-track-exclude-types '("JOIN" "NICK" "PART" "QUIT" "MODE"
@@ -166,6 +153,7 @@
            erc-nick '("dakrone" "dakrone_")
            erc-autojoin-timing :ident
            erc-flood-protect nil
+           erc-pals '("technomancy" "hiredman" "danlarkin" "drewr" "pjstadig" "scgilardi" "dysinger" "fujin" "joegallo" "wooby")
            erc-autojoin-channels-alist
            '(("freenode.net"
               "#clojure"
@@ -181,25 +169,32 @@
      (add-hook 'erc-connect-pre-hook (lambda (x) (erc-update-modules)))))
 
 
+
 ;; Gist support
 (require 'gist)
 
 
 
 ;; Appearance
+;;(set-default-font "Monaco")
 (set-default-font "Anonymous Pro")
-(set-face-attribute 'default nil :height 120)
+(set-face-attribute 'default nil :height 130)
+;; Anti-aliasing
+(setq mac-allow-anti-aliasing t)
+;;(setq mac-allow-anti-aliasing nil)
 
-; Transparency
+
+
+;; Transparency
 (set-frame-parameter (selected-frame) 'alpha '(100 25))
 (add-to-list 'default-frame-alist '(alpha 100 25))
 
-; Fullscreen
+;; Fullscreen
 (defun toggle-fullscreen () (interactive) (ns-toggle-fullscreen))
 (ns-toggle-fullscreen)
 (global-set-key [f11] 'toggle-fullscreen)
 
-; Color Theme
+;; Color Theme
 (color-theme-initialize)
 (color-theme-billw)
 
@@ -274,6 +269,7 @@
 
 
 ;; Change color for background highlight
+;; I don't like hl-line-mode
 (remove-hook 'coding-hook 'turn-on-hl-line-mode)
 ;;(set-face-background 'hl-line "#333")
 

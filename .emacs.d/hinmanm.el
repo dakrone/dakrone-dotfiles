@@ -85,7 +85,7 @@
               notify with name \"Emacs Notification\" title \"%s\" description \"%s\" application name \"Emacs.app\" sticky %s
            end tell"
            title
-           (replace-regexp-in-string "\"" "''" message)
+           (replace-regexp-in-string "\"" "'" message)
            (if sticky "yes" "no"))))
 
 
@@ -109,17 +109,21 @@
 (setq erc-track-exclude-types '("JOIN" "NICK" "PART" "QUIT" "MODE"
                                 "324" "329" "332" "333" "353" "477"))
 
-(defun clean-message (s)
-  (setq s (replace-regexp-in-string "'" "&apos;"
-  (replace-regexp-in-string "\"" "&quot;"
-  (replace-regexp-in-string "&" "&"
-  (replace-regexp-in-string "<" "&lt;"
-  (replace-regexp-in-string ">" "&gt;" s)))))))
+;; (defun clean-message (s)
+;;   (setq s (replace-regexp-in-string "'" "&apos;"
+;;   (replace-regexp-in-string "\"" "&quot;"
+;;   (replace-regexp-in-string "&" "&"
+;;   (replace-regexp-in-string "<" "&lt;"
+;;   (replace-regexp-in-string ">" "&gt;" s)))))))
+
+;; (defun call-growl (matched-type nick msg)
+;;   (let* ((cmsg  (split-string (clean-message msg)))
+;;         (nick   (first (split-string nick "!")))
+;;         (msg    (mapconcat 'identity (rest cmsg) " ")))
+;;     (bja-growl-notification nick msg)))
 
 (defun call-growl (matched-type nick msg)
-  (let* ((cmsg  (split-string (clean-message msg)))
-        (nick   (first (split-string nick "!")))
-        (msg    (mapconcat 'identity (rest cmsg) " ")))
+  (let* ((nick (first (split-string nick "!"))))
     (bja-growl-notification nick msg)))
 
 (add-hook 'erc-text-matched-hook 'call-growl)
@@ -153,7 +157,7 @@
            erc-nick '("dakrone" "dakrone_")
            erc-autojoin-timing :ident
            erc-flood-protect nil
-           erc-pals '("technomancy" "hiredman" "danlarkin" "drewr" "pjstadig" "scgilardi" "dysinger" "fujin" "joegallo" "wooby")
+           erc-pals '("technomancy" "hiredman" "danlarkin" "drewr" "pjstadig" "scgilardi" "dysinger" "fujin" "joegallo" "wooby" "jimduey")
            erc-autojoin-channels-alist
            '(("freenode.net"
               "#clojure"
@@ -186,13 +190,14 @@
 
 
 ;; Transparency
-(set-frame-parameter (selected-frame) 'alpha '(100 25))
-(add-to-list 'default-frame-alist '(alpha 100 25))
+(set-frame-parameter (selected-frame) 'alpha '(100 35))
+(add-to-list 'default-frame-alist '(alpha 100 35))
 
 ;; Fullscreen
-(defun toggle-fullscreen () (interactive) (ns-toggle-fullscreen))
-(ns-toggle-fullscreen)
-(global-set-key [f11] 'toggle-fullscreen)
+(when (eq window-system 'ns)
+  (defun toggle-fullscreen () (interactive) (ns-toggle-fullscreen))
+  (ns-toggle-fullscreen)
+  (global-set-key [f11] 'toggle-fullscreen))
 
 ;; Color Theme
 (color-theme-initialize)

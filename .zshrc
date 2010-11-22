@@ -48,6 +48,9 @@ export MANPATH=$MANPATH:/usr/local/man:/opt/local/share/man
 export EDITOR=vim
 export PAGER=less
 
+export OPSCODE_USER="sonian_developer"
+export ENV="dev"
+
 # CVS for HeX
 #export CVSROOT=:ext:dakrone@cvsup.rawpacket.org:/home/project/rawpacket/cvs
 
@@ -113,6 +116,7 @@ alias scsetup2='sudo socat -d -d TCP4-listen:7777,fork OPENSSL:blackex:443,cert=
 alias blackexprox='ssh -i ~/.ssh/id_rawpacket -ND 9999 hinmanm@localhost -p 7777'
 alias blackprox='ssh -i ~/.ssh/id_rawpacket -ND 9999 hinmanm@black'
 alias styxprox='ssh -i ~/.ssh/id_rawpacket -ND 9999 lee@localhost -p 6666'
+alias xprox='ssh -nNT -R 3333:localhost:2222 x'
 alias tcpdump='tcpdump -ttttnnn'
 alias vless=/usr/share/vim/vim72/macros/less.sh
 alias week='remind -c+1 ~/.reminders'
@@ -130,14 +134,27 @@ alias tmux='tmux -2'
 alias rvim='gvim --remote-tab-silent'
 
 if [[ $OS == "Darwin" ]]; then
-      alias screen='TERM=xterm-color && /opt/local/bin/screen'
-	# Use MacVim's vim for terminal sessions, since it has everything compiled in.
-	alias vim='/Applications/MacVim.app/Contents/MacOS/Vim'
-	alias emacs='/Applications/Emacs.app/Contents/MacOS/Emacs'
-	alias emacsclient='/Applications/Emacs.app/Contents/MacOS/bin/emacsclient'
+    EMACS_HOME="/Applications/Emacs.app/Contents/MacOS"
+
+    function e()  { PATH=$EMACS_HOME/bin:$PATH $EMACS_HOME/Emacs $@ }
+    function ec() { PATH=$EMACS_HOME/bin:$PATH emacsclient -t $@ }
+
+    function es() { e --daemon=$1 && ec -s $1 }
+    function el() { ps ax|grep Emacs }
+    function ek() { $EMACS_HOME/bin/emacsclient -e '(kill-emacs)' -s $1 }
+
+    alias emacs=e
+
+#    export EDITOR="ec -c"
+#    export ALTERNATIVE_EDITOR="e"
+
+    alias screen='TERM=xterm-color && /opt/local/bin/screen'
+# Use MacVim's vim for terminal sessions, since it has everything compiled in.
+    alias vim='/Applications/MacVim.app/Contents/MacOS/Vim'
+    alias hb_emacs='/usr/local/bin/emacs'
+    # alias emacsclient='/Applications/Emacs.app/Contents/MacOS/bin/emacsclient'
 fi
 
-alias -g ec='emacsclient'
 alias todo='ec -n ~/work.org'
 
 
@@ -260,8 +277,8 @@ bindkey "^[[6~" down-line-or-history
 bindkey "^A" beginning-of-line
 bindkey "^E" end-of-line
 bindkey "^W" backward-delete-word
-bindkey "^b" backward-word
-bindkey "^f" forward-word
+#bindkey "^b" backward-word
+#bindkey "^f" forward-word
 bindkey "^d" delete-word
 bindkey "^k" kill-line
 bindkey ' ' magic-space    # also do history expansion on space

@@ -45,11 +45,22 @@
 
 (add-hook 'clojure-mode-hook 'tweak-clojure-syntax)
 
-(add-to-list 'load-path "/Users/hinmanm/src/clojure-mode")
-(require 'clojure-mode)
-(require 'clojure-test-mode)
 
-; Lazytest indention in clojure
+
+;; No longer needed (with Phil's ELPA repo)
+;;(add-to-list 'load-path "/Users/hinmanm/src/swank-clojure")
+;;(add-to-list 'load-path "/Users/hinmanm/src/clojure-mode")
+;;(require 'clojure-mode)
+;;(require 'clojure-test-mode)
+
+
+
+;; Add Phil's ELPA repo to the list
+(add-to-list 'package-archives
+             '("technomancy" . "http://repo.technomancy.us/emacs/") t)
+
+
+;; Lazytest indention in clojure
 (eval-after-load 'clojure-mode
   '(define-clojure-indent
      (describe 'defun)

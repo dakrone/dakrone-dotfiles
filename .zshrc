@@ -185,7 +185,8 @@ get-git-branch() {
       ref=$(git symbolic-ref HEAD 2>/dev/null | cut -d'/' -f3,4,5)
       echo $ref
 }
-
+# public hostname for ec2 knife stuff
+function eknife () { knife $@ -a ec2.public_hostname }
 
 ### Prompt ###
 setopt prompt_subst

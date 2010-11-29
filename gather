@@ -42,3 +42,5 @@ cp -f -v ~/.config/uzbl/config .config/uzbl/
 
 mkdir -p .emacs.d
 cp -f -rv ~/.emacs.d .
+# Remove elc files
+find . -name "*.elc" -exec rm {} \;

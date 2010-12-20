@@ -1,8 +1,8 @@
 "=============================================================================
 " File: gist.vim
 " Author: Yasuhiro Matsumoto <mattn.jp@gmail.com>
-" Last Change: 08-Nov-2010.
-" Version: 4.5
+" Last Change: 13-Dec-2010.
+" Version: 4.6
 " WebPage: http://github.com/mattn/gist-vim
 " License: BSD
 " Usage:
@@ -379,12 +379,12 @@ function! s:GistUpdate(user, token, content, gistid, gistnm)
   return res
 endfunction
 
+let s:cookiedir = substitute(expand('<sfile>:p:h'), '[/\\]plugin$', '', '').'/cookies'
 function! s:GistGetPage(url, user, param, opt)
-  let cookiedir = substitute(expand('<sfile>:p:h'), '[/\\]plugin$', '', '').'/cookies'
-  if !isdirectory(cookiedir)
-    call mkdir(cookiedir, 'p')
+  if !isdirectory(s:cookiedir)
+    call mkdir(s:cookiedir, 'p')
   endif
-  let cookiefile = cookiedir.'/github'
+  let cookiefile = s:cookiedir.'/github'
 
   if len(a:url) == 0
     call delete(cookiefile)
@@ -699,10 +699,14 @@ function! Gist(line1, line2, ...)
     elseif arg !~ '^-' && len(gistnm) == 0
       if editpost == 1 || deletepost == 1
         let gistnm = arg
-      elseif len(gistls) > 0
+      elseif len(gistls) > 0 && arg != '^\w\+$'
         let gistls = arg
-      else
+      elseif arg =~ '^\d\+$'
         let gistid = arg
+      else
+        echoerr 'Invalid arguments'
+        unlet args
+        return 0
       endif
     elseif len(arg) > 0
       echoerr 'Invalid arguments'
@@ -748,8 +752,7 @@ function! Gist(line1, line2, ...)
       endif
       if g:gist_put_url_to_clipboard_after_post == 1
         if exists('g:gist_clip_command')
-          let quote = &shellxquote == '"' ?  "'" : '"'
-          call system('echo '.quote.url.quote.'|'.g:gist_clip_command)
+          call system('echo '.url.' | '.g:gist_clip_command)
         elseif has('unix') && !has('xterm_clipboard')
           let @" = url
         else

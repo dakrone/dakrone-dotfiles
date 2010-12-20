@@ -572,7 +572,7 @@ The latest release will always be available from there.
 Development in progress can be inspected via the project's Git repository
 browser at:
 
-  http://git.wincent.com/command-t.git
+  https://wincent.com/repos/command-t
 
 A copy of each release is also available from the official Vim scripts site
 at:
@@ -620,6 +620,10 @@ POSSIBILITY OF SUCH DAMAGE.
 
 
 HISTORY                                         *command-t-history*
+
+1.0 (26 November 2010)
+
+- make relative path simplification work on Windows
 
 1.0b (5 November 2010)
 

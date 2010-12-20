@@ -152,7 +152,7 @@
                        (erc-propertize (concat (erc-default-target) ">") 'read-only t 'rear-nonsticky t 'front-nonsticky t)
                      (erc-propertize (concat "ERC>") 'read-only t 'rear-nonsticky t 'front-nonsticky t))))
 
-; Enable ERC logging
+;; Enable ERC logging
 (setq erc-log-channels-directory "~/.erc/logs/")
 (setq erc-save-buffer-on-part t)
 (defadvice save-buffers-kill-emacs (before save-logs (arg) activate)
@@ -168,14 +168,15 @@
            erc-nick '("dakrone" "dakrone_")
            erc-autojoin-timing :ident
            erc-flood-protect nil
-           erc-pals '("technomancy" "hiredman" "danlarkin" "drewr" "pjstadig" "scgilardi" "dysinger" "fujin" "joegallo" "wooby" "jimduey")
+           erc-pals '("technomancy" "hiredman" "danlarkin" "drewr" "pjstadig"
+                      "scgilardi" "dysinger" "fujin" "joegallo" "wooby" "jimduey"
+                      "rhickey")
            erc-autojoin-channels-alist
            '(("freenode.net"
               "#clojure"
               "#leiningen"
               "#sonian"
-              "#sonian-safe"
-              "#sonian-devops"))
+              "#sonian-safe"))
            erc-prompt-for-nickserv-password nil)
      (require 'erc-services)
      (require 'erc-spelling)
@@ -313,3 +314,26 @@
  (let ((agent (find-agent)))
   (setenv "SSH_AUTH_SOCK" agent)
   (message agent)))
+
+
+
+;; Auto-complete (1.3.1)
+(add-to-list 'load-path "~/.emacs.d/hinmanm/auto-complete")
+(require 'auto-complete-config)
+(add-to-list 'ac-dictionary-directories "~/.emacs.d/hinmanm/auto-complete/ac-dict")
+(ac-config-default)
+
+
+
+
+;; Ispell/Aspell flyspell stuff
+;; brew install aspell --lang=en
+(setq-default ispell-program-name "/usr/local/bin/aspell")
+(setq flyspell-issue-message-flag nil)
+(setq ispell-personal-dictionary "~/.flydict")
+
+
+
+;; Scpaste stuff
+(setq scpaste-http-destination "http://p.writequit.org")
+(setq scpaste-scp-destination "p.writequit.org:~/public_html/wq/paste/")

@@ -9,27 +9,28 @@ compinit
 promptinit
 
 # path
-export PATH=/opt/local/bin:/usr/local/bin:$PATH:/usr/local/sbin:/usr/local/sbin:/usr/libexec:/opt/local/sbin:/usr/local/mysql/bin
+#export PATH=/opt/local/bin:/usr/local/bin:$PATH:/usr/local/sbin:/usr/local/sbin:/usr/libexec:/opt/local/sbin:/usr/local/mysql/bin
+export PATH=/usr/local/bin:$PATH:/usr/local/sbin:/usr/local/sbin:/usr/libexec:/opt/local/sbin:/usr/local/mysql/bin
 # Path for Matasano's blackbag
 export PATH=/usr/local/bin/blackbag:$PATH
 # Path for ruby gems
-export PATH=$PATH:/var/lib/gems/1.8/bin
+#export PATH=$PATH:/var/lib/gems/1.8/bin
 # Path for postgres
-export PATH=$PATH:/opt/local/lib/postgresql84/bin
+#export PATH=$PATH:/opt/local/lib/postgresql84/bin
 # Path for local gems
-export PATH=$PATH:~/.gem/ruby/1.8/bin
-export PATH=$PATH:~/.gem/ruby/1.9/bin
+#export PATH=$PATH:~/.gem/ruby/1.8/bin
+#export PATH=$PATH:~/.gem/ruby/1.9/bin
 # Path for git
 #export PATH=$PATH:/usr/local/git/bin
 # Path for liebke's cljr - http://github.com/liebke/cljr
 #export PATH=/Users/hinmanm/.cljr/bin:$PATH
 # path for maven
-export PATH=$PATH:/opt/apache-maven-2.2.1
+#export PATH=$PATH:/opt/apache-maven-2.2.1
 
 # Chris' ruby stuff
-export RUBYLIB=~/src/chrisbin/ruby
+#export RUBYLIB=~/src/chrisbin/ruby
 export RUBYOPT=rubygems
-export PATH=$PATH:~/src/chrisbin:~/src/chrisbin/ruby
+#export PATH=$PATH:~/src/chrisbin:~/src/chrisbin/ruby
 
 # I'm using java 1.6 on OSX
 export JAVA_HOME=/System/Library/Frameworks/JavaVM.framework/Versions/1.6/Home
@@ -133,6 +134,11 @@ alias cspec='spec -c --format specdoc'
 alias tmux='tmux -2'
 alias rvim='gvim --remote-tab-silent'
 
+if [[ $OS == "Linux" ]]; then
+    # make emacs have 256 colors
+    alias emacs='TERM=xterm-256color emacs'
+fi
+
 if [[ $OS == "Darwin" ]]; then
     EMACS_HOME="/Applications/Emacs.app/Contents/MacOS"
 
@@ -186,7 +192,12 @@ get-git-branch() {
       echo $ref
 }
 # public hostname for ec2 knife stuff
-function eknife () { knife $@ -a ec2.public_hostname }
+function eknife () { knife $@ -a ec2.public_hostname -x lee }
+
+# function to fix ssh agent
+function fix-agent() {
+    export SSH_AUTH_SOCK=`ls -t1 $(find /tmp/ -uid $UID -path \\*ssh\\* -type s 2> /dev/null) | head -1`
+}
 
 ### Prompt ###
 setopt prompt_subst
@@ -233,7 +244,7 @@ function preexec() {
 # Make w/growl support
 function gmake () {
   DIR=`pwd`
-  make $1 $2 $3 $4 $5 $6 $7 $8 $9
+  make $@
   if [[ $? == 0 ]]; then
     growlnotify -m "'make $1' successful in $DIR" 
   else
@@ -244,7 +255,7 @@ function gmake () {
 # Configure w/growl support
 function gconf () {
   DIR=`pwd`
-  ./configure $1 $2 $3 $4 $5 $6 $7 $8 $9 
+  ./configure $@
   if [[ $? == 0 ]]; then
     growlnotify -m "'configure' successful in $DIR" 
   else
@@ -260,9 +271,9 @@ zstyle ':completion:*:my-accounts' users-hosts $my_accounts
 zstyle ':completion:*:other-accounts' users-hosts $other_accounts
 
 ### OPTIONS ###
-unsetopt BG_NICE		      # do NOT nice bg commands
-setopt EXTENDED_HISTORY		# puts timestamps in the history
-setopt NO_HUP                 # don't send kill to background jobs when exiting
+unsetopt BG_NICE             # do NOT nice bg commands
+setopt EXTENDED_HISTORY      # puts timestamps in the history
+setopt NO_HUP                # don't send kill to background jobs when exiting
 
 # Keybindings
 bindkey -e
@@ -280,7 +291,7 @@ bindkey "^E" end-of-line
 bindkey "^W" backward-delete-word
 #bindkey "^b" backward-word
 #bindkey "^f" forward-word
-bindkey "^d" delete-word
+#bindkey "^d" delete-word
 bindkey "^k" kill-line
 bindkey ' ' magic-space    # also do history expansion on space
 bindkey '^I' complete-word # complete on tab, leave expansion to _expand

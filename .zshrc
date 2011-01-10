@@ -142,14 +142,18 @@ fi
 if [[ $OS == "Darwin" ]]; then
     EMACS_HOME="/Applications/Emacs.app/Contents/MacOS"
 
+    if [ -s /usr/local/bin/emacs ]; then
+        alias emacs='TERM=xterm-256color emacs'
+    fi
+    
+    EMACS_HOME="/Applications/Emacs.app/Contents/MacOS"
+
     function e()  { PATH=$EMACS_HOME/bin:$PATH $EMACS_HOME/Emacs $@ }
     function ec() { PATH=$EMACS_HOME/bin:$PATH emacsclient -t $@ }
 
     function es() { e --daemon=$1 && ec -s $1 }
     function el() { ps ax|grep Emacs }
     function ek() { $EMACS_HOME/bin/emacsclient -e '(kill-emacs)' -s $1 }
-
-    alias emacs=e
 
 #    export EDITOR="ec -c"
 #    export ALTERNATIVE_EDITOR="e"

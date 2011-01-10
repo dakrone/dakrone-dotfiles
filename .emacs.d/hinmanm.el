@@ -1,5 +1,6 @@
 ;; Imports
 (require 'color-theme)
+(require 'offlineimap)
 
 
 
@@ -45,7 +46,13 @@
 
 (add-hook 'clojure-mode-hook 'tweak-clojure-syntax)
 
+;; Fix some indention stuff (from Kevin)
+(add-hook 'clojure-mode-hook (lambda () (setq clojure-mode-use-backtracking-indent t)))
 
+;; paredit in REPL
+(add-hook 'slime-repl-mode-hook (lambda () (paredit-mode +1)))
+;; syntax in REPL
+(add-hook 'slime-repl-mode-hook 'clojure-mode-font-lock-setup)
 
 ;; No longer needed (with Phil's ELPA repo)
 ;;(add-to-list 'load-path "/Users/hinmanm/src/swank-clojure")
@@ -156,7 +163,10 @@
 (setq erc-log-channels-directory "~/.erc/logs/")
 (setq erc-save-buffer-on-part t)
 (defadvice save-buffers-kill-emacs (before save-logs (arg) activate)
-(save-some-buffers t (lambda () (when (eq major-mode 'erc-mode) t))))
+  (save-some-buffers t (lambda () (when (eq major-mode 'erc-mode) t))))
+
+;; Don't highlight pals, because I like highlight-nicknames for that
+(setq erc-pal-highlight-type 'nil)
 
 (eval-after-load 'erc
   '(progn
@@ -170,11 +180,13 @@
            erc-flood-protect nil
            erc-pals '("technomancy" "hiredman" "danlarkin" "drewr" "pjstadig"
                       "scgilardi" "dysinger" "fujin" "joegallo" "wooby" "jimduey"
-                      "rhickey")
+                      "rhickey" "geek00l")
            erc-autojoin-channels-alist
            '(("freenode.net"
               "#clojure"
               "#leiningen"
+              "#elasticsearch"
+              "#rawpacket"
               "#sonian"
               "#sonian-safe"))
            erc-prompt-for-nickserv-password nil)
@@ -184,7 +196,7 @@
      (add-to-list 'erc-modules 'highlight-nicknames 'spelling)
      (add-hook 'erc-connect-pre-hook (lambda (x) (erc-update-modules)))))
 
-
+(add-hook 'erc-mode-hook (lambda () (flyspell-mode t)))
 
 ;; Gist support
 (require 'gist)
@@ -194,7 +206,7 @@
 ;; Appearance
 ;;(set-default-font "Monaco")
 (set-default-font "Anonymous Pro")
-(set-face-attribute 'default nil :height 130)
+(set-face-attribute 'default nil :height 125)
 ;; Anti-aliasing
 (setq mac-allow-anti-aliasing t)
 ;;(setq mac-allow-anti-aliasing nil)
@@ -213,7 +225,7 @@
 
 ;; Color Theme
 (color-theme-initialize)
-(color-theme-billw)
+(color-theme-dakrone)
 
 
 
@@ -329,6 +341,7 @@
 ;; Ispell/Aspell flyspell stuff
 ;; brew install aspell --lang=en
 (setq-default ispell-program-name "/usr/local/bin/aspell")
+(setq ispell-extra-args '("--sug-mode=ultra" "--ignore=3"))
 (setq flyspell-issue-message-flag nil)
 (setq ispell-personal-dictionary "~/.flydict")
 
@@ -337,3 +350,29 @@
 ;; Scpaste stuff
 (setq scpaste-http-destination "http://p.writequit.org")
 (setq scpaste-scp-destination "p.writequit.org:~/public_html/wq/paste/")
+
+
+
+
+;; Environment vars
+(setenv "PATH" "~/bin:~/.rvm/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/git/bin:/usr/X11/bin:/usr/local/sbin:/usr/libexec:/opt/local/sbin:/usr/local/mysql/bin")
+
+
+
+;; Marmalade
+(add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages"))
+
+
+
+;; Backup directory
+(setq backup-directory-alist '(("." . "~/.backup")))
+
+
+
+;; Restore windows on startup
+(desktop-save-mode 1)
+
+
+
+;; Twitter?
+(require 'twittering-mode)

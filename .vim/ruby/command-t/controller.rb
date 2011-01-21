@@ -138,6 +138,14 @@ module CommandT
       @prompt.cursor_start if @focus == @prompt
     end
 
+    def leave
+      @match_window.leave
+    end
+
+    def unload
+      @match_window.unload
+    end
+
   private
 
     def set_up_max_height

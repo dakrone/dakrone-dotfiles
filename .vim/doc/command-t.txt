@@ -595,7 +595,7 @@ PayPal to win@wincent.com:
 
 LICENSE                                         *command-t-license*
 
-Copyright 2010 Wincent Colaiuta. All rights reserved.
+Copyright 2010-2011 Wincent Colaiuta. All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
@@ -620,6 +620,13 @@ POSSIBILITY OF SUCH DAMAGE.
 
 
 HISTORY                                         *command-t-history*
+
+1.0.1 (5 January 2011)
+
+- work around bug when mapping |:CommandTFlush|, wherein the default mapping
+  for |:CommandT| would not be set up
+- clean up when leaving the Command-T buffer via unexpected means (such as
+  with <C-W k> or similar)
 
 1.0 (26 November 2010)
 

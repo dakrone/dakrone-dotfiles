@@ -1,17 +1,18 @@
 ;; Imports
 (require 'color-theme)
 (require 'offlineimap)
-
-
-
-;; Command-enter -> fullscreen
-;; It's not that hard to manually toggle
-;;(global-set-key (kbd "M-S-F") 'ns-toggle-fullscreen)
-
-
-
 ;; Dim parens
 (require 'parenface)
+;; Gist support
+(require 'gist)
+
+
+
+;; Multi-term
+(require 'multi-term)
+(setq multi-term-program "/usr/local/bin/zsh")
+(global-set-key (kbd "C-c n") 'multi-term-next)
+(global-set-key (kbd "C-c T") 'multi-term) ;; create a new one
 
 
 
@@ -46,27 +47,16 @@
 
 (add-hook 'clojure-mode-hook 'tweak-clojure-syntax)
 
-;; Fix some indention stuff (from Kevin)
+;; One-offs
+;; Better indention (from Kevin)
 (add-hook 'clojure-mode-hook (lambda () (setq clojure-mode-use-backtracking-indent t)))
-
 ;; paredit in REPL
 (add-hook 'slime-repl-mode-hook (lambda () (paredit-mode +1)))
 ;; syntax in REPL
 (add-hook 'slime-repl-mode-hook 'clojure-mode-font-lock-setup)
-
-;; No longer needed (with Phil's ELPA repo)
-;;(add-to-list 'load-path "/Users/hinmanm/src/swank-clojure")
-;;(add-to-list 'load-path "/Users/hinmanm/src/clojure-mode")
-;;(require 'clojure-mode)
-;;(require 'clojure-test-mode)
-
-
-
-;; Add Phil's ELPA repo to the list
-(add-to-list 'package-archives
-             '("technomancy" . "http://repo.technomancy.us/emacs/") t)
-
-
+;; turn off the ESK highlight line mode
+(remove-hook 'esk-coding-hook 'esk-turn-on-hl-line-mode)
+(add-hook 'esk-coding-hook 'esk-turn-on-whitespace)
 ;; Lazytest indention in clojure
 (eval-after-load 'clojure-mode
   '(define-clojure-indent
@@ -78,14 +68,23 @@
 
 
 
-;; This code makes % act like the buffer name, similar to Vim
+;; Repos
+;; Add Phil's ELPA repo to the list
+(add-to-list 'package-archives
+             '("technomancy" . "http://repo.technomancy.us/emacs/") t)
+;; Marmalade
+(add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages"))
+
+
+
+;; This code makes % act like the buffer name in the minibuffer, similar to Vim
 (define-key minibuffer-local-map "%"
   (function
    (lambda ()
      (interactive)
-     (insert (file-name-nondirectory 
-	      (buffer-file-name 
-	       (window-buffer (minibuffer-selected-window))))))))
+     (insert (file-name-nondirectory
+              (buffer-file-name
+               (window-buffer (minibuffer-selected-window))))))))
 
 
 
@@ -105,6 +104,7 @@
            title
            (replace-regexp-in-string "\"" "'" message)
            (if sticky "yes" "no"))))
+
 
 
 ;; Put the column in the status bar
@@ -144,15 +144,17 @@
   (let* ((nick (first (split-string nick "!"))))
     (bja-growl-notification nick msg)))
 
-(add-hook 'erc-text-matched-hook 'call-growl)
+;; only add the hook for Mac
+(when (eq window-system 'ns)
+  (add-hook 'erc-text-matched-hook 'call-growl))
 
 (setq erc-button-url-regexp
       "\\([-a-zA-Z0-9_=!?#$@~`%&*+\\/:;,]+\\.\\)+[-a-zA-Z0-9_=!?#$@~`%&*+\\/:;,]*[-a-zA-Z0-9\\/]")
 
 (and
-  (require 'erc-highlight-nicknames)
-  (add-to-list 'erc-modules 'highlight-nicknames)
-  (erc-update-modules))
+ (require 'erc-highlight-nicknames)
+ (add-to-list 'erc-modules 'highlight-nicknames)
+ (erc-update-modules))
 
 (setq erc-prompt (lambda ()
                    (if (and (boundp 'erc-default-recipients) (erc-default-target))
@@ -171,7 +173,11 @@
 (eval-after-load 'erc
   '(progn
      (setq erc-fill-column 75
-           erc-hide-list '("JOIN" "PART" "QUIT" "NICK")
+           erc-hide-list '("JOIN"
+                           "PART"
+                           "QUIT"
+                           ;;"NICK"
+                           )
            erc-track-exclude-types (append '("324" "329" "332" "333"
                                              "353" "477" "MODE")
                                            erc-hide-list)
@@ -179,13 +185,16 @@
            erc-autojoin-timing :ident
            erc-flood-protect nil
            erc-pals '("technomancy" "hiredman" "danlarkin" "drewr" "pjstadig"
-                      "scgilardi" "dysinger" "fujin" "joegallo" "wooby" "jimduey"
-                      "rhickey" "geek00l")
+                      "scgilardi" "dysinger" "fujin" "joegallo" "jimduey"
+                      "leathekd" "dave_chestnutt" "davec" "ƒujin`"
+                      "mikehale" "drëwr" "mwilliams" "hiredman′" "te⚔nomancy"
+                      "δρεωρ" "hiredman′"
+                      ;; non-SAFE team members
+                      "rhickey" "geek00l" "wooby" "zkim")
            erc-autojoin-channels-alist
-           '(("freenode.net"
+           '(("irc.freenode.net"
               "#clojure"
               "#leiningen"
-              "#elasticsearch"
               "#rawpacket"
               "#sonian"
               "#sonian-safe"))
@@ -198,24 +207,19 @@
 
 (add-hook 'erc-mode-hook (lambda () (flyspell-mode t)))
 
-;; Gist support
-(require 'gist)
-
 
 
 ;; Appearance
 ;;(set-default-font "Monaco")
 (set-default-font "Anonymous Pro")
-(set-face-attribute 'default nil :height 125)
+(set-face-attribute 'default nil :height 115)
 ;; Anti-aliasing
 (setq mac-allow-anti-aliasing t)
 ;;(setq mac-allow-anti-aliasing nil)
 
-
-
 ;; Transparency
-(set-frame-parameter (selected-frame) 'alpha '(100 35))
-(add-to-list 'default-frame-alist '(alpha 100 35))
+;;(set-frame-parameter (selected-frame) 'alpha '(100 35))
+;;(add-to-list 'default-frame-alist '(alpha 100 35))
 
 ;; Fullscreen
 (when (eq window-system 'ns)
@@ -225,8 +229,8 @@
 
 ;; Color Theme
 (color-theme-initialize)
+;; My custom theme
 (color-theme-dakrone)
-
 
 
 ;; Show Paren Mode
@@ -248,7 +252,7 @@
 
 ;; Window switching
 (global-set-key [C-tab] 'other-window)
-(global-set-key [C-S-tab] 
+(global-set-key [C-S-tab]
                 (lambda ()
                   (interactive)
                   (other-window -1)))
@@ -258,11 +262,6 @@
 ;; Undo tree support
 (require 'undo-tree)
 (global-undo-tree-mode)
-
-
-
-;; Emacs Client Setup
-(server-start)
 
 
 
@@ -278,16 +277,16 @@
      "M-x "
      (progn
        (unless ido-execute-command-cache
-	 (mapatoms (lambda (s)
-		     (when (commandp s)
-		       (setq ido-execute-command-cache
-			     (cons (format "%S" s) ido-execute-command-cache))))))
+         (mapatoms (lambda (s)
+                     (when (commandp s)
+                       (setq ido-execute-command-cache
+                             (cons (format "%S" s) ido-execute-command-cache))))))
        ido-execute-command-cache)))))
 
 (add-hook 'ido-setup-hook
-	  (lambda ()
-	    (setq ido-enable-flex-matching t)
-	    (global-set-key "\M-x" 'ido-execute-command)))
+          (lambda ()
+            (setq ido-enable-flex-matching t)
+            (global-set-key "\M-x" 'ido-execute-command)))
 
 
 
@@ -304,7 +303,6 @@
 
 
 
-
 ;; Fix the closing paren newline thing
 (eval-after-load 'paredit
   '(define-key paredit-mode-map (kbd ")") 'paredit-close-parenthesis))
@@ -313,19 +311,19 @@
 
 ;; Fix ssh-agent
 (defun find-agent ()
- (first (split-string
-     (shell-command-to-string
-      (concat
-      "ls -t1 "
-      "$(find /tmp/ -uid $UID -path \\*ssh\\* -type s 2> /dev/null)"
-      "|"
-      "head -1")))))
+  (first (split-string
+          (shell-command-to-string
+           (concat
+            "ls -t1 "
+            "$(find /tmp/ -uid $UID -path \\*ssh\\* -type s 2> /dev/null)"
+            "|"
+            "head -1")))))
 
-(defun fix-agent ()                                                                                
- (interactive)
- (let ((agent (find-agent)))
-  (setenv "SSH_AUTH_SOCK" agent)
-  (message agent)))
+(defun fix-agent ()
+  (interactive)
+  (let ((agent (find-agent)))
+    (setenv "SSH_AUTH_SOCK" agent)
+    (message agent)))
 
 
 
@@ -334,7 +332,6 @@
 (require 'auto-complete-config)
 (add-to-list 'ac-dictionary-directories "~/.emacs.d/hinmanm/auto-complete/ac-dict")
 (ac-config-default)
-
 
 
 
@@ -353,26 +350,18 @@
 
 
 
-
-;; Environment vars
-(setenv "PATH" "~/bin:~/.rvm/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/git/bin:/usr/X11/bin:/usr/local/sbin:/usr/libexec:/opt/local/sbin:/usr/local/mysql/bin")
-
-
-
-;; Marmalade
-(add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages"))
-
-
-
 ;; Backup directory
 (setq backup-directory-alist '(("." . "~/.backup")))
 
 
 
-;; Restore windows on startup
-(desktop-save-mode 1)
-
-
-
 ;; Twitter?
 (require 'twittering-mode)
+
+
+
+;; Emacs Client Setup
+(server-start)
+
+
+

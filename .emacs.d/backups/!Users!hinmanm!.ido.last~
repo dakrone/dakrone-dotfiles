@@ -1,0 +1,337 @@
+;;; -*- coding: utf-8 -*-
+
+;; ----- ido-last-directory-list -----
+(
+ ("/Users/hinmanm/src/clj/subrosa/test/subrosa/" . "test/")
+ ("/Users/hinmanm/src/clj/subrosa/test/" . "subrosa/")
+ ("/Users/hinmanm/src/clj/subrosa/src/subrosa/" . "plugins/")
+ ("/Users/hinmanm/safe/sa-chef-repo/cookbooks/subrosa/templates/" . "default/")
+ ("/Users/hinmanm/safe/sa-chef-repo/cookbooks/subrosa/" . "templates/")
+ ("/Users/hinmanm/Downloads/clj2010/" . "src/")
+ ("/Users/hinmanm/src/clj/subrosa/src/" . "subrosa/")
+ ("/Users/hinmanm/src/clj/subrosa/" . "test/")
+ ("/Users/hinmanm/Downloads/carbon-0.9.6/lib/" . "carbon/")
+ ("/Users/hinmanm/safe/sa-chef-repo/cookbooks/riak/" . "recipes/")
+ ("/Users/hinmanm/Downloads/carbon-0.9.6/" . "lib/")
+ ("/Users/hinmanm/safe/sa-chef-repo/cookbooks/bluepill/templates/" . "default/")
+ ("/Users/hinmanm/safe/sa-chef-repo/cookbooks/bluepill/" . "templates/")
+ ("/Users/hinmanm/safe/sa-chef-repo/cookbooks/safe/templates/" . "default/")
+ ("/Users/hinmanm/Downloads/graphite-web-0.9.6/" . "examples/")
+ ("/Users/hinmanm/Downloads/" . "clj2010/")
+ ("/Users/hinmanm/src/opennlp-tools-1.5.0/src/test/resources/opennlp/tools/" . "tokenize/")
+ ("/Users/hinmanm/src/opennlp-tools-1.5.0/src/test/resources/opennlp/" . "tools/")
+ ("/Users/hinmanm/src/opennlp-tools-1.5.0/src/test/resources/" . "opennlp/")
+ ("/Users/hinmanm/src/opennlp-tools-1.5.0/src/test/" . "resources/")
+ ("/Users/hinmanm/.emacs.d/elpa/archives/" . "technomancy/")
+ ("/Users/hinmanm/.emacs.d/elpa/" . "starter-kit-2.0/")
+ ("/Users/hinmanm/src/opennlp-tools-1.5.0/src/main/java/opennlp/tools/coref/" . "mention/")
+ ("/Users/hinmanm/src/ruby/" . "ltest/")
+ ("/Users/hinmanm/safe/sa-safe/src/leiningen/" . "hooks/")
+ ("/Users/hinmanm/src/clojure/src/clj/clojure/" . "core/")
+ ("/Users/hinmanm/src/clojure/src/jvm/clojure/" . "lang/")
+ ("/Users/hinmanm/src/clojure/src/jvm/" . "clojure/")
+ ("/Users/hinmanm/src/clojure/src/clj/" . "clojure/")
+ ("/Users/hinmanm/src/clojure/src/" . "clj/")
+ ("/Users/hinmanm/src/clojure/" . "src/")
+ ("/Users/hinmanm/safe/sa-chef-repo/cookbooks/safe/" . "recipes/")
+ ("/Users/hinmanm/safe/sa-chef-repo/cookbooks/" . "subrosa/")
+ ("/Users/hinmanm/safe/sa-chef-repo/" . "cookbooks/")
+ ("/Users/hinmanm/src/clj/clj-time/src/" . "clj_time/")
+ ("/Users/hinmanm/src/clj/clj-time/" . "src/")
+ ("/Users/hinmanm/src/clj/clojure-opennlp/src/opennlp/" . "models/")
+ ("/Users/hinmanm/src/clj/marginalia/src/" . "marginalia/")
+ ("/Users/hinmanm/src/clj/marginalia/" . "src/")
+ ("/Users/hinmanm/.emacs.d/hinmanm/" . "themes/")
+ ("/Users/hinmanm/safe/sa-safe/src/safe/" . "riak/")
+ ("/Users/hinmanm/safe/sa-safe/src/" . "leiningen/")
+ ("/Users/hinmanm/safe/sa-safe/" . "src/")
+ ("/Users/hinmanm/safe/" . "sa-chef-repo/")
+ ("/Users/hinmanm/src/clj/jsontest/src/" . "jsontest/")
+ ("/Users/hinmanm/src/clj/jsontest/" . "src/")
+ ("/Users/hinmanm/src/opennlp-tools-1.5.0/src/main/java/opennlp/tools/" . "tokenize/")
+ ("/Users/hinmanm/src/opennlp-tools-1.5.0/src/main/java/opennlp/" . "tools/")
+ ("/Users/hinmanm/src/opennlp-tools-1.5.0/src/main/java/" . "opennlp/")
+ ("/Users/hinmanm/src/opennlp-tools-1.5.0/src/main/" . "java/")
+ ("/Users/hinmanm/src/opennlp-tools-1.5.0/src/" . "test/")
+ ("/Users/hinmanm/src/opennlp-tools-1.5.0/" . "src/")
+ ("/Users/hinmanm/src/clj/clojure-opennlp/src/" . "opennlp/")
+ ("/Users/hinmanm/src/clj/clojure-opennlp/" . "src/")
+ ("/Users/hinmanm/src/clj/" . "clojure-opennlp/")
+ ("/Users/hinmanm/src/" . "clj/")
+ ("/Users/hinmanm/.emacs.d/" . "elpa/")
+ ("/Users/hinmanm/" . "src/")
+)
+
+;; ----- ido-work-directory-list -----
+(
+ "/Users/hinmanm/src/clj/subrosa/test/subrosa/test/"
+ "/Users/hinmanm/"
+ "/Users/hinmanm/src/clj/clojure-opennlp/src/opennlp/"
+ "/Users/hinmanm/src/clj/subrosa/"
+ "/Users/hinmanm/src/clj/subrosa/etc/"
+ "/Applications/conkeror.mozdev.org/conkeror.app/Contents/"
+ "/Users/hinmanm/src/clj/clojure-opennlp/"
+ "/Users/hinmanm/src/clj/subrosa/src/subrosa/plugins/"
+ "/Users/hinmanm/src/clj/subrosa/src/subrosa/"
+ "/Users/hinmanm/.emacs.d/"
+ "/Users/hinmanm/safe/sa-chef-repo/cookbooks/subrosa/templates/default/"
+ "/Users/hinmanm/Downloads/clj2010/src/"
+ "/Users/hinmanm/Downloads/carbon-0.9.6/lib/carbon/"
+ "/Users/hinmanm/Downloads/carbon-0.9.6/"
+ "/Users/hinmanm/Desktop/"
+ "/Users/hinmanm/.emacs.d/elpa/starter-kit-2.0/"
+ "/Users/hinmanm/safe/sa-chef-repo/cookbooks/riak/recipes/"
+ "/Users/hinmanm/safe/sa-chef-repo/cookbooks/riak/"
+ "/Users/hinmanm/safe/sa-chef-repo/cookbooks/safe/recipes/"
+ "/Users/hinmanm/Downloads/carbon-0.9.6/bin/"
+ "/Users/hinmanm/safe/sa-chef-repo/cookbooks/bluepill/templates/default/"
+ "/Users/hinmanm/safe/sa-chef-repo/cookbooks/safe/templates/default/"
+ "/Users/hinmanm/src/ruby/ltest/"
+ "/Users/hinmanm/Downloads/graphite-web-0.9.6/examples/"
+ "/Users/hinmanm/src/opennlp-tools-1.5.0/src/test/resources/opennlp/tools/tokenize/"
+ "/Users/hinmanm/.emacs.d/elpa/archives/technomancy/"
+ "/Users/hinmanm/.emacs.d/elpa/erc-highlight-nicknames-1.0/"
+ "/Users/hinmanm/src/opennlp-tools-1.5.0/src/main/java/opennlp/tools/tokenize/"
+ "/Users/hinmanm/src/clj/chinese-democracy/src/chinese/"
+ "/Users/hinmanm/src/clj/clojure-opennlp/test/opennlp/test/"
+ "/Users/hinmanm/.emacs.d/hinmanm/"
+ "/Users/hinmanm/.emacs.d/hinmanm/themes/"
+ "/Users/hinmanm/src/clojure/src/clj/clojure/"
+ "/Users/hinmanm/src/clojure/src/jvm/clojure/lang/"
+ "/Users/hinmanm/src/opennlp-tools-1.5.0/src/main/java/opennlp/tools/coref/mention/"
+ "/Users/hinmanm/src/opennlp-tools-1.5.0/src/main/java/opennlp/tools/coref/"
+ "/Users/hinmanm/safe/sa-safe/"
+ "/Users/hinmanm/safe/sa-safe/src/leiningen/hooks/"
+ "/Users/hinmanm/src/clojure/src/clj/clojure/pprint/"
+ "/Users/hinmanm/src/clojure/src/clj/clojure/java/"
+ "/Users/hinmanm/safe/sa-safe/src/safe/"
+ "/Users/hinmanm/Downloads/"
+ "/Users/hinmanm/safe/sa-chef-repo/"
+ "/Users/hinmanm/src/clj/clj-time/src/clj_time/"
+ "/Users/hinmanm/src/clj/marginalia/src/marginalia/"
+ "/Users/hinmanm/src/clj/marginalia/"
+ "/Users/hinmanm/src/clj/marginalia/src/leiningen/"
+ "/Users/hinmanm/safe/sa-safe/src/safe/riak/"
+ "/Users/hinmanm/safe/sa-safe/.elisp/"
+ "/Users/hinmanm/src/clj/jsontest/src/jsontest/"
+)
+
+;; ----- ido-work-file-list -----
+(
+ "chat.clj"
+ "bible.org"
+ "work.org"
+ "treebank.clj"
+ "README"
+ "subrosa.clj"
+ "Info.plist.old"
+ "project.clj"
+ "logging.clj"
+ "client.clj"
+)
+
+;; ----- ido-dir-file-cache -----
+(
+ ("/Users/hinmanm/src/clj/subrosa/test/subrosa/test/" (19767 1530) "ssl.clj" "rooms.clj" "plugins/" "expect.clj" "connection.clj" "config.clj" "chat.clj" "../" "./")
+
+ ("/Users/hinmanm/src/clj/subrosa/test/subrosa/" (19654 18489) "test/" "../" "./")
+
+ ("/Users/hinmanm/src/clj/subrosa/test/" (19654 18489) "subrosa/" "../" "./")
+
+ ("/Users/hinmanm/src/clj/subrosa/" (19767 48043) "test.ks" "test/" "subrosa-0.6-SNAPSHOT.jar" "subrosa-0.6-SNAPSHOT-standalone.jar" "src/" "README" "project.clj" "pkg/" "log/" "LICENSE" "lib/" "HISTORY" "etc/" "classes/" ".gitignore" ".git/" "../" "./")
+
+ ("/Users/hinmanm/src/clj/subrosa/src/subrosa/" (19767 47946) "utils.clj" "ssl.clj" "server.clj" "plugins.clj" "plugins/" "netty.clj" "main.clj" "hooks.clj" "config.clj" "commands.clj" "client.clj" "#client.clj#" "../" "./")
+
+ ("/Users/hinmanm/" (19767 47758) "work.org" "vimwiki/" "Torrents/" "stuff.tgz" "src/" "Sites/" "scratch/" "safe/" "Random/" "Public/" "Pictures/" "old-work.org" "npe.txt" "npe.org" "News/" "Music/" "Movies/" "Mail/" "Library/" "host.pem" "host.cert" "growl_hook.clj" "es.tgz" "Dropbox/" "Downloads/" "Documents/" "Desktop/" "color-theme-dakrone.el" "bin/" "bible.org" "baby.hs" "agenda.org" ".zshrc" ".zsh-history" ".zcompdump" ".wapi/" ".vtags" ".vromerc" ".vimrc" ".vimperatorrc" ".vimperator/" ".viminfo" ".vimfuzzyfinder" ".vim-fuf-data/" ".vim/" ".vagrant/" ".Trash/" ".tmux.conf" ".subversion/" ".ssh/" ".slime-history.eld" ".shoes/" ".sh_history" ".screenrc" ".s3cfg" ".rvm/" ".rnd" ".recentf" ".pentadactylrc" ".parallel/" ".offlineimaprc" ".offlineimappass" ".offlineimap/" ".nsmcrc" ".newsrc-dribble" ".m2/" ".lesshst" ".lein/" ".jline-clojure.main.history" ".java_history" ".j" ".irssi/" ".irbrc" ".irb_history_ruby" ".irb_history" ".ido.last" ".htoprc" ".hacketyhack/" ".gnus" ".gnupg/" ".gitconfig" ".gem/" ".fontconfig/" ".flydict" ".eshell/" ".emacs.d-v2/" ".emacs.d-v1/" ".emacs.d/" ".DS_Store" ".dropbox/" ".dovecotrc" ".cups/" ".config/" ".clojure.conf" ".clojure/" ".chef/" ".CFUserTextEncoding" ".bash_history" ".backup/" ".autotest" ".aspell.en.prepl" ".android/" "../" "./")
+
+ ("/Users/hinmanm/src/clj/subrosa/src/subrosa/plugins/" (19761 55957) "logging.clj" "../" "./")
+
+ ("/Users/hinmanm/src/clj/clojure-opennlp/src/opennlp/" (19759 3576) "treebank.clj" "tools/" "nlp.clj" "models/" "../" "./")
+
+ ("/Users/hinmanm/src/clj/clojure-opennlp/" (19760 32637) "TRAINING.markdown" "training/" "test/" "src/" "README.markdown" "project.clj" "parser-model/" "models/" "lib/" "examples/" "docs/" "coref/" "COPYING" "classes/" ".gitignore" ".git/" "../" "./")
+
+ ("/Users/hinmanm/src/clj/subrosa/etc/" (19760 39555) "version.txt" "subrosa.clj" "../" "./")
+
+ ("/Applications/conkeror.mozdev.org/conkeror.app/Contents/" (19760 52155) "Resources/" "MacOS/" "Info.plist.old" "Info.plist" "../" "./")
+
+ ("/Users/hinmanm/.emacs.d/" (19760 28442) "url/" "places" "hinmanm.el" "hinmanm/" "elpa/" "backups/" "auto-save-list/" "ac-comphist.dat" "../" "./")
+
+ ("/Users/hinmanm/safe/sa-chef-repo/cookbooks/subrosa/templates/default/" (19759 6713) "subrosa.pill.erb" "subrosa.clj.erb" "../" "./")
+
+ ("/Users/hinmanm/safe/sa-chef-repo/cookbooks/subrosa/templates/" (19759 6713) "default/" "../" "./")
+
+ ("/Users/hinmanm/safe/sa-chef-repo/cookbooks/subrosa/" (19759 6713) "templates/" "recipes/" "README.rdoc" "metadata.rb" "files/" "attributes/" "../" "./")
+
+ ("/Users/hinmanm/safe/sa-chef-repo/cookbooks/bluepill/" (19759 6713) "templates/" "recipes/" "README.rdoc" "metadata.rb" "metadata.json" "definitions/" "attributes/" "../" "./")
+
+ ("/Users/hinmanm/safe/sa-chef-repo/cookbooks/" (19759 6713) "zlib/" "xml/" "xfs/" "wkhtmltopdf/" "vsftpd/" "users/" "ubuntu/" "tomcat6/" "system/" "sudo/" "subrosa/" "stunnel/" "sq/" "sonian/" "socat/" "shibboleth/" "safe/" "runit/" "ruby/" "rsyslog/" "riak/" "reports/" "rabbitmq_chef/" "rabbitmq/" "postfix/" "orbited/" "openssl/" "oitca/" "oit/" "ntp/" "nginx/" "nfs/" "net-snmp/" "nagios/" "mysql/" "monitoring/" "mongodb/" "mercurial/" "memcached/" "lvm/" "lotus_notes/" "logrotate/" "libsonian/" "libpst/" "leiningen/" "kernel/" "java/" "iptables/" "haproxy/" "gnutls/" "glusterfs/" "fog/" "erlang/" "elasticsearch/" "ec2/" "dynect/" "dns/" "deploy/" "daemons/" "crossover/" "cron/" "credentials/" "couchdb/" "collectd/" "cluster/" "chef/" "capistrano/" "build-essential/" "bootstrap/" "bluepill/" "aws/" "autofs/" "apt/" "apparmor/" "apacheds/" "apache2/" "7zip/" "../" "./")
+
+ ("/Users/hinmanm/safe/sa-chef-repo/" (19759 6713) "tasks/" "site-cookbooks/" "roles/" "readme.org" "README" "Rakefile" "nodes/" "docs/" "data_bags/" "cookbooks/" "config/" "certificates/" ".gitmodules" ".gitignore" ".git/" ".chef/" "../" "./")
+
+ ("/Users/hinmanm/src/clj/clojure-opennlp/src/" (19593 1930) "opennlp/" "../" "./")
+
+ ("/Users/hinmanm/Downloads/clj2010/src/" (19759 76) "clj2010.clj" "../" "./")
+
+ ("/Users/hinmanm/Downloads/clj2010/" (19759 841) "test/" "stop-words.txt" "src/" "README" "project.clj" "lib/" "classes/" "charts/" ".git/" "../" "./")
+
+ ("/Users/hinmanm/Downloads/" (19759 533) "t_tombr_debut_ss_hd.mov" "t_gtc_top10_anticipatedvg_2011_gt_v2_hd.mov" "t_alphasquad_launch_hd.mov" "Meeting Plan - Jan 2011.xlsx" "logs.tar.bz2" "less.pdf" "clj2010-8b084edf1600.tar.gz" "clj2010/" ".localized" ".DS_Store" "../" "./")
+
+ ("/Users/hinmanm/safe/sa-safe/src/safe/" (19758 33754) "zip.clj" "xfer/" "worker.clj" "utils.clj" "transforms.clj" "tika.clj" "ticktock.clj" "storage.clj" "storage/" "status.clj" "smtp/" "server_socket.clj" "server.clj" "safe_worker.clj" "safe_server.clj" "safe_admin.clj" "riak.clj" "riak/" "purge.clj" "pst.clj" "pst/" "protocol.clj" "parallel_run.clj" "packing.clj" "packing/" "packfile.clj" "packfile/" "oit.clj" "notify.clj" "migration.clj" "messaging.clj" "mail.clj" "mail/" "lotus_live/" "lotus.clj" "logging.clj" "logging/" "log.clj" "keystore.clj" "json.clj" "jmx.clj" "initialize.clj" "initialize/" "index.clj" "index/" "import.clj" "import/" "http.clj" "html.clj" "helper.clj" "extract_stream.clj" "export.clj" "export/" "exec.clj" "elasticsearch.clj" "document.clj" "default-forms.nsf.gz" "debug.clj" "date.clj" "crypto.clj" "crypto/" "config.clj" "conduit.clj" "condition.clj" "condition/" "amqp.clj" "account.clj" "account/" "../" "./")
+
+ ("/Users/hinmanm/src/opennlp-tools-1.5.0/src/main/java/opennlp/tools/postag/" (19655 36855) "WordTagSampleStream.java" "TagDictionary.java" "POSTaggerTrainer.java" "POSTaggerME.java" "POSTaggerCrossValidator.java" "POSTagger.java" "POSSampleSequenceStream.java" "POSSampleEventStream.java" "POSSample.java" "POSModel.java" "POSEventStream.java" "POSEventGenerator.java" "POSEventCollector.java" "POSEvaluator.java" "POSDictionaryWriter.java" "POSDictionary.java" "POSContextGenerator.java" "package-info.java" "DefaultPOSContextGenerator.java" "#POSTaggerME.java#" "../" "./")
+
+ ("/Users/hinmanm/src/clj/subrosa/lib/" (19655 31950) "netty-3.2.1.Final.jar" "dev/" "clojure-contrib-1.2.0.jar" "clojure-1.2.0.jar" "../" "./")
+
+ ("/Users/hinmanm/Downloads/carbon-0.9.6/bin/" (19758 29793) "carbon-relay.py" "carbon-cache.py" "#carbon-cache.py#" "../" "./")
+
+ ("/Users/hinmanm/safe/sa-chef-repo/cookbooks/riak/recipes/" (19758 29793) "tarball.rb" "iptables.rb" "innostore.rb" "default.rb" "autoconf.rb" "#tarball.rb#" "../" "./")
+
+ ("/Users/hinmanm/Desktop/" (19758 30462) "spec.org" "Screen shot 2011-01-12 at 4.53.54 PM.png" "Screen shot 2011-01-12 at 4.53.01 PM.png" "foo.rb" "bar.sh" ".localized" ".DS_Store" "../" "./")
+
+ ("/Users/hinmanm/src/clj/subrosa/src/" (19654 18489) "subrosa/" "../" "./")
+
+ ("/Users/hinmanm/Downloads/carbon-0.9.6/lib/carbon/" (19758 11767) "writer.py" "util.py" "storage.py" "rules.py" "relay.py" "log.py" "listeners.py" "instrumentation.py" "events.py" "conf.py" "cache.py" "amqp_publisher.py" "amqp_listener.py" "amqp0-8.xml" "__init__.py" "../" "./")
+
+ ("/Applications/Emacs.app/Contents/Resources/etc/" (19717 45332) "yow.lines" "WHY-FREE" "tutorials/" "TODO" "themes/" "THE-GNU-PROJECT" "TERMS" "srecode/" "spook.lines" "sex.6" "ses-example.ses" "SERVICE" "schema/" "rgb.txt" "refcards/" "README" "ps-prin1.ps" "ps-prin0.ps" "PROBLEMS" "ORDERS" "NXML-NEWS" "nxml/" "NEXTSTEP" "NEWS.23" "NEWS.22" "NEWS.21" "NEWS.20" "NEWS.19" "NEWS.18" "NEWS.1-17" "NEWS" "MOTIVATION" "MORE.STUFF" "MH-E-NEWS" "MAILINGLISTS" "MACHINES" "LINUX-GNU" "JOKES" "INTERVIEW" "images/" "HELLO" "grep.txt" "gnus-tut.txt" "GNUS-NEWS" "gnus/" "GNU" "future-bug" "FTP" "forms-d2.dat" "ETAGS.README" "ETAGS.EBNF" "ERC-NEWS" "enriched.doc" "emacs3.py" "emacs2.py" "emacs.py" "emacs.icon" "emacs.desktop" "emacs-buffer.gdb" "edt-user.el" "echo.msg" "e/" "DOC-24.0.50.2" "DOC-24.0.50.1" "DISTRIB" "DEVEL.HUMOR" "DEBUG" "copying.paper" "COPYING" "COOKIES" "CONTRIBUTE" "condom.1" "compilation.txt" "charsets/" "CENSORSHIP" "celibacy.1" "AUTHORS" "../" "./")
+
+ ("/Users/hinmanm/Downloads/carbon-0.9.6/lib/" (19336 10122) "carbon/" "../" "./")
+
+ ("/Users/hinmanm/Documents/" (19751 21289) "wotlk.pdf" "workspace/" "WebEx/" "utility/" "Transmit4.pdf" "The Joy of Clojure.pdf" "taxes/" "Sonian_Consulting_Agreement_Lee_Hinman_signed.pdf" "Sonian_Consulting_Agreement_Lee_Hinman.pdf" "Sonian benefits summary.doc" "RubyBestPractices.pdf" "relevance-coverletter.txt" "relevance-coverletter 2010-06-16 21_39_12.txt" "RDC Connections/" "MySouthwest.pdf" "My Kindle Content/" "MumbleAutomaticCertificateBackup.p12" "MLHinman_resume_generic.pdf" "MLeeHinman_Application.pdf" "Microsoft User Data/" "Matthew_Resume_old.pdf" "Matthew_resume.pdf" "Matthew_resume.pages" "Matthew_Lee_Hinman_resume.pdf" "LimeChat Transcripts/" "laptop-order.pdf" "kindle_backup/" "incanter-cheat-sheet.pdf" "getting-good-with-git.pdf" "EDOCSHinman.doc" "crepe.txt" "Contribution_Report_9452_2011_01_04_16_10.PDF" "Clojure-OO.pdf" "clojure-intro.pdf" "clojure-intro.key" "Clojure-Intro-v2.pdf" "car_registration.pdf" "benefits-2010-2011.pdf" "About Stacks.pdf" "5280.pdf" ".localized" ".DS_Store" "../" "./")
+
+ ("/Users/hinmanm/src/clj/clojure-opennlp/test/opennlp/test/" (19757 65068) "treebank.clj" "train.clj" "nlp.clj" "../" "./")
+
+ ("/Users/hinmanm/safe/sa-chef-repo/cookbooks/bluepill/templates/default/" (19757 55151) "socket.rb.erb" "bluepill.conf.erb" "apache2.pill.erb" "../" "./")
+
+ ("/Users/hinmanm/.emacs.d/elpa/starter-kit-2.0/" (19757 65001) "starter-kit.elc" "starter-kit.el" "starter-kit-pkg.elc" "starter-kit-pkg.el" "starter-kit-misc.elc" "starter-kit-misc.el" "starter-kit-eshell.elc" "starter-kit-eshell.el" "starter-kit-defuns.elc" "starter-kit-defuns.el" "starter-kit-bindings.elc" "starter-kit-bindings.el" "starter-kit-autoloads.el~" "starter-kit-autoloads.el" "../" "./")
+
+ ("/Users/hinmanm/Downloads/graphite-web-0.9.6/webapp/graphite/account/" (19336 10075) "views.py" "urls.py" "models.py" "ldapBackend.py" "__init__.py" "../" "./")
+
+ ("/Users/" (19711 59940) "Shared/" "hinmanm/" ".localized" "../" "./")
+
+ ("/Users/hinmanm/safe/sa-chef-repo/cookbooks/riak/" (19757 55151) "templates/" "recipes/" "README.md" "metadata.rb" "metadata.json" "libraries/" "attributes/" "../" "./")
+
+ ("/Users/hinmanm/safe/sa-chef-repo/cookbooks/safe/recipes/" (19757 55151) "vanilla.rb" "pst.rb" "nsf_cron.rb" "nsf.rb" "http.rb" "default.rb" "../" "./")
+
+ ("/Users/hinmanm/safe/sa-chef-repo/cookbooks/safe/" (19757 55151) "templates/" "recipes/" "metadata.rb" "metadata.json" "files/" "attributes/" "../" "./")
+
+ ("/Users/hinmanm/safe/sa-chef-repo/cookbooks/safe/templates/default/" (19757 55151) "safe.pill.erb" "safe-pst.pill.erb" "safe-nsf.pill.erb" "safe-http.pill.erb" "safe-environment.erb" "log4j.properties.erb" "elasticsearch.json.erb" "config/" "../" "./")
+
+ ("/Users/hinmanm/Downloads/carbon-0.9.6/" (19336 10122) "setup.py" "setup.cfg" "PKG-INFO" "LICENSE" "lib/" "conf/" "bin/" "../" "./")
+
+ ("/Users/hinmanm/safe/sa-chef-repo/cookbooks/elasticsearch/" (19755 16747) "templates/" "recipes/" "README.rdoc" "metadata.rb" "metadata.json" "files/" "attributes/" "../" "./")
+
+ ("/Users/hinmanm/safe/sa-chef-repo/cookbooks/bluepill/templates/" (19712 8198) "default/" "../" "./")
+
+ ("/Users/hinmanm/safe/sa-chef-repo/cookbooks/safe/templates/" (19712 8198) "default/" "../" "./")
+
+ ("/Users/hinmanm/.emacs.d/hinmanm/themes/" (19757 6475) "color-theme-library.el" "color-theme-example.el" "../" "./")
+
+ ("/Users/hinmanm/.emacs.d/hinmanm/" (19757 8448) "undo-tree.el" "twittering-mode.el" "themes/" "sonian.el" "parenface.el" "org-stuff.el" "offlineimap.el" "gist.el" "es-log-mode.el" "erc-highlight-nicknames.el" "color-theme.el" "auto-complete/" "../" "./")
+
+ ("/Users/hinmanm/src/clj/chinese-democracy/src/chinese/" (19755 59091) "protocols.clj" "multicast.clj" "democracy.clj" "../" "./")
+
+ ("/Users/hinmanm/src/opennlp-tools-1.5.0/src/main/java/opennlp/tools/tokenize/" (19756 42707) "WhitespaceTokenStream.java" "WhitespaceTokenizer.java" "TokSpanEventStream.java" "TokenSampleStream.java" "TokenSample.java" "TokenizerStream.java" "TokenizerModel.java" "TokenizerME.java" "TokenizerEvaluator.java" "TokenizerCrossValidator.java" "Tokenizer.java" "TokenContextGenerator.java" "SimpleTokenizer.java" "package-info.java" "lang/" "DictionaryDetokenizer.java" "Detokenizer.java" "DetokenizationDictionary.java" "DefaultTokenContextGenerator.java" "AbstractTokenizer.java" "../" "./")
+
+ ("/Users/hinmanm/.emacs.d/elpa/archives/technomancy/" (19757 8352) "archive-contents~" "archive-contents" "../" "./")
+
+ ("/Users/hinmanm/Downloads/graphite-web-0.9.6/examples/" (19757 50456) "example-graphite-vhost.conf" "example-client.py" "../" "./")
+
+ ("/Users/hinmanm/Downloads/graphite-web-0.9.6/" (19336 10075) "webapp/" "setup.py" "setup.cfg" "README" "PKG-INFO" "LICENSE" "INSTALL" "examples/" "check-dependencies.py" "bin/" "../" "./")
+
+ ("/Users/hinmanm/src/opennlp-tools-1.5.0/src/test/resources/opennlp/tools/tokenize/" (19562 23640) "token.train" "latin-detokenizer.xml" "../" "./")
+
+ ("/Users/hinmanm/src/opennlp-tools-1.5.0/src/test/resources/opennlp/tools/" (19570 18274) "tokenize/" "sentdetect/" "postag/" "parser/" "namefind/" "formats/" "../" "./")
+
+ ("/Users/hinmanm/src/opennlp-tools-1.5.0/src/test/resources/opennlp/" (19538 46007) "tools/" "../" "./")
+
+ ("/Users/hinmanm/src/opennlp-tools-1.5.0/src/test/resources/" (19538 46007) "opennlp/" "../" "./")
+
+ ("/Users/hinmanm/src/opennlp-tools-1.5.0/src/test/" (19538 46007) "resources/" "java/" "../" "./")
+
+ ("/Users/hinmanm/.emacs.d/elpa/" (19757 8465) "zenburn-1.0/" "starter-kit-ruby-2.0/" "starter-kit-lisp-2.0/" "starter-kit-js-2.0/" "starter-kit-2.0/" "slime-repl-20100404/" "slime-20100404.1/" "scpaste-0.3/" "paredit-22/" "org-20101120/" "markdown-mode-1.7/" "magit-0.8.1/" "idle-highlight-1.0/" "htmlize-1.37/" "durendal-0.1/" "color-theme-6.5.2/" "clojure-test-mode-1.5.1/" "clojure-mode-1.8.0/" "archives/" "../" "./")
+
+ ("/Users/hinmanm/.emacs.d/elpa/archives/" (19757 6639) "technomancy/" "gnu/" "../" "./")
+
+ ("/Users/hinmanm/.emacs.d/elpa/erc-highlight-nicknames-1.0/" (19757 7063) "erc-highlight-nicknames.elc" "erc-highlight-nicknames.el" "erc-highlight-nicknames-pkg.elc" "erc-highlight-nicknames-pkg.el" "erc-highlight-nicknames-autoloads.el" "../" "./")
+
+ ("/Users/hinmanm/src/opennlp-tools-1.5.0/src/main/java/opennlp/tools/cmdline/tokenizer/" (19756 24642) "TrainingParameters.java" "TokenizerTrainerTool.java" "TokenizerModelLoader.java" "TokenizerMETool.java" "TokenizerMEEvaluatorTool.java" "TokenizerCrossValidatorTool.java" "TokenizerConverterTool.java" "SimpleTokenizerTool.java" "DictionaryDetokenizerTool.java" "DetokenizationDictionaryLoader.java" "CommandLineTokenizer.java" ".#DictionaryDetokenizerTool.java" "#DictionaryDetokenizerTool.java#" "../" "./")
+
+ ("/Users/hinmanm/src/clj/" (19755 58229) "zkim-cd-wsapi/" "weighted-average.clj" "web-tag/" "weather.clj" "tools.nrepl/" "thread_test.clj" "syndicate/" "swank-clojure/" "subrosa-dl/" "subrosa/" "splitmap.clj" "solr-test.clj" "snake.clj" "screenCapture/" "Programming Clojure.pdf" "pcl.clj" "opennlp-tools/" "omoios/" "mycroft/" "multiaritytest.clj" "multi-count.clj" "mulque.clj" "mulin2.clj" "mulin2-prof.clj" "mulin.clj" "maxent/" "marginalia-fogus/" "marginalia/" "lunch/" "ltat-test/" "lt-old/" "lipsum.txt" "let-futures.clj" "leiningen/" "lein-autotest/" "lazytest/" "labview-clj/" "labrepl/" "jstart.clj" "jsontest/" "json-test.clj" "jmockit_test.clj" "jmockit/" "ioc.py" "ioc.clj" "growltest/" "gradient-descent/" "gradient-ascent-classification/" "Gather.java" "Gather.class" "fingertree/" "find.clj" "euler/" "durendal/" "drujy/" "distance.clj" "dipert-clj-swingrepl/" "cs229-machine-learning/" "cow-blog/" "codility-test.clj" "clomoios/" "clojure-video/" "clojure-opennlp/" "clojure-json/" "clojure-intro/" "clojure-http-client/" "clojure-graphix/" "clojure-couchdb/" "clojure-bugzilla/" "clojars-web/" "clj-time/" "clj-swingrepl/" "clj-mockito/" "clj-json/" "clj-glob/" "ciosim/" "chip/" "chinese-democracy/" "cd-wsapi/" "cd-deploy-http/" "cd-deploy/" "cd-client/" "cd-analyzer-http/" "cd-analyzer/" "cbench/" "base/" "apparatus/" "ants.clj" "agent-test.clj" ".DS_Store" "../" "./")
+
+ ("/Users/hinmanm/src/opennlp-tools-1.5.0/src/main/java/opennlp/tools/cmdline/" (19603 25326) "tokenizer/" "TerminateToolException.java" "sentdetect/" "postag/" "PerformanceMonitor.java" "parser/" "params/" "ObjectStreamFactory.java" "namefind/" "ModelLoader.java" "doccat/" "CmdLineUtil.java" "CmdLineTool.java" "CLI.java" "chunker/" "BasicTrainingParameters.java" "ArgumentParser.java" "AbstractConverterTool.java" "../" "./")
+
+ ("/Users/hinmanm/src/clj/clojure-opennlp/test/" (19593 1930) "opennlp/" "../" "./")
+
+ ("/Users/hinmanm/src/clj/clojure-opennlp/test/opennlp/" (19693 15580) "test/" "../" "./")
+
+ ("/Users/hinmanm/safe/sa-safe/.elisp/" (19755 16661) "sonian-navigation.el" "pcomplete-ssh.el" "js-comint.el" "../" "./")
+
+ ("/Users/hinmanm/safe/sa-safe/" (19755 16661) "Vagrantfile" "test/" "src/" "README.org" "project.clj" "pkg/" "org/" "lib/" "etc/" "docs/" "data/" "classes/" "bin/" ".vagrant" ".gitignore" ".git/" ".elisp/" "../" "./")
+
+ ("/Users/hinmanm/src/opennlp-tools-1.5.0/src/main/java/opennlp/tools/coref/mention/" (19752 5892) "ShallowParseMentionFinder.java" "PTBMentionFinder.java" "PTBHeadFinder.java" "Parse.java" "package-info.java" "MentionFinder.java" "MentionContext.java" "Mention.java" "JWNLDictionary.java" "HeadFinder.java" "DictionaryFactory.java" "Dictionary.java" "DefaultParse.java" "AbstractParse.java" "AbstractMentionFinder.java" "../" "./")
+
+ ("/Users/hinmanm/src/clojure/src/clj/clojure/core/" (19522 35088) "protocols.clj" "../" "./")
+
+ ("/Users/hinmanm/src/opennlp-tools-1.5.0/src/main/java/opennlp/tools/coref/" (19675 35442) "sim/" "resolver/" "package-info.java" "mention/" "LinkerMode.java" "Linker.java" "DiscourseModel.java" "DiscourseEntity.java" "DiscourseElement.java" "DefaultLinker.java" "CorefModel.java" "AbstractLinker.java" "../" "./")
+
+ ("/Users/hinmanm/src/opennlp-tools-1.5.0/src/main/java/opennlp/tools/lang/" (19611 1398) "spanish/" "english/" "../" "./")
+
+ ("/Users/hinmanm/src/opennlp-tools-1.5.0/src/main/java/opennlp/tools/lang/english/" (19608 46554) "TreebankLinker.java" "package-info.java" "../" "./")
+
+ ("/Users/hinmanm/scratch/" (19748 59753) "OOM/" "bad7503327845741390877.eml.pristine" "bad7503327845741390877.eml.attachment3.b64" "bad7503327845741390877.eml.attachment2.b64" "bad7503327845741390877.eml.attachment1.b64" "attachment3.pdf" "attachment2.pdf" "attachment1.pdf" "../" "./")
+
+ ("/Users/hinmanm/src/ruby/ltest/" (19746 49160) "ltest.rb" "../" "./")
+
+ ("/Users/hinmanm/src/ruby/" (19744 8562) "zoomgo/" "yahsnarf/" "weighted-average.rb" "wallspots/" "unroller/" "twittersniffer/" "twittershoes/" "twitter.tgz" "twitter/" "tuplespace-ringserver-fork.rb" "tuplespace-fork2.rb" "tuplespace-fork.rb" "trie/" "trapr/" "trap_test.rb" "threadfork_19_test.rb" "testy/" "sup/" "stomp/" "sniptest.rb" "sketches/" "servolux-queue.rb" "servolux-ipc.rb" "servolux-block.rb" "rubyrun/" "ruby-quiz/" "ruby-pcap/" "ruby-libnet/" "ruby-libdnet/" "ruby-lang/" "ruby-ffi~mercurial/" "ruby-datasuite/" "rubot/" "rsb/" "rphfos.rb" "rphfos/" "ricepaper.tgz" "ricepaper/" "rfuzz/" "reity/" "reek/" "rcapr.cuke/" "rcapr.crap/" "rcapr/" "project_euler/" "postmodern-pcap-ffi/" "pktgraph/" "pcaprub/" "pcapparser/" "p4c/" "orderedhash_blockwarning.patch" "opscode-ohai-0.1.2/" "old.metasm/" "old-pcap-ffi/" "octopi/" "objectpool.rb" "oatmeal/" "nsm-console.tgz" "nsm-console/" "nothreadfork_19_test.rb" "netssh-channel-test.rb" "metasm/" "ltest/" "kdc/" "jruby-1.5.1/" "jruby/" "itunes-org/" "iploc/" "ip2asn/" "integrity-cap-notifier/" "inlineasmtest.rb" "hex2ascii.rb" "harimau/" "gsub-map.rb" "forkoff-proc-test.rb" "forkoff-func-test.rb" "forkify/" "foo.rb" "foo" "flowtime/" "feedzirra/" "fds.rb" "fastri/" "eventful-fork-test.rb" "est/" "errors.err" "datatree/" "datasuite.tgz" "dakrone-pcap-ffi/" "dacs/" "csi4h.tgz" "csi4h/" "crate-cft/" "crate/" "churn.tgz" "churn/" "cake-ninjudd/" "cake/" "brt.rb" "bradix.rb" "beanstalk_monitor.rb" "avfuzz/" "aimsnarf/" "acts_as_taggable_redux/" ".DS_Store" "../" "./")
+
+ ("/Users/hinmanm/src/" (19744 5879) "wq/" "web/" "vrome/" "vimperator/" "vimclojure-dev/" "vimclojure/" "vim-ruby/" "tmux/" "swank-clojure/" "Skype Mute.scpt" "ruby/" "resty/" "rails/" "python/" "ppg/" "pidof" "perl/" "pcap/" "osx/" "opennlp-tools-1.5.0/" "opennlp-maxent-3.0.0/" "one-offs/" "lygaret-vimscripts/" "lygaret-dotfiles/" "lisp/" "ledger/" "learn_elisp_the_hard_way/" "jython/" "js/" "jeff/" "java/" "fuzzyfinder_textmate/" "emacs-starter-kit-v2/" "emacs-starter-kit/" "emacs-old/" "emacs/" "dakrone.github.com/" "dakrone-dotfiles/" "dactyl/" "conkeror/" "colortable16.sh" "cmuscrobbler/" "clojuredocs-old/" "clojuredocs/" "clojure-mode/" "clojure-extra/" "clojure-contrib-svn/" "clojure-contrib/" "clojure/" "clj/" "chrisbin/" "c++/" "c/" "auto-complete-1.3.1/" "android-sdk-mac_86/" "android-sdk/" ".gdb_history" ".DS_Store" "../" "./")
+
+ ("/Users/hinmanm/src/clj/jsontest/" (19722 59257) "test/" "src/" "README.org" "project.clj" "lib/" "classes/" ".gitignore" ".git/" "../" "./")
+
+ ("/Users/hinmanm/src/clj/jsontest/src/jsontest/" (19718 27412) "core.clj" "../" "./")
+
+ ("/Users/hinmanm/safe/sa-safe/src/safe/riak/" (19730 7446) "walk_key_list.js" "reverse_sort.js" "retention_accounts.js" "rest.clj" "purge_summary.js" "purge_event_summary.js" "purge_event_report_prepare.js" "purge_event_report.js" "map_values.js" "map_value.js" "map_directory.js" "list_directory.js" "json_parse.js" "import_events.js" "identity.js" "get.js" "filter_true.js" "filter_less_than.js" "filter_field_contains.js" "filter_existing_keys.js" "eligible_for_purge.js" "document.clj" "dangling_imports.js" "../" "./")
+
+ ("/Users/hinmanm/src/clj/marginalia/src/leiningen/" (19730 9418) "marg.clj" "../" "./")
+
+ ("/Users/hinmanm/src/clj/marginalia/" (19730 9676) "test/" "src/" "resources/" "README.md" "project.clj" "lib/" "example-output/" "docs/" "classes/" ".gitignore" ".git/" "../" "./")
+
+ ("/Users/hinmanm/src/clj/marginalia/src/marginalia/" (19730 13195) "html.clj" "core.clj" "../" "./")
+
+ ("/Users/hinmanm/safe/sa-safe/src/leiningen/hooks/" (19743 24107) "time_tests.clj" "swank_wine.clj" "release_tarball.clj" "mock.clj" "../" "./")
+
+ ("/Users/hinmanm/safe/sa-safe/src/leiningen/" (19712 8200) "hooks/" "../" "./")
+
+ ("/Users/hinmanm/Downloads/jpcap-0.7/lib/" (19742 53487) "jpcap.jar" "Jpcap.dll" "../" "./")
+
+ ("/Users/hinmanm/src/clojure/src/clj/clojure/pprint/" (19741 21963) "utilities.clj" "print_table.clj" "pretty_writer.clj" "pprint_base.clj" "dispatch.clj" "column_writer.clj" "cl_format.clj" "../" "./")
+
+ ("/Users/hinmanm/src/clojure/src/clj/clojure/java/" (19653 58392) "shell.clj" "javadoc.clj" "io.clj" "browse_ui.clj" "browse.clj" "../" "./")
+
+ ("/Users/hinmanm/src/clojure/src/jvm/clojure/lang/" (19741 21964) "XMLHandler.java" "Var.java" "Util.java" "TransactionalHashMap.java" "Symbol.java" "StringSeq.java" "Sorted.java" "Settable.java" "Sequential.java" "SeqIterator.java" "SeqEnumeration.java" "Seqable.java" "Script.java" "RT.java" "Reversible.java" "RestFn.java" "Repl.java" "Reflector.java" "Ref.java" "Ratio.java" "Range.java" "ProxyHandler.java" "PersistentVector.java" "PersistentTreeSet.java" "PersistentTreeMap.java" "PersistentStructMap.java" "PersistentQueue.java" "PersistentList.java" "PersistentHashSet.java" "PersistentHashMap.java" "PersistentArrayMap.java" "Obj.java" "Numbers.java" "Namespace.java" "Named.java" "MultiFn.java" "MethodImplCache.java" "MapEquivalence.java" "MapEntry.java" "LockingTransaction.java" "LispReader.java" "LineNumberingPushbackReader.java" "LazySeq.java" "LazilyPersistentVector.java" "KeywordLookupSite.java" "Keyword.java" "ITransientVector.java" "ITransientSet.java" "ITransientMap.java" "ITransientCollection.java" "ITransientAssociative.java" "IteratorSeq.java" "ISeq.java" "IReference.java" "IRef.java" "IReduce.java" "IProxy.java" "IPromiseImpl.java" "IPersistentVector.java" "IPersistentStack.java" "IPersistentSet.java" "IPersistentMap.java" "IPersistentList.java" "IPersistentCollection.java" "IObj.java" "IndexedSeq.java" "Indexed.java" "IMeta.java" "IMapEntry.java" "ILookupThunk.java" "ILookupSite.java" "ILookup.java" "IKeywordLookup.java" "IFn.java" "IEditableCollection.java" "IDeref.java" "IChunkedSeq.java" "IChunk.java" "Fn.java" "EnumerationSeq.java" "DynamicClassLoader.java" "Delay.java" "Counted.java" "Cons.java" "Compiler.java" "Compile.java" "ChunkedCons.java" "ChunkBuffer.java" "Box.java" "Binding.java" "BigInt.java" "ATransientSet.java" "ATransientMap.java" "Atom.java" "Associative.java" "ASeq.java" "ArraySeq.java" "ArrayChunk.java" "ArityException.java" "AReference.java" "ARef.java" "APersistentVector.java" "APersistentSet.java" "APersistentMap.java" "AMapEntry.java" "Agent.java" "AFunction.java" "AFn.java" "../" "./")
+
+ ("/Users/hinmanm/src/clojure/src/jvm/clojure/" (19522 35088) "main.java" "lang/" "asm/" "../" "./")
+
+ ("/Users/hinmanm/src/clojure/src/jvm/" (19522 35088) "clojure/" "../" "./")
+
+ ("/Users/hinmanm/src/clojure/src/clj/clojure/" (19741 23690) "zip.clj" "xml.clj" "walk.clj" "version.properties" "test.clj" "test/" "template.clj" "string.clj" "stacktrace.clj" "set.clj" "repl.clj" "reflect.clj" "reflect/" "pprint.clj" "pprint/" "parallel.clj" "main.clj" "java/" "inspector.clj" "gvec.clj" "genclass.clj" "data.clj" "core_proxy.clj" "core_print.clj" "core_deftype.clj" "core.clj" "core/" "../" "./")
+
+ ("/Users/hinmanm/safe/" (19740 63939) "sa-safe/" "sa-chef-repo/" "npe.txt" "invoice/" ".DS_Store" "../" "./")
+
+ ("/Users/hinmanm/src/clojure/src/clj/" (19522 35088) "clojure/" "../" "./")
+
+ ("/Users/hinmanm/src/clojure/src/" (19522 35088) "jvm/" "clj/" "../" "./")
+
+ ("/Users/hinmanm/src/clojure/" (19741 21963) "test/" "src/" "release.sh" "readme.txt" "pom.xml" "pom-template.xml" "epl-v10.html" "doc/" "clojure.jar" "clojure.iml" "clojure-1.3.0-alpha3-SNAPSHOT.jar" "classes/" "changes.txt" "build.xml" ".gitignore" ".git/" "../" "./")
+
+ ("/Users/hinmanm/src/clj/tools.nrepl/" (19741 22195) "target/" "src/" "README.md" "pom.xml" "load-file-test/" "epl.html" ".gitignore" ".git/" "../" "./")
+
+ ("/Users/hinmanm/src/clj/tools.nrepl/src/" (19741 21954) "test/" "main/" "integration/" "../" "./")
+
+ ("/Users/hinmanm/src/clj/tools.nrepl/src/main/" (19741 21954) "resources/" "java/" "clojure/" "../" "./")
+
+ ("/Users/hinmanm/src/clj/tools.nrepl/src/main/clojure/" (19741 21954) "clojure/" "../" "./")
+)
+
+;; ----- ido-unc-hosts-cache -----
+t

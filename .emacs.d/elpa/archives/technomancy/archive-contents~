@@ -1,0 +1,43 @@
+;; -*- emacs-lisp -*-
+(1
+ (clojure-mode .
+               [(1 8 0)
+                nil "Major mode for Clojure code" single])
+ (clojure-test-mode .
+                    [(1 5 1)
+                     ((slime
+                       (20100404 1))
+                      (clojure-mode
+                       (1 7)))
+                     "Minor mode for Clojure tests" single])
+ (color-theme . [(6 5 2) nil "install color themes" single])
+ (durendal . [(0 1) ((slime
+                      (20100404 1))
+                     (clojure-mode
+                      (1 8)))
+              "Bucket of Clojure tricks" single])
+ (erc-highlight-nicknames . [(1 0) nil "Highlights nicknames" single])
+ (htmlize . [(1 37) nil "Convert buffer text and decorations to HTML." single])
+ (idle-highlight . [(1 0) nil "Convert buffer text and decorations to HTML." single])
+ (magit . [(0 8 1) nil "control Git from Emacs" single])
+ (markdown-mode . [(1 7) nil "Major mode to edit Markdown files in Emacs" single])
+ (paredit . [(22) nil "minor mode for editing parentheses" single])
+ (scpaste . [(0 3) ((htmlize (1 37))) "Paste to the web via scp." single])
+ (slime-repl . [(20100404)
+                ((slime (20100404 1)))
+                "Read-Eval-Print Loop written in Emacs Lisp" single])
+
+ (slime . [(20100404 1)
+           nil "Superior Lisp Interaction Mode for Emacs" single])
+ (starter-kit . [(2 0) ((paredit (22))
+                        (idle-highlight (1 0))
+                        (magit (0 8 1))
+                        (scpaste (0 3))) "Saner defaults and goodies." tar])
+ (starter-kit-lisp . [(2 0) ((starter-kit (2 0)))
+                      "Saner defaults for lisps." single])
+ (starter-kit-js . [(2 0) ((starter-kit (2 0)))
+                    "Saner defaults for javascript." single])
+ (starter-kit-ruby . [(2 0) ((starter-kit (2 0)))
+                      "Saner defaults for ruby." single])
+ (zenburn . [(1 0) ((color-theme (6 5 2)))
+             "just some alien fruit salad to keep you in the zone" single]))

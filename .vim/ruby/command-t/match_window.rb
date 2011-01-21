@@ -79,7 +79,7 @@ module CommandT
         ].each { |command| ::VIM::command command }
 
         # sanity check: make sure the buffer really was created
-        raise "Can't find GoToFile buffer" unless $curbuf.name.match /GoToFile/
+        raise "Can't find GoToFile buffer" unless $curbuf.name.match /GoToFile\z/
         @@buffer = $curbuf
       end
 
@@ -97,6 +97,12 @@ module CommandT
         hide_cursor
       end
 
+      # perform cleanup using an autocmd to ensure we don't get caught out
+      # by some unexpected means of dismissing or leaving the Command-T window
+      # (eg. <C-W q>, <C-W k> etc)
+      ::VIM::command 'autocmd! * <buffer>'
+      ::VIM::command 'autocmd BufLeave <buffer> ruby $command_t.leave'
+      ::VIM::command 'autocmd BufUnload <buffer> ruby $command_t.unload'
 
       @has_focus  = false
       @selection  = nil
@@ -115,11 +121,19 @@ module CommandT
       # For more details, see: https://wincent.com/issues/1617
       if $curbuf.number == 0
         # use bwipeout as bunload fails if passed the name of a hidden buffer
-        ::VIM::command "bwipeout! GoToFile"
+        ::VIM::command 'bwipeout! GoToFile'
         @@buffer = nil
       else
         ::VIM::command "bunload! #{@@buffer.number}"
       end
+    end
+
+    def leave
+      close
+      unload
+    end
+
+    def unload
       restore_window_dimensions
       @settings.restore
       @prompt.dispose

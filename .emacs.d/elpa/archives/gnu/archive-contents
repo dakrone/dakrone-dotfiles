@@ -1,0 +1,20 @@
+(1
+ (auctex .
+	 [(11 86)
+	  nil "integrated environment for *TeX*" tar])
+ (company .
+	  [(0 5)
+	   nil "Flexible inline text and code completion" tar])
+ (muse .
+       [(3 20)
+	nil "Authoring and publishing tool" tar])
+ (org .
+      [(20101120)
+       nil "Outline-based notes management and organizer" tar])
+ (js2-mode .
+	   [(20090814)
+	    nil "Improved JavaScript editing mode" single])
+ (rainbow-mode .
+	       [(0 1)
+		nil "Colorize color names in buffers." single]))
+

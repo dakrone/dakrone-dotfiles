@@ -1009,6 +1009,7 @@ widget, custom, latex, ediff."
      (region ((t (:background "dimgray"))))
 ;;     (region ((t (:background "gray15" :underline t))))
      (secondary-selection ((t (:background "deepskyblue4"))))
+     (magit-item-highlight ((t (:background "gray20"))))
      (underline ((t (:underline t))))
      (info-node ((t (:foreground "yellow" :bold t :italic t))))
      (info-menu-5 ((t (:underline t))))

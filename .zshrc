@@ -9,28 +9,12 @@ compinit
 promptinit
 
 # path
-#export PATH=/opt/local/bin:/usr/local/bin:$PATH:/usr/local/sbin:/usr/local/sbin:/usr/libexec:/opt/local/sbin:/usr/local/mysql/bin
 export PATH=/usr/local/bin:$PATH:/usr/local/sbin:/usr/local/sbin:/usr/libexec:/opt/local/sbin:/usr/local/mysql/bin
 # Path for Matasano's blackbag
 export PATH=/usr/local/bin/blackbag:$PATH
-# Path for ruby gems
-#export PATH=$PATH:/var/lib/gems/1.8/bin
-# Path for postgres
-#export PATH=$PATH:/opt/local/lib/postgresql84/bin
-# Path for local gems
-#export PATH=$PATH:~/.gem/ruby/1.8/bin
-#export PATH=$PATH:~/.gem/ruby/1.9/bin
-# Path for git
-#export PATH=$PATH:/usr/local/git/bin
-# Path for liebke's cljr - http://github.com/liebke/cljr
-#export PATH=/Users/hinmanm/.cljr/bin:$PATH
-# path for maven
-#export PATH=$PATH:/opt/apache-maven-2.2.1
 
-# Chris' ruby stuff
-#export RUBYLIB=~/src/chrisbin/ruby
+# rubygems everywhere
 export RUBYOPT=rubygems
-#export PATH=$PATH:~/src/chrisbin:~/src/chrisbin/ruby
 
 # I'm using java 1.6 on OSX
 export JAVA_HOME=/System/Library/Frameworks/JavaVM.framework/Versions/1.6/Home
@@ -133,10 +117,18 @@ alias cspec='spec -c --format specdoc'
 # force 256 color mode
 alias tmux='tmux -2'
 alias rvim='gvim --remote-tab-silent'
+alias screen='TERM=xterm-color && /opt/local/bin/screen'
+alias todo='ec -n ~/work.org'
+# growled lein test
+alias lt='ltest'
 
 if [[ $OS == "Linux" ]]; then
     # make emacs have 256 colors
     alias emacs='TERM=xterm-256color emacs'
+
+    function ec() { TERM=xterm-256color emacsclient -t $@ }
+    # no grown on linux, so back to regular
+    alias lt='lein test'
 fi
 
 if [[ $OS == "Darwin" ]]; then
@@ -149,7 +141,7 @@ if [[ $OS == "Darwin" ]]; then
     EMACS_HOME="/Applications/Emacs.app/Contents/MacOS"
 
     function e()  { PATH=$EMACS_HOME/bin:$PATH $EMACS_HOME/Emacs $@ }
-    function ec() { PATH=$EMACS_HOME/bin:$PATH emacsclient -t $@ }
+    function ec() { TERM=xterm-256color PATH=$EMACS_HOME/bin:$PATH emacsclient -t $@ }
 
     function es() { e --daemon=$1 && ec -s $1 }
     function el() { ps ax|grep Emacs }
@@ -158,15 +150,10 @@ if [[ $OS == "Darwin" ]]; then
 #    export EDITOR="ec -c"
 #    export ALTERNATIVE_EDITOR="e"
 
-    alias screen='TERM=xterm-color && /opt/local/bin/screen'
 # Use MacVim's vim for terminal sessions, since it has everything compiled in.
     alias vim='/Applications/MacVim.app/Contents/MacOS/Vim'
     alias hb_emacs='/usr/local/bin/emacs'
-    # alias emacsclient='/Applications/Emacs.app/Contents/MacOS/bin/emacsclient'
 fi
-
-alias todo='ec -n ~/work.org'
-
 
 # history
 HISTFILE=$HOME/.zsh-history
@@ -175,7 +162,6 @@ SAVEHIST=1000
 setopt appendhistory autocd extendedglob
 setopt share_history
 function history-all { history -E 1 }
-
 
 # functions
 mdc() { mkdir -p "$1" && cd "$1" }
@@ -195,6 +181,7 @@ get-git-branch() {
       ref=$(git symbolic-ref HEAD 2>/dev/null | cut -d'/' -f3,4,5)
       echo $ref
 }
+
 # public hostname for ec2 knife stuff
 function eknife () { knife $@ -a ec2.public_hostname -x lee }
 
@@ -209,6 +196,7 @@ export PS1="%{$fg[grey]%}‹ %{$fg[blue]%}%~%{$fg[grey]%} %{$fg[green]%}$(get-gi
 autoload -U promptinit
 promptinit
 
+# normally I end up rebinding this on remote machines to show the hostname
 export RPROMPT="%{$reset_color%}"
 
 # format titles for screen and rxvt

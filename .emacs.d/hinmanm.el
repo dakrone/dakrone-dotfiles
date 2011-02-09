@@ -157,9 +157,14 @@
  (erc-update-modules))
 
 (setq erc-prompt (lambda ()
-                   (if (and (boundp 'erc-default-recipients) (erc-default-target))
-                       (erc-propertize (concat (erc-default-target) ">") 'read-only t 'rear-nonsticky t 'front-nonsticky t)
-                     (erc-propertize (concat "ERC>") 'read-only t 'rear-nonsticky t 'front-nonsticky t))))
+                   (if (and (boundp 'erc-default-recipients)
+                            (erc-default-target))
+                       (erc-propertize (concat (erc-default-target) ">")
+                                       'read-only t 'rear-nonsticky t
+                                       'front-nonsticky t)
+                     (erc-propertize (concat "ERC>") 'read-only t
+                                     'rear-nonsticky t
+                                     'front-nonsticky t))))
 
 ;; Enable ERC logging
 (setq erc-log-channels-directory "~/.erc/logs/")
@@ -186,13 +191,10 @@
            erc-flood-protect nil
            erc-pals '("technomancy" "hiredman" "danlarkin" "drewr" "pjstadig"
                       "scgilardi" "dysinger" "fujin" "joegallo" "jimduey"
-                      "leathekd" "dave_chestnutt" "davec" "ƒujin`"
-                      "mikehale" "drëwr" "mwilliams" "hiredman′" "te⚔nomancy"
-                      "δρεωρ" "hiredman′"
-                      ;; non-SAFE team members
+                      "leathekd" "dave_chestnutt" "davec" "mikehale" "mwilliams"
                       "rhickey" "geek00l" "wooby" "zkim")
            erc-autojoin-channels-alist
-           '(("irc.freenode.net"
+           '(("freenode.net"
               "#clojure"
               "#leiningen"
               "#rawpacket"
@@ -204,6 +206,9 @@
      (erc-services-mode 1)
      (add-to-list 'erc-modules 'highlight-nicknames 'spelling)
      (add-hook 'erc-connect-pre-hook (lambda (x) (erc-update-modules)))))
+
+(setq erc-server-reconnect-timeout 5)
+(setq erc-server-reconnect-attempts 4)
 
 (add-hook 'erc-mode-hook (lambda () (flyspell-mode t)))
 
@@ -280,7 +285,8 @@
          (mapatoms (lambda (s)
                      (when (commandp s)
                        (setq ido-execute-command-cache
-                             (cons (format "%S" s) ido-execute-command-cache))))))
+                             (cons (format "%S" s)
+                                   ido-execute-command-cache))))))
        ido-execute-command-cache)))))
 
 (add-hook 'ido-setup-hook
@@ -328,9 +334,13 @@
 
 
 ;; Auto-complete (1.3.1)
-(add-to-list 'load-path "~/.emacs.d/hinmanm/auto-complete")
+(add-to-list 'load-path (concat "~/.emacs.d/"
+                                (user-login-name)
+                                "/auto-complete"))
 (require 'auto-complete-config)
-(add-to-list 'ac-dictionary-directories "~/.emacs.d/hinmanm/auto-complete/ac-dict")
+(add-to-list 'ac-dictionary-directories (concat "~/.emacs.d/"
+                                                (user-login-name)
+                                                "/auto-complete/ac-dict"))
 (ac-config-default)
 
 
@@ -364,4 +374,51 @@
 (server-start)
 
 
+
+;; copy-paste on Mac
+(defun mac-copy ()
+(shell-command-to-string "pbpaste"))
+
+(defun mac-paste (text &optional push)
+  (let ((process-connection-type nil))
+    (let ((proc (start-process "pbcopy" "*Messages*" "pbcopy")))
+      (process-send-string proc text)
+      (process-send-eof proc))))
+
+(setq interprogram-cut-function 'mac-paste)
+(setq interprogram-paste-function 'mac-copy)
+
+
+
+;; path env stuff
+(defun add-to-path (path-element)
+  "Add the specified path element to the Emacs PATH"
+ (interactive "DEnter directory to be added to path: ")
+ (if (file-directory-p path-element)
+     (setenv "PATH"
+             (concat (expand-file-name path-element)
+                     path-separator (getenv "PATH")))))
+
+(add-to-path "/Users/hinmanm/bin")
+
+
+
+;; make some changes for org-mode
+(add-hook 'org-mode-hook '(lambda ()
+                            (define-key org-mode-map [C-tab] 'other-window)
+                            (define-key org-mode-map [C-S-tab]
+                              (lambda ()
+                                (interactive)
+                                (other-window -1)))))
+
+
+
+
+
+;; Haskell mode
+(load (concat "~/.emacs.d/"
+              (user-login-name)
+              "/haskell-mode-2.8.0/haskell-site-file"))
+(add-hook 'haskell-mode-hook 'turn-on-haskell-doc-mode)
+(add-hook 'haskell-mode-hook 'turn-on-haskell-indentation)
 

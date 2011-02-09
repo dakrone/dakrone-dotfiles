@@ -36,6 +36,13 @@ export PAGER=less
 export OPSCODE_USER="sonian_developer"
 export ENV="dev"
 
+# node things
+export NODE_PATH=/usr/local/lib/node
+export PATH=$PATH:/usr/local/share/npm/bin
+# npm will install libraries to:
+#   /usr/local/lib/node/.npm
+# To manually remove libraries installed by npm, delete this (hidden!) folder.
+
 # CVS for HeX
 #export CVSROOT=:ext:dakrone@cvsup.rawpacket.org:/home/project/rawpacket/cvs
 
@@ -140,15 +147,19 @@ if [[ $OS == "Darwin" ]]; then
     
     EMACS_HOME="/Applications/Emacs.app/Contents/MacOS"
 
-    function e()  { PATH=$EMACS_HOME/bin:$PATH $EMACS_HOME/Emacs $@ }
-    function ec() { TERM=xterm-256color PATH=$EMACS_HOME/bin:$PATH emacsclient -t $@ }
+    #function e()  { PATH=$EMACS_HOME/bin:$PATH $EMACS_HOME/Emacs $@ }
+    alias -g e="PATH=$EMACS_HOME/bin:$PATH $EMACS_HOME/Emacs"
+    #function ec() { TERM=xterm-256color PATH=$EMACS_HOME/bin:$PATH emacsclient -t $@ }
+    alias -g ec="TERM=xterm-256color PATH=$EMACS_HOME/bin:$PATH emacsclient -t"
 
     function es() { e --daemon=$1 && ec -s $1 }
     function el() { ps ax|grep Emacs }
     function ek() { $EMACS_HOME/bin/emacsclient -e '(kill-emacs)' -s $1 }
 
-#    export EDITOR="ec -c"
-#    export ALTERNATIVE_EDITOR="e"
+    alias hb_emacs='/usr/local/bin/emacs'
+
+    export EDITOR="ec -c"
+    export ALTERNATIVE_EDITOR="/usr/local/bin/emacs"
 
 # Use MacVim's vim for terminal sessions, since it has everything compiled in.
     alias vim='/Applications/MacVim.app/Contents/MacOS/Vim'

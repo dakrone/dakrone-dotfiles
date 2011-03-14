@@ -1,6 +1,7 @@
 (require 'org-install)
+(require 'remember)
 
-(add-to-list 'auto-mode-alist '("\\.org$" . org-mode))
+(add-to-list 'auto-mode-alist '("\\.\\(org\\|org_archive\\|txt\\)$" . org-mode))
 
 (define-key mode-specific-map [?a] 'org-agenda)
 
@@ -29,7 +30,18 @@
 ;;     (define-key org-agenda-keymap "\C-p" 'previous-line)
      ))
 
-(require 'remember)
+(add-hook 'org-mode-hook '(lambda ()
+                            (define-key org-mode-map [C-tab] 'other-window)
+                            (flyspell-mode -1)
+                            (define-key org-mode-map [C-S-tab]
+                              (lambda ()
+                                (interactive)
+                                (other-window -1)))))
+
+;; Standard key bindings
+(global-set-key "\C-cl" 'org-store-link)
+(global-set-key "\C-ca" 'org-agenda)
+(global-set-key "\C-cb" 'org-iswitchb)
 
 (add-hook 'remember-mode-hook 'org-remember-apply-template)
 

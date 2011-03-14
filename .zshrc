@@ -17,7 +17,9 @@ export PATH=/usr/local/bin/blackbag:$PATH
 export RUBYOPT=rubygems
 
 # I'm using java 1.6 on OSX
-export JAVA_HOME=/System/Library/Frameworks/JavaVM.framework/Versions/1.6/Home
+if [[ $OS == "Darwin" ]]; then
+    export JAVA_HOME=/System/Library/Frameworks/JavaVM.framework/Versions/1.6/Home
+fi
 
 # VimClojure stuff (for nailgun server)
 export CLOJURE_EXT=/Users/hinmanm/.vimclojure:/Users/hinmanm/.cljr/lib:./lib:./classes:./src:.
@@ -80,7 +82,6 @@ esac
 alias mv='nocorrect mv'       # no spelling correction on mv
 alias cp='nocorrect cp'
 alias mkdir='nocorrect mkdir'
-#alias j=jobs
 if ls -F --color=auto >&/dev/null; then
   alias ls="ls --color=auto -F"
 else
@@ -108,12 +109,10 @@ alias scsetup2='sudo socat -d -d TCP4-listen:7777,fork OPENSSL:blackex:443,cert=
 alias blackexprox='ssh -i ~/.ssh/id_rawpacket -ND 9999 hinmanm@localhost -p 7777'
 alias blackprox='ssh -i ~/.ssh/id_rawpacket -ND 9999 hinmanm@black'
 alias styxprox='ssh -i ~/.ssh/id_rawpacket -ND 9999 lee@localhost -p 6666'
-alias xprox='ssh -nNT -R 3333:localhost:2222 x'
 alias tcpdump='tcpdump -ttttnnn'
 alias vless=/usr/share/vim/vim72/macros/less.sh
 alias week='remind -c+1 ~/.reminders'
 alias month='remind -c ~/.reminders'
-alias gps='geektool-ps'
 alias jl='j --l'
 alias jr='j --r'
 alias js='j --s'
@@ -128,7 +127,18 @@ alias screen='TERM=xterm-color && /opt/local/bin/screen'
 alias todo='ec -n ~/work.org'
 # growled lein test
 alias lt='ltest'
+# autossh stuff
+alias -g ash='autossh'
+# 30 second poll time
+export AUTOSSH_POLL=30
+# keep an X connection open
+alias keepx='autossh -M 21000 x -L 6667:x:31425'
+# reverse proxy & keepopen
+alias xprox='ssh -nNT -R 3333:localhost:2222 x'
+alias autoxprox='autossh -M 22000 -nNT -R 3333:localhost:22 x'
+alias up="knife ssh 'role:*' 'uptime' -a ec2.public_hostname -x lee"
 
+## Emacs stuff
 if [[ $OS == "Linux" ]]; then
     # make emacs have 256 colors
     alias emacs='TERM=xterm-256color emacs'
@@ -195,6 +205,17 @@ get-git-branch() {
 
 # public hostname for ec2 knife stuff
 function eknife () { knife $@ -a ec2.public_hostname -x lee }
+# knife status
+function ks () { knife status $@ -r }
+# safectl status
+function ss () { eknife ssh 'role:safe' 'safectl status' }
+# uptime
+#function up () {
+#     KNIFE=`which knife`
+#     CMD="$KNIFE ssh 'role:$1' 'uptime' -a ec2.public_hostname -x lee"
+#     echo $CMD
+#     `$CMD`
+# }
 
 # function to fix ssh agent
 function fix-agent() {
@@ -279,6 +300,7 @@ setopt EXTENDED_HISTORY      # puts timestamps in the history
 setopt NO_HUP                # don't send kill to background jobs when exiting
 
 # Keybindings
+# Emacs keybindings
 bindkey -e
 bindkey "^?"    backward-delete-char
 bindkey "^H"    backward-delete-char
@@ -298,6 +320,7 @@ bindkey "^W" backward-delete-word
 bindkey "^k" kill-line
 bindkey ' ' magic-space    # also do history expansion on space
 bindkey '^I' complete-word # complete on tab, leave expansion to _expand
+bindkey -r '^j' #unbind ctrl-j, I hit it all the time accidentaly
 
 # Remove ctrl+y from the keybinds for delayed suspend
 if [[ $OS == "Darwin" ]]; then

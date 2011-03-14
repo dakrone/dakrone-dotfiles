@@ -8,14 +8,6 @@
 
 
 
-;; Multi-term
-(require 'multi-term)
-(setq multi-term-program "/usr/local/bin/zsh")
-(global-set-key (kbd "C-c n") 'multi-term-next)
-(global-set-key (kbd "C-c T") 'multi-term) ;; create a new one
-
-
-
 ;; Clojure stuff
 (eval-after-load 'slime '(setq slime-protocol-version 'ignore))
 
@@ -23,7 +15,9 @@
 (add-hook 'clojure-mode-hook 'lisp-enable-paredit-hook)
 
 (defmacro defclojureface (name color desc &optional others)
-  `(defface ,name '((((class color)) (:foreground ,color ,@others))) ,desc :group 'faces))
+  `(defface
+     ,name '((((class color)) (:foreground ,color ,@others)))
+     ,desc :group 'faces))
 
 (defclojureface clojure-parens       "DimGrey"   "Clojure parens")
 (defclojureface clojure-braces       "DimGrey"   "Clojure braces")
@@ -32,7 +26,8 @@
 (defclojureface clojure-namespace    "#c476f1"   "Clojure namespace")
 (defclojureface clojure-java-call    "#729FCF"   "Clojure Java calls")
 (defclojureface clojure-special      "#1BF21B"   "Clojure special")
-(defclojureface clojure-double-quote "#1BF21B"   "Clojure special" (:background "unspecified"))
+(defclojureface clojure-double-quote "#1BF21B"   "Clojure special"
+  (:background "unspecified"))
 
 (defun tweak-clojure-syntax ()
   (mapcar (lambda (x) (font-lock-add-keywords nil x))
@@ -42,20 +37,22 @@
             ((":\\w+"              . 'clojure-keyword))
             (("#?\""               0 'clojure-double-quote prepend))
             (("nil\\|true\\|false\\|%[1-9]?" . 'clojure-special))
-            (("(\\(\\.[^ \n)]*\\|[^ \n)]+\\.\\|new\\)\\([ )\n]\\|$\\)" 1 'clojure-java-call))
-            )))
+            (("(\\(\\.[^ \n)]*\\|[^ \n)]+\\.\\|new\\)\\([ )\n]\\|$\\)" 1
+              'clojure-java-call)))))
 
 (add-hook 'clojure-mode-hook 'tweak-clojure-syntax)
 
 ;; One-offs
 ;; Better indention (from Kevin)
-(add-hook 'clojure-mode-hook (lambda () (setq clojure-mode-use-backtracking-indent t)))
+(add-hook 'clojure-mode-hook
+          (lambda () (setq clojure-mode-use-backtracking-indent t)))
 ;; paredit in REPL
-(add-hook 'slime-repl-mode-hook (lambda () (paredit-mode +1)))
+;;(add-hook 'slime-repl-mode-hook (lambda () (paredit-mode +1)))
 ;; syntax in REPL
 (add-hook 'slime-repl-mode-hook 'clojure-mode-font-lock-setup)
 ;; turn off the ESK highlight line mode
 (remove-hook 'esk-coding-hook 'esk-turn-on-hl-line-mode)
+(remove-hook 'esk-coding-hook 'esk-pretty-lambdas)
 (add-hook 'esk-coding-hook 'esk-turn-on-whitespace)
 ;; Lazytest indention in clojure
 (eval-after-load 'clojure-mode
@@ -66,6 +63,8 @@
      (it 'defun)
      (do-it 'defun)))
 
+;; compile faster
+(setq font-lock-verbose nil)
 
 
 ;; Repos
@@ -73,7 +72,8 @@
 (add-to-list 'package-archives
              '("technomancy" . "http://repo.technomancy.us/emacs/") t)
 ;; Marmalade
-(add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages"))
+(add-to-list 'package-archives
+             '("marmalade" . "http://marmalade-repo.org/packages"))
 
 
 
@@ -114,7 +114,8 @@
 
 ;; ERC stuff
 ;; Only track my nick(s)
-(defadvice erc-track-find-face (around erc-track-find-face-promote-query activate)
+(defadvice erc-track-find-face
+  (around erc-track-find-face-promote-query activate)
   (if (erc-query-buffer-p)
       (setq ad-return-value (intern "erc-current-nick-face"))
     ad-do-it))
@@ -123,6 +124,8 @@
                      "dakrone_"
                      "dakrone__"))
 (setq erc-hide-list '("JOIN" "PART" "QUIT"))
+
+;;(setq tls-program '("openssl s_client -connect %h:%p"))
 
 (setq erc-track-exclude-types '("JOIN" "NICK" "PART" "QUIT" "MODE"
                                 "324" "329" "332" "333" "353" "477"))
@@ -156,6 +159,7 @@
  (add-to-list 'erc-modules 'highlight-nicknames)
  (erc-update-modules))
 
+;; update ERC prompt with room name
 (setq erc-prompt (lambda ()
                    (if (and (boundp 'erc-default-recipients)
                             (erc-default-target))
@@ -192,14 +196,13 @@
            erc-pals '("technomancy" "hiredman" "danlarkin" "drewr" "pjstadig"
                       "scgilardi" "dysinger" "fujin" "joegallo" "jimduey"
                       "leathekd" "dave_chestnutt" "davec" "mikehale" "mwilliams"
-                      "rhickey" "geek00l" "wooby" "zkim")
+                      "rhickey" "geek00l" "wooby" "zkim" "TeXnomancy" "steve"
+                      "davec" "imotov" "portertech")
            erc-autojoin-channels-alist
            '(("freenode.net"
               "#clojure"
               "#leiningen"
-              "#rawpacket"
-              "#sonian"
-              "#sonian-safe"))
+              "#rawpacket"))
            erc-prompt-for-nickserv-password nil)
      (require 'erc-services)
      (require 'erc-spelling)
@@ -365,16 +368,6 @@
 
 
 
-;; Twitter?
-(require 'twittering-mode)
-
-
-
-;; Emacs Client Setup
-(server-start)
-
-
-
 ;; copy-paste on Mac
 (defun mac-copy ()
 (shell-command-to-string "pbpaste"))
@@ -403,15 +396,8 @@
 
 
 
-;; make some changes for org-mode
-(add-hook 'org-mode-hook '(lambda ()
-                            (define-key org-mode-map [C-tab] 'other-window)
-                            (define-key org-mode-map [C-S-tab]
-                              (lambda ()
-                                (interactive)
-                                (other-window -1)))))
-
-
+;; Org Mode
+;; see ~/.emacs.d/hinmanm/org-stuff.el
 
 
 
@@ -421,4 +407,36 @@
               "/haskell-mode-2.8.0/haskell-site-file"))
 (add-hook 'haskell-mode-hook 'turn-on-haskell-doc-mode)
 (add-hook 'haskell-mode-hook 'turn-on-haskell-indentation)
+
+
+
+;; M-n, M-p
+;; Twitter?
+(defun scroll-down-keep-cursor ()
+   ;; Scroll the text one line down while keeping the cursor
+   (interactive)
+   (scroll-down 1))
+
+(defun scroll-up-keep-cursor ()
+   ;; Scroll the text one line up while keeping the cursor
+   (interactive)
+   (scroll-up 1))
+
+(global-set-key (kbd "M-n") 'scroll-down-keep-cursor)
+(global-set-key (kbd "M-p") 'scroll-up-keep-cursor)
+
+
+
+
+
+;; Emacs Client Setup
+;; this should always be last
+(server-start)
+
+
+
+;; Dvorak niceity
+(when (eq window-system 'ns)
+  (define-key key-translation-map "\C-t" "\C-x"))
+
 

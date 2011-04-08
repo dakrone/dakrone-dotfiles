@@ -5,11 +5,14 @@
  (company .
 	  [(0 5)
 	   nil "Flexible inline text and code completion" tar])
+ (debbugs .
+	  [(0 1)
+	   nil "SOAP library to access debbugs servers" tar])
  (muse .
        [(3 20)
 	nil "Authoring and publishing tool" tar])
  (org .
-      [(20101120)
+      [(20110315)
        nil "Outline-based notes management and organizer" tar])
  (js2-mode .
 	   [(20090814)

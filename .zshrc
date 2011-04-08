@@ -35,6 +35,7 @@ export MANPATH=$MANPATH:/usr/local/man:/opt/local/share/man
 export EDITOR=vim
 export PAGER=less
 
+# knife things
 export OPSCODE_USER="sonian_developer"
 export ENV="dev"
 
@@ -53,6 +54,9 @@ export CVSEDITOR=vim
 
 # RSPEC for autotest
 export RSPEC=true
+
+# ledger
+export LEDGER_FILE=~/data/ledger.dat
 
 # Source j.sh
 if [ -s ~/bin/j.sh ] ; then source ~/bin/j.sh ; fi
@@ -111,8 +115,6 @@ alias blackprox='ssh -i ~/.ssh/id_rawpacket -ND 9999 hinmanm@black'
 alias styxprox='ssh -i ~/.ssh/id_rawpacket -ND 9999 lee@localhost -p 6666'
 alias tcpdump='tcpdump -ttttnnn'
 alias vless=/usr/share/vim/vim72/macros/less.sh
-alias week='remind -c+1 ~/.reminders'
-alias month='remind -c ~/.reminders'
 alias jl='j --l'
 alias jr='j --r'
 alias js='j --s'
@@ -129,14 +131,20 @@ alias todo='ec -n ~/work.org'
 alias lt='ltest'
 # autossh stuff
 alias -g ash='autossh'
-# 30 second poll time
-export AUTOSSH_POLL=30
+# 20 second poll time
+export AUTOSSH_POLL=20
 # keep an X connection open
 alias keepx='autossh -M 21000 x -L 6667:x:31425'
 # reverse proxy & keepopen
 alias xprox='ssh -nNT -R 3333:localhost:2222 x'
 alias autoxprox='autossh -M 22000 -nNT -R 3333:localhost:22 x'
-alias up="knife ssh 'role:*' 'uptime' -a ec2.public_hostname -x lee"
+## ledger aliases
+# balance
+alias bal='ledger -s -V bal'
+# net between assets & liabilities
+alias netbal='ledger -s bal \^assets \^liab'
+# uncleared transactions
+alias uc='ledger -U reg'
 
 ## Emacs stuff
 if [[ $OS == "Linux" ]]; then
@@ -144,7 +152,7 @@ if [[ $OS == "Linux" ]]; then
     alias emacs='TERM=xterm-256color emacs'
 
     function ec() { TERM=xterm-256color emacsclient -t $@ }
-    # no grown on linux, so back to regular
+    # no growl on linux, so back to regular
     alias lt='lein test'
 fi
 
@@ -153,6 +161,7 @@ if [[ $OS == "Darwin" ]]; then
 
     if [ -s /usr/local/bin/emacs ]; then
         alias emacs='TERM=xterm-256color emacs'
+        alias hb_emacs='/usr/local/bin/emacs'
     fi
     
     EMACS_HOME="/Applications/Emacs.app/Contents/MacOS"
@@ -166,14 +175,12 @@ if [[ $OS == "Darwin" ]]; then
     function el() { ps ax|grep Emacs }
     function ek() { $EMACS_HOME/bin/emacsclient -e '(kill-emacs)' -s $1 }
 
-    alias hb_emacs='/usr/local/bin/emacs'
 
-    export EDITOR="ec -c"
-    export ALTERNATIVE_EDITOR="/usr/local/bin/emacs"
+
+    export EDITOR="TERM=xterm-256color PATH=$EMACS_HOME/bin:$PATH emacsclient -t"
 
 # Use MacVim's vim for terminal sessions, since it has everything compiled in.
     alias vim='/Applications/MacVim.app/Contents/MacOS/Vim'
-    alias hb_emacs='/usr/local/bin/emacs'
 fi
 
 # history
@@ -185,9 +192,7 @@ setopt share_history
 function history-all { history -E 1 }
 
 # functions
-mdc() { mkdir -p "$1" && cd "$1" }
 setenv() { export $1=$2 }  # csh compatibility
-sdate() { date +%Y.%m.%d }
 rot13 () { tr "[a-m][n-z][A-M][N-Z]" "[n-z][a-m][N-Z][A-M]" }
 function maxhead() { head -n `echo $LINES - 5|bc` ; }
 function maxtail() { tail -n `echo $LINES - 5|bc` ; }
@@ -205,17 +210,6 @@ get-git-branch() {
 
 # public hostname for ec2 knife stuff
 function eknife () { knife $@ -a ec2.public_hostname -x lee }
-# knife status
-function ks () { knife status $@ -r }
-# safectl status
-function ss () { eknife ssh 'role:safe' 'safectl status' }
-# uptime
-#function up () {
-#     KNIFE=`which knife`
-#     CMD="$KNIFE ssh 'role:$1' 'uptime' -a ec2.public_hostname -x lee"
-#     echo $CMD
-#     `$CMD`
-# }
 
 # function to fix ssh agent
 function fix-agent() {

@@ -1,14 +1,21 @@
-;; Imports
+;; ==== Imports ====
 (require 'color-theme)
 (require 'offlineimap)
 ;; Dim parens
 (require 'parenface)
 ;; Gist support
 (require 'gist)
+;; doc-view
+(require 'doc-view)
+;; magit
+(require 'magit)
+;; Undo tree support
+(require 'undo-tree)
+(global-undo-tree-mode)
 
 
 
-;; Clojure stuff
+;; ==== Clojure stuff ====
 (eval-after-load 'slime '(setq slime-protocol-version 'ignore))
 
 (defun lisp-enable-paredit-hook () (paredit-mode 1))
@@ -67,16 +74,17 @@
 (setq font-lock-verbose nil)
 
 
-;; Repos
+;; ==== Repos ====
 ;; Add Phil's ELPA repo to the list
-(add-to-list 'package-archives
-             '("technomancy" . "http://repo.technomancy.us/emacs/") t)
+;; (add-to-list 'package-archives
+;;              '("technomancy" . "http://repo.technomancy.us/emacs/") t)
 ;; Marmalade
 (add-to-list 'package-archives
              '("marmalade" . "http://marmalade-repo.org/packages"))
 
 
 
+;; ==== Vimish things ====
 ;; This code makes % act like the buffer name in the minibuffer, similar to Vim
 (define-key minibuffer-local-map "%"
   (function
@@ -88,14 +96,14 @@
 
 
 
-;; Unicode stuff
+;; ==== Unicode stuff ====
 (set-language-environment "UTF-8")
 (setq slime-net-coding-system 'utf-8-unix)
 
 
 
-;; Growl support on OSX
-(defun bja-growl-notification (title message &optional sticky)
+;; ==== Growl support on OSX ====
+(defun growl-notification (title message &optional sticky)
   "Send a Growl notification"
   (do-applescript
    (format "tell application \"GrowlHelperApp\"
@@ -107,12 +115,12 @@
 
 
 
-;; Put the column in the status bar
+;; ==== Put the column in the status bar ====
 (column-number-mode)
 
 
 
-;; ERC stuff
+;; ==== ERC stuff ====
 ;; Only track my nick(s)
 (defadvice erc-track-find-face
   (around erc-track-find-face-promote-query activate)
@@ -124,9 +132,6 @@
                      "dakrone_"
                      "dakrone__"))
 (setq erc-hide-list '("JOIN" "PART" "QUIT"))
-
-;;(setq tls-program '("openssl s_client -connect %h:%p"))
-
 (setq erc-track-exclude-types '("JOIN" "NICK" "PART" "QUIT" "MODE"
                                 "324" "329" "332" "333" "353" "477"))
 
@@ -141,11 +146,11 @@
 ;;   (let* ((cmsg  (split-string (clean-message msg)))
 ;;         (nick   (first (split-string nick "!")))
 ;;         (msg    (mapconcat 'identity (rest cmsg) " ")))
-;;     (bja-growl-notification nick msg)))
+;;     (growl-notification nick msg)))
 
 (defun call-growl (matched-type nick msg)
   (let* ((nick (first (split-string nick "!"))))
-    (bja-growl-notification nick msg)))
+    (growl-notification nick msg)))
 
 ;; only add the hook for Mac
 (when (eq window-system 'ns)
@@ -195,9 +200,10 @@
            erc-flood-protect nil
            erc-pals '("technomancy" "hiredman" "danlarkin" "drewr" "pjstadig"
                       "scgilardi" "dysinger" "fujin" "joegallo" "jimduey"
-                      "leathekd" "dave_chestnutt" "davec" "mikehale" "mwilliams"
+                      "leathekd" "dave_chestnutt" "davec" "mikehale" "decklin"
                       "rhickey" "geek00l" "wooby" "zkim" "TeXnomancy" "steve"
-                      "davec" "imotov" "portertech")
+                      "davec" "imotov" "portertech" "fujin`" "joekinsella"
+                      "joshpasqualetto" "josh")
            erc-autojoin-channels-alist
            '(("freenode.net"
               "#clojure"
@@ -213,11 +219,12 @@
 (setq erc-server-reconnect-timeout 5)
 (setq erc-server-reconnect-attempts 4)
 
-(add-hook 'erc-mode-hook (lambda () (flyspell-mode t)))
+;; spelling support
+;;(add-hook 'erc-mode-hook (lambda () (flyspell-mode t)))
 
 
 
-;; Appearance
+;; ==== Appearance ====
 ;;(set-default-font "Monaco")
 (set-default-font "Anonymous Pro")
 (set-face-attribute 'default nil :height 115)
@@ -229,7 +236,7 @@
 ;;(set-frame-parameter (selected-frame) 'alpha '(100 35))
 ;;(add-to-list 'default-frame-alist '(alpha 100 35))
 
-;; Fullscreen
+;; Fullscreen (start fullscreen)
 (when (eq window-system 'ns)
   (defun toggle-fullscreen () (interactive) (ns-toggle-fullscreen))
   (ns-toggle-fullscreen)
@@ -239,7 +246,6 @@
 (color-theme-initialize)
 ;; My custom theme
 (color-theme-dakrone)
-
 
 ;; Show Paren Mode
 (setq show-paren-style 'expression)
@@ -251,14 +257,18 @@
   (set-face-background 'show-paren-match-face "#333333"))
 (add-hook 'show-paren-mode-hook 'set-show-paren-face-background)
 
+;; Change color for background highlight
+;; I don't like hl-line-mode
+(remove-hook 'coding-hook 'turn-on-hl-line-mode)
+;;(set-face-background 'hl-line "#333")
+
+;; Fix the closing paren newline thing
+(eval-after-load 'paredit
+  '(define-key paredit-mode-map (kbd ")") 'paredit-close-parenthesis))
 
 
-;; Magit
-(require 'magit)
 
-
-
-;; Window switching
+;; ==== Window switching ====
 (global-set-key [C-tab] 'other-window)
 (global-set-key [C-S-tab]
                 (lambda ()
@@ -267,13 +277,7 @@
 
 
 
-;; Undo tree support
-(require 'undo-tree)
-(global-undo-tree-mode)
-
-
-
-;; IDO
+;; ==== IDO ====
 (ido-mode t)
 (setq ido-enable-flex-matching t)   ; enable fuzzy matching
 (setq ido-execute-command-cache nil)
@@ -299,26 +303,14 @@
 
 
 
-;; Unicode stuff
+;; ==== Unicode stuff ====
 (set-language-environment "UTF-8")
 (setq slime-net-coding-system 'utf-8-unix)
 
 
 
-;; Change color for background highlight
-;; I don't like hl-line-mode
-(remove-hook 'coding-hook 'turn-on-hl-line-mode)
-;;(set-face-background 'hl-line "#333")
 
-
-
-;; Fix the closing paren newline thing
-(eval-after-load 'paredit
-  '(define-key paredit-mode-map (kbd ")") 'paredit-close-parenthesis))
-
-
-
-;; Fix ssh-agent
+;; ==== Fix ssh-agent ====
 (defun find-agent ()
   (first (split-string
           (shell-command-to-string
@@ -336,7 +328,7 @@
 
 
 
-;; Auto-complete (1.3.1)
+;; ==== Auto-complete (1.3.1) ====
 (add-to-list 'load-path (concat "~/.emacs.d/"
                                 (user-login-name)
                                 "/auto-complete"))
@@ -348,7 +340,7 @@
 
 
 
-;; Ispell/Aspell flyspell stuff
+;; ==== Ispell/Aspell flyspell stuff ====
 ;; brew install aspell --lang=en
 (setq-default ispell-program-name "/usr/local/bin/aspell")
 (setq ispell-extra-args '("--sug-mode=ultra" "--ignore=3"))
@@ -357,18 +349,18 @@
 
 
 
-;; Scpaste stuff
+;; ==== Scpaste stuff ====
 (setq scpaste-http-destination "http://p.writequit.org")
 (setq scpaste-scp-destination "p.writequit.org:~/public_html/wq/paste/")
 
 
 
-;; Backup directory
+;; ==== Backup directory ====
 (setq backup-directory-alist '(("." . "~/.backup")))
 
 
 
-;; copy-paste on Mac
+;; ==== copy-paste on Mac ====
 (defun mac-copy ()
 (shell-command-to-string "pbpaste"))
 
@@ -383,7 +375,7 @@
 
 
 
-;; path env stuff
+;; ==== path env stuff ====
 (defun add-to-path (path-element)
   "Add the specified path element to the Emacs PATH"
  (interactive "DEnter directory to be added to path: ")
@@ -393,6 +385,7 @@
                      path-separator (getenv "PATH")))))
 
 (add-to-path "/Users/hinmanm/bin")
+(add-to-path "/usr/local/bin")
 
 
 
@@ -401,7 +394,7 @@
 
 
 
-;; Haskell mode
+;; ==== Haskell mode ====
 (load (concat "~/.emacs.d/"
               (user-login-name)
               "/haskell-mode-2.8.0/haskell-site-file"))
@@ -410,8 +403,7 @@
 
 
 
-;; M-n, M-p
-;; Twitter?
+;; ==== M-n, M-p ====
 (defun scroll-down-keep-cursor ()
    ;; Scroll the text one line down while keeping the cursor
    (interactive)
@@ -427,16 +419,36 @@
 
 
 
-
-
-;; Emacs Client Setup
-;; this should always be last
+;; ==== Emacs Client Setup ====
 (server-start)
 
 
 
-;; Dvorak niceity
+;; ==== Dvorak niceity ====
 (when (eq window-system 'ns)
   (define-key key-translation-map "\C-t" "\C-x"))
 
 
+
+;; ==== transpose buffers ====
+(defun transpose-buffers (arg)
+  "Transpose the buffers shown in two windows."
+  (interactive "p")
+  (let ((selector (if (>= arg 0) 'next-window 'previous-window)))
+    (while (/= arg 0)
+      (let ((this-win (window-buffer))
+            (next-win (window-buffer (funcall selector))))
+        (set-window-buffer (selected-window) next-win)
+        (set-window-buffer (funcall selector) this-win)
+        (select-window (funcall selector)))
+      (setq arg (if (plusp arg) (1- arg) (1+ arg))))))
+
+(global-set-key (kbd "C-x 4 t") 'transpose-buffers)
+
+
+
+;; ==== ledger stuff ====
+(add-to-list 'load-path (concat "~/.emacs.d/" (user-login-name) "/ledger"))
+(require 'ledger)
+(setq ledger-binary-path "/usr/local/bin/ledger")
+(setenv "LEDGER_FILE" "/Users/hinmanm/accounts.dat")

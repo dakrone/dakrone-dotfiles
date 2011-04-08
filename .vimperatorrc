@@ -1,7 +1,7 @@
 " vim: set filetype=vim
 " Menu bar (I use a hiding extension for this anyway)
-set guioptions+=m
-set guioptions-=T
+"set guioptions+=m
+"set guioptions-=T
 " I want bookmarks toolbar
 "set guioptions+=B
 
@@ -21,6 +21,7 @@ nmap ,tn <C-n>
 
 map <C-j> <Nop>
 map <C-k> <Nop>
+map q :tabclose<CR>
 " Silly screen, I'm always hitting ctrl-x on accident
 map <C-x> <Nop>
 

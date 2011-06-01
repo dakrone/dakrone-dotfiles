@@ -1,0 +1,169 @@
+// the default page for new buffers.
+homepage = "about:blank";
+
+
+// load urls from the command line in new buffers instead
+// of new windows.
+url_remoting_fn = load_url_in_new_buffer;
+
+
+// load download buffers in the background in the current
+// window, instead of in new windows.
+download_buffer_automatic_open_target = OPEN_NEW_BUFFER_BACKGROUND;
+
+
+// save a keystroke when selecting a dom node by number.
+// hints_auto_exit_delay = 750;
+// hints_ambiguous_auto_exit_delay = 750;
+
+
+// display properties of the current selected node during
+// the hints interaction.
+hints_display_url_panel = true;
+
+
+// default directory for downloads and shell commands.
+cwd = get_home_directory();
+cwd.append("Downloads");
+
+
+// automatically handle some mime types internally.
+content_handlers.set("application/pdf", content_handler_save);
+
+
+// let xkcd-mode put the funny alt text into the page.
+xkcd_add_title = true;
+
+// sessions
+require("session.js");
+session_auto_save_auto_load = true;
+
+// keys
+define_key(content_buffer_normal_keymap, "M-left", "back");
+define_key(content_buffer_normal_keymap, "M-right", "forward");
+
+
+// Don't let kill-buffer close the window
+can_kill_last_buffer = false;
+
+
+// from Phil
+// -*- Mode: espresso -*-
+
+interactive("fill-domain", "Fill the minibuffer with the current domain.",
+            function (I) {
+              var field = I.minibuffer.input_element;
+              var paths = String(I.window.content.location).split('/');
+	      var domain = paths[0] + "/" + paths[1] + "/" + paths[2] + "/";
+	      field.value = domain;
+            });
+
+define_key(minibuffer_keymap, "C-/", "fill-domain");
+
+interactive("tinyurl", "Create a TinyURL for the current URL",
+            function(I) {
+              I.window.content.location.href = 'http://tinyurl.com/create.php?url=' +
+                encodeURIComponent(I.window.content.location.href);
+});
+
+interactive("instapaper", "Add current page to instapaper",
+           function(I) {
+             var d=document,w=window,e=w.getSelection,k=d.getSelection,x=d.selection,s=(e?e():(k)?k():(x?x.createRange().text:0)),f='http://www.instapaper.com/b',l=d.location,e=encodeURIComponent,p='?v=4&k=AID0XqXcLEdQ&u='+e(l.href) +'&t='+e(d.title) +'&s='+e(s),u=f+p;try{if(!/^(.*\.)?instapaper([^.]*)?$/.test(l.host))throw(0);iptstbt();}catch(z){a =function(){if(!w.open(u,'t','toolbar=0,resizable=0,status=1,width=250,height=150'))l.href=u;};if(/Firefox/.test(navigator.userAgent))setTimeout(a,0);else a();}
+           });
+
+define_webjump("hub", "http://github.com/search?q=%s");
+define_webjump("g", "https://ssl.scroogle.org/cgi-bin/nbbwssl.cgi?Gw=%s");
+define_webjump("w", "http://www.google.com/search?q=wikipedia+%s&btnI=I'm Feeling Lucky");
+define_webjump("e", "http://www.google.com/cse?cx=004774160799092323420%3A6-ff2s0o6yi&q=%s&sa=Search");
+define_webjump("mvn", "http://jarvana.com/jarvana/search?search_type=project&project=%s");
+define_webjump("unfuddle", "https://sonian.unfuddle.com/projects/21988/tickets/by_number/%s");
+define_webjump("safe", "https://agilezen.com/project/12433/story/%s");
+define_webjump("sys", "https://agilezen.com/project/12254/story/%s");
+define_webjump("ws", "https://agilezen.com/project/12170/story/%s");
+
+key_bindings_ignore_capslock = true;
+url_remoting_fn = load_url_in_new_buffer;
+url_completion_use_history = true;
+url_completion_use_bookmarks = false;
+can_kill_last_buffer = false;
+download_buffer_automatic_open_target = OPEN_NEW_BUFFER_BACKGROUND;
+
+register_user_stylesheet(
+  "data:text/css,"+
+    escape("#minibuffer, tree.completions, .mode-line { font-family: Inconsolata; font-size: 9pt; }"));
+
+register_user_stylesheet(
+    "data:text/css," +
+        escape (".topsearch input { width: 2em; };"));
+
+interactive("toggle-stylesheets",
+            "Toggle whether conkeror uses style sheets (CSS) for the " +
+            "current buffer.  It is sometimes useful to turn off style " +
+            "sheets when the web site makes obnoxious choices.",
+            function(I) {
+              var s = I.buffer.document.styleSheets;
+              for (var i = 0; i < s.length; i++)
+                s[i].disabled = !s[i].disabled;
+            });
+
+require("page-modes/google-search-results.js");
+auto_mode_list.push([build_url_regex($domain = /google\.com/),
+                     google_search_results_mode]);
+
+user_pref('extensions.mozrepl.autoStart', true);
+
+interactive("readability_arc90",
+            "Readability is a simple tool that makes reading on the web more enjoyable by removing the clutter around what you are reading",
+            function readability_arc90(I) {
+                var document = I.window.buffers.current.document;
+
+                var readConvertLinksToFootnotes = false;
+                var readStyle = 'style-newspaper';
+                var readSize = 'size-medium';
+                var readMargin = 'margin-wide';
+
+                var _readability_readStyle = document.createElement('SCRIPT');
+                _readability_readStyle.text = 'var readStyle = \'' + readStyle + '\';';
+                document.getElementsByTagName('head')[0].appendChild(_readability_readStyle);
+
+                var _readability_readSize = document.createElement('SCRIPT');
+                _readability_readSize.text = 'var readSize = \'' + readSize + '\';';
+                document.getElementsByTagName('head')[0].appendChild(_readability_readSize);
+
+                var _readability_readMargin = document.createElement('SCRIPT');
+                _readability_readMargin.text = 'var readMargin = \'' + readMargin + '\';';
+                document.getElementsByTagName('head')[0].appendChild(_readability_readMargin);
+
+                var _readability_readConvertLinksToFootnotes = document.createElement('SCRIPT');
+                _readability_readConvertLinksToFootnotes.text = 'var readConvertLinksToFootnotes = ' + readConvertLinksToFootnotes + ';';
+                document.getElementsByTagName('head')[0].appendChild(_readability_readConvertLinksToFootnotes);                
+
+                var _readability_script = document.createElement('script')
+                _readability_script.type='text/javascript'
+                _readability_script.src='http://lab.arc90.com/experiments/readability/js/readability.js?x='+(Math.random())
+                document.documentElement.appendChild(_readability_script)
+
+                var _readability_css = document.createElement('link')
+                _readability_css.rel = 'stylesheet'
+                _readability_css.href = 'http://lab.arc90.com/experiments/readability/css/readability.css'
+                _readability_css.type = 'text/css'
+                _readability_css.media = 'all'
+                document.documentElement.appendChild(_readability_css)
+
+                var _readability_print_css = document.createElement('link')
+                _readability_print_css.rel = 'stylesheet'
+                _readability_print_css.href = 'http://lab.arc90.com/experiments/readability/css/readability-print.css'
+                _readability_print_css.media = 'print'
+                _readability_print_css.type = 'text/css'
+                document.getElementsByTagName('head')[0].appendChild(_readability_print_css)
+            });
+
+define_key(content_buffer_normal_keymap, "z", "readability_arc90");
+
+if ('@hyperstruct.net/mozlab/mozrepl;1' in Cc) {
+  var mozrepl = Cc['@hyperstruct.net/mozlab/mozrepl;1']
+    .getService(Ci.nsIMozRepl);
+  if (! mozrepl.isActive())
+    mozrepl.start(4242);
+}
+

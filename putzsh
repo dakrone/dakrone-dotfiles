@@ -1,9 +1,0 @@
-#!/bin/sh
-echo "Putting your ZSH environment on $1... "
-
-cd ~ && tar czvf zshstuff.tgz .zshrc .zsh/
-scp ~/zshstuff.tgz $1:~/
-echo "Untaring zshstuff..."
-ssh -q $1 "bash -c 'cd; tar zxf zshstuff.tgz'"
-
-echo "done!"

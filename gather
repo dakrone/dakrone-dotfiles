@@ -4,34 +4,24 @@ echo "Gathering dotfiles"
 
 cp -f -v ~/.vimrc .
 cp -f -v ~/.zshrc .
-#mkdir -p .zsh
-#cp -f -rv ~/.zsh/ .
+mkdir -p .oh-my-zsh
+cp -f -rv ~/.oh-my-zsh .
 cp -f -v ~/.screenrc .
 mkdir -p .vim
 cp -f -rv ~/.vim .
-#mkdir -p .zg
-#cp -f -v ~/.zg/zg.conf .zg/
 cp -f -v ~/.nsmcrc .
 cp -f -v ~/.vimperatorrc .
-cp -f -v ~/.pentadactylrc .
 cp -f -v ~/.vromerc .
 mkdir -p .vimperator
 cp -f -rv ~/.vimperator .
-#cp -f -v ~/.gitconfig .
-#cp -f -v ~/.gitignore .
 mkdir -p .config/irb
 cp -f -rv ~/.config/irb .config/
 cp -f -v ~/.irbrc .
 cp -f -v ~/.autotest .
-cp -f -v ~/.config/fish/config.fish .config/fish/
 #cp -f -v ~/.newsbeuter/config .newsbeuter/config
-cp -f -v ~/bin/putenv .
-cp -f -v ~/bin/putvim .
-cp -f -v ~/bin/putzsh .
-cp -f -v ~/bin/clj .
-cp -f -v ~/.clojure.conf .
-mkdir -p .clojure
-cp -f -v ~/.clojure/user.clj .clojure/
+cp -f -v ~/.conkerorrc .
+mkdir -p .elinks
+cp -f -v ~/.elinks/elinks.conf
 
 mkdir -p .irssi
 cp -f -v ~/.irssi/config .irssi/
@@ -44,3 +34,10 @@ mkdir -p .emacs.d
 cp -f -rv ~/.emacs.d .
 # Remove elc files
 find . -name "*.elc" -exec rm {} \;
+find . -name "*._*" -exec rm {} \;
+
+# Remove cruft
+rm -rf .emacs.d/auto-save-list/
+rm -rf .emacs.d/tramp
+rm -rf .emacs.d/places
+

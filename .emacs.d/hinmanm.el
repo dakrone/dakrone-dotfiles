@@ -8,11 +8,13 @@
 ;; doc-view
 (require 'doc-view)
 ;; magit
+(add-to-list 'load-path (concat "~/.emacs.d/" (user-login-name) "/magit-1.0.0"))
 (require 'magit)
 ;; Undo tree support
 (require 'undo-tree)
 (global-undo-tree-mode)
-
+;; magic dired
+(require 'dired-x)
 
 
 ;; ==== Clojure stuff ====
@@ -54,12 +56,13 @@
 (add-hook 'clojure-mode-hook
           (lambda () (setq clojure-mode-use-backtracking-indent t)))
 ;; paredit in REPL
-;;(add-hook 'slime-repl-mode-hook (lambda () (paredit-mode +1)))
+;;(add-hook 'slime-repl-mode-hook (lambda () (clojure-mode)))
+;;(add-hook 'slime-repl-mode-hook (lambda () (paredit-mode)))
 ;; syntax in REPL
 (add-hook 'slime-repl-mode-hook 'clojure-mode-font-lock-setup)
 ;; turn off the ESK highlight line mode
 (remove-hook 'esk-coding-hook 'esk-turn-on-hl-line-mode)
-(remove-hook 'esk-coding-hook 'esk-pretty-lambdas)
+;;(remove-hook 'esk-coding-hook 'esk-pretty-lambdas)
 (add-hook 'esk-coding-hook 'esk-turn-on-whitespace)
 ;; Lazytest indention in clojure
 (eval-after-load 'clojure-mode
@@ -72,6 +75,17 @@
 
 ;; compile faster
 (setq font-lock-verbose nil)
+
+;; slamhound support https://github.com/technomancy/slamhound
+(defun slamhound ()
+  (interactive)
+  (goto-char (point-min))
+  (kill-sexp)
+  (insert (first (slime-eval `(swank:eval-and-grab-output
+                               (format "(do (require 'slam.hound)
+                                          (slam.hound/reconstruct \"%s\"))"
+                                       ,buffer-file-name))))))
+
 
 
 ;; ==== Repos ====
@@ -242,6 +256,9 @@
   (ns-toggle-fullscreen)
   (global-set-key [f11] 'toggle-fullscreen))
 
+;; split the way I want
+(setq split-height-threshold nil)
+
 ;; Color Theme
 (color-theme-initialize)
 ;; My custom theme
@@ -370,8 +387,9 @@
       (process-send-string proc text)
       (process-send-eof proc))))
 
-(setq interprogram-cut-function 'mac-paste)
-(setq interprogram-paste-function 'mac-copy)
+(when (eq window-system 'ns)
+  (setq interprogram-cut-function 'mac-paste)
+  (setq interprogram-paste-function 'mac-copy))
 
 
 
@@ -451,4 +469,4 @@
 (add-to-list 'load-path (concat "~/.emacs.d/" (user-login-name) "/ledger"))
 (require 'ledger)
 (setq ledger-binary-path "/usr/local/bin/ledger")
-(setenv "LEDGER_FILE" "/Users/hinmanm/accounts.dat")
+(setenv "LEDGER_FILE" "/Users/hinmanm/data/ledger.dat")

@@ -36,5 +36,5 @@ inputElm.addEventListener('blur', swapBGColor,false);
 })();
 EOM
 
-" Disbale beep. Drives me crazy because I still use Apple+#
+" Disable beep. Drives me crazy because I still use Apple+# to switch tabs sometimes
 javascript liberator.beep = function() { return false; }

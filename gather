@@ -36,8 +36,11 @@ cp -f -rv ~/.emacs.d .
 find . -name "*.elc" -exec rm {} \;
 find . -name "*._*" -exec rm {} \;
 
+
+
 # Remove cruft
 rm -rf .emacs.d/auto-save-list/
+rm -rf .emacs.d/backups
 rm -rf .emacs.d/tramp
 rm -rf .emacs.d/places
 

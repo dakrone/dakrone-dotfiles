@@ -1,6 +1,6 @@
 #!/bin/sh
 
-echo "Gathering dotfiles"
+echo "Gathering dotfiles..."
 
 cp -f -v ~/.vimrc .
 cp -f -v ~/.zshrc .

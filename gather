@@ -4,8 +4,8 @@ echo "Gathering dotfiles..."
 
 cp -f -v ~/.vimrc .
 cp -f -v ~/.zshrc .
-mkdir -p .oh-my-zsh
-cp -f -rv ~/.oh-my-zsh .
+mkdir -p .oh-my-zsh/custom
+cp -f -v ~/.oh-my-zsh/custom/hinmanm.zsh .oh-my-zsh/custom/
 cp -f -v ~/.screenrc .
 mkdir -p .vim
 cp -f -rv ~/.vim .

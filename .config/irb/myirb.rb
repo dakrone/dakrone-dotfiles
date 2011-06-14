@@ -13,13 +13,9 @@ module MyIRB
     #duration highline ]
 
   libs = %w[
-    irb/completion irb/ext/save-history thread
-    yaml fileutils date open-uri pp monitor
-    rubygems map_by_method what_methods
-    english/inflect ruby2ruby
-    hpricot stringio mechanize stored_hash
-    looksee/shortcuts duration highline wirble
-    hirb]
+    irb/completion irb/ext/save-history thread yaml fileutils date open-uri pp
+    monitor rubygems map_by_method what_methods english/inflect ruby2ruby
+    hpricot stringio mechanize looksee duration highline wirble hirb]
 
   def catch_stdout
     verbose  = $VERBOSE

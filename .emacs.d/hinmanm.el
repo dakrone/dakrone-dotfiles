@@ -35,8 +35,7 @@
 (defclojureface clojure-namespace    "#c476f1"   "Clojure namespace")
 (defclojureface clojure-java-call    "#729FCF"   "Clojure Java calls")
 (defclojureface clojure-special      "#1BF21B"   "Clojure special")
-(defclojureface clojure-double-quote "#1BF21B"   "Clojure special"
-  (:background "unspecified"))
+(defclojureface clojure-double-quote "#1BF21B"   "Clojure special")
 
 (defun tweak-clojure-syntax ()
   (mapcar (lambda (x) (font-lock-add-keywords nil x))
@@ -347,11 +346,9 @@
 
 ;; ==== Auto-complete (1.3.1) ====
 (add-to-list 'load-path (concat "~/.emacs.d/"
-                                (user-login-name)
-                                "/auto-complete"))
+                                (user-login-name) "/auto-complete"))
 (require 'auto-complete-config)
-(add-to-list 'ac-dictionary-directories (concat "~/.emacs.d/"
-                                                (user-login-name)
+(add-to-list 'ac-dictionary-directories (concat "~/.emacs.d/" (user-login-name)
                                                 "/auto-complete/ac-dict"))
 (ac-config-default)
 
@@ -379,7 +376,7 @@
 
 ;; ==== copy-paste on Mac ====
 (defun mac-copy ()
-(shell-command-to-string "pbpaste"))
+  (shell-command-to-string "pbpaste"))
 
 (defun mac-paste (text &optional push)
   (let ((process-connection-type nil))
@@ -396,13 +393,13 @@
 ;; ==== path env stuff ====
 (defun add-to-path (path-element)
   "Add the specified path element to the Emacs PATH"
- (interactive "DEnter directory to be added to path: ")
- (if (file-directory-p path-element)
-     (setenv "PATH"
-             (concat (expand-file-name path-element)
-                     path-separator (getenv "PATH")))))
+  (interactive "DEnter directory to be added to path: ")
+  (if (file-directory-p path-element)
+      (setenv "PATH"
+              (concat (expand-file-name path-element)
+                      path-separator (getenv "PATH")))))
 
-(add-to-path "/Users/hinmanm/bin")
+(add-to-path (concat "~/bin"))
 (add-to-path "/usr/local/bin")
 
 
@@ -423,14 +420,14 @@
 
 ;; ==== M-n, M-p ====
 (defun scroll-down-keep-cursor ()
-   ;; Scroll the text one line down while keeping the cursor
-   (interactive)
-   (scroll-down 1))
+  ;; Scroll the text one line down while keeping the cursor
+  (interactive)
+  (scroll-down 1))
 
 (defun scroll-up-keep-cursor ()
-   ;; Scroll the text one line up while keeping the cursor
-   (interactive)
-   (scroll-up 1))
+  ;; Scroll the text one line up while keeping the cursor
+  (interactive)
+  (scroll-up 1))
 
 (global-set-key (kbd "M-n") 'scroll-down-keep-cursor)
 (global-set-key (kbd "M-p") 'scroll-up-keep-cursor)
@@ -438,7 +435,9 @@
 
 
 ;; ==== Emacs Client Setup ====
-(server-start)
+;; only start the server for the graphical one
+(when (eq window-system 'ns)
+  (server-start))
 
 
 

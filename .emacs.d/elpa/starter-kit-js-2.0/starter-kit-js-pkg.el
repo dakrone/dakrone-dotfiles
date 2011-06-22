@@ -1,1 +1,1 @@
-(define-package "starter-kit-js" "2.0" "Saner defaults for javascript." (quote ((starter-kit "2.0"))))
+(define-package "starter-kit-js" "2.0" "Saner defaults and goodies for Javascript" (quote nil))

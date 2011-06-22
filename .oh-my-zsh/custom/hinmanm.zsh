@@ -121,6 +121,7 @@ alias todo='ec -n ~/work.org'
 alias el='TERM=xterm-color elinks'
 # growled lein test
 alias lt='ltest'
+alias lrt='lrtest'
 # growled lein ptest (parallel test)
 alias lpt='lptest'
 # autossh stuff

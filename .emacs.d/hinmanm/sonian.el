@@ -93,6 +93,8 @@
 
 (setq clojure-test-ns-segment-position 1)
 
+(put 'ns+ 'clojure-indent-function 1)
+
 ;;; Hooks
 
 (defun sonian-format-buffer ()
@@ -117,6 +119,9 @@ formatted, 1 if it isn't."
                (font-lock-add-keywords
                 'clojure-mode
                 '(("(\\(with-[^[:space:]]*\\)" (1 font-lock-keyword-face))
-                  ("(\\(def[^[:space:]]*\\)" (1 font-lock-keyword-face)))))))
+                  ("(\\(def[^[:space:]]*\\)" (1 font-lock-keyword-face))
+                  ("(\\(ns\\+\\)" (1 font-lock-keyword-face))
+                  ("(\\(try\\+\\)" (1 font-lock-keyword-face))
+                  ("(\\(throw\\+\\)" (1 font-lock-keyword-face)))))))
 
 (provide 'sonian)

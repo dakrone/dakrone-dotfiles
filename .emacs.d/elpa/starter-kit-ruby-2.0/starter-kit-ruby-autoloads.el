@@ -3,8 +3,8 @@
 ;;; Code:
 
 
-;;;### (autoloads nil "starter-kit-ruby" "starter-kit-ruby.el" (19757
-;;;;;;  8013))
+;;;### (autoloads nil "starter-kit-ruby" "starter-kit-ruby.el" (19970
+;;;;;;  28535))
 ;;; Generated autoloads from starter-kit-ruby.el
 
 (eval-after-load 'ruby-mode '(progn (ignore-errors (require 'ruby-compilation)) (setq ruby-use-encoding-map nil) (define-key ruby-mode-map (kbd "RET") 'reindent-then-newline-and-indent) (define-key ruby-mode-map (kbd "C-M-h") 'backward-kill-word)))
@@ -48,8 +48,8 @@ exec-to-string command, but it works and seems fast" (delq nil (mapcar (quote (l
 
 ;;;***
 
-;;;### (autoloads nil nil ("starter-kit-ruby-pkg.el") (19757 8013
-;;;;;;  559694))
+;;;### (autoloads nil nil ("starter-kit-ruby-pkg.el") (19970 28535
+;;;;;;  93809))
 
 ;;;***
 

@@ -1,0 +1,5 @@
+#name: cond
+# --
+(cond
+  $0
+  ${1:else $2:{else-clause})

@@ -52,7 +52,7 @@
           (font-lock-add-keywords
            'js-mode `(("\\(function *\\)("
                        (0 (progn (compose-region (match-beginning 1)
-                                                 (match-end 1) "Æ’")
+                                                 (match-end 1) "’")
                                  nil)))))))
 
 (provide 'starter-kit-js)

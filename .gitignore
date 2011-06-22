@@ -6,3 +6,4 @@
 .vim/spell/*
 .vim/*.txt
 .vim/README*
+.emacs.d/ac-comphist.dat

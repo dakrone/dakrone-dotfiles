@@ -1,5 +1,7 @@
 A small collection of my configuration files and Emacs/Vim plugins
 
+See the images directory for an example of what some of the stuff looks like.
+
 Instructions for using the Emacs stuff:
 
 1. Move .emacs.d to ~/.emacs.d

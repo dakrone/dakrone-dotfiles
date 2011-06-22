@@ -1,1 +1,11 @@
-A small collection of my configuration files and Vim plugins
+A small collection of my configuration files and Emacs/Vim plugins
+
+Instructions for using the Emacs stuff:
+
+1. Move .emacs.d to ~/.emacs.d
+2. Rename ~/.emacs.d/hinmanm to ~/.emacs.d/<youruserid>
+3. find .emacs.d/elpa -name "*.el" | awk '{print "(byte-compile-file \"" $1 "\")";}' >> ~/runme.el
+4. find .emacs.d/<youruserid> -name "*.el" | awk '{print "(byte-compile-file \"" $1 "\")";}' >> ~/runme.el
+5. emacs -batch -l ~/runme.el -kill
+6. ???
+7. Profit!

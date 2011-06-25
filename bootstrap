@@ -9,6 +9,7 @@ cp -R ~/.dakrone/.emacs.d ~/
 mv ~/.emacs.d/hinmanm ~/.emacs.d/$IAM
 
 cp -f -v ~/.dakrone/.zshrc ~/
-cp -f ~/.dakrone/.oh-my-zsh/custom/*.zsh ~/.oh-my-zsh/custom/
+cp -f -v ~/.dakrone/.oh-my-zsh/custom/*.zsh ~/.oh-my-zsh/custom/
+cp -f -v ~/.dakrone/.oh-my-zsh/themes/dakrone.zsh ~/.oh-my-zsh/themes/
 
 cp -f -v ~/.dakrone/.tmux.conf ~/

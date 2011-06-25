@@ -1,0 +1,14 @@
+#!/bin/sh
+
+IAM=$(whoami)
+
+git clone git://github.com/robbyrussell/oh-my-zsh.git ~/.oh-my-zsh
+git clone git://github.com/dakrone/dakrone-dotfiles.git ~/.dakrone
+
+cp -R ~/.dakrone/.emacs.d ~/
+mv ~/.emacs.d/hinmanm ~/.emacs.d/$IAM
+
+cp -f -v ~/.dakrone/.zshrc ~/
+cp -f ~/.dakrone/.oh-my-zsh/custom/*.zsh ~/.oh-my-zsh/custom/
+
+cp -f -v ~/.dakrone/.tmux.conf ~/

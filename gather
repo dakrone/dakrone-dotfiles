@@ -6,7 +6,7 @@ cp -f -v ~/.vimrc .
 cp -f -v ~/.zshrc .
 mkdir -p .oh-my-zsh/custom
 mkdir -p .oh-my-zsh/themes
-cp -f -v ~/.oh-my-zsh/custom/hinmanm.zsh .oh-my-zsh/custom/
+cp -f -v ~/.oh-my-zsh/custom/*.zsh .oh-my-zsh/custom/
 cp -f -v ~/.oh-my-zsh/themes/dakrone.zsh-theme .oh-my-zsh/themes/
 cp -f -v ~/.screenrc .
 mkdir -p .vim

@@ -3,11 +3,6 @@ OS=$(uname)
 # path
 export PATH=/usr/local/bin:$PATH:/usr/local/sbin:/usr/local/sbin:/usr/libexec:/opt/local/sbin:/usr/local/mysql/bin
 
-# I'm using java 1.6 on OSX
-if [[ $OS == "Darwin" ]]; then
-    export JAVA_HOME=/System/Library/Frameworks/JavaVM.framework/Versions/1.6/Home
-fi
-
 # Java opts (leiningen uses these)
 export JAVA_OPTS="-server -Dfile.encoding=UTF-8 -Dslime.encoding=UTF-8 -Xmx512m -XX:+HeapDumpOnOutOfMemoryError"
 
@@ -41,9 +36,6 @@ export RSPEC=true
 
 # ledger
 export LEDGER_FILE=~/data/ledger.dat
-
-# Source j.sh (deprecated in favor of z
-#if [ -s ~/bin/j.sh ] ; then source ~/bin/j.sh ; fi
 
 # Source z.sh
 if [ -s ~/bin/z.sh ] ; then
@@ -119,11 +111,6 @@ alias screen='TERM=xterm-color && /opt/local/bin/screen'
 alias todo='ec -n ~/work.org'
 # elinks stuff
 alias el='TERM=xterm-color elinks'
-# growled lein test
-alias lt='ltest'
-alias lrt='lrtest'
-# growled lein ptest (parallel test)
-alias lpt='lptest'
 # autossh stuff
 alias -g ash='autossh'
 # 20 second poll time
@@ -146,42 +133,6 @@ alias uc='ledger -U reg'
 # transactions for the whole month
 alias budget='ledger --budget -b Mar -M reg expenses'
 alias ytdbug='ledger -M -b Mar budget'
-
-## Emacs stuff
-if [[ $OS == "Linux" ]]; then
-    # make emacs have 256 colors
-    alias emacs='TERM=xterm-256color emacs'
-
-    function ec() { TERM=xterm-256color emacsclient -t $@ }
-    # no growl on linux, so back to regular
-    alias lt='lein test'
-fi
-
-if [[ $OS == "Darwin" ]]; then
-    EMACS_HOME="/Applications/Emacs.app/Contents/MacOS"
-
-    if [ -s /usr/local/bin/emacs ]; then
-        alias emacs='TERM=xterm-256color emacs'
-        alias hb_emacs='/usr/local/bin/emacs'
-    fi
-    
-    EMACS_HOME="/Applications/Emacs.app/Contents/MacOS"
-
-    #function ec() { TERM=xterm-256color PATH=$EMACS_HOME/bin:$PATH emacsclient -t $@ }
-    alias -g ec="TERM=xterm-256color PATH=$EMACS_HOME/bin:$PATH emacsclient -t"
-
-    function es() { e --daemon=$1 && ec -s $1 }
-    #function el() { ps ax|grep Emacs }
-    function ek() { $EMACS_HOME/bin/emacsclient -e '(kill-emacs)' -s $1 }
-
-    function tmacs () { TERM=xterm-256color /Applications/Emacs.app/Contents/MacOS/Emacs -nw }
-    alias emacs=tmacs
-
-    export EDITOR="TERM=xterm-256color /Applications/Emacs.app/Contents/MacOS/Emacs -nw"
-
-# Use MacVim's vim for terminal sessions, since it has everything compiled in.
-    alias vim='/Applications/MacVim.app/Contents/MacOS/Vim'
-fi
 
 # history
 HISTFILE=$HOME/.zsh-history
@@ -248,11 +199,6 @@ export WORDCHARS="*?_-[]~=&!#$%^(){}<>"
 
 # normal ls colors
 unset LSCOLORS
-
-# Remove ctrl+y from the keybinds for delayed suspend
-if [[ $OS == "Darwin" ]]; then
-      stty dsusp undef
-fi
 
 if [[ "$TERM" == "dumb" ]] then
   unsetopt zle

@@ -1,4 +1,7 @@
 #!/bin/sh
+#
+# Usage:
+# % curl https://raw.github.com/dakrone/dakrone-dotfiles/master/bootstrap | sh
 
 IAM=$(whoami)
 

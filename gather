@@ -23,7 +23,7 @@ cp -f -v ~/.autotest .
 #cp -f -v ~/.newsbeuter/config .newsbeuter/config
 cp -f -v ~/.conkerorrc .
 mkdir -p .elinks
-cp -f -v ~/.elinks/elinks.conf
+cp -f -v ~/.elinks/elinks.conf .elinks
 
 mkdir -p .irssi
 cp -f -v ~/.irssi/config .irssi/

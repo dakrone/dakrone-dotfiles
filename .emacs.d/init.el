@@ -223,7 +223,7 @@
                       "leathekd" "dave_chestnutt" "davec" "mikehale" "decklin"
                       "rhickey" "geek00l" "wooby" "zkim" "TeXnomancy" "steve"
                       "davec" "imotov" "portertech" "joekinsella"
-                      "joshpasqualetto" "josh")
+                      "joshpasqualetto" "josh" "justin" "scooper")
            erc-autojoin-channels-alist
            '(("freenode.net"
               "#clojure"

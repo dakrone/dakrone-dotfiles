@@ -1,0 +1,35 @@
+[user]
+  name = Lee Hinman
+  email = lee@writequit.org
+
+[core]
+  pager = less -FRSX
+  editor = vim
+  excludesfile = /Users/hinmanm/.gitignore
+
+[color]
+  ui = auto
+
+[merge]
+  tool = vimdiff
+
+[alias]
+  st = status
+  stat = status
+  lg = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr)%Creset' --abbrev-commit --date=relative
+  lol = log --graph --decorate --pretty=oneline --abbrev-commit
+  lola = log --graph --decorate --pretty=oneline --abbrev-commit --all
+  rips = rebase -i -p -s subtree
+
+[github]
+  user = dakrone
+  token = !cat ~/.github.token
+
+[rerere]
+  enabled = 1
+
+[diff "clojure"]
+  xfuncname = "^\\(.*"
+
+[push]
+  default = tracking

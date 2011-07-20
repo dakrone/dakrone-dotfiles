@@ -24,6 +24,7 @@ cp -f -v ~/.autotest .
 cp -f -v ~/.conkerorrc .
 mkdir -p .elinks
 cp -f -v ~/.elinks/elinks.conf .elinks
+cp -f -v ~/.gitconfig .
 
 mkdir -p .irssi
 cp -f -v ~/.irssi/config .irssi/

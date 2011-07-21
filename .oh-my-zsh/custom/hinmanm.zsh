@@ -154,7 +154,9 @@ function eknife () { knife $@ -a ec2.public_hostname -x lee }
 
 # function to fix ssh agent
 function fix-agent() {
+    disable -a ls
     export SSH_AUTH_SOCK=`ls -t1 $(find /tmp/ -uid $UID -path \\*ssh\\* -type s 2> /dev/null) | head -1`
+    enable -a ls
 }
 
 # colorful listings

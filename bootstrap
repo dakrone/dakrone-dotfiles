@@ -8,7 +8,7 @@ IAM=$(whoami)
 rm -rf ~/.oh-my-zsh
 rm -rf ~/.dakrone
 git clone git://github.com/robbyrussell/oh-my-zsh.git ~/.oh-my-zsh
-cd ~/.oh-my-zsh/plugins && git clone git://github.com/nicoulaj/zsh-syntax-highlighting.git
+cd ~/.oh-my-zsh/plugins && git clone git://github.com/zsh-users/zsh-syntax-highlighting.git
 git clone git://github.com/dakrone/dakrone-dotfiles.git ~/.dakrone
 
 cp -R ~/.dakrone/.emacs.d ~/

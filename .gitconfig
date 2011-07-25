@@ -19,6 +19,7 @@
   cot = checkout -t
   st = status
   stat = status
+  unpushed = log --branches --not --remotes --simplify-by-decoration --decorate --oneline
   lg = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr)%Creset' --abbrev-commit --date=relative
   lol = log --graph --decorate --pretty=oneline --abbrev-commit
   lola = log --graph --decorate --pretty=oneline --abbrev-commit --all

@@ -150,7 +150,17 @@ function maxtail() { tail -n `echo $LINES - 5|bc` ; }
 function bgrep() { git branch -a | grep "$*" | sed 's,remotes/,,'; }
 
 # public hostname for ec2 knife stuff
-function eknife () { knife $@ -a ec2.public_hostname -x lee }
+#function eknife () { knife $@ -a ec2.public_hostname -x lee }
+
+export KNIFE_CMD=`which knife`
+function knife
+{
+    if [ $1 = "ssh" ]; then
+        $KNIFE_CMD "$@" -a ec2.public_hostname -x lee
+    else
+        $KNIFE_CMD "$@"
+    fi
+}
 
 # function to fix ssh agent
 function fix-agent() {

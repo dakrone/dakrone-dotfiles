@@ -14,7 +14,7 @@ export EDITOR=vim
 export PAGER=less
 
 # knife things
-export OPSCODE_USER="sonian_developer"
+export OPSCODE_USER="sonian_devs"
 export ENV="dev"
 export CHEF_USER="lee"
 

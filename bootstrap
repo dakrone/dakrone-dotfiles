@@ -12,6 +12,7 @@ cd ~/.oh-my-zsh/plugins && git clone git://github.com/zsh-users/zsh-syntax-highl
 git clone git://github.com/dakrone/dakrone-dotfiles.git ~/.dakrone
 
 cp -R ~/.dakrone/.emacs.d ~/
+mv ~/.dakrone/bin ~/
 mv ~/.emacs.d/hinmanm ~/.emacs.d/$IAM
 
 cp -f -v ~/.dakrone/.zshrc ~/

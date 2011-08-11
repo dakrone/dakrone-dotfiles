@@ -13,7 +13,12 @@ if [[ $OS == "Linux" ]]; then
     export EDITOR="emacs"
 
     # awesome
-    alias gps='ps -eo cmd,fname,pid,pcpu,time --sort=-pcpu | head -n 11 && echo && ps -eo cmd,fname,pid,pmem,rss --sort=-rss | head -n 9'
+    which lolcat > /dev/null
+    if [ 0 -eq $? ]; then
+        alias gps='ps -eo cmd,fname,pid,pcpu,time --sort=-pcpu | head -n 11 | lolcat && echo && ps -eo cmd,fname,pid,pmem,rss --sort=-rss | head -n 9 | lolcat'
+    else
+        alias gps='ps -eo cmd,fname,pid,pcpu,time --sort=-pcpu | head -n 11 && echo && ps -eo cmd,fname,pid,pmem,rss --sort=-rss | head -n 9'
+    fi
 
     #lotus tests
     export LD_LIBRARY_PATH=/opt/ibm/lotus/notes/

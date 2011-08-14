@@ -11,9 +11,13 @@ git clone git://github.com/robbyrussell/oh-my-zsh.git ~/.oh-my-zsh
 cd ~/.oh-my-zsh/plugins && git clone git://github.com/zsh-users/zsh-syntax-highlighting.git
 git clone git://github.com/dakrone/dakrone-dotfiles.git ~/.dakrone
 
-cp -R ~/.dakrone/.emacs.d ~/
+# Only bootstrap the emacs stuff if Emacs 24 is installed
+HAVE24=$(emacs --version | grep "Emacs 24")
+if [ $? -eq 0 ]
+    cp -R ~/.dakrone/.emacs.d ~/
+    mv ~/.emacs.d/hinmanm ~/.emacs.d/$IAM
+fi
 mv ~/.dakrone/bin ~/
-mv ~/.emacs.d/hinmanm ~/.emacs.d/$IAM
 
 cp -f -v ~/.dakrone/.zshrc ~/
 cp -f -v ~/.dakrone/.gitconfig ~/

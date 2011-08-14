@@ -4,23 +4,27 @@
 alias -g dpaste='curl -s p.draines.com'
 
 function draines () {
-    curl -s p.draines.com/$@
+    curl -s p.draines.com/$1 | zsh
 }
 
 function indices () {
-    draines/indices15.sh
+    draines indices.sh
+}
+
+function indices15 () {
+    curl -s p.draines.com/indices.sh | zsh -s 15
 }
 
 function shards () {
-    draines/shards.sh
+    draines shards.sh
 }
 
 function cluster () {
-    draines/cluster.sh
+    draines cluster.sh
 }
 
 function health () {
-    draines/health.sh
+    draines health.sh
 }
 
 # indices15.sh

@@ -13,7 +13,7 @@ git clone git://github.com/dakrone/dakrone-dotfiles.git ~/.dakrone
 
 # Only bootstrap the emacs stuff if Emacs 24 is installed
 HAVE24=$(emacs --version | grep "Emacs 24")
-if [ $? -eq 0 ]
+if [ $? -eq 0 ]; then
     cp -R ~/.dakrone/.emacs.d ~/
     mv ~/.emacs.d/hinmanm ~/.emacs.d/$IAM
 fi

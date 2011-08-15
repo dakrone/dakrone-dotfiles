@@ -24,7 +24,7 @@ function cluster () {
 }
 
 function health () {
-    curl -s p.draines.com/1313372764486f99cf8b0.txt | python -
+    draines 131337422702048bcf752.txt
 }
 
 function health-nocolor () {

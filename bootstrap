@@ -17,7 +17,7 @@ if [ $? -eq 0 ]; then
     cp -R ~/.dakrone/.emacs.d ~/
     mv ~/.emacs.d/hinmanm ~/.emacs.d/$IAM
 fi
-mv ~/.dakrone/bin ~/
+mv -n ~/.dakrone/bin ~/
 
 cp -f ~/.dakrone/.zshrc ~/
 cp -f ~/.dakrone/.gitconfig ~/

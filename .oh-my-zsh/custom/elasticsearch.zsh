@@ -31,6 +31,10 @@ function health-nocolor () {
     draines health.sh
 }
 
+function jstk () {
+    sudo -u nobody jstack $1 >jstack-$(date +%s).txt
+}
+
 # indices15.sh
 # shards.sh
 # cluster.sh

@@ -115,8 +115,10 @@ alias el='TERM=xterm-color elinks'
 alias -g ash='autossh'
 # 20 second poll time
 export AUTOSSH_POLL=20
-# keep an X connection open
-alias keepx='autossh -M 21000 x -L 6667:x:31425'
+# keep an X connection open, with proxy
+alias keepxprox='autossh -M 21000 x -L 6667:x:31425'
+# keep an X connection open, without proxy
+alias keepx='autossh -M 22000 x'
 # reverse proxy & keepopen
 alias xprox='ssh -nNT -R 4444:localhost:22 x'
 alias prox='ssh -nNT -R 4444:localhost:22 localhost'

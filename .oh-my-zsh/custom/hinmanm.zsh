@@ -48,12 +48,16 @@ if [ -s ~/bin/z.sh ] ; then
     alias j='z'
 fi
 
-# rvm stuff:
+# rvm stuff (if it exists):
 if [ -s ~/.rvm/scripts/rvm ] ; then
       source ~/.rvm/scripts/rvm
       # Set default ruby install
       rvm default
 fi
+
+# rbenv path
+export PATH=$HOME/.rbenv/bin:$HOME/.rbenv/shims:$PATH
+export RBENV_VERSION=1.9.2-p290
 
 # Always override with my personal bin
 export PATH=~/bin:$PATH

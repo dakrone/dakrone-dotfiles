@@ -3,7 +3,7 @@
 ;;; Code:
 
 
-;;;### (autoloads (magit-status) "magit" "magit.el" (19970 24141))
+;;;### (autoloads (magit-status) "magit" "magit.el" (20054 59458))
 ;;; Generated autoloads from magit.el
 
 (autoload 'magit-status "magit" "\
@@ -14,7 +14,7 @@ Not documented
 ;;;***
 
 ;;;### (autoloads nil nil ("50magit.el" "magit-key-mode.el" "magit-pkg.el"
-;;;;;;  "magit-svn.el" "magit-topgit.el") (19970 24141 715351))
+;;;;;;  "magit-svn.el" "magit-topgit.el") (20054 59458 432595))
 
 ;;;***
 

@@ -38,7 +38,7 @@ cp -f -rv ~/.emacs.d .
 # Remove elc files
 find . -name "*.elc" -exec rm {} \;
 find . -name "*._*" -exec rm {} \;
-
+find . -name "*~" -exec rm {} \;
 
 
 # Remove cruft

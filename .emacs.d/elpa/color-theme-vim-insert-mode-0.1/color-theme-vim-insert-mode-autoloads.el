@@ -4,7 +4,7 @@
 
 
 ;;;### (autoloads nil nil ("color-theme-vim-insert-mode-pkg.el" "color-theme-vim-insert-mode.el")
-;;;;;;  (19970 23998 413750))
+;;;;;;  (20054 54805 63322))
 
 ;;;***
 

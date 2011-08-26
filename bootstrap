@@ -16,6 +16,8 @@ HAVE24=$(emacs --version | grep "Emacs 24")
 if [ $? -eq 0 ]; then
     cp -R ~/.dakrone/.emacs.d ~/
     mv ~/.emacs.d/hinmanm ~/.emacs.d/$IAM
+else
+    cp -R ~/.dakrone/.emacs.d/backup23.el ~/.emacs.el
 fi
 mv -n ~/.dakrone/bin ~/
 

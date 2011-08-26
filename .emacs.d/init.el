@@ -4,11 +4,8 @@
 
 
 ;; ==== Imports ====
-(require 'offlineimap)
 ;; Gist support
 (require 'gist)
-;; doc-view
-(require 'doc-view)
 ;; Undo tree support
 (require 'undo-tree)
 (global-undo-tree-mode)
@@ -16,13 +13,16 @@
 (require 'dired-x)
 ;; smex
 (smex-initialize)
-;; yasnippet
-(setq yas/root-directory "~/.emacs.d/snippets")
-(yas/load-directory yas/root-directory)
-(yas/global-mode t)
-;; writegood-mode
-(require 'writegood-mode)
-;;(writegood-mode t)
+;; dim parens
+(require 'parenface)
+
+
+
+;; ==== Repos ====
+;; Marmalade
+(add-to-list 'package-archives
+             '("marmalade" . "http://marmalade-repo.org/packages/"))
+
 
 
 ;; ==== Clojure stuff ====
@@ -31,6 +31,7 @@
 
 (defun lisp-enable-paredit-hook () (paredit-mode 1))
 (add-hook 'clojure-mode-hook 'lisp-enable-paredit-hook)
+(add-hook 'lisp-mode-hook 'lisp-enable-paredit-hook)
 
 (defmacro defclojureface (name color desc &optional others)
   `(defface
@@ -59,20 +60,13 @@
 
 (add-hook 'clojure-mode-hook 'tweak-clojure-syntax)
 
-;; One-offs
 ;; Better indention (from Kevin)
 (add-hook 'clojure-mode-hook
           (lambda () (setq clojure-mode-use-backtracking-indent t)))
-;; paredit in REPL
-;;(add-hook 'slime-repl-mode-hook (lambda () (clojure-mode)))
-;;(add-hook 'slime-repl-mode-hook (lambda () (paredit-mode)))
+
 ;; syntax in REPL
 (add-hook 'slime-repl-mode-hook 'clojure-mode-font-lock-setup)
-;; turn off the highlight line mode
-(remove-hook 'prog-mode-hook 'esk-turn-on-hl-line-mode)
-;; don't want pretty lambdas for clojure
-(remove-hook 'prog-mode-hook 'esk-pretty-lambdas)
-(add-hook 'prog-mode-hook 'esk-turn-on-whitespace)
+
 ;; Lazytest indention in clojure
 (eval-after-load 'clojure-mode
   '(define-clojure-indent
@@ -94,16 +88,6 @@
                                (format "(do (require 'slam.hound)
                                           (slam.hound/reconstruct \"%s\"))"
                                        ,buffer-file-name))))))
-
-
-
-;; ==== Repos ====
-;; Add Phil's ELPA repo to the list
-;; (add-to-list 'package-archives
-;;              '("technomancy" . "http://repo.technomancy.us/emacs/") t)
-;; Marmalade
-(add-to-list 'package-archives
-             '("marmalade" . "http://marmalade-repo.org/packages/"))
 
 
 
@@ -158,19 +142,6 @@
 (setq erc-track-exclude-types '("JOIN" "NICK" "PART" "QUIT" "MODE"
                                 "324" "329" "332" "333" "353" "477"))
 
-;; (defun clean-message (s)
-;;   (setq s (replace-regexp-in-string "'" "&apos;"
-;;   (replace-regexp-in-string "\"" "&quot;"
-;;   (replace-regexp-in-string "&" "&"
-;;   (replace-regexp-in-string "<" "&lt;"
-;;   (replace-regexp-in-string ">" "&gt;" s)))))))
-
-;; (defun call-growl (matched-type nick msg)
-;;   (let* ((cmsg  (split-string (clean-message msg)))
-;;         (nick   (first (split-string nick "!")))
-;;         (msg    (mapconcat 'identity (rest cmsg) " ")))
-;;     (growl-notification nick msg)))
-
 (defun call-growl (matched-type nick msg)
   (let* ((nick (first (split-string nick "!"))))
     (growl-notification nick msg)))
@@ -197,12 +168,6 @@
                      (erc-propertize (concat "ERC>") 'read-only t
                                      'rear-nonsticky t
                                      'front-nonsticky t))))
-
-;; Enable ERC logging
-(setq erc-log-channels-directory "~/.erc/logs/")
-(setq erc-save-buffer-on-part t)
-(defadvice save-buffers-kill-emacs (before save-logs (arg) activate)
-  (save-some-buffers t (lambda () (when (eq major-mode 'erc-mode) t))))
 
 ;; Don't highlight pals, because I like highlight-nicknames for that
 (setq erc-pal-highlight-type 'nil)
@@ -242,28 +207,17 @@
 (setq erc-server-reconnect-timeout 5)
 (setq erc-server-reconnect-attempts 4)
 
-;; spelling support
-;;(add-hook 'erc-mode-hook (lambda () (flyspell-mode t)))
-
 
 
 ;; ==== Appearance ====
-;;(set-default-font "Monaco")
 (set-default-font "Anonymous Pro")
 (set-face-attribute 'default nil :height 115)
 ;; Anti-aliasing
 (setq mac-allow-anti-aliasing t)
-;;(setq mac-allow-anti-aliasing nil)
 
 ;; Transparency
 ;;(set-frame-parameter (selected-frame) 'alpha '(100 35))
 ;;(add-to-list 'default-frame-alist '(alpha 100 35))
-
-;; Fullscreen (start fullscreen)
-(when (eq window-system 'ns)
-  (defun toggle-fullscreen () (interactive) (ns-toggle-fullscreen))
-  (ns-toggle-fullscreen)
-  (global-set-key [f11] 'toggle-fullscreen))
 
 ;; split the way I want
 (setq split-height-threshold nil)
@@ -271,7 +225,7 @@
 ;; Color Theme
 ;;(color-theme-initialize)
 ;; My custom theme
-(color-theme-dakrone)
+;;(color-theme-dakrone)
 
 ;; Show Paren Mode
 (setq show-paren-style 'expression)
@@ -280,26 +234,19 @@
   (interactive)
   (show-paren-mode t))
 (defun set-show-paren-face-background ()
-  (set-face-background 'show-paren-match-face "#333333"))
+  (set-face-background 'show-paren-match-face "#202020"))
 (add-hook 'show-paren-mode-hook 'set-show-paren-face-background)
+
+;; highlights
+(add-hook 'clojure-mode-hook (lambda () (idle-highlight)))
 
 ;; Change color for background highlight
 ;; I don't like hl-line-mode
-(remove-hook 'coding-hook 'turn-on-hl-line-mode)
 ;;(set-face-background 'hl-line "#333")
 
 ;; Fix the closing paren newline thing
 (eval-after-load 'paredit
   '(define-key paredit-mode-map (kbd ")") 'paredit-close-parenthesis))
-
-
-
-;; ==== Window switching ====
-(global-set-key [C-tab] 'other-window)
-(global-set-key [C-S-tab]
-                (lambda ()
-                  (interactive)
-                  (other-window -1)))
 
 
 
@@ -329,13 +276,6 @@
 
 
 
-;; ==== Unicode stuff ====
-(set-language-environment "UTF-8")
-(setq slime-net-coding-system 'utf-8-unix)
-
-
-
-
 ;; ==== Fix ssh-agent ====
 (defun find-agent ()
   (first (split-string
@@ -351,16 +291,6 @@
   (let ((agent (find-agent)))
     (setenv "SSH_AUTH_SOCK" agent)
     (message agent)))
-
-
-
-;; ==== Auto-complete (1.3.1) ====
-;; (add-to-list 'load-path (concat "~/.emacs.d/"
-;;                                 (user-login-name) "/auto-complete"))
-;; (require 'auto-complete-config)
-;; (add-to-list 'ac-dictionary-directories (concat "~/.emacs.d/" (user-login-name)
-;;                                                 "/auto-complete/ac-dict"))
-;; (ac-config-default)
 
 
 
@@ -414,30 +344,9 @@
 
 
 
-;; Org Mode
-;; see ~/.emacs.d/hinmanm/org-stuff.el
-
-
-
 ;; ==== Haskell mode ====
 (add-hook 'haskell-mode-hook 'turn-on-haskell-doc-mode)
 (add-hook 'haskell-mode-hook 'turn-on-haskell-indentation)
-
-
-
-;; ==== M-n, M-p ====
-(defun scroll-down-keep-cursor ()
-  ;; Scroll the text one line down while keeping the cursor
-  (interactive)
-  (scroll-down 1))
-
-(defun scroll-up-keep-cursor ()
-  ;; Scroll the text one line up while keeping the cursor
-  (interactive)
-  (scroll-up 1))
-
-(global-set-key (kbd "M-n") 'scroll-down-keep-cursor)
-(global-set-key (kbd "M-p") 'scroll-up-keep-cursor)
 
 
 
@@ -445,29 +354,6 @@
 ;; only start the server for the graphical one
 (when (eq window-system 'ns)
   (server-start))
-
-
-
-;; ==== Dvorak niceity ====
-(when (eq window-system 'ns)
-  (define-key key-translation-map "\C-t" "\C-x"))
-
-
-
-;; ==== transpose buffers ====
-(defun transpose-buffers (arg)
-  "Transpose the buffers shown in two windows."
-  (interactive "p")
-  (let ((selector (if (>= arg 0) 'next-window 'previous-window)))
-    (while (/= arg 0)
-      (let ((this-win (window-buffer))
-            (next-win (window-buffer (funcall selector))))
-        (set-window-buffer (selected-window) next-win)
-        (set-window-buffer (funcall selector) this-win)
-        (select-window (funcall selector)))
-      (setq arg (if (plusp arg) (1- arg) (1+ arg))))))
-
-(global-set-key (kbd "C-x 4 t") 'transpose-buffers)
 
 
 
@@ -508,3 +394,158 @@
 ;;                                      allcomp
 ;;                                      nil require-match initial-input hist def))
 ;;         ad-do-it))))
+
+
+
+;; ==== stuff copied from ESK ====
+(when window-system
+  (setq frame-title-format '(buffer-file-name "%f" ("%b")))
+  (tooltip-mode -1)
+  (mouse-wheel-mode t)
+  (blink-cursor-mode -1))
+
+(ansi-color-for-comint-mode-on)
+
+(setq visible-bell t
+      inhibit-startup-message t
+      color-theme-is-global t
+      shift-select-mode nil
+      mouse-yank-at-point t
+      x-select-enable-clipboard t
+      require-final-newline t ; crontabs break without this
+      truncate-partial-width-windows nil
+      uniquify-buffer-name-style 'forward
+      whitespace-style '(face trailing lines-tail tabs)
+      whitespace-line-column 80
+      ediff-window-setup-function 'ediff-setup-windows-plain
+      oddmuse-directory "~/.emacs.d/oddmuse"
+      save-place-file "~/.emacs.d/places")
+
+(add-to-list 'safe-local-variable-values '(lexical-binding . t))
+(add-to-list 'safe-local-variable-values '(whitespace-line-column . 80))
+
+;; Save a list of recent files visited.
+(recentf-mode 1)
+
+;; Highlight matching parentheses when the point is on them.
+(show-paren-mode 1)
+
+;; ido-mode is like magic pixie dust!
+(when (functionp 'ido-mode)
+  (ido-mode t)
+  (setq ido-enable-prefix nil
+        ido-enable-flex-matching t
+        ido-auto-merge-work-directories-length nil
+        ido-create-new-buffer 'always
+        ido-use-filename-at-point 'guess
+        ido-max-prospects 10))
+
+(set-default 'indent-tabs-mode nil)
+(set-default 'indicate-empty-lines t)
+(set-default 'imenu-auto-rescan t)
+
+(add-hook 'text-mode-hook 'turn-on-auto-fill)
+(add-hook 'text-mode-hook 'turn-on-flyspell)
+
+(defalias 'yes-or-no-p 'y-or-n-p)
+(defalias 'auto-tail-revert-mode 'tail-mode)
+
+(random t) ;; Seed the random-number generator
+
+;; Hippie expand: at times perhaps too hip
+(dolist (f '(try-expand-line try-expand-list try-complete-file-name-partially))
+  (delete f hippie-expand-try-functions-list))
+
+;; Associate modes with file extensions
+
+(add-to-list 'auto-mode-alist '("COMMIT_EDITMSG$" . diff-mode))
+(add-to-list 'auto-mode-alist '("\\.ya?ml$" . yaml-mode))
+(add-to-list 'auto-mode-alist '("Rakefile$" . ruby-mode))
+(add-to-list 'auto-mode-alist '("\\.xml$" . nxml-mode))
+
+(eval-after-load 'grep
+  '(when (boundp 'grep-find-ignored-files)
+     (add-to-list 'grep-find-ignored-files "*.class")))
+
+;; Default to unified diffs
+(setq diff-switches "-u")
+
+;; Rake files are ruby, too, as are gemspecs, rackup files, etc.
+(add-to-list 'auto-mode-alist '("\\.rake$" . ruby-mode))
+(add-to-list 'auto-mode-alist '("\\.gemspec$" . ruby-mode))
+(add-to-list 'auto-mode-alist '("\\.ru$" . ruby-mode))
+(add-to-list 'auto-mode-alist '("Rakefile$" . ruby-mode))
+(add-to-list 'auto-mode-alist '("Gemfile$" . ruby-mode))
+(add-to-list 'auto-mode-alist '("Capfile$" . ruby-mode))
+(add-to-list 'auto-mode-alist '("Vagrantfile$" . ruby-mode))
+
+;; We never want to edit Rubinius bytecode
+(add-to-list 'completion-ignored-extensions ".rbc")
+
+;; A monkeypatch to cause annotate to ignore whitespace
+(defun vc-git-annotate-command (file buf &optional rev)
+  (let ((name (file-relative-name file)))
+    (vc-git-command buf 0 name "blame" "-w" rev)))
+
+(defun sudo-edit (&optional arg)
+  (interactive "p")
+  (if (or arg (not buffer-file-name))
+      (find-file (concat "/sudo:root@localhost:" (ido-read-file-name "File: ")))
+    (find-alternate-file (concat "/sudo:root@localhost:" buffer-file-name))))
+
+(font-lock-add-keywords
+   nil '(("\\<\\(FIX\\|TODO\\|FIXME\\|HACK\\|REFACTOR\\|NOCOMMIT\\)"
+          1 font-lock-warning-face t)))
+
+(tool-bar-mode -1)
+(menu-bar-mode -1)
+(scroll-bar-mode -1)
+
+;; Cosmetics for diffs
+(eval-after-load 'diff-mode
+  '(progn
+     (set-face-foreground 'diff-added "green4")
+     (set-face-foreground 'diff-removed "red3")))
+
+(eval-after-load 'magit
+  '(progn
+     (set-face-foreground 'magit-diff-add "green3")
+     (set-face-foreground 'magit-diff-del "red3")))
+
+
+(defun untabify-buffer ()
+  (interactive)
+  (untabify (point-min) (point-max)))
+
+(defun indent-buffer ()
+  (interactive)
+  (indent-region (point-min) (point-max)))
+
+(defun cleanup-buffer ()
+  "Perform a bunch of operations on the whitespace content of a buffer."
+  (interactive)
+  (indent-buffer)
+  (untabify-buffer)
+  (delete-trailing-whitespace))
+
+
+
+
+
+;; Last thing
+;; You can keep system- or user-specific customizations here
+(setq system-config (concat user-emacs-directory system-name ".el")
+      user-config (concat user-emacs-directory user-login-name ".el")
+      user-dir (concat user-emacs-directory user-login-name))
+
+(add-to-list 'load-path user-dir)
+
+(when (file-exists-p system-config) (load system-config))
+(when (file-exists-p user-config) (load user-config))
+(when (file-exists-p user-dir)
+  (dolist (l (directory-files user-dir nil "^[^#].*el$"))
+    (load l)))
+
+;; My custom theme
+(color-theme-dakrone)
+(set-face-foreground 'paren-face "DimGrey")

@@ -6,7 +6,7 @@
 ;;;### (autoloads (color-theme-install color-theme-make-snapshot
 ;;;;;;  color-theme-analyze-defun color-theme-print color-theme-install-at-point-for-current-frame
 ;;;;;;  color-theme-install-at-mouse color-theme-describe color-theme-select)
-;;;;;;  "color-theme" "color-theme.el" (19970 23936))
+;;;;;;  "color-theme" "color-theme.el" (20054 54787))
 ;;; Generated autoloads from color-theme.el
 
 (autoload 'color-theme-select "color-theme" "\
@@ -120,7 +120,7 @@ frame-parameter settings of previous color themes.
 
 ;;;***
 
-;;;### (autoloads nil nil ("color-theme-pkg.el") (19970 23936 388070))
+;;;### (autoloads nil nil ("color-theme-pkg.el") (20054 54787 263969))
 
 ;;;***
 

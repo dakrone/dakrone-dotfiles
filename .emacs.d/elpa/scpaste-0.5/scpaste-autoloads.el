@@ -4,7 +4,7 @@
 
 
 ;;;### (autoloads (scpaste-index scpaste-region scpaste) "scpaste"
-;;;;;;  "scpaste.el" (19970 24132))
+;;;;;;  "scpaste.el" (20054 55057))
 ;;; Generated autoloads from scpaste.el
 
 (autoload 'scpaste "scpaste" "\
@@ -24,7 +24,7 @@ Generate an index of all existing pastes on server on the splash page.
 
 ;;;***
 
-;;;### (autoloads nil nil ("scpaste-pkg.el") (19970 24132 64397))
+;;;### (autoloads nil nil ("scpaste-pkg.el") (20054 55057 334469))
 
 ;;;***
 

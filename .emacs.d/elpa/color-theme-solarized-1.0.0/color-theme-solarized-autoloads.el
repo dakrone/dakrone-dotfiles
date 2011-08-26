@@ -4,7 +4,7 @@
 
 
 ;;;### (autoloads nil nil ("color-theme-solarized-pkg.el" "color-theme-solarized.el")
-;;;;;;  (19970 23987 330364))
+;;;;;;  (20054 54805 466164))
 
 ;;;***
 

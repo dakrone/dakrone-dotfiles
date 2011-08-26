@@ -1,3 +1,0 @@
-#name: fn
-# --
-(fn [${1:arg-list}] $0)

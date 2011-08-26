@@ -4,7 +4,7 @@
 
 
 ;;;### (autoloads nil nil ("color-theme-emacs-revert-theme-pkg.el"
-;;;;;;  "color-theme-emacs-revert-theme.el") (19970 23977 363099))
+;;;;;;  "color-theme-emacs-revert-theme.el") (20054 54806 45174))
 
 ;;;***
 

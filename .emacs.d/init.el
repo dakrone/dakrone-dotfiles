@@ -325,6 +325,7 @@
       (process-send-eof proc))))
 
 (when (eq window-system 'ns)
+  (scroll-bar-mode -1)
   (setq interprogram-cut-function 'mac-paste)
   (setq interprogram-paste-function 'mac-copy))
 
@@ -499,7 +500,6 @@
 
 (tool-bar-mode -1)
 (menu-bar-mode -1)
-(scroll-bar-mode -1)
 
 ;; Cosmetics for diffs
 (eval-after-load 'diff-mode

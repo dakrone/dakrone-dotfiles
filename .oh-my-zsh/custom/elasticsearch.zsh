@@ -35,6 +35,10 @@ function jstk () {
     sudo -u nobody jstack $1 >jstack-$(date +%s).txt
 }
 
+function red () {
+    curl -s p.draines.com/willbered.sh | zsh -s $1
+}
+
 # indices15.sh
 # shards.sh
 # cluster.sh

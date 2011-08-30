@@ -56,8 +56,8 @@ if [ -s ~/.rvm/scripts/rvm ] ; then
 fi
 
 # rbenv path
-export PATH=$HOME/.rbenv/bin:$HOME/.rbenv/shims:$PATH
-export RBENV_VERSION=1.9.2-p290
+# export PATH=$HOME/.rbenv/bin:$HOME/.rbenv/shims:$PATH
+# export RBENV_VERSION=1.9.2-p290
 
 # Always override with my personal bin
 export PATH=~/bin:$PATH

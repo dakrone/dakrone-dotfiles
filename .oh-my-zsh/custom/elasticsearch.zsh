@@ -43,8 +43,7 @@ function disk () {
     curl -s p.draines.com/disk.sh | zsh
 }
 
-# indices15.sh
-# shards.sh
-# cluster.sh
-# health.sh
-# curl -s p.draines.com/health.py | python -
+function make-clean-shards () {
+    curl -s p.draines.com/clean-shards.sh | zsh
+}
+

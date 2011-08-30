@@ -498,6 +498,8 @@
    nil '(("\\<\\(FIX\\|TODO\\|FIXME\\|HACK\\|REFACTOR\\|NOCOMMIT\\)"
           1 font-lock-warning-face t)))
 
+(add-to-list 'auto-mode-alist '("\\.zsh$" . shell-script-mode))
+
 (tool-bar-mode -1)
 (menu-bar-mode -1)
 

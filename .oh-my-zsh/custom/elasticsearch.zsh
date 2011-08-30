@@ -39,6 +39,10 @@ function red () {
     curl -s p.draines.com/willbered.sh | zsh -s $1
 }
 
+function disk () {
+    curl -s p.draines.com/disk.sh | zsh
+}
+
 # indices15.sh
 # shards.sh
 # cluster.sh

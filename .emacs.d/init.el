@@ -138,7 +138,7 @@
 (setq erc-keywords '("dakrone"
                      "dakrone_"
                      "dakrone__"))
-(setq erc-hide-list '("JOIN" "PART" "QUIT"))
+;;(setq erc-hide-list '("JOIN" "PART" "QUIT"))
 (setq erc-track-exclude-types '("JOIN" "NICK" "PART" "QUIT" "MODE"
                                 "324" "329" "332" "333" "353" "477"))
 
@@ -234,7 +234,7 @@
   (interactive)
   (show-paren-mode t))
 (defun set-show-paren-face-background ()
-  (set-face-background 'show-paren-match-face "#202020"))
+  (set-face-background 'show-paren-match-face "#232323"))
 (add-hook 'show-paren-mode-hook 'set-show-paren-face-background)
 
 ;; highlights

@@ -9,7 +9,7 @@
 	  [(0 5)
 	   nil "Flexible inline text and code completion" tar])
  (debbugs .
-	  [(0 2)
+	  [(0 3)
 	   nil "SOAP library to access debbugs servers" tar])
  (epoch-view .
 	     [(0 0 1)
@@ -18,7 +18,7 @@
 	   [(20090814)
 	    nil "Improved JavaScript editing mode" single])
  (load-dir .
-	   [(0 0 2)
+	   [(0 0 3)
 	    nil "Load all Emacs Lisp files in a given directory" single])
  (markchars .
 	    [(0 2 0)
@@ -30,7 +30,7 @@
        [(3 20)
 	nil "Authoring and publishing tool" tar])
  (org .
-      [(20110825)
+      [(20110912)
        nil "Outline-based notes management and organizer" tar])
  (rainbow-mode .
 	       [(0 1)

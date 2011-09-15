@@ -58,7 +58,8 @@
             (("(\\(\\.[^ \n)]*\\|[^ \n)]+\\.\\|new\\)\\([ )\n]\\|$\\)" 1
               'clojure-java-call)))))
 
-(add-hook 'clojure-mode-hook 'tweak-clojure-syntax)
+(when (eq window-system 'ns)
+  (add-hook 'clojure-mode-hook 'tweak-clojure-syntax))
 
 ;; Better indention (from Kevin)
 (add-hook 'clojure-mode-hook
@@ -233,9 +234,16 @@
 (defun enable-show-paren-mode ()
   (interactive)
   (show-paren-mode t))
+;; (defun set-show-paren-face-background ()
+;;   (set-face-background 'show-paren-match-face "#232323"))
 (defun set-show-paren-face-background ()
+  (set-face-background 'show-paren-match-face "#dddddd"))
+(defun set-show-paren-face-background-dark ()
   (set-face-background 'show-paren-match-face "#232323"))
-(add-hook 'show-paren-mode-hook 'set-show-paren-face-background)
+
+(if (eq window-system 'ns)
+    (add-hook 'show-paren-mode-hook 'set-show-paren-face-background-dark)
+  (add-hook 'show-paren-mode-hook 'set-show-paren-face-background))
 
 ;; highlights
 (add-hook 'clojure-mode-hook (lambda () (idle-highlight)))
@@ -495,8 +503,8 @@
     (find-alternate-file (concat "/sudo:root@localhost:" buffer-file-name))))
 
 (font-lock-add-keywords
-   nil '(("\\<\\(FIX\\|TODO\\|FIXME\\|HACK\\|REFACTOR\\|NOCOMMIT\\)"
-          1 font-lock-warning-face t)))
+ nil '(("\\<\\(FIX\\|TODO\\|FIXME\\|HACK\\|REFACTOR\\|NOCOMMIT\\)"
+        1 font-lock-warning-face t)))
 
 (add-to-list 'auto-mode-alist '("\\.zsh$" . shell-script-mode))
 
@@ -549,5 +557,6 @@
     (load l)))
 
 ;; My custom theme
-(color-theme-dakrone)
+(when (eq window-system 'ns)
+  (color-theme-dakrone))
 (set-face-foreground 'paren-face "DimGrey")

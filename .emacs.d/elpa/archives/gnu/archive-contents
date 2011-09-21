@@ -30,7 +30,7 @@
        [(3 20)
 	nil "Authoring and publishing tool" tar])
  (org .
-      [(20110913)
+      [(20110915)
        nil "Outline-based notes management and organizer" tar])
  (rainbow-mode .
 	       [(0 1)

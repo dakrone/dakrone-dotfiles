@@ -223,6 +223,9 @@
 ;; split the way I want
 (setq split-height-threshold nil)
 
+;; always turn whitespace mode on
+(whitespace-mode t)
+
 ;; Color Theme
 ;;(color-theme-initialize)
 ;; My custom theme

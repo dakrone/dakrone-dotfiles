@@ -6,7 +6,7 @@
 ;;          Lennart Staflin <lenst@lysator.liu.se>
 ;;          Phil Hagelberg <technomancy@gmail.com>
 ;; URL: http://github.com/technomancy/clojure-mode
-;; Version: 1.10.0
+;; Version: 1.11.1
 ;; Keywords: languages, lisp
 
 ;; This file is not part of GNU Emacs.
@@ -411,7 +411,7 @@ elements of a def* forms."
         "enumeration-seq" "eval" "even?" "every?"
         "extend" "extend-protocol" "extend-type" "extends?" "extenders"
         "false?" "ffirst" "file-seq" "filter" "find" "find-doc"
-        "find-ns" "find-var" "first" "float" "float-array"
+        "find-ns" "find-var" "first" "flatten" "float" "float-array"
         "float?" "floats" "flush" "fn" "fn?"
         "fnext" "for" "force" "format" "future"
         "future-call" "future-cancel" "future-cancelled?" "future-done?" "future?"
@@ -471,7 +471,7 @@ elements of a def* forms."
         "var?" "vary-meta" "vec" "vector" "vector?"
         "when" "when-first" "when-let" "when-not" "while"
         "with-bindings" "with-bindings*" "with-in-str" "with-loading-context" "with-local-vars"
-        "with-meta" "with-open" "with-out-str" "with-precision" "xml-seq"
+        "with-meta" "with-open" "with-out-str" "with-precision" "xml-seq" "zipmap"
         ) t)
          "\\>")
        1 font-lock-variable-name-face)
@@ -849,7 +849,8 @@ use (put-clojure-indent 'some-symbol 'defun)."
 
 (defvar clojure-project-root-file "project.clj")
 
-(defvar clojure-swank-command "lein jack-in %s")
+;; Pipe to sh to work around mackosecks GUI Emacs $PATH issues.
+(defvar clojure-swank-command "echo \"lein jack-in %s\" | sh")
 
 ;;;###autoload
 (defun clojure-jack-in ()
@@ -857,6 +858,10 @@ use (put-clojure-indent 'some-symbol 'defun)."
   (setq slime-net-coding-system 'utf-8-unix)
   (lexical-let ((port (- 65535 (mod (caddr (current-time)) 4096)))
                 (dir default-directory))
+    (when (and (functionp 'slime-disconnect) (slime-current-connection))
+      (slime-disconnect))
+    (when (get-buffer "*swank*")
+      (kill-buffer "*swank*"))
     (let* ((swank-cmd (format clojure-swank-command port))
            (proc (start-process-shell-command "swank" "*swank*" swank-cmd)))
       (set-process-filter (get-buffer-process "*swank*")
@@ -874,6 +879,7 @@ use (put-clojure-indent 'some-symbol 'defun)."
                               (eval-buffer "*swank*")
                               (slime-connect "localhost" port)
                               (with-current-buffer (slime-output-buffer t)
+                                (delete-region (point-min) (point-max))
                                 (setq default-directory dir))
                               (set-process-filter process nil))))))
   (message "Starting swank server..."))
@@ -929,6 +935,7 @@ use (put-clojure-indent 'some-symbol 'defun)."
 
 ;;;###autoload
 (add-to-list 'auto-mode-alist '("\\.clj$" . clojure-mode))
+(add-to-list 'interpreter-mode-alist '("jark" . clojure-mode))
 (add-to-list 'interpreter-mode-alist '("cake" . clojure-mode))
 
 (provide 'clojure-mode)

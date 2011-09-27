@@ -225,6 +225,8 @@
 
 ;; always turn whitespace mode on
 (whitespace-mode t)
+(add-hook 'clojure-mode-hook (lambda () (whitespace-mode t)))
+(add-hook 'prog-mode-hook (lambda () (whitespace-mode t)))
 
 ;; Color Theme
 ;;(color-theme-initialize)

@@ -548,6 +548,8 @@
   (untabify-buffer)
   (delete-trailing-whitespace))
 
+;; Make rgrep actually work
+(setq ido-ubiquitous-enabled nil)
 
 
 

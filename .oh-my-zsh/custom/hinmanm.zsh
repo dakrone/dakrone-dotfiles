@@ -105,6 +105,7 @@ alias jl='j --l'
 alias jr='j --r'
 alias js='j --s'
 alias givm='gvim'
+alias rsynco='rsync --compress-level=9 -azvvPhSImi'
 # Colored rspec
 alias cspec='spec -c --format specdoc'
 # Tmux stuff

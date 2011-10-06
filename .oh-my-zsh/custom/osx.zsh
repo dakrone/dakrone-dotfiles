@@ -14,6 +14,7 @@ if [[ $OS == "Darwin" ]]; then
     fi
 
     #function ec() { TERM=xterm-256color PATH=$EMACS_HOME/bin:$PATH emacsclient -t $@ }
+    alias -g e="TERM=xterm-256color PATH=$EMACS_HOME/bin:$PATH /Applications/Emacs.app/Contents/MacOS/Emacs"
     alias -g ec="TERM=xterm-256color PATH=$EMACS_HOME/bin:$PATH emacsclient -t"
 
     function es() { e --daemon=$1 && ec -s $1 }

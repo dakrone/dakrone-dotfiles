@@ -59,6 +59,7 @@ widget, custom, latex, ediff."
      (holiday-face ((t (:background "red"))))
      (show-paren-match-face ((t (:background "deepskyblue4"))))
      (show-paren-mismatch-face ((t (:foreground "white" :background "red"))))
+     (paren-face ((t (:foreground "#303030"))))
      (font-lock-comment-face ((t (:foreground "#656763"))))
      (font-lock-string-face ((t (:foreground "#8AE234"))))
      (font-lock-keyword-face ((t (:foreground "cyan1"))))
@@ -107,7 +108,7 @@ widget, custom, latex, ediff."
      ;; (org-agenda-date-weekend ((t (:weight normal :foreground "dodger blue"))))
      ;; (org-agenda-date-today ((t (:weight bold :foreground "#edd400"))))
 
-     
+
      (sgml-start-tag-face ((t (:foreground "mediumspringgreen"))))
      (custom-button-face ((t (:foreground "white"))))
      (sgml-ignored-face ((t (:foreground "gray20" :background "gray60"))))

@@ -15,6 +15,9 @@
 (smex-initialize)
 ;; dim parens
 (require 'parenface)
+;; notmuch
+(add-to-list 'load-path (concat "~/.emacs.d/" (user-login-name) "/notmuch"))
+(require 'notmuch)
 
 
 
@@ -246,16 +249,18 @@
 (defun set-show-paren-face-background-dark ()
   (set-face-background 'show-paren-match-face "#232323"))
 
-(if (eq window-system 'ns)
-    (add-hook 'show-paren-mode-hook 'set-show-paren-face-background-dark)
-  (add-hook 'show-paren-mode-hook 'set-show-paren-face-background))
+(add-hook 'show-paren-mode-hook 'set-show-paren-face-background-dark)
+
+(remove-hook 'prog-mode-hook 'esk-turn-on-hl-line-mode)
+;; I'm okay with pretty lambdas
+(remove-hook 'prog-mode-hook 'esk-pretty-lambdas)
+;; turn off ESK's idle-highlight mode
+(remove-hook 'prog-mode-hook 'esk-turn-on-idle-highlight-mode)
+;; no pretty fns
+(remove-hook 'clojure-mode-hook 'esk-pretty-fn)
 
 ;; highlights
-(add-hook 'clojure-mode-hook (lambda () (idle-highlight)))
-
-;; Change color for background highlight
-;; I don't like hl-line-mode
-;;(set-face-background 'hl-line "#333")
+(add-hook 'prog-mode-hook (lambda () (idle-highlight t)))
 
 ;; Fix the closing paren newline thing
 (eval-after-load 'paredit
@@ -562,6 +567,10 @@
     (load l)))
 
 ;; My custom theme
-(when (eq window-system 'ns)
-  (color-theme-dakrone))
-(set-face-foreground 'paren-face "DimGrey")
+;;(require 'color-theme-zenburn)
+(if (eq window-system 'ns)
+    (color-theme-dakrone)
+  ;;(color-theme-zenburn)
+  )
+(color-theme-dakrone)
+;;(set-face-foreground 'paren-face "DimGrey")

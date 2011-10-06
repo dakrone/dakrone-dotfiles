@@ -16,8 +16,8 @@
 ;; dim parens
 (require 'parenface)
 ;; notmuch
-(add-to-list 'load-path (concat "~/.emacs.d/" (user-login-name) "/notmuch"))
-(require 'notmuch)
+;; (add-to-list 'load-path (concat "~/.emacs.d/" (user-login-name) "/notmuch"))
+;; (require 'notmuch)
 
 
 

@@ -22,7 +22,7 @@ export CHEF_USER="lee"
 export REPORTTIME=5
 
 # node things
-export NODE_PATH=/usr/local/lib/node
+export NODE_PATH=/usr/local/lib/node:/usr/local/lib/node_modules
 export PATH=$PATH:/usr/local/share/npm/bin
 # npm will install libraries to:
 #   /usr/local/lib/node/.npm

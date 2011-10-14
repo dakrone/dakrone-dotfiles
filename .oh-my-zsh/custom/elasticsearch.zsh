@@ -1,14 +1,15 @@
 # shell aliases used for ES querying
 
-# global alias for drew pasting
-alias -g dpaste='curl -s p.draines.com'
+function dpaste () {
+    zsh <(curl -s p.draines.com/sh) $1
+}
 
 function draines () {
     curl -s p.draines.com/$1 | zsh
 }
 
 function indices () {
-    draines indices.sh
+    curl -s p.draines.com/indices.sh | zsh
 }
 
 function indices15 () {
@@ -16,19 +17,19 @@ function indices15 () {
 }
 
 function shards () {
-    draines shards.sh
+    curl -s p.draines.com/shards.sh | zsh
 }
 
 function cluster () {
-    draines cluster.sh
+    curl -s p.draines.com/cluster.sh | zsh
 }
 
 function health () {
-    draines 131337422702048bcf752.txt
+    curl -s p.draines.com/131337422702048bcf752.txt | zsh
 }
 
 function health-nocolor () {
-    draines health.sh
+    curl -s p.draines.com/health.sh | zsh
 }
 
 function jstk () {

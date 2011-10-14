@@ -190,12 +190,9 @@
            erc-nick '("dakrone" "dakrone_")
            erc-autojoin-timing :ident
            erc-flood-protect nil
-           erc-pals '("technomancy" "hiredman" "danlarkin" "drewr" "pjstadig"
-                      "scgilardi" "dysinger" "fujin" "joegallo" "jimduey"
-                      "leathekd" "dave_chestnutt" "davec" "mikehale" "decklin"
-                      "rhickey" "geek00l" "wooby" "zkim" "TeXnomancy" "steve"
-                      "davec" "imotov" "portertech" "joekinsella"
-                      "joshpasqualetto" "josh" "justin" "scooper")
+           erc-pals '("hiredman" "danlarkin" "drewr" "pjstadig" "scgilardi"
+                      "joegallo" "jimduey" "leathekd" "decklin" "rhickey" "zkim"
+                      "steve" "imotov" "joekinsella")
            erc-autojoin-channels-alist
            '(("freenode.net"
               "#clojure"
@@ -550,6 +547,8 @@
 
 ;; Make rgrep actually work
 (setq ido-ubiquitous-enabled nil)
+;; Require a newline at the end
+(setq require-final-newline t)
 
 
 

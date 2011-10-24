@@ -20,7 +20,8 @@ mkdir -p .config/irb
 cp -f -rv ~/.config/irb .config/
 cp -f -v ~/.irbrc .
 cp -f -v ~/.autotest .
-#cp -f -v ~/.newsbeuter/config .newsbeuter/config
+mkdir -p .newsbeuter
+cp -f -v ~/.newsbeuter/config .newsbeuter/config
 cp -f -v ~/.conkerorrc .
 mkdir -p .elinks
 cp -f -v ~/.elinks/elinks.conf .elinks

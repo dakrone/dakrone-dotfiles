@@ -191,8 +191,8 @@
            erc-autojoin-timing :ident
            erc-flood-protect nil
            erc-pals '("hiredman" "danlarkin" "drewr" "pjstadig" "scgilardi"
-                      "joegallo" "jimduey" "leathekd" "decklin" "rhickey" "zkim"
-                      "steve" "imotov" "joekinsella")
+                      "joegallo" "jimduey" "leathekd" "rhickey" "zkim" "steve"
+                      "imotov" "joekinsella" "craig")
            erc-autojoin-channels-alist
            '(("freenode.net"
               "#clojure"
@@ -384,6 +384,9 @@
 ;; ==== Ido stuff ====
 ;; from http://www.emacswiki.org/emacs/InteractivelyDoThings#toc13
 ;; Make Ido complete almost anything (except the stuff where it shouldn't)
+
+;; Don't add recent buffers to the ido-list
+(setq ido-use-virtual-buffers nil)
 
 (defvar ido-enable-replace-completing-read t
   "If t, use ido-completing-read instead of completing-read if possible.

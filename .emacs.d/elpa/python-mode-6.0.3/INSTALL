@@ -1,0 +1,16 @@
+No special installing is required to get the basics, just make
+sure python-mode.el gets evaluated.
+
+To evaluate python-mode.el when Emacs starts put something like
+the following into your init file:
+
+(add-to-list 'load-path "MY-PATH-TO-PYTHON-MODE")
+(require 'python-mode)
+
+Or get the file loaded like this:
+
+(load "MY-PATH-TO-PYTHON-MODE/python-mode.el")
+
+Customizing `py-set-load-path' is needed only when extended
+features from subdirectories shall be used - a section under
+construction for the moment.

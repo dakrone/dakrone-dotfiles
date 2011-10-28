@@ -11,6 +11,9 @@
  (debbugs .
 	  [(0 3)
 	   nil "SOAP library to access debbugs servers" tar])
+ (eldoc-eval .
+	     [(0 1)
+	      nil "Enable eldoc support when minibuffer is in use." single])
  (epoch-view .
 	     [(0 0 1)
 	      nil "Minor mode to visualize epoch timestamps" single])
@@ -29,6 +32,9 @@
  (markchars .
 	    [(0 2 0)
 	     nil "Mark chars fitting certain characteristics" single])
+ (memory-usage .
+	       [(0 1)
+		nil "Analyze the memory usage of Emacs in various ways" single])
  (minimap .
 	  [(1 0)
 	   nil "Sidebar showing a \"mini-map\" of a buffer" single])
@@ -39,7 +45,7 @@
 	 [(0 1)
 	  nil "OAuth 2.0 Authorization Protocol" single])
  (org .
-      [(20111006)
+      [(20111027)
        nil "Outline-based notes management and organizer" tar])
  (quarter-plane .
 		[(0 1)
@@ -50,6 +56,9 @@
  (register-list .
 		[(0 1)
 		 nil "Interactively list/edit registers" single])
+ (shen-mode .
+	    [(0 1)
+	     nil "A major mode for editing shen source code" single])
  (sisu-mode .
 	    [(3 0 3)
 	     nil "Major mode for SiSU markup text" single])

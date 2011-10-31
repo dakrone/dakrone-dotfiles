@@ -26,7 +26,7 @@ opml-url                    ""
 #proxy-auth
 refresh-on-startup          no
 reload-only-visible-feeds   no
-reload-time                 30
+reload-time                 60
 reload-threads              4
 show-keymap-hint            yes
 show-read-articles          yes

@@ -121,7 +121,7 @@ alias -g ash='autossh'
 # 20 second poll time
 export AUTOSSH_POLL=20
 # keep an X connection open, with proxy
-alias keepxprox='autossh -M 21000 x -L 6667:x:31425'
+alias keepircprox='autossh -M 21000 irc.sa2s.us -L 6667:irc.sa2s.us:31425'
 # keep an X connection open, without proxy
 alias keepx='autossh -M 22000 x'
 # reverse proxy & keepopen

@@ -869,6 +869,8 @@ when PUB-DIR is set, use this as the publishing directory."
 			  (file-truename (or buffer-file-name "dummy.org")))
 		   (concat filename ".tex")
 		 filename)))
+	 (auto-insert nil); Avoid any auto-insert stuff for the new file
+	 (TeX-master t) ; Avoid the Query for TeX master from AUCTeX
 	 (buffer (if to-buffer
 		     (cond
 		      ((eq to-buffer 'string) (get-buffer-create
@@ -1344,7 +1346,7 @@ LEVEL indicates the default depth for export."
 	      (save-restriction
 		(widen)
 		(goto-char (point-min))
-		(and (re-search-forward "^#\\+LaTeX_CLASS:[ \t]*\\([-a-zA-Z]+\\)" nil t)
+		(and (re-search-forward "^#\\+LaTeX_CLASS:[ \t]*\\([-/a-zA-Z]+\\)" nil t)
 		     (match-string 1))))
 	    (plist-get org-export-latex-options-plist :latex-class)
 	    org-export-latex-default-class)

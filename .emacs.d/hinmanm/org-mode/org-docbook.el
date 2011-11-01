@@ -393,6 +393,8 @@ in a window.  A non-interactive call will only return the buffer."
 	(org-open-file pdffile)
       (error "PDF file was not produced"))))
 
+(defvar org-heading-keyword-regexp-format) ; defined in org.el
+
 ;;;###autoload
 (defun org-export-as-docbook (&optional hidden ext-plist
 					to-buffer body-only pub-dir)
@@ -474,9 +476,11 @@ publishing directory."
 	 (current-dir (if buffer-file-name
 			  (file-name-directory buffer-file-name)
 			default-directory))
+	 (auto-insert nil); Avoid any auto-insert stuff for the new file
 	 (buffer (if to-buffer
 		     (cond
-		      ((eq to-buffer 'string) (get-buffer-create "*Org DocBook Export*"))
+		      ((eq to-buffer 'string)
+		       (get-buffer-create "*Org DocBook Export*"))
 		      (t (get-buffer-create to-buffer)))
 		   (find-file-noselect filename)))
 	 ;; org-levels-open is a global variable

@@ -1,319 +1,19 @@
-;;; org-autoloads.el --- automatically extracted autoloads
-;;
-;;; Code:
-
-
-;;;### (autoloads (org-babel-mark-block org-babel-previous-src-block
-;;;;;;  org-babel-next-src-block org-babel-goto-named-result org-babel-goto-named-src-block
-;;;;;;  org-babel-goto-src-block-head org-babel-hide-result-toggle-maybe
-;;;;;;  org-babel-sha1-hash org-babel-execute-subtree org-babel-execute-buffer
-;;;;;;  org-babel-map-inline-src-blocks org-babel-map-src-blocks
-;;;;;;  org-babel-open-src-block-result org-babel-switch-to-session-with-code
-;;;;;;  org-babel-switch-to-session org-babel-initiate-session org-babel-load-in-session
-;;;;;;  org-babel-insert-header-arg org-babel-check-src-block org-babel-expand-src-block
-;;;;;;  org-babel-execute-src-block org-babel-pop-to-session-maybe
-;;;;;;  org-babel-load-in-session-maybe org-babel-expand-src-block-maybe
-;;;;;;  org-babel-view-src-block-info org-babel-execute-maybe org-babel-execute-safely-maybe)
-;;;;;;  "ob" "ob.el" (20137 61780))
-;;; Generated autoloads from ob.el
-
-(autoload 'org-babel-execute-safely-maybe "ob" "\
-Not documented
-
-\(fn)" nil nil)
-
-(autoload 'org-babel-execute-maybe "ob" "\
-Not documented
-
-\(fn)" t nil)
-
-(autoload 'org-babel-view-src-block-info "ob" "\
-Display information on the current source block.
-This includes header arguments, language and name, and is largely
-a window into the `org-babel-get-src-block-info' function.
-
-\(fn)" t nil)
-
-(autoload 'org-babel-expand-src-block-maybe "ob" "\
-Conditionally expand a source block.
-Detect if this is context for a org-babel src-block and if so
-then run `org-babel-expand-src-block'.
-
-\(fn)" t nil)
-
-(autoload 'org-babel-load-in-session-maybe "ob" "\
-Conditionally load a source block in a session.
-Detect if this is context for a org-babel src-block and if so
-then run `org-babel-load-in-session'.
-
-\(fn)" t nil)
-
-(autoload 'org-babel-pop-to-session-maybe "ob" "\
-Conditionally pop to a session.
-Detect if this is context for a org-babel src-block and if so
-then run `org-babel-pop-to-session'.
-
-\(fn)" t nil)
-
-(autoload 'org-babel-execute-src-block "ob" "\
-Execute the current source code block.
-Insert the results of execution into the buffer.  Source code
-execution and the collection and formatting of results can be
-controlled through a variety of header arguments.
-
-With prefix argument ARG, force re-execution even if a an
-existing result cached in the buffer would otherwise have been
-returned.
-
-Optionally supply a value for INFO in the form returned by
-`org-babel-get-src-block-info'.
-
-Optionally supply a value for PARAMS which will be merged with
-the header arguments specified at the front of the source code
-block.
-
-\(fn &optional ARG INFO PARAMS)" t nil)
-
-(autoload 'org-babel-expand-src-block "ob" "\
-Expand the current source code block.
-Expand according to the source code block's header
-arguments and pop open the results in a preview buffer.
-
-\(fn &optional ARG INFO PARAMS)" t nil)
-
-(autoload 'org-babel-check-src-block "ob" "\
-Check for misspelled header arguments in the current code block.
-
-\(fn)" t nil)
-
-(autoload 'org-babel-insert-header-arg "ob" "\
-Insert a header argument selecting from lists of common args and values.
-
-\(fn)" t nil)
-
-(autoload 'org-babel-load-in-session "ob" "\
-Load the body of the current source-code block.
-Evaluate the header arguments for the source block before
-entering the session.  After loading the body this pops open the
-session.
-
-\(fn &optional ARG INFO)" t nil)
-
-(autoload 'org-babel-initiate-session "ob" "\
-Initiate session for current code block.
-If called with a prefix argument then resolve any variable
-references in the header arguments and assign these variables in
-the session. Copy the body of the code block to the kill ring.
-
-\(fn &optional ARG INFO)" t nil)
-
-(autoload 'org-babel-switch-to-session "ob" "\
-Switch to the session of the current code block.
-Uses `org-babel-initiate-session' to start the session. If called
-with a prefix argument then this is passed on to
-`org-babel-initiate-session'.
-
-\(fn &optional ARG INFO)" t nil)
-
-(autoload 'org-babel-switch-to-session-with-code "ob" "\
-Switch to code buffer and display session.
-
-\(fn &optional ARG INFO)" t nil)
-
-(autoload 'org-babel-open-src-block-result "ob" "\
-If `point' is on a src block then open the results of the
-source code block, otherwise return nil.  With optional prefix
-argument RE-RUN the source-code block is evaluated even if
-results already exist.
-
-\(fn &optional RE-RUN)" t nil)
-
-(autoload 'org-babel-map-src-blocks "ob" "\
-Evaluate BODY forms on each source-block in FILE.
-If FILE is nil evaluate BODY forms on source blocks in current
-buffer.  During evaluation of BODY the following local variables
-are set relative to the currently matched code block.
-
-full-block ------- string holding the entirety of the code block
-beg-block -------- point at the beginning of the code block
-end-block -------- point at the end of the matched code block
-lang ------------- string holding the language of the code block
-beg-lang --------- point at the beginning of the lang
-end-lang --------- point at the end of the lang
-switches --------- string holding the switches
-beg-switches ----- point at the beginning of the switches
-end-switches ----- point at the end of the switches
-header-args ------ string holding the header-args
-beg-header-args -- point at the beginning of the header-args
-end-header-args -- point at the end of the header-args
-body ------------- string holding the body of the code block
-beg-body --------- point at the beginning of the body
-end-body --------- point at the end of the body
-
-\(fn FILE &rest BODY)" nil (quote macro))
-
-(put 'org-babel-map-src-blocks 'lisp-indent-function '1)
-
-(autoload 'org-babel-map-inline-src-blocks "ob" "\
-Evaluate BODY forms on each inline source-block in FILE.
-If FILE is nil evaluate BODY forms on source blocks in current
-buffer.
-
-\(fn FILE &rest BODY)" nil (quote macro))
-
-(put 'org-babel-map-inline-src-blocks 'lisp-indent-function '1)
-
-(autoload 'org-babel-execute-buffer "ob" "\
-Execute source code blocks in a buffer.
-Call `org-babel-execute-src-block' on every source block in
-the current buffer.
-
-\(fn &optional ARG)" t nil)
-
-(autoload 'org-babel-execute-subtree "ob" "\
-Execute source code blocks in a subtree.
-Call `org-babel-execute-src-block' on every source block in
-the current subtree.
-
-\(fn &optional ARG)" t nil)
-
-(autoload 'org-babel-sha1-hash "ob" "\
-Generate an sha1 hash based on the value of info.
-
-\(fn &optional INFO)" t nil)
-
-(autoload 'org-babel-hide-result-toggle-maybe "ob" "\
-Toggle visibility of result at point.
-
-\(fn)" t nil)
-
-(autoload 'org-babel-goto-src-block-head "ob" "\
-Go to the beginning of the current code block.
-
-\(fn)" t nil)
-
-(autoload 'org-babel-goto-named-src-block "ob" "\
-Go to a named source-code block.
-
-\(fn NAME)" t nil)
-
-(autoload 'org-babel-goto-named-result "ob" "\
-Go to a named result.
-
-\(fn NAME)" t nil)
-
-(autoload 'org-babel-next-src-block "ob" "\
-Jump to the next source block.
-With optional prefix argument ARG, jump forward ARG many source blocks.
-
-\(fn &optional ARG)" t nil)
-
-(autoload 'org-babel-previous-src-block "ob" "\
-Jump to the previous source block.
-With optional prefix argument ARG, jump backward ARG many source blocks.
-
-\(fn &optional ARG)" t nil)
-
-(autoload 'org-babel-mark-block "ob" "\
-Mark current src block
-
-\(fn)" t nil)
-
-;;;***
-
-;;;### (autoloads (org-babel-describe-bindings) "ob-keys" "ob-keys.el"
-;;;;;;  (20137 61780))
-;;; Generated autoloads from ob-keys.el
-
-(autoload 'org-babel-describe-bindings "ob-keys" "\
-Describe all keybindings behind `org-babel-key-prefix'.
-
-\(fn)" t nil)
-
-;;;***
-
-;;;### (autoloads (org-babel-lob-get-info org-babel-lob-execute-maybe
-;;;;;;  org-babel-lob-ingest) "ob-lob" "ob-lob.el" (20137 61780))
-;;; Generated autoloads from ob-lob.el
-
-(autoload 'org-babel-lob-ingest "ob-lob" "\
-Add all named source-blocks defined in FILE to
-`org-babel-library-of-babel'.
-
-\(fn &optional FILE)" t nil)
-
-(autoload 'org-babel-lob-execute-maybe "ob-lob" "\
-Execute a Library of Babel source block, if appropriate.
-Detect if this is context for a Library Of Babel source block and
-if so then run the appropriate source block from the Library.
-
-\(fn)" t nil)
-
-(autoload 'org-babel-lob-get-info "ob-lob" "\
-Return a Library of Babel function call as a string.
-
-\(fn)" nil nil)
-
-;;;***
-
-;;;### (autoloads (org-babel-tangle org-babel-tangle-file org-babel-load-file
-;;;;;;  org-babel-tangle-lang-exts) "ob-tangle" "ob-tangle.el" (20137
-;;;;;;  61780))
-;;; Generated autoloads from ob-tangle.el
-
-(defvar org-babel-tangle-lang-exts '(("emacs-lisp" . "el")) "\
-Alist mapping languages to their file extensions.
-The key is the language name, the value is the string that should
-be inserted as the extension commonly used to identify files
-written in this language.  If no entry is found in this list,
-then the name of the language is used.")
-
-(custom-autoload 'org-babel-tangle-lang-exts "ob-tangle" t)
-
-(autoload 'org-babel-load-file "ob-tangle" "\
-Load Emacs Lisp source code blocks in the Org-mode FILE.
-This function exports the source code using
-`org-babel-tangle' and then loads the resulting file using
-`load-file'.
-
-\(fn FILE)" t nil)
-
-(autoload 'org-babel-tangle-file "ob-tangle" "\
-Extract the bodies of source code blocks in FILE.
-Source code blocks are extracted with `org-babel-tangle'.
-Optional argument TARGET-FILE can be used to specify a default
-export file for all source blocks.  Optional argument LANG can be
-used to limit the exported source code blocks by language.
-
-\(fn FILE &optional TARGET-FILE LANG)" t nil)
-
-(autoload 'org-babel-tangle "ob-tangle" "\
-Write code blocks to source-specific files.
-Extract the bodies of all source code blocks from the current
-file into their own source-specific files.  Optional argument
-TARGET-FILE can be used to specify a default export file for all
-source blocks.  Optional argument LANG can be used to limit the
-exported source code blocks by language.
-
-\(fn &optional ONLY-THIS-BLOCK TARGET-FILE LANG)" t nil)
-
-;;;***
 
 ;;;### (autoloads (org-customize org-reload org-require-autoloaded-modules
 ;;;;;;  org-submit-bug-report org-cycle-agenda-files org-switchb
 ;;;;;;  org-map-entries org-open-link-from-string org-open-at-point-global
 ;;;;;;  org-insert-link-global org-store-link org-run-like-in-org-mode
 ;;;;;;  turn-on-orgstruct++ turn-on-orgstruct orgstruct-mode org-global-cycle
-;;;;;;  org-mode org-babel-do-load-languages) "org" "org.el" (20137
-;;;;;;  61780))
+;;;;;;  org-mode org-babel-do-load-languages) "org" "org.el" (20144
+;;;;;;  24758))
 ;;; Generated autoloads from org.el
 
-(autoload 'org-babel-do-load-languages "org" "\
+(autoload (quote org-babel-do-load-languages) "org" "\
 Load the languages defined in `org-babel-load-languages'.
 
 \(fn SYM VALUE)" nil nil)
 
-(autoload 'org-mode "org" "\
+(autoload (quote org-mode) "org" "\
 Outline-based notes management and organizer, alias
 \"Carsten's outline-mode for keeping track of everything.\"
 
@@ -336,14 +36,14 @@ The following commands are available:
 
 (defvar org-inlinetask-min-level)
 
-(autoload 'org-global-cycle "org" "\
+(autoload (quote org-global-cycle) "org" "\
 Cycle the global visibility.  For details see `org-cycle'.
 With \\[universal-argument] prefix arg, switch to startup visibility.
 With a numeric prefix, show all headlines up to that level.
 
 \(fn &optional ARG)" t nil)
 
-(autoload 'orgstruct-mode "org" "\
+(autoload (quote orgstruct-mode) "org" "\
 Toggle the minor mode `orgstruct-mode'.
 This mode is for using Org-mode structure commands in other
 modes.  The following keys behave as if Org-mode were active, if
@@ -368,17 +68,17 @@ C-c C-c     Set tags / toggle checkbox
 
 \(fn &optional ARG)" t nil)
 
-(autoload 'turn-on-orgstruct "org" "\
+(autoload (quote turn-on-orgstruct) "org" "\
 Unconditionally turn on `orgstruct-mode'.
 
 \(fn)" nil nil)
 
-(autoload 'turn-on-orgstruct++ "org" "\
+(autoload (quote turn-on-orgstruct++) "org" "\
 Unconditionally turn on `orgstruct++-mode'.
 
 \(fn)" nil nil)
 
-(autoload 'org-run-like-in-org-mode "org" "\
+(autoload (quote org-run-like-in-org-mode) "org" "\
 Run a command, pretending that the current buffer is in Org-mode.
 This will temporarily bind local variables that are typically bound in
 Org-mode to the values they have in Org-mode, and then interactively
@@ -386,7 +86,7 @@ call CMD.
 
 \(fn CMD)" nil nil)
 
-(autoload 'org-store-link "org" "\
+(autoload (quote org-store-link) "org" "\
 \\<org-mode-map>Store an org-link to the current location.
 This link is added to `org-stored-links' and can later be inserted
 into an org-buffer with \\[org-insert-link].
@@ -397,25 +97,25 @@ For file links, arg negates `org-context-in-file-links'.
 
 \(fn ARG)" t nil)
 
-(autoload 'org-insert-link-global "org" "\
+(autoload (quote org-insert-link-global) "org" "\
 Insert a link like Org-mode does.
 This command can be called in any mode to insert a link in Org-mode syntax.
 
 \(fn)" t nil)
 
-(autoload 'org-open-at-point-global "org" "\
+(autoload (quote org-open-at-point-global) "org" "\
 Follow a link like Org-mode does.
 This command can be called in any mode to follow a link that has
 Org-mode syntax.
 
 \(fn)" t nil)
 
-(autoload 'org-open-link-from-string "org" "\
+(autoload (quote org-open-link-from-string) "org" "\
 Open a link in the string S, as if it was in Org-mode.
 
 \(fn S &optional ARG REFERENCE-BUFFER)" t nil)
 
-(autoload 'org-map-entries "org" "\
+(autoload (quote org-map-entries) "org" "\
 Call FUNC at each headline selected by MATCH in SCOPE.
 
 FUNC is a function or a lisp form.  The function will be called without
@@ -475,7 +175,7 @@ a *different* entry, you cannot use these techniques.
 
 \(fn FUNC &optional MATCH SCOPE &rest SKIP)" nil nil)
 
-(autoload 'org-switchb "org" "\
+(autoload (quote org-switchb) "org" "\
 Switch between Org buffers.
 With one prefix argument, restrict available buffers to files.
 With two prefix arguments, restrict available buffers to agenda files.
@@ -485,18 +185,18 @@ Set `org-completion-use-ido' to make it use ido instead.
 
 \(fn &optional ARG)" t nil)
 
-(defalias 'org-ido-switchb 'org-switchb)
+(defalias (quote org-ido-switchb) (quote org-switchb))
 
-(defalias 'org-iswitchb 'org-switchb)
+(defalias (quote org-iswitchb) (quote org-switchb))
 
-(autoload 'org-cycle-agenda-files "org" "\
+(autoload (quote org-cycle-agenda-files) "org" "\
 Cycle through the files in `org-agenda-files'.
 If the current buffer visits an agenda file, find the next one in the list.
 If the current buffer does not, find the first agenda file.
 
 \(fn)" t nil)
 
-(autoload 'org-submit-bug-report "org" "\
+(autoload (quote org-submit-bug-report) "org" "\
 Submit a bug report on Org-mode via mail.
 
 Don't hesitate to report any problems or inaccurate documentation.
@@ -507,18 +207,18 @@ information about your Org-mode version and configuration.
 
 \(fn)" t nil)
 
-(autoload 'org-require-autoloaded-modules "org" "\
+(autoload (quote org-require-autoloaded-modules) "org" "\
 Not documented
 
 \(fn)" t nil)
 
-(autoload 'org-reload "org" "\
+(autoload (quote org-reload) "org" "\
 Reload all org lisp files.
 With prefix arg UNCOMPILED, load the uncompiled versions.
 
 \(fn &optional UNCOMPILED)" t nil)
 
-(autoload 'org-customize "org" "\
+(autoload (quote org-customize) "org" "\
 Call the customize function with org as argument.
 
 \(fn)" t nil)
@@ -529,10 +229,10 @@ Call the customize function with org as argument.
 ;;;;;;  org-diary org-agenda-list-stuck-projects org-tags-view org-todo-list
 ;;;;;;  org-search-view org-agenda-list org-batch-store-agenda-views
 ;;;;;;  org-store-agenda-views org-batch-agenda-csv org-batch-agenda
-;;;;;;  org-agenda) "org-agenda" "org-agenda.el" (20137 61780))
+;;;;;;  org-agenda) "org-agenda" "org-agenda.el" (20144 24758))
 ;;; Generated autoloads from org-agenda.el
 
-(autoload 'org-agenda "org-agenda" "\
+(autoload (quote org-agenda) "org-agenda" "\
 Dispatch agenda commands to collect entries to the agenda buffer.
 Prompts for a command to execute.  Any prefix arg will be passed
 on to the selected command.  The default selections are:
@@ -568,7 +268,7 @@ Pressing `<' twice means to restrict to the current subtree or region
 
 \(fn &optional ARG KEYS RESTRICTION)" t nil)
 
-(autoload 'org-batch-agenda "org-agenda" "\
+(autoload (quote org-batch-agenda) "org-agenda" "\
 Run an agenda command in batch mode and send the result to STDOUT.
 If CMD-KEY is a string of length 1, it is used as a key in
 `org-agenda-custom-commands' and triggers this command.  If it is a
@@ -578,7 +278,7 @@ before running the agenda command.
 
 \(fn CMD-KEY &rest PARAMETERS)" nil (quote macro))
 
-(autoload 'org-batch-agenda-csv "org-agenda" "\
+(autoload (quote org-batch-agenda-csv) "org-agenda" "\
 Run an agenda command in batch mode and send the result to STDOUT.
 If CMD-KEY is a string of length 1, it is used as a key in
 `org-agenda-custom-commands' and triggers this command.  If it is a
@@ -615,17 +315,17 @@ agenda-day   The day in the agenda where this is listed
 
 \(fn CMD-KEY &rest PARAMETERS)" nil (quote macro))
 
-(autoload 'org-store-agenda-views "org-agenda" "\
+(autoload (quote org-store-agenda-views) "org-agenda" "\
 Not documented
 
 \(fn &rest PARAMETERS)" t nil)
 
-(autoload 'org-batch-store-agenda-views "org-agenda" "\
+(autoload (quote org-batch-store-agenda-views) "org-agenda" "\
 Run all custom agenda commands that have a file argument.
 
 \(fn &rest PARAMETERS)" nil (quote macro))
 
-(autoload 'org-agenda-list "org-agenda" "\
+(autoload (quote org-agenda-list) "org-agenda" "\
 Produce a daily/weekly view from all files in variable `org-agenda-files'.
 The view will be for the current day or week, but from the overview buffer
 you will be able to go to other days/weeks.
@@ -639,7 +339,7 @@ given in `org-agenda-start-on-weekday'.
 
 \(fn &optional ARG START-DAY SPAN)" t nil)
 
-(autoload 'org-search-view "org-agenda" "\
+(autoload (quote org-search-view) "org-agenda" "\
 Show all entries that contain a phrase or words or regular expressions.
 
 With optional prefix argument TODO-ONLY, only consider entries that are
@@ -685,7 +385,7 @@ in `org-agenda-text-search-extra-files'.
 
 \(fn &optional TODO-ONLY STRING EDIT-AT)" t nil)
 
-(autoload 'org-todo-list "org-agenda" "\
+(autoload (quote org-todo-list) "org-agenda" "\
 Show all (not done) TODO entries from all agenda file in a single list.
 The prefix arg can be used to select a specific TODO keyword and limit
 the list to these.  When using \\[universal-argument], you will be prompted
@@ -694,13 +394,13 @@ for a keyword.  A numeric prefix directly selects the Nth keyword in
 
 \(fn ARG)" t nil)
 
-(autoload 'org-tags-view "org-agenda" "\
+(autoload (quote org-tags-view) "org-agenda" "\
 Show all headlines for all `org-agenda-files' matching a TAGS criterion.
 The prefix arg TODO-ONLY limits the search to TODO entries.
 
 \(fn &optional TODO-ONLY MATCH)" t nil)
 
-(autoload 'org-agenda-list-stuck-projects "org-agenda" "\
+(autoload (quote org-agenda-list-stuck-projects) "org-agenda" "\
 Create agenda view for projects that are stuck.
 Stuck projects are project that have no next actions.  For the definitions
 of what a project is and how to check if it stuck, customize the variable
@@ -708,7 +408,7 @@ of what a project is and how to check if it stuck, customize the variable
 
 \(fn &rest IGNORE)" t nil)
 
-(autoload 'org-diary "org-agenda" "\
+(autoload (quote org-diary) "org-agenda" "\
 Return diary information from org-files.
 This function can be used in a \"sexp\" diary entry in the Emacs calendar.
 It accesses org files and extracts information from those files to be
@@ -737,18 +437,18 @@ function from a program - use `org-agenda-get-day-entries' instead.
 
 \(fn &rest ARGS)" nil nil)
 
-(autoload 'org-agenda-check-for-timestamp-as-reason-to-ignore-todo-item "org-agenda" "\
+(autoload (quote org-agenda-check-for-timestamp-as-reason-to-ignore-todo-item) "org-agenda" "\
 Do we have a reason to ignore this TODO entry because it has a time stamp?
 
 \(fn &optional END)" nil nil)
 
-(autoload 'org-calendar-goto-agenda "org-agenda" "\
+(autoload (quote org-calendar-goto-agenda) "org-agenda" "\
 Compute the Org-mode agenda for the calendar date displayed at the cursor.
 This is a command that has to be installed in `calendar-mode-map'.
 
 \(fn)" t nil)
 
-(autoload 'org-agenda-to-appt "org-agenda" "\
+(autoload (quote org-agenda-to-appt) "org-agenda" "\
 Activate appointments found in `org-agenda-files'.
 With a \\[universal-argument] prefix, refresh the list of
 appointments.
@@ -781,58 +481,39 @@ details and examples.
 
 ;;;***
 
-;;;### (autoloads (org-archive-subtree-default-with-confirmation
-;;;;;;  org-archive-subtree-default) "org-archive" "org-archive.el"
-;;;;;;  (20137 61780))
-;;; Generated autoloads from org-archive.el
-
-(autoload 'org-archive-subtree-default "org-archive" "\
-Archive the current subtree with the default command.
-This command is set with the variable `org-archive-default-command'.
-
-\(fn)" t nil)
-
-(autoload 'org-archive-subtree-default-with-confirmation "org-archive" "\
-Archive the current subtree with the default command.
-This command is set with the variable `org-archive-default-command'.
-
-\(fn)" t nil)
-
-;;;***
-
 ;;;### (autoloads (org-export-as-ascii org-export-region-as-ascii
 ;;;;;;  org-replace-region-by-ascii org-export-as-ascii-to-buffer
 ;;;;;;  org-export-as-utf8-to-buffer org-export-as-utf8 org-export-as-latin1-to-buffer
-;;;;;;  org-export-as-latin1) "org-ascii" "org-ascii.el" (20137 61780))
+;;;;;;  org-export-as-latin1) "org-ascii" "org-ascii.el" (20144 24758))
 ;;; Generated autoloads from org-ascii.el
 
-(autoload 'org-export-as-latin1 "org-ascii" "\
+(autoload (quote org-export-as-latin1) "org-ascii" "\
 Like `org-export-as-ascii', use latin1 encoding for special symbols.
 
 \(fn &rest ARGS)" t nil)
 
-(autoload 'org-export-as-latin1-to-buffer "org-ascii" "\
+(autoload (quote org-export-as-latin1-to-buffer) "org-ascii" "\
 Like `org-export-as-ascii-to-buffer', use latin1 encoding for symbols.
 
 \(fn &rest ARGS)" t nil)
 
-(autoload 'org-export-as-utf8 "org-ascii" "\
+(autoload (quote org-export-as-utf8) "org-ascii" "\
 Like `org-export-as-ascii', use encoding for special symbols.
 
 \(fn &rest ARGS)" t nil)
 
-(autoload 'org-export-as-utf8-to-buffer "org-ascii" "\
+(autoload (quote org-export-as-utf8-to-buffer) "org-ascii" "\
 Like `org-export-as-ascii-to-buffer', use utf8 encoding for symbols.
 
 \(fn &rest ARGS)" t nil)
 
-(autoload 'org-export-as-ascii-to-buffer "org-ascii" "\
+(autoload (quote org-export-as-ascii-to-buffer) "org-ascii" "\
 Call `org-export-as-ascii` with output to a temporary buffer.
 No file is created.  The prefix ARG is passed through to `org-export-as-ascii'.
 
 \(fn ARG)" t nil)
 
-(autoload 'org-replace-region-by-ascii "org-ascii" "\
+(autoload (quote org-replace-region-by-ascii) "org-ascii" "\
 Assume the current region has org-mode syntax, and convert it to plain ASCII.
 This can be used in any buffer.  For example, you could write an
 itemized list in org-mode syntax in a Mail buffer and then use this
@@ -840,7 +521,7 @@ command to convert it.
 
 \(fn BEG END)" t nil)
 
-(autoload 'org-export-region-as-ascii "org-ascii" "\
+(autoload (quote org-export-region-as-ascii) "org-ascii" "\
 Convert region from BEG to END in org-mode buffer to plain ASCII.
 If prefix arg BODY-ONLY is set, omit file header, footer, and table of
 contents, and only produce the region of converted text, useful for
@@ -857,7 +538,7 @@ in a window.  A non-interactive call will only return the buffer.
 
 \(fn BEG END &optional BODY-ONLY BUFFER)" t nil)
 
-(autoload 'org-export-as-ascii "org-ascii" "\
+(autoload (quote org-export-as-ascii) "org-ascii" "\
 Export the outline as a pretty ASCII file.
 If there is an active region, export only the region.
 The prefix ARG specifies how many levels of the outline should become
@@ -876,11 +557,11 @@ publishing directory.
 
 ;;;***
 
-;;;### (autoloads (org-attach) "org-attach" "org-attach.el" (20137
-;;;;;;  61780))
+;;;### (autoloads (org-attach) "org-attach" "org-attach.el" (20144
+;;;;;;  24758))
 ;;; Generated autoloads from org-attach.el
 
-(autoload 'org-attach "org-attach" "\
+(autoload (quote org-attach) "org-attach" "\
 The dispatcher for attachment commands.
 Shows a list of commands and prompts for another key to execute a command.
 
@@ -888,11 +569,30 @@ Shows a list of commands and prompts for another key to execute a command.
 
 ;;;***
 
+;;;### (autoloads (org-archive-subtree-default-with-confirmation
+;;;;;;  org-archive-subtree-default) "org-archive" "org-archive.el"
+;;;;;;  (20144 24758))
+;;; Generated autoloads from org-archive.el
+
+(autoload (quote org-archive-subtree-default) "org-archive" "\
+Archive the current subtree with the default command.
+This command is set with the variable `org-archive-default-command'.
+
+\(fn)" t nil)
+
+(autoload (quote org-archive-subtree-default-with-confirmation) "org-archive" "\
+Archive the current subtree with the default command.
+This command is set with the variable `org-archive-default-command'.
+
+\(fn)" t nil)
+
+;;;***
+
 ;;;### (autoloads (org-bbdb-anniversaries) "org-bbdb" "org-bbdb.el"
-;;;;;;  (20137 61780))
+;;;;;;  (20144 24758))
 ;;; Generated autoloads from org-bbdb.el
 
-(autoload 'org-bbdb-anniversaries "org-bbdb" "\
+(autoload (quote org-bbdb-anniversaries) "org-bbdb" "\
 Extract anniversaries from BBDB for display in the agenda.
 
 \(fn)" nil nil)
@@ -900,10 +600,10 @@ Extract anniversaries from BBDB for display in the agenda.
 ;;;***
 
 ;;;### (autoloads (org-capture-import-remember-templates org-capture-insert-template-here
-;;;;;;  org-capture) "org-capture" "org-capture.el" (20137 61780))
+;;;;;;  org-capture) "org-capture" "org-capture.el" (20144 24758))
 ;;; Generated autoloads from org-capture.el
 
-(autoload 'org-capture "org-capture" "\
+(autoload (quote org-capture) "org-capture" "\
 Capture something.
 \\<org-capture-mode-map>
 This will let you select a template from `org-capture-templates', and then
@@ -925,12 +625,12 @@ bypassed.
 
 \(fn &optional GOTO KEYS)" t nil)
 
-(autoload 'org-capture-insert-template-here "org-capture" "\
+(autoload (quote org-capture-insert-template-here) "org-capture" "\
 Not documented
 
 \(fn)" nil nil)
 
-(autoload 'org-capture-import-remember-templates "org-capture" "\
+(autoload (quote org-capture-import-remember-templates) "org-capture" "\
 Set org-capture-templates to be similar to `org-remember-templates'.
 
 \(fn)" t nil)
@@ -938,17 +638,17 @@ Set org-capture-templates to be similar to `org-remember-templates'.
 ;;;***
 
 ;;;### (autoloads (org-clock-persistence-insinuate org-get-clocktable)
-;;;;;;  "org-clock" "org-clock.el" (20137 61780))
+;;;;;;  "org-clock" "org-clock.el" (20144 24758))
 ;;; Generated autoloads from org-clock.el
 
-(autoload 'org-get-clocktable "org-clock" "\
+(autoload (quote org-get-clocktable) "org-clock" "\
 Get a formatted clocktable with parameters according to PROPS.
 The table is created in a temporary buffer, fully formatted and
 fontified, and then returned.
 
 \(fn &rest PROPS)" nil nil)
 
-(autoload 'org-clock-persistence-insinuate "org-clock" "\
+(autoload (quote org-clock-persistence-insinuate) "org-clock" "\
 Set up hooks for clock persistence.
 
 \(fn)" nil nil)
@@ -956,10 +656,10 @@ Set up hooks for clock persistence.
 ;;;***
 
 ;;;### (autoloads (org-datetree-find-date-create) "org-datetree"
-;;;;;;  "org-datetree.el" (20137 61780))
+;;;;;;  "org-datetree.el" (20144 24758))
 ;;; Generated autoloads from org-datetree.el
 
-(autoload 'org-datetree-find-date-create "org-datetree" "\
+(autoload (quote org-datetree-find-date-create) "org-datetree" "\
 Find or create an entry for DATE.
 If KEEP-RESTRICTION is non-nil, do not widen the buffer.
 When it is nil, the buffer will be widened to make sure an existing date
@@ -969,90 +669,12 @@ tree can be found.
 
 ;;;***
 
-;;;### (autoloads (org-export-as-docbook org-export-as-docbook-pdf-and-open
-;;;;;;  org-export-as-docbook-pdf org-export-region-as-docbook org-replace-region-by-docbook
-;;;;;;  org-export-as-docbook-to-buffer org-export-as-docbook-batch)
-;;;;;;  "org-docbook" "org-docbook.el" (20137 61780))
-;;; Generated autoloads from org-docbook.el
-
-(autoload 'org-export-as-docbook-batch "org-docbook" "\
-Call `org-export-as-docbook' in batch style.
-This function can be used in batch processing.
-
-For example:
-
-$ emacs --batch
-        --load=$HOME/lib/emacs/org.el
-        --visit=MyOrgFile.org --funcall org-export-as-docbook-batch
-
-\(fn)" nil nil)
-
-(autoload 'org-export-as-docbook-to-buffer "org-docbook" "\
-Call `org-export-as-docbook' with output to a temporary buffer.
-No file is created.
-
-\(fn)" t nil)
-
-(autoload 'org-replace-region-by-docbook "org-docbook" "\
-Replace the region from BEG to END with its DocBook export.
-It assumes the region has `org-mode' syntax, and then convert it to
-DocBook.  This can be used in any buffer.  For example, you could
-write an itemized list in `org-mode' syntax in an DocBook buffer and
-then use this command to convert it.
-
-\(fn BEG END)" t nil)
-
-(autoload 'org-export-region-as-docbook "org-docbook" "\
-Convert region from BEG to END in `org-mode' buffer to DocBook.
-If prefix arg BODY-ONLY is set, omit file header and footer and
-only produce the region of converted text, useful for
-cut-and-paste operations.  If BUFFER is a buffer or a string,
-use/create that buffer as a target of the converted DocBook.  If
-BUFFER is the symbol `string', return the produced DocBook as a
-string and leave not buffer behind.  For example, a Lisp program
-could call this function in the following way:
-
-  (setq docbook (org-export-region-as-docbook beg end t 'string))
-
-When called interactively, the output buffer is selected, and shown
-in a window.  A non-interactive call will only return the buffer.
-
-\(fn BEG END &optional BODY-ONLY BUFFER)" t nil)
-
-(autoload 'org-export-as-docbook-pdf "org-docbook" "\
-Export as DocBook XML file, and generate PDF file.
-
-\(fn &optional HIDDEN EXT-PLIST TO-BUFFER BODY-ONLY PUB-DIR)" t nil)
-
-(autoload 'org-export-as-docbook-pdf-and-open "org-docbook" "\
-Export as DocBook XML file, generate PDF file, and open it.
-
-\(fn)" t nil)
-
-(autoload 'org-export-as-docbook "org-docbook" "\
-Export the current buffer as a DocBook file.
-If there is an active region, export only the region.  When
-HIDDEN is obsolete and does nothing.  EXT-PLIST is a
-property list with external parameters overriding org-mode's
-default settings, but still inferior to file-local settings.
-When TO-BUFFER is non-nil, create a buffer with that name and
-export to that buffer.  If TO-BUFFER is the symbol `string',
-don't leave any buffer behind but just return the resulting HTML
-as a string.  When BODY-ONLY is set, don't produce the file
-header and footer, simply return the content of the document (all
-top-level sections).  When PUB-DIR is set, use this as the
-publishing directory.
-
-\(fn &optional HIDDEN EXT-PLIST TO-BUFFER BODY-ONLY PUB-DIR)" t nil)
-
-;;;***
-
 ;;;### (autoloads (org-insert-export-options-template org-export-as-org
-;;;;;;  org-export-visible org-export) "org-exp" "org-exp.el" (20137
-;;;;;;  61780))
+;;;;;;  org-export-visible org-export) "org-exp" "org-exp.el" (20144
+;;;;;;  24758))
 ;;; Generated autoloads from org-exp.el
 
-(autoload 'org-export "org-exp" "\
+(autoload (quote org-export) "org-exp" "\
 Export dispatcher for Org-mode.
 When `org-export-run-in-background' is non-nil, try to run the command
 in the background.  This will be done only for commands that write
@@ -1068,7 +690,7 @@ Pressing `1' will switch between these two options.
 
 \(fn &optional ARG)" t nil)
 
-(autoload 'org-export-visible "org-exp" "\
+(autoload (quote org-export-visible) "org-exp" "\
 Create a copy of the visible part of the current buffer, and export it.
 The copy is created in a temporary buffer and removed after use.
 TYPE is the final key (as a string) that also selects the export command in
@@ -1080,7 +702,7 @@ command.
 
 \(fn TYPE ARG)" t nil)
 
-(autoload 'org-export-as-org "org-exp" "\
+(autoload (quote org-export-as-org) "org-exp" "\
 Make a copy with not-exporting stuff removed.
 The purpose of this function is to provide a way to export the source
 Org file of a webpage in Org format, but with sensitive and/or irrelevant
@@ -1102,35 +724,113 @@ directory.
 
 \(fn ARG &optional HIDDEN EXT-PLIST TO-BUFFER BODY-ONLY PUB-DIR)" t nil)
 
-(autoload 'org-insert-export-options-template "org-exp" "\
+(autoload (quote org-insert-export-options-template) "org-exp" "\
 Insert into the buffer a template with information for exporting.
 
 \(fn)" t nil)
 
 ;;;***
 
+;;;### (autoloads (org-export-as-docbook org-export-as-docbook-pdf-and-open
+;;;;;;  org-export-as-docbook-pdf org-export-region-as-docbook org-replace-region-by-docbook
+;;;;;;  org-export-as-docbook-to-buffer org-export-as-docbook-batch)
+;;;;;;  "org-docbook" "org-docbook.el" (20144 24758))
+;;; Generated autoloads from org-docbook.el
+
+(autoload (quote org-export-as-docbook-batch) "org-docbook" "\
+Call `org-export-as-docbook' in batch style.
+This function can be used in batch processing.
+
+For example:
+
+$ emacs --batch
+        --load=$HOME/lib/emacs/org.el
+        --visit=MyOrgFile.org --funcall org-export-as-docbook-batch
+
+\(fn)" nil nil)
+
+(autoload (quote org-export-as-docbook-to-buffer) "org-docbook" "\
+Call `org-export-as-docbook' with output to a temporary buffer.
+No file is created.
+
+\(fn)" t nil)
+
+(autoload (quote org-replace-region-by-docbook) "org-docbook" "\
+Replace the region from BEG to END with its DocBook export.
+It assumes the region has `org-mode' syntax, and then convert it to
+DocBook.  This can be used in any buffer.  For example, you could
+write an itemized list in `org-mode' syntax in an DocBook buffer and
+then use this command to convert it.
+
+\(fn BEG END)" t nil)
+
+(autoload (quote org-export-region-as-docbook) "org-docbook" "\
+Convert region from BEG to END in `org-mode' buffer to DocBook.
+If prefix arg BODY-ONLY is set, omit file header and footer and
+only produce the region of converted text, useful for
+cut-and-paste operations.  If BUFFER is a buffer or a string,
+use/create that buffer as a target of the converted DocBook.  If
+BUFFER is the symbol `string', return the produced DocBook as a
+string and leave not buffer behind.  For example, a Lisp program
+could call this function in the following way:
+
+  (setq docbook (org-export-region-as-docbook beg end t 'string))
+
+When called interactively, the output buffer is selected, and shown
+in a window.  A non-interactive call will only return the buffer.
+
+\(fn BEG END &optional BODY-ONLY BUFFER)" t nil)
+
+(autoload (quote org-export-as-docbook-pdf) "org-docbook" "\
+Export as DocBook XML file, and generate PDF file.
+
+\(fn &optional HIDDEN EXT-PLIST TO-BUFFER BODY-ONLY PUB-DIR)" t nil)
+
+(autoload (quote org-export-as-docbook-pdf-and-open) "org-docbook" "\
+Export as DocBook XML file, generate PDF file, and open it.
+
+\(fn)" t nil)
+
+(autoload (quote org-export-as-docbook) "org-docbook" "\
+Export the current buffer as a DocBook file.
+If there is an active region, export only the region.  When
+HIDDEN is obsolete and does nothing.  EXT-PLIST is a
+property list with external parameters overriding org-mode's
+default settings, but still inferior to file-local settings.
+When TO-BUFFER is non-nil, create a buffer with that name and
+export to that buffer.  If TO-BUFFER is the symbol `string',
+don't leave any buffer behind but just return the resulting HTML
+as a string.  When BODY-ONLY is set, don't produce the file
+header and footer, simply return the content of the document (all
+top-level sections).  When PUB-DIR is set, use this as the
+publishing directory.
+
+\(fn &optional HIDDEN EXT-PLIST TO-BUFFER BODY-ONLY PUB-DIR)" t nil)
+
+;;;***
+
 ;;;### (autoloads (org-feed-show-raw-feed org-feed-goto-inbox org-feed-update
-;;;;;;  org-feed-update-all) "org-feed" "org-feed.el" (20137 61780))
+;;;;;;  org-feed-update-all) "org-feed" "org-feed.el" (20144 24758))
 ;;; Generated autoloads from org-feed.el
 
-(autoload 'org-feed-update-all "org-feed" "\
+(autoload (quote org-feed-update-all) "org-feed" "\
 Get inbox items from all feeds in `org-feed-alist'.
 
 \(fn)" t nil)
 
-(autoload 'org-feed-update "org-feed" "\
+(autoload (quote org-feed-update) "org-feed" "\
 Get inbox items from FEED.
 FEED can be a string with an association in `org-feed-alist', or
 it can be a list structured like an entry in `org-feed-alist'.
 
 \(fn FEED &optional RETRIEVE-ONLY)" t nil)
 
-(autoload 'org-feed-goto-inbox "org-feed" "\
+(autoload (quote org-feed-goto-inbox) "org-feed" "\
 Go to the inbox that captures the feed named FEED.
 
 \(fn FEED)" t nil)
 
-(autoload 'org-feed-show-raw-feed "org-feed" "\
+(autoload (quote org-feed-show-raw-feed) "org-feed" "\
 Show the raw feed buffer of a feed.
 
 \(fn FEED)" t nil)
@@ -1138,10 +838,10 @@ Show the raw feed buffer of a feed.
 ;;;***
 
 ;;;### (autoloads (org-footnote-normalize org-footnote-action) "org-footnote"
-;;;;;;  "org-footnote.el" (20137 61780))
+;;;;;;  "org-footnote.el" (20144 24758))
 ;;; Generated autoloads from org-footnote.el
 
-(autoload 'org-footnote-action "org-footnote" "\
+(autoload (quote org-footnote-action) "org-footnote" "\
 Do the right thing for footnotes.
 
 When at a footnote reference, jump to the definition.
@@ -1156,7 +856,7 @@ With prefix arg SPECIAL, offer additional commands in a menu.
 
 \(fn &optional SPECIAL)" t nil)
 
-(autoload 'org-footnote-normalize "org-footnote" "\
+(autoload (quote org-footnote-normalize) "org-footnote" "\
 Collect the footnotes in various formats and normalize them.
 
 This finds the different sorts of footnotes allowed in Org, and
@@ -1189,10 +889,10 @@ Additional note on `org-footnote-insert-pos-for-preprocessor':
 ;;;### (autoloads (org-freemind-to-org-mode org-freemind-from-org-sparse-tree
 ;;;;;;  org-freemind-from-org-mode org-freemind-from-org-mode-node
 ;;;;;;  org-freemind-show org-export-as-freemind) "org-freemind"
-;;;;;;  "org-freemind.el" (20137 61780))
+;;;;;;  "org-freemind.el" (20144 24758))
 ;;; Generated autoloads from org-freemind.el
 
-(autoload 'org-export-as-freemind "org-freemind" "\
+(autoload (quote org-export-as-freemind) "org-freemind" "\
 Export the current buffer as a Freemind file.
 If there is an active region, export only the region.  HIDDEN is
 obsolete and does nothing.  EXT-PLIST is a property list with
@@ -1210,18 +910,18 @@ See `org-freemind-from-org-mode' for more information.
 
 \(fn &optional HIDDEN EXT-PLIST TO-BUFFER BODY-ONLY PUB-DIR)" t nil)
 
-(autoload 'org-freemind-show "org-freemind" "\
+(autoload (quote org-freemind-show) "org-freemind" "\
 Show file MM-FILE in Freemind.
 
 \(fn MM-FILE)" t nil)
 
-(autoload 'org-freemind-from-org-mode-node "org-freemind" "\
+(autoload (quote org-freemind-from-org-mode-node) "org-freemind" "\
 Convert node at line NODE-LINE to the FreeMind file MM-FILE.
 See `org-freemind-from-org-mode' for more information.
 
 \(fn NODE-LINE MM-FILE)" t nil)
 
-(autoload 'org-freemind-from-org-mode "org-freemind" "\
+(autoload (quote org-freemind-from-org-mode) "org-freemind" "\
 Convert the `org-mode' file ORG-FILE to the FreeMind file MM-FILE.
 All the nodes will be opened or closed in Freemind just as you
 have them in `org-mode'.
@@ -1235,12 +935,12 @@ can use a CSS stylesheet to style it).
 
 \(fn ORG-FILE MM-FILE)" t nil)
 
-(autoload 'org-freemind-from-org-sparse-tree "org-freemind" "\
+(autoload (quote org-freemind-from-org-sparse-tree) "org-freemind" "\
 Convert visible part of buffer ORG-BUFFER to FreeMind file MM-FILE.
 
 \(fn ORG-BUFFER MM-FILE)" t nil)
 
-(autoload 'org-freemind-to-org-mode "org-freemind" "\
+(autoload (quote org-freemind-to-org-mode) "org-freemind" "\
 Convert FreeMind file MM-FILE to `org-mode' file ORG-FILE.
 
 \(fn MM-FILE ORG-FILE)" t nil)
@@ -1250,16 +950,16 @@ Convert FreeMind file MM-FILE to `org-mode' file ORG-FILE.
 ;;;### (autoloads (org-export-htmlize-generate-css org-export-as-html
 ;;;;;;  org-export-region-as-html org-replace-region-by-html org-export-as-html-to-buffer
 ;;;;;;  org-export-as-html-batch org-export-as-html-and-open) "org-html"
-;;;;;;  "org-html.el" (20137 61780))
+;;;;;;  "org-html.el" (20144 24758))
 ;;; Generated autoloads from org-html.el
 
-(put 'org-export-html-style-include-default 'safe-local-variable 'booleanp)
+(put (quote org-export-html-style-include-default) (quote safe-local-variable) (quote booleanp))
 
-(put 'org-export-html-style 'safe-local-variable 'stringp)
+(put (quote org-export-html-style) (quote safe-local-variable) (quote stringp))
 
-(put 'org-export-html-style-extra 'safe-local-variable 'stringp)
+(put (quote org-export-html-style-extra) (quote safe-local-variable) (quote stringp))
 
-(autoload 'org-export-as-html-and-open "org-html" "\
+(autoload (quote org-export-as-html-and-open) "org-html" "\
 Export the outline as HTML and immediately open it with a browser.
 If there is an active region, export only the region.
 The prefix ARG specifies how many levels of the outline should become
@@ -1267,7 +967,7 @@ headlines.  The default is 3.  Lower levels will become bulleted lists.
 
 \(fn ARG)" t nil)
 
-(autoload 'org-export-as-html-batch "org-html" "\
+(autoload (quote org-export-as-html-batch) "org-html" "\
 Call the function `org-export-as-html'.
 This function can be used in batch processing as:
 emacs   --batch
@@ -1277,13 +977,13 @@ emacs   --batch
 
 \(fn)" nil nil)
 
-(autoload 'org-export-as-html-to-buffer "org-html" "\
+(autoload (quote org-export-as-html-to-buffer) "org-html" "\
 Call `org-export-as-html` with output to a temporary buffer.
 No file is created.  The prefix ARG is passed through to `org-export-as-html'.
 
 \(fn ARG)" t nil)
 
-(autoload 'org-replace-region-by-html "org-html" "\
+(autoload (quote org-replace-region-by-html) "org-html" "\
 Assume the current region has org-mode syntax, and convert it to HTML.
 This can be used in any buffer.  For example, you could write an
 itemized list in org-mode syntax in an HTML buffer and then use this
@@ -1291,7 +991,7 @@ command to convert it.
 
 \(fn BEG END)" t nil)
 
-(autoload 'org-export-region-as-html "org-html" "\
+(autoload (quote org-export-region-as-html) "org-html" "\
 Convert region from BEG to END in org-mode buffer to HTML.
 If prefix arg BODY-ONLY is set, omit file header, footer, and table of
 contents, and only produce the region of converted text, useful for
@@ -1308,7 +1008,7 @@ in a window.  A non-interactive call will only return the buffer.
 
 \(fn BEG END &optional BODY-ONLY BUFFER)" t nil)
 
-(autoload 'org-export-as-html "org-html" "\
+(autoload (quote org-export-as-html) "org-html" "\
 Export the outline as a pretty HTML file.
 If there is an active region, export only the region.  The prefix
 ARG specifies how many levels of the outline should become
@@ -1326,7 +1026,7 @@ PUB-DIR is set, use this as the publishing directory.
 
 \(fn ARG &optional HIDDEN EXT-PLIST TO-BUFFER BODY-ONLY PUB-DIR)" t nil)
 
-(autoload 'org-export-htmlize-generate-css "org-html" "\
+(autoload (quote org-export-htmlize-generate-css) "org-html" "\
 Create the CSS for all font definitions in the current Emacs session.
 Use this to create face definitions in your CSS style file that can then
 be used by code snippets transformed by htmlize.
@@ -1344,24 +1044,24 @@ that uses these same face definitions.
 
 ;;;### (autoloads (org-export-icalendar-combine-agenda-files org-export-icalendar-all-agenda-files
 ;;;;;;  org-export-icalendar-this-file) "org-icalendar" "org-icalendar.el"
-;;;;;;  (20137 61780))
+;;;;;;  (20144 24758))
 ;;; Generated autoloads from org-icalendar.el
 
-(autoload 'org-export-icalendar-this-file "org-icalendar" "\
+(autoload (quote org-export-icalendar-this-file) "org-icalendar" "\
 Export current file as an iCalendar file.
 The iCalendar file will be located in the same directory as the Org-mode
 file, but with extension `.ics'.
 
 \(fn)" t nil)
 
-(autoload 'org-export-icalendar-all-agenda-files "org-icalendar" "\
+(autoload (quote org-export-icalendar-all-agenda-files) "org-icalendar" "\
 Export all files in the variable `org-agenda-files' to iCalendar .ics files.
 Each iCalendar file will be located in the same directory as the Org-mode
 file, but with extension `.ics'.
 
 \(fn)" t nil)
 
-(autoload 'org-export-icalendar-combine-agenda-files "org-icalendar" "\
+(autoload (quote org-export-icalendar-combine-agenda-files) "org-icalendar" "\
 Export all files in `org-agenda-files' to a single combined iCalendar file.
 The file is stored under the name `org-combined-agenda-icalendar-file'.
 
@@ -1372,23 +1072,23 @@ The file is stored under the name `org-combined-agenda-icalendar-file'.
 ;;;### (autoloads (org-id-store-link org-id-find-id-file org-id-find
 ;;;;;;  org-id-goto org-id-get-with-outline-drilling org-id-get-with-outline-path-completion
 ;;;;;;  org-id-get org-id-copy org-id-get-create) "org-id" "org-id.el"
-;;;;;;  (20137 61780))
+;;;;;;  (20144 24758))
 ;;; Generated autoloads from org-id.el
 
-(autoload 'org-id-get-create "org-id" "\
+(autoload (quote org-id-get-create) "org-id" "\
 Create an ID for the current entry and return it.
 If the entry already has an ID, just return it.
 With optional argument FORCE, force the creation of a new ID.
 
 \(fn &optional FORCE)" t nil)
 
-(autoload 'org-id-copy "org-id" "\
+(autoload (quote org-id-copy) "org-id" "\
 Copy the ID of the entry at point to the kill ring.
 Create an ID if necessary.
 
 \(fn)" t nil)
 
-(autoload 'org-id-get "org-id" "\
+(autoload (quote org-id-get) "org-id" "\
 Get the ID property of the entry at point-or-marker POM.
 If POM is nil, refer to the entry at point.
 If the entry does not have an ID, the function returns nil.
@@ -1398,7 +1098,7 @@ In any case, the ID of the entry is returned.
 
 \(fn &optional POM CREATE PREFIX)" nil nil)
 
-(autoload 'org-id-get-with-outline-path-completion "org-id" "\
+(autoload (quote org-id-get-with-outline-path-completion) "org-id" "\
 Use outline-path-completion to retrieve the ID of an entry.
 TARGETS may be a setting for `org-refile-targets' to define the eligible
 headlines.  When omitted, all headlines in all agenda files are
@@ -1407,20 +1107,20 @@ It returns the ID of the entry.  If necessary, the ID is created.
 
 \(fn &optional TARGETS)" nil nil)
 
-(autoload 'org-id-get-with-outline-drilling "org-id" "\
+(autoload (quote org-id-get-with-outline-drilling) "org-id" "\
 Use an outline-cycling interface to retrieve the ID of an entry.
 This only finds entries in the current buffer, using `org-get-location'.
 It returns the ID of the entry.  If necessary, the ID is created.
 
 \(fn &optional TARGETS)" nil nil)
 
-(autoload 'org-id-goto "org-id" "\
+(autoload (quote org-id-goto) "org-id" "\
 Switch to the buffer containing the entry with id ID.
 Move the cursor to that entry in that buffer.
 
 \(fn ID)" t nil)
 
-(autoload 'org-id-find "org-id" "\
+(autoload (quote org-id-find) "org-id" "\
 Return the location of the entry with the id ID.
 The return value is a cons cell (file-name . position), or nil
 if there is no entry with that ID.
@@ -1428,12 +1128,12 @@ With optional argument MARKERP, return the position as a new marker.
 
 \(fn ID &optional MARKERP)" nil nil)
 
-(autoload 'org-id-find-id-file "org-id" "\
+(autoload (quote org-id-find-id-file) "org-id" "\
 Query the id database for the file in which this ID is located.
 
 \(fn ID)" nil nil)
 
-(autoload 'org-id-store-link "org-id" "\
+(autoload (quote org-id-store-link) "org-id" "\
 Store a link to the current entry, using its ID.
 
 \(fn)" t nil)
@@ -1441,10 +1141,10 @@ Store a link to the current entry, using its ID.
 ;;;***
 
 ;;;### (autoloads (org-indent-mode) "org-indent" "org-indent.el"
-;;;;;;  (20137 61780))
+;;;;;;  (20144 24758))
 ;;; Generated autoloads from org-indent.el
 
-(autoload 'org-indent-mode "org-indent" "\
+(autoload (quote org-indent-mode) "org-indent" "\
 When active, indent text according to outline structure.
 
 Internally this works by adding `line-prefix' and `wrap-prefix'
@@ -1458,11 +1158,11 @@ during idle time.
 
 ;;;***
 
-;;;### (autoloads (org-irc-store-link) "org-irc" "org-irc.el" (20137
-;;;;;;  61780))
+;;;### (autoloads (org-irc-store-link) "org-irc" "org-irc.el" (20144
+;;;;;;  24758))
 ;;; Generated autoloads from org-irc.el
 
-(autoload 'org-irc-store-link "org-irc" "\
+(autoload (quote org-irc-store-link) "org-irc" "\
 Dispatch to the appropriate function to store a link to an IRC session.
 
 \(fn)" nil nil)
@@ -1471,11 +1171,11 @@ Dispatch to the appropriate function to store a link to an IRC session.
 
 ;;;### (autoloads (org-export-as-pdf-and-open org-export-as-pdf org-export-as-latex
 ;;;;;;  org-export-region-as-latex org-replace-region-by-latex org-export-as-latex-to-buffer
-;;;;;;  org-export-as-latex-batch) "org-latex" "org-latex.el" (20137
-;;;;;;  61780))
+;;;;;;  org-export-as-latex-batch) "org-latex" "org-latex.el" (20144
+;;;;;;  24758))
 ;;; Generated autoloads from org-latex.el
 
-(autoload 'org-export-as-latex-batch "org-latex" "\
+(autoload (quote org-export-as-latex-batch) "org-latex" "\
 Call `org-export-as-latex', may be used in batch processing.
 For example:
 
@@ -1486,13 +1186,13 @@ emacs   --batch
 
 \(fn)" nil nil)
 
-(autoload 'org-export-as-latex-to-buffer "org-latex" "\
+(autoload (quote org-export-as-latex-to-buffer) "org-latex" "\
 Call `org-export-as-latex` with output to a temporary buffer.
 No file is created.  The prefix ARG is passed through to `org-export-as-latex'.
 
 \(fn ARG)" t nil)
 
-(autoload 'org-replace-region-by-latex "org-latex" "\
+(autoload (quote org-replace-region-by-latex) "org-latex" "\
 Replace the region from BEG to END with its LaTeX export.
 It assumes the region has `org-mode' syntax, and then convert it to
 LaTeX.  This can be used in any buffer.  For example, you could
@@ -1501,7 +1201,7 @@ then use this command to convert it.
 
 \(fn BEG END)" t nil)
 
-(autoload 'org-export-region-as-latex "org-latex" "\
+(autoload (quote org-export-region-as-latex) "org-latex" "\
 Convert region from BEG to END in `org-mode' buffer to LaTeX.
 If prefix arg BODY-ONLY is set, omit file header, footer, and table of
 contents, and only produce the region of converted text, useful for
@@ -1518,7 +1218,7 @@ in a window.  A non-interactive call will only return the buffer.
 
 \(fn BEG END &optional BODY-ONLY BUFFER)" t nil)
 
-(autoload 'org-export-as-latex "org-latex" "\
+(autoload (quote org-export-as-latex) "org-latex" "\
 Export current buffer to a LaTeX file.
 If there is an active region, export only the region.  The prefix
 ARG specifies how many levels of the outline should become
@@ -1539,12 +1239,12 @@ when PUB-DIR is set, use this as the publishing directory.
 
 \(fn ARG &optional HIDDEN EXT-PLIST TO-BUFFER BODY-ONLY PUB-DIR)" t nil)
 
-(autoload 'org-export-as-pdf "org-latex" "\
+(autoload (quote org-export-as-pdf) "org-latex" "\
 Export as LaTeX, then process through to PDF.
 
 \(fn ARG &optional HIDDEN EXT-PLIST TO-BUFFER BODY-ONLY PUB-DIR)" t nil)
 
-(autoload 'org-export-as-pdf-and-open "org-latex" "\
+(autoload (quote org-export-as-pdf-and-open) "org-latex" "\
 Export as LaTeX, then process through to PDF, and open.
 
 \(fn ARG)" t nil)
@@ -1552,69 +1252,56 @@ Export as LaTeX, then process through to PDF, and open.
 ;;;***
 
 ;;;### (autoloads (org-mobile-create-sumo-agenda org-mobile-pull
-;;;;;;  org-mobile-push) "org-mobile" "org-mobile.el" (20137 61780))
+;;;;;;  org-mobile-push) "org-mobile" "org-mobile.el" (20144 24758))
 ;;; Generated autoloads from org-mobile.el
 
-(autoload 'org-mobile-push "org-mobile" "\
+(autoload (quote org-mobile-push) "org-mobile" "\
 Push the current state of Org affairs to the WebDAV directory.
 This will create the index file, copy all agenda files there, and also
 create all custom agenda views, for upload to the mobile phone.
 
 \(fn)" t nil)
 
-(autoload 'org-mobile-pull "org-mobile" "\
+(autoload (quote org-mobile-pull) "org-mobile" "\
 Pull the contents of `org-mobile-capture-file' and integrate them.
 Apply all flagged actions, flag entries to be flagged and then call an
 agenda view showing the flagged items.
 
 \(fn)" t nil)
 
-(autoload 'org-mobile-create-sumo-agenda "org-mobile" "\
+(autoload (quote org-mobile-create-sumo-agenda) "org-mobile" "\
 Create a file that contains all custom agenda views.
 
 \(fn)" t nil)
 
 ;;;***
 
-;;;### (autoloads (org-plot/gnuplot) "org-plot" "org-plot.el" (20137
-;;;;;;  61780))
-;;; Generated autoloads from org-plot.el
-
-(autoload 'org-plot/gnuplot "org-plot" "\
-Plot table using gnuplot.  Gnuplot options can be specified with PARAMS.
-If not given options will be taken from the +PLOT
-line directly before or after the table.
-
-\(fn &optional PARAMS)" t nil)
-
-;;;***
-
 ;;;### (autoloads (org-publish-current-project org-publish-current-file
 ;;;;;;  org-publish-all org-publish) "org-publish" "org-publish.el"
-;;;;;;  (20137 61780))
+;;;;;;  (20144 24758))
 ;;; Generated autoloads from org-publish.el
 
-(defalias 'org-publish-project 'org-publish)
+(defalias (quote org-publish-project) (quote org-publish))
 
-(autoload 'org-publish "org-publish" "\
+(autoload (quote org-publish) "org-publish" "\
 Publish PROJECT.
 
 \(fn PROJECT &optional FORCE)" t nil)
 
-(autoload 'org-publish-all "org-publish" "\
+(autoload (quote org-publish-all) "org-publish" "\
 Publish all projects.
 With prefix argument, remove all files in the timestamp
 directory and force publishing all files.
 
 \(fn &optional FORCE)" t nil)
 
-(autoload 'org-publish-current-file "org-publish" "\
+(autoload (quote org-publish-current-file) "org-publish" "\
 Publish the current file.
 With prefix argument, force publish the file.
 
 \(fn &optional FORCE)" t nil)
 
-(autoload 'org-publish-current-project "org-publish" "\
+(autoload (quote org-publish-current-project) "org-publish" "\
 Publish the project associated with the current file.
 With a prefix argument, force publishing of all files in
 the project.
@@ -1623,17 +1310,30 @@ the project.
 
 ;;;***
 
+;;;### (autoloads (org-plot/gnuplot) "org-plot" "org-plot.el" (20144
+;;;;;;  24758))
+;;; Generated autoloads from org-plot.el
+
+(autoload (quote org-plot/gnuplot) "org-plot" "\
+Plot table using gnuplot.  Gnuplot options can be specified with PARAMS.
+If not given options will be taken from the +PLOT
+line directly before or after the table.
+
+\(fn &optional PARAMS)" t nil)
+
+;;;***
+
 ;;;### (autoloads (org-remember-handler org-remember org-remember-apply-template
 ;;;;;;  org-remember-annotation org-remember-insinuate) "org-remember"
-;;;;;;  "org-remember.el" (20137 61780))
+;;;;;;  "org-remember.el" (20144 24758))
 ;;; Generated autoloads from org-remember.el
 
-(autoload 'org-remember-insinuate "org-remember" "\
+(autoload (quote org-remember-insinuate) "org-remember" "\
 Setup remember.el for use with Org-mode.
 
 \(fn)" nil nil)
 
-(autoload 'org-remember-annotation "org-remember" "\
+(autoload (quote org-remember-annotation) "org-remember" "\
 Return a link to the current location as an annotation for remember.el.
 If you are using Org-mode files as target for data storage with
 remember.el, then the annotations should include a link compatible with the
@@ -1641,14 +1341,14 @@ conventions in Org-mode.  This function returns such a link.
 
 \(fn)" nil nil)
 
-(autoload 'org-remember-apply-template "org-remember" "\
+(autoload (quote org-remember-apply-template) "org-remember" "\
 Initialize *remember* buffer with template, invoke `org-mode'.
 This function should be placed into `remember-mode-hook' and in fact requires
 to be run from that hook to function properly.
 
 \(fn &optional USE-CHAR SKIP-INTERACTIVE)" nil nil)
 
-(autoload 'org-remember "org-remember" "\
+(autoload (quote org-remember) "org-remember" "\
 Call `remember'.  If this is already a remember buffer, re-apply template.
 If there is an active region, make sure remember uses it as initial content
 of the remember buffer.
@@ -1663,7 +1363,7 @@ associated with a template in `org-remember-templates'.
 
 \(fn &optional GOTO ORG-FORCE-REMEMBER-TEMPLATE-CHAR)" t nil)
 
-(autoload 'org-remember-handler "org-remember" "\
+(autoload (quote org-remember-handler) "org-remember" "\
 Store stuff from remember.el into an org file.
 When the template has specified a file and a headline, the entry is filed
 there, or in the location defined by `org-default-notes-file' and
@@ -1701,20 +1401,20 @@ See also the variable `org-reverse-note-order'.
 ;;;***
 
 ;;;### (autoloads (org-table-to-lisp orgtbl-mode turn-on-orgtbl)
-;;;;;;  "org-table" "org-table.el" (20137 61780))
+;;;;;;  "org-table" "org-table.el" (20144 24758))
 ;;; Generated autoloads from org-table.el
 
-(autoload 'turn-on-orgtbl "org-table" "\
+(autoload (quote turn-on-orgtbl) "org-table" "\
 Unconditionally turn on `orgtbl-mode'.
 
 \(fn)" nil nil)
 
-(autoload 'orgtbl-mode "org-table" "\
+(autoload (quote orgtbl-mode) "org-table" "\
 The `org-mode' table editor as a minor mode for use in other modes.
 
 \(fn &optional ARG)" t nil)
 
-(autoload 'org-table-to-lisp "org-table" "\
+(autoload (quote org-table-to-lisp) "org-table" "\
 Convert the table at point to a Lisp structure.
 The structure will be a list.  Each item is either the symbol `hline'
 for a horizontal separator line, or a list of field values as strings.
@@ -1725,10 +1425,10 @@ The table is taken from the parameter TXT, or from the buffer at point.
 ;;;***
 
 ;;;### (autoloads (org-export-as-taskjuggler-and-open org-export-as-taskjuggler)
-;;;;;;  "org-taskjuggler" "org-taskjuggler.el" (20137 61780))
+;;;;;;  "org-taskjuggler" "org-taskjuggler.el" (20144 24758))
 ;;; Generated autoloads from org-taskjuggler.el
 
-(autoload 'org-export-as-taskjuggler "org-taskjuggler" "\
+(autoload (quote org-export-as-taskjuggler) "org-taskjuggler" "\
 Export parts of the current buffer as a TaskJuggler file.
 The exporter looks for a tree with tag, property or todo that
 matches `org-export-taskjuggler-project-tag' and takes this as
@@ -1743,7 +1443,7 @@ defined in `org-export-taskjuggler-default-reports'.
 
 \(fn)" t nil)
 
-(autoload 'org-export-as-taskjuggler-and-open "org-taskjuggler" "\
+(autoload (quote org-export-as-taskjuggler-and-open) "org-taskjuggler" "\
 Export the current buffer as a TaskJuggler file and open it
 with the TaskJuggler GUI.
 
@@ -1752,11 +1452,11 @@ with the TaskJuggler GUI.
 ;;;***
 
 ;;;### (autoloads (org-timer-set-timer org-timer-item org-timer-change-times-in-region
-;;;;;;  org-timer org-timer-start) "org-timer" "org-timer.el" (20137
-;;;;;;  61780))
+;;;;;;  org-timer org-timer-start) "org-timer" "org-timer.el" (20144
+;;;;;;  24758))
 ;;; Generated autoloads from org-timer.el
 
-(autoload 'org-timer-start "org-timer" "\
+(autoload (quote org-timer-start) "org-timer" "\
 Set the starting time for the relative timer to now.
 When called with prefix argument OFFSET, prompt the user for an offset time,
 with the default taken from a timer stamp at point, if any.
@@ -1769,7 +1469,7 @@ the region 0:00:00.
 
 \(fn &optional OFFSET)" t nil)
 
-(autoload 'org-timer "org-timer" "\
+(autoload (quote org-timer) "org-timer" "\
 Insert a H:MM:SS string from the timer into the buffer.
 The first time this command is used, the timer is started.  When used with
 a \\[universal-argument] prefix, force restarting the timer.
@@ -1782,17 +1482,17 @@ it in the buffer.
 
 \(fn &optional RESTART NO-INSERT-P)" t nil)
 
-(autoload 'org-timer-change-times-in-region "org-timer" "\
+(autoload (quote org-timer-change-times-in-region) "org-timer" "\
 Change all h:mm:ss time in region by a DELTA.
 
 \(fn BEG END DELTA)" t nil)
 
-(autoload 'org-timer-item "org-timer" "\
+(autoload (quote org-timer-item) "org-timer" "\
 Insert a description-type item with the current timer value.
 
 \(fn &optional ARG)" t nil)
 
-(autoload 'org-timer-set-timer "org-timer" "\
+(autoload (quote org-timer-set-timer) "org-timer" "\
 Prompt for a duration and set a timer.
 
 If `org-timer-default-timer' is not zero, suggest this value as
@@ -1813,11 +1513,11 @@ replace any running timer.
 
 ;;;***
 
-;;;### (autoloads (org-export-as-xoxo) "org-xoxo" "org-xoxo.el" (20137
-;;;;;;  61780))
+;;;### (autoloads (org-export-as-xoxo) "org-xoxo" "org-xoxo.el" (20144
+;;;;;;  24758))
 ;;; Generated autoloads from org-xoxo.el
 
-(autoload 'org-export-as-xoxo "org-xoxo" "\
+(autoload (quote org-export-as-xoxo) "org-xoxo" "\
 Export the org buffer as XOXO.
 The XOXO buffer is named *xoxo-<source buffer name>*
 
@@ -1825,32 +1525,296 @@ The XOXO buffer is named *xoxo-<source buffer name>*
 
 ;;;***
 
-;;;### (autoloads nil nil ("ob-C.el" "ob-R.el" "ob-asymptote.el"
-;;;;;;  "ob-awk.el" "ob-calc.el" "ob-clojure.el" "ob-comint.el" "ob-css.el"
-;;;;;;  "ob-ditaa.el" "ob-dot.el" "ob-emacs-lisp.el" "ob-eval.el"
-;;;;;;  "ob-exp.el" "ob-gnuplot.el" "ob-haskell.el" "ob-java.el"
-;;;;;;  "ob-js.el" "ob-latex.el" "ob-ledger.el" "ob-lilypond.el"
-;;;;;;  "ob-lisp.el" "ob-matlab.el" "ob-mscgen.el" "ob-ocaml.el"
-;;;;;;  "ob-octave.el" "ob-org.el" "ob-perl.el" "ob-plantuml.el"
-;;;;;;  "ob-python.el" "ob-ref.el" "ob-ruby.el" "ob-sass.el" "ob-scheme.el"
-;;;;;;  "ob-screen.el" "ob-sh.el" "ob-shen.el" "ob-sql.el" "ob-sqlite.el"
-;;;;;;  "ob-table.el" "org-beamer.el" "org-bibtex.el" "org-colview-xemacs.el"
-;;;;;;  "org-colview.el" "org-compat.el" "org-crypt.el" "org-ctags.el"
-;;;;;;  "org-docview.el" "org-entities.el" "org-exp-blocks.el" "org-faces.el"
-;;;;;;  "org-gnus.el" "org-habit.el" "org-info.el" "org-inlinetask.el"
-;;;;;;  "org-jsinfo.el" "org-list.el" "org-mac-message.el" "org-macs.el"
-;;;;;;  "org-mew.el" "org-mhe.el" "org-mks.el" "org-mouse.el" "org-pcomplete.el"
-;;;;;;  "org-pkg.el" "org-protocol.el" "org-rmail.el" "org-special-blocks.el"
-;;;;;;  "org-src.el" "org-vm.el" "org-w3m.el" "org-wl.el") (20137
-;;;;;;  61780 371001))
+;;;### (autoloads (org-babel-mark-block org-babel-previous-src-block
+;;;;;;  org-babel-next-src-block org-babel-goto-named-result org-babel-goto-named-src-block
+;;;;;;  org-babel-goto-src-block-head org-babel-hide-result-toggle-maybe
+;;;;;;  org-babel-sha1-hash org-babel-execute-subtree org-babel-execute-buffer
+;;;;;;  org-babel-map-inline-src-blocks org-babel-map-src-blocks
+;;;;;;  org-babel-open-src-block-result org-babel-switch-to-session-with-code
+;;;;;;  org-babel-switch-to-session org-babel-initiate-session org-babel-load-in-session
+;;;;;;  org-babel-insert-header-arg org-babel-check-src-block org-babel-expand-src-block
+;;;;;;  org-babel-execute-src-block org-babel-pop-to-session-maybe
+;;;;;;  org-babel-load-in-session-maybe org-babel-expand-src-block-maybe
+;;;;;;  org-babel-view-src-block-info org-babel-execute-maybe org-babel-execute-safely-maybe)
+;;;;;;  "ob" "ob.el" (20144 24758))
+;;; Generated autoloads from ob.el
+
+(autoload (quote org-babel-execute-safely-maybe) "ob" "\
+Not documented
+
+\(fn)" nil nil)
+
+(autoload (quote org-babel-execute-maybe) "ob" "\
+Not documented
+
+\(fn)" t nil)
+
+(autoload (quote org-babel-view-src-block-info) "ob" "\
+Display information on the current source block.
+This includes header arguments, language and name, and is largely
+a window into the `org-babel-get-src-block-info' function.
+
+\(fn)" t nil)
+
+(autoload (quote org-babel-expand-src-block-maybe) "ob" "\
+Conditionally expand a source block.
+Detect if this is context for a org-babel src-block and if so
+then run `org-babel-expand-src-block'.
+
+\(fn)" t nil)
+
+(autoload (quote org-babel-load-in-session-maybe) "ob" "\
+Conditionally load a source block in a session.
+Detect if this is context for a org-babel src-block and if so
+then run `org-babel-load-in-session'.
+
+\(fn)" t nil)
+
+(autoload (quote org-babel-pop-to-session-maybe) "ob" "\
+Conditionally pop to a session.
+Detect if this is context for a org-babel src-block and if so
+then run `org-babel-pop-to-session'.
+
+\(fn)" t nil)
+
+(autoload (quote org-babel-execute-src-block) "ob" "\
+Execute the current source code block.
+Insert the results of execution into the buffer.  Source code
+execution and the collection and formatting of results can be
+controlled through a variety of header arguments.
+
+With prefix argument ARG, force re-execution even if a an
+existing result cached in the buffer would otherwise have been
+returned.
+
+Optionally supply a value for INFO in the form returned by
+`org-babel-get-src-block-info'.
+
+Optionally supply a value for PARAMS which will be merged with
+the header arguments specified at the front of the source code
+block.
+
+\(fn &optional ARG INFO PARAMS)" t nil)
+
+(autoload (quote org-babel-expand-src-block) "ob" "\
+Expand the current source code block.
+Expand according to the source code block's header
+arguments and pop open the results in a preview buffer.
+
+\(fn &optional ARG INFO PARAMS)" t nil)
+
+(autoload (quote org-babel-check-src-block) "ob" "\
+Check for misspelled header arguments in the current code block.
+
+\(fn)" t nil)
+
+(autoload (quote org-babel-insert-header-arg) "ob" "\
+Insert a header argument selecting from lists of common args and values.
+
+\(fn)" t nil)
+
+(autoload (quote org-babel-load-in-session) "ob" "\
+Load the body of the current source-code block.
+Evaluate the header arguments for the source block before
+entering the session.  After loading the body this pops open the
+session.
+
+\(fn &optional ARG INFO)" t nil)
+
+(autoload (quote org-babel-initiate-session) "ob" "\
+Initiate session for current code block.
+If called with a prefix argument then resolve any variable
+references in the header arguments and assign these variables in
+the session. Copy the body of the code block to the kill ring.
+
+\(fn &optional ARG INFO)" t nil)
+
+(autoload (quote org-babel-switch-to-session) "ob" "\
+Switch to the session of the current code block.
+Uses `org-babel-initiate-session' to start the session. If called
+with a prefix argument then this is passed on to
+`org-babel-initiate-session'.
+
+\(fn &optional ARG INFO)" t nil)
+
+(autoload (quote org-babel-switch-to-session-with-code) "ob" "\
+Switch to code buffer and display session.
+
+\(fn &optional ARG INFO)" t nil)
+
+(autoload (quote org-babel-open-src-block-result) "ob" "\
+If `point' is on a src block then open the results of the
+source code block, otherwise return nil.  With optional prefix
+argument RE-RUN the source-code block is evaluated even if
+results already exist.
+
+\(fn &optional RE-RUN)" t nil)
+
+(autoload (quote org-babel-map-src-blocks) "ob" "\
+Evaluate BODY forms on each source-block in FILE.
+If FILE is nil evaluate BODY forms on source blocks in current
+buffer.  During evaluation of BODY the following local variables
+are set relative to the currently matched code block.
+
+full-block ------- string holding the entirety of the code block
+beg-block -------- point at the beginning of the code block
+end-block -------- point at the end of the matched code block
+lang ------------- string holding the language of the code block
+beg-lang --------- point at the beginning of the lang
+end-lang --------- point at the end of the lang
+switches --------- string holding the switches
+beg-switches ----- point at the beginning of the switches
+end-switches ----- point at the end of the switches
+header-args ------ string holding the header-args
+beg-header-args -- point at the beginning of the header-args
+end-header-args -- point at the end of the header-args
+body ------------- string holding the body of the code block
+beg-body --------- point at the beginning of the body
+end-body --------- point at the end of the body
+
+\(fn FILE &rest BODY)" nil (quote macro))
+
+(autoload (quote org-babel-map-inline-src-blocks) "ob" "\
+Evaluate BODY forms on each inline source-block in FILE.
+If FILE is nil evaluate BODY forms on source blocks in current
+buffer.
+
+\(fn FILE &rest BODY)" nil (quote macro))
+
+(autoload (quote org-babel-execute-buffer) "ob" "\
+Execute source code blocks in a buffer.
+Call `org-babel-execute-src-block' on every source block in
+the current buffer.
+
+\(fn &optional ARG)" t nil)
+
+(autoload (quote org-babel-execute-subtree) "ob" "\
+Execute source code blocks in a subtree.
+Call `org-babel-execute-src-block' on every source block in
+the current subtree.
+
+\(fn &optional ARG)" t nil)
+
+(autoload (quote org-babel-sha1-hash) "ob" "\
+Generate an sha1 hash based on the value of info.
+
+\(fn &optional INFO)" t nil)
+
+(autoload (quote org-babel-hide-result-toggle-maybe) "ob" "\
+Toggle visibility of result at point.
+
+\(fn)" t nil)
+
+(autoload (quote org-babel-goto-src-block-head) "ob" "\
+Go to the beginning of the current code block.
+
+\(fn)" t nil)
+
+(autoload (quote org-babel-goto-named-src-block) "ob" "\
+Go to a named source-code block.
+
+\(fn NAME)" t nil)
+
+(autoload (quote org-babel-goto-named-result) "ob" "\
+Go to a named result.
+
+\(fn NAME)" t nil)
+
+(autoload (quote org-babel-next-src-block) "ob" "\
+Jump to the next source block.
+With optional prefix argument ARG, jump forward ARG many source blocks.
+
+\(fn &optional ARG)" t nil)
+
+(autoload (quote org-babel-previous-src-block) "ob" "\
+Jump to the previous source block.
+With optional prefix argument ARG, jump backward ARG many source blocks.
+
+\(fn &optional ARG)" t nil)
+
+(autoload (quote org-babel-mark-block) "ob" "\
+Mark current src block
+
+\(fn)" t nil)
 
 ;;;***
 
-(provide 'org-autoloads)
-;; Local Variables:
-;; version-control: never
-;; no-byte-compile: t
-;; no-update-autoloads: t
-;; coding: utf-8
-;; End:
-;;; org-autoloads.el ends here
+;;;### (autoloads (org-babel-lob-get-info org-babel-lob-execute-maybe
+;;;;;;  org-babel-lob-ingest) "ob-lob" "ob-lob.el" (20144 24758))
+;;; Generated autoloads from ob-lob.el
+
+(autoload (quote org-babel-lob-ingest) "ob-lob" "\
+Add all named source-blocks defined in FILE to
+`org-babel-library-of-babel'.
+
+\(fn &optional FILE)" t nil)
+
+(autoload (quote org-babel-lob-execute-maybe) "ob-lob" "\
+Execute a Library of Babel source block, if appropriate.
+Detect if this is context for a Library Of Babel source block and
+if so then run the appropriate source block from the Library.
+
+\(fn)" t nil)
+
+(autoload (quote org-babel-lob-get-info) "ob-lob" "\
+Return a Library of Babel function call as a string.
+
+\(fn)" nil nil)
+
+;;;***
+
+;;;### (autoloads (org-babel-tangle org-babel-tangle-file org-babel-load-file
+;;;;;;  org-babel-tangle-lang-exts) "ob-tangle" "ob-tangle.el" (20144
+;;;;;;  24758))
+;;; Generated autoloads from ob-tangle.el
+
+(defvar org-babel-tangle-lang-exts (quote (("emacs-lisp" . "el"))) "\
+Alist mapping languages to their file extensions.
+The key is the language name, the value is the string that should
+be inserted as the extension commonly used to identify files
+written in this language.  If no entry is found in this list,
+then the name of the language is used.")
+
+(custom-autoload (quote org-babel-tangle-lang-exts) "ob-tangle" t)
+
+(autoload (quote org-babel-load-file) "ob-tangle" "\
+Load Emacs Lisp source code blocks in the Org-mode FILE.
+This function exports the source code using
+`org-babel-tangle' and then loads the resulting file using
+`load-file'.
+
+\(fn FILE)" t nil)
+
+(autoload (quote org-babel-tangle-file) "ob-tangle" "\
+Extract the bodies of source code blocks in FILE.
+Source code blocks are extracted with `org-babel-tangle'.
+Optional argument TARGET-FILE can be used to specify a default
+export file for all source blocks.  Optional argument LANG can be
+used to limit the exported source code blocks by language.
+
+\(fn FILE &optional TARGET-FILE LANG)" t nil)
+
+(autoload (quote org-babel-tangle) "ob-tangle" "\
+Write code blocks to source-specific files.
+Extract the bodies of all source code blocks from the current
+file into their own source-specific files.  Optional argument
+TARGET-FILE can be used to specify a default export file for all
+source blocks.  Optional argument LANG can be used to limit the
+exported source code blocks by language.
+
+\(fn &optional ONLY-THIS-BLOCK TARGET-FILE LANG)" t nil)
+
+;;;***
+
+;;;### (autoloads (org-babel-describe-bindings) "ob-keys" "ob-keys.el"
+;;;;;;  (20144 24758))
+;;; Generated autoloads from ob-keys.el
+
+(autoload (quote org-babel-describe-bindings) "ob-keys" "\
+Describe all keybindings behind `org-babel-key-prefix'.
+
+\(fn)" t nil)
+
+;;;***
+
+(provide (quote org-install))

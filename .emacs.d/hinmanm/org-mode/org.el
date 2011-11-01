@@ -4537,8 +4537,16 @@ means to push this value onto the list in the variable.")
 		(setq ext-setup-or-nil
 		      (concat (substring ext-setup-or-nil 0 start)
 			      "\n" setup-contents "\n"
-			      (substring ext-setup-or-nil start)))))
-	     ))))
+			      (substring ext-setup-or-nil start)))))))
+	  ;; search for property blocks
+	  (goto-char (point-min))
+	  (while (re-search-forward org-block-regexp nil t)
+	    (when (equal "PROPERTY" (upcase (match-string 1)))
+	      (setq value (replace-regexp-in-string
+			   "[\n\r]" " " (match-string 4)))
+	      (when (string-match "\\(\\S-+\\)\\s-+\\(.*\\)" value)
+		(push (cons (match-string 1 value) (match-string 2 value))
+		      props))))))
       (org-set-local 'org-use-sub-superscripts scripts)
       (when cat
 	(org-set-local 'org-category (intern cat))
@@ -9162,9 +9170,9 @@ Use TAB to complete link prefixes, then RET for type-specific completion support
 	    (setq desc path))))
 
     (if org-make-link-description-function
-	(setq desc (funcall org-make-link-description-function link desc)))
+	(setq desc (funcall org-make-link-description-function link desc))
+      (if default-description (setq desc default-description)))
 
-    (if default-description (setq desc default-description))
     (setq desc (read-string "Description: " desc))
     (unless (string-match "\\S-" desc) (setq desc nil))
     (if remove (apply 'delete-region remove))
@@ -9758,13 +9766,18 @@ the window configuration before `org-open-at-point' was called using:
     (set-window-configuration org-window-config-before-follow-link)")
 
 (defvar org-link-search-inhibit-query nil) ;; dynamically scoped
-(defun org-link-search (s &optional type avoid-pos)
+(defun org-link-search (s &optional type avoid-pos stealth)
   "Search for a link search option.
 If S is surrounded by forward slashes, it is interpreted as a
 regular expression.  In org-mode files, this will create an `org-occur'
 sparse tree.  In ordinary files, `occur' will be used to list matches.
 If the current buffer is in `dired-mode', grep will be used to search
-in all files.  If AVOID-POS is given, ignore matches near that position."
+in all files.  If AVOID-POS is given, ignore matches near that position.
+
+When optional argument STEALTH is non-nil, do not modify
+visibility around point, thus ignoring
+`org-show-hierarchy-above', `org-show-following-heading' and
+`org-show-siblings' variables."
   (let ((case-fold-search t)
 	(s0 (mapconcat 'identity (org-split-string s "[ \t\r\n]+") " "))
 	(markers (concat "\\(?:" (mapconcat (lambda (x) (regexp-quote (car x)))
@@ -9888,7 +9901,9 @@ in all files.  If AVOID-POS is given, ignore matches near that position."
 	      (goto-char (match-beginning 1))
 	    (goto-char pos)
 	    (error "No match"))))))
-    (and (eq major-mode 'org-mode) (org-show-context 'link-search))
+    (and (eq major-mode 'org-mode)
+	 (not stealth)
+	 (org-show-context 'link-search))
     type))
 
 (defun org-search-not-self (group &rest args)
@@ -12698,6 +12713,7 @@ only lines with a TODO keyword are included in the output."
 		      'mouse-face 'highlight
 		      'org-not-done-regexp org-not-done-regexp
 		      'org-todo-regexp org-todo-regexp
+		      'org-complex-heading-regexp org-complex-heading-regexp
 		      'help-echo
 		      (format "mouse-2 or RET jump to org file %s"
 			      (abbreviate-file-name
@@ -17385,6 +17401,24 @@ hook.  The default setting is `org-speed-command-default-hook'."
 If the cursor is in a table looking at whitespace, the whitespace is
 overwritten, and the table is not marked as requiring realignment."
   (interactive "p")
+  (let ((invisible-at-point
+	 (car (get-char-property-and-overlay (point) 'invisible)))
+	(invisible-before-point
+	 (or (bobp) (car (get-char-property-and-overlay 
+			  (1- (point)) 'invisible)))))
+    (when (or (eq invisible-at-point 'outline)
+	    (eq invisible-at-point 'org-hide-block)
+	    (eq invisible-before-point 'outline)
+	    (eq invisible-before-point 'org-hide-block))
+      (if (or (eq invisible-before-point 'outline)
+	      (eq invisible-before-point 'org-hide-block))
+	  (goto-char (previous-overlay-change (point))))
+      (org-cycle)
+      (if (or (eq invisible-before-point 'outline)
+	      (eq invisible-before-point 'org-hide-block))
+	  (forward-char 1))
+      (message "Unfolding invisible region around point before editing")
+      (sit-for 1)))
   (cond
    ((and org-use-speed-commands
 	 (setq org-speed-command
@@ -18286,8 +18320,9 @@ See the individual commands for more information."
 	    (org-indent-line-function)
 	  (org-indent-line-to ind)))))
    ((and org-return-follows-link
-	 (or (eq (get-text-property (point) 'face) 'org-link)
-	     (memq 'org-link (get-text-property (point) 'face))))
+         (let ((tprop (get-text-property (point) 'face)))
+	   (or (eq tprop 'org-link)
+	       (and (listp tprop) (memq 'org-link tprop)))))
     (call-interactively 'org-open-at-point))
    ((and (org-at-heading-p)
 	 (looking-at

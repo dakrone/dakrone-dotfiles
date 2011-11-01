@@ -66,6 +66,8 @@
 (declare-function calendar-julian-date-string   "cal-julian" (&optional date))
 (declare-function calendar-mayan-date-string    "cal-mayan"  (&optional date))
 (declare-function calendar-persian-date-string  "cal-persia" (&optional date))
+(declare-function calendar-check-holidays       "holidays" (date))
+
 (declare-function org-datetree-find-date-create "org-datetree"
 		  (date &optional keep-restriction))
 (declare-function org-columns-quit              "org-colview" ())
@@ -4582,6 +4584,7 @@ the documentation of `org-diary'."
 		  (setq results (append results rtn))))))))
 	results))))
 
+(defvar org-heading-keyword-regexp-format) ; defined in org.el
 (defun org-agenda-get-todos ()
   "Return the TODO information for agenda display."
   (let* ((props (list 'face nil
@@ -4907,7 +4910,7 @@ holidy will also be skipped."
 	 (progn
 	   (require 'cal-iso)
 	   (not (member (car (calendar-iso-from-absolute d)) skip-weeks))))
-     (not (and (memq `holidays' skip-weeks)
+     (not (and (memq 'holidays skip-weeks)
 	       (calendar-check-holidays date)))
      entry)))
 
@@ -6761,13 +6764,20 @@ When called with a prefix argument, include all archive files as well."
 	       ((eq org-agenda-show-log 'clockcheck) " ClkCk")
 	       (org-agenda-show-log " Log")
 	       (t ""))
+	      ;; show tags used for filtering in a custom face
 	      (if (or org-agenda-filter (get 'org-agenda-filter
 					     :preset-filter))
-		  (concat " {" (mapconcat
-				'identity
-				(append (get 'org-agenda-filter
-					     :preset-filter)
-					org-agenda-filter) "") "}")
+		  '(:eval (org-propertize
+			   (concat " {"
+				   (mapconcat
+				    'identity
+				    (append
+				     (get 'org-agenda-filter :preset-filter)
+				     org-agenda-filter)
+				    "")
+				   "}")
+			   'face 'org-agenda-filter-tags
+			   'help-echo "Tags used in filtering"))
 		"")
 	      (if org-agenda-archives-mode
 		  (if (eq org-agenda-archives-mode t)

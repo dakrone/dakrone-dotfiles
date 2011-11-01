@@ -18,7 +18,9 @@
 ;; notmuch
 ;; (add-to-list 'load-path (concat "~/.emacs.d/" (user-login-name) "/notmuch"))
 ;; (require 'notmuch)
-
+;; org-mode
+(add-to-list 'load-path (concat "~/.emacs.d/" (user-login-name) "/org-mode"))
+(require 'org)
 
 
 ;; ==== Repos ====

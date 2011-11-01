@@ -1054,6 +1054,9 @@ OPT-PLIST is the export options list."
     line))
 
 ;;; org-export-as-html
+
+(defvar org-heading-keyword-regexp-format) ; defined in org.el
+
 ;;;###autoload
 (defun org-export-as-html (arg &optional hidden ext-plist
 			       to-buffer body-only pub-dir)
@@ -1147,14 +1150,15 @@ PUB-DIR is set, use this as the publishing directory."
 	 (current-dir (if buffer-file-name
 			  (file-name-directory buffer-file-name)
 			default-directory))
+	 (auto-insert nil); Avoid any auto-insert stuff for the new file
 	 (buffer (if to-buffer
 		     (cond
 		      ((eq to-buffer 'string) (get-buffer-create "*Org HTML Export*"))
 		      (t (get-buffer-create to-buffer)))
 		   (find-file-noselect filename)))
 	 (org-levels-open (make-vector org-level-max nil))
-	 (date (plist-get opt-plist :date))
-	 (author      (plist-get opt-plist :author))
+	 (date        (org-html-expand (plist-get opt-plist :date)))
+	 (author      (org-html-expand (plist-get opt-plist :author)))
 	 (html-validation-link (or org-export-html-validation-link ""))
 	 (title       (org-html-expand
 		       (or (and subtree-p (org-export-get-title-from-subtree))
@@ -1183,8 +1187,8 @@ PUB-DIR is set, use this as the publishing directory."
 	 (inverse     nil)
 	 (email       (plist-get opt-plist :email))
 	 (language    (plist-get opt-plist :language))
-	 (keywords    (plist-get opt-plist :keywords))
-	 (description (plist-get opt-plist :description))
+	 (keywords    (org-html-expand (plist-get opt-plist :keywords)))
+	 (description (org-html-expand (plist-get opt-plist :description)))
 	 (num         (plist-get opt-plist :section-numbers))
 	 (lang-words  nil)
 	 (head-count  0) cnt
@@ -1338,23 +1342,30 @@ PUB-DIR is set, use this as the publishing directory."
 
 	;; insert html preamble
 	(when (plist-get opt-plist :html-preamble)
-	  (let ((html-pre (plist-get opt-plist :html-preamble)))
-	    (insert "<div id=\"" (nth 0 org-export-html-divs) "\">\n")
+	  (let ((html-pre (plist-get opt-plist :html-preamble))
+		html-pre-real-contents)
 	    (cond ((stringp html-pre)
-		   (insert
-		    (format-spec html-pre `((?t . ,title) (?a . ,author)
-					    (?d . ,date) (?e . ,email)))))
+		   (setq html-pre-real-contents
+			 (format-spec html-pre `((?t . ,title) (?a . ,author)
+						 (?d . ,date) (?e . ,email)))))
 		  ((functionp html-pre)
-		   (funcall html-pre))
+		   (insert "<div id=\"" (nth 0 org-export-html-divs) "\">\n")
+		   (funcall html-pre)
+		   (insert "\n</div>\n"))
 		  (t
-		   (insert
+		   (setq html-pre-real-contents
 		    (format-spec
 		     (or (cadr (assoc (nth 0 lang-words)
 				      org-export-html-preamble-format))
 			 (cadr (assoc "en" org-export-html-preamble-format)))
 		     `((?t . ,title) (?a . ,author)
 		       (?d . ,date) (?e . ,email))))))
-	    (insert "\n</div>\n")))
+	    ;; don't output an empty preamble DIV
+	    (unless (and (functionp html-pre)
+			 (equal html-pre-real-contents ""))
+	      (insert "<div id=\"" (nth 0 org-export-html-divs) "\">\n")
+	      (insert html-pre-real-contents)
+	      (insert "\n</div>\n"))))
 
 	;; begin wrap around body
 	(insert (format "\n<div id=\"%s\">"
@@ -2299,18 +2310,20 @@ Possible conversions are set in `org-export-html-protect-char-alist'."
 
 (defun org-html-expand (string)
   "Prepare STRING for HTML export.  Apply all active conversions.
-If there are links in the string, don't modify these."
-  (let* ((re (concat org-bracket-link-regexp "\\|"
-		     (org-re "[ \t]+\\(:[[:alnum:]_@#%:]+:\\)[ \t]*$")))
-	 m s l res)
-    (while (setq m (string-match re string))
-      (setq s (substring string 0 m)
-	    l (match-string 0 string)
-	    string (substring string (match-end 0)))
-      (push (org-html-do-expand s) res)
+If there are links in the string, don't modify these.  If STRING
+is nil, return nil."
+  (when string
+    (let* ((re (concat org-bracket-link-regexp "\\|"
+		       (org-re "[ \t]+\\(:[[:alnum:]_@#%:]+:\\)[ \t]*$")))
+	   m s l res)
+      (while (setq m (string-match re string))
+	(setq s (substring string 0 m)
+	      l (match-string 0 string)
+	      string (substring string (match-end 0)))
+	(push (org-html-do-expand s) res)
       (push l res))
-    (push (org-html-do-expand string) res)
-    (apply 'concat (nreverse res))))
+      (push (org-html-do-expand string) res)
+      (apply 'concat (nreverse res)))))
 
 (defun org-html-do-expand (s)
   "Apply all active conversions to translate special ASCII to HTML."

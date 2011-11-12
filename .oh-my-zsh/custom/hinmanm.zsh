@@ -141,6 +141,16 @@ alias uc='ledger -U reg'
 alias budget='ledger --budget -b Mar -M reg expenses'
 alias ytdbug='ledger -M -b Mar budget'
 
+# Stolen from Decklin
+alias e='$EDITOR'
+alias m='$PAGER'
+alias h='fc -l'
+alias g='egrep -i'
+alias rg='egrep -ir'
+alias v='egrep -iv'
+alias gf='fgrep -f'
+alias vf='fgrep -vf'
+
 # history
 HISTFILE=$HOME/.zsh-history
 HISTSIZE=5000

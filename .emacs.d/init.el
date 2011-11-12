@@ -520,7 +520,9 @@
 
 (add-to-list 'auto-mode-alist '("\\.zsh$" . shell-script-mode))
 
-(tool-bar-mode -1)
+;; tool-bar-mode, Y U NO EXIST ALL THE TIME??
+(when (eq window-system 'ns)
+  (tool-bar-mode -1))
 (menu-bar-mode -1)
 
 ;; Cosmetics for diffs

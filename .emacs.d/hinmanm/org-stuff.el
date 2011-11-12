@@ -45,7 +45,7 @@
 (setq org-agenda-files (list org-directory))
 (setq org-completion-use-ido 't)
 (setq org-capture-templates
-      '(("t" "Todo" entry (file "inbox.org")
+      '(("t" "Todo" entry (file "todo.org")
          "* TODO %i%?")
         ("p" "Project" entry (file "gtd.org")
          "* %i%? :project:")

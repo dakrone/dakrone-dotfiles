@@ -11,6 +11,9 @@
  (debbugs .
 	  [(0 3)
 	   nil "SOAP library to access debbugs servers" tar])
+ (djvu .
+       [(0 5)
+	nil "edit and view Djvu files via djvused" single])
  (eldoc-eval .
 	     [(0 1)
 	      nil "Enable eldoc support when minibuffer is in use." single])
@@ -45,7 +48,7 @@
 	 [(0 1)
 	  nil "OAuth 2.0 Authorization Protocol" single])
  (org .
-      [(20111027)
+      [(20111103)
        nil "Outline-based notes management and organizer" tar])
  (quarter-plane .
 		[(0 1)

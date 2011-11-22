@@ -20,7 +20,10 @@ if [[ $OS == "Darwin" ]]; then
     #function el() { ps ax|grep Emacs }
     function ek() { $EMACS_HOME/bin/emacsclient -e '(kill-emacs)' -s $1 }
 
-    function tmacs () { TERM=xterm-256color /Applications/Emacs.app/Contents/MacOS/Emacs -nw }
+    function tmacs () {
+        TERM=xterm-256color /Applications/Emacs.app/Contents/MacOS/Emacs -nw $@
+    }
+
     alias emacs=tmacs
 
     export EDITOR="TERM=xterm-256color /Applications/Emacs.app/Contents/MacOS/Emacs -nw"

@@ -4,26 +4,16 @@
   '(setq slime-words-of-encouragement
          (append '("I'll take you 'round the you-knee-verse..."
                    "Time to hunt the glorious Piranhamoose."
-                   "\"Shut up woman, get on my horse.\"")
+                   "\"Shut up woman, get on my horse.\""
+                   "Data Analysis Cosby uses a REPL, and so should you.")
                  slime-words-of-encouragement)))
 
 (defun lein-swank ()
   (interactive)
-  (let ((root (locate-dominating-file default-directory "project.clj")))
-    (or root (error "Not in a Leiningen project."))
-    (shell-command (format "cd %s && lein swank %s &" root 4009)
-                   "*lein-swank*")
-    (set-process-filter (get-buffer-process "*lein-swank*")
-                        ;; gAAAAAAAAAAAH! no leixcal scope? what is this, 1970?
-                        (lambda (process output)
-                          (when (string-match "Connection opened on" output)
-                            (condition-case e
-                                (slime-connect "localhost" 4009)
-                              (error
-                               (message "Retrying slime-connect...")
-                               (slime-connect "localhost" 4009)))
-                            (set-process-filter process nil))))
-    (message "Starting swank server...")))
+  (if (fboundp 'clojure-jack-in)
+      (progn (clojure-jack-in)
+             (message "Calling clojure-jack-in for you..."))
+    (message "Ooh, you should upgrade your clojure-mode, buddy.")))
 
 (defalias 'jack-in 'lein-swank)
 
@@ -81,13 +71,19 @@
 ;;; Magit
 
 (defun add-safe-ticket-number ()
-  (when (string-match "\\(sa-\\)?safe/$" default-directory)
+  (when (string-match "\\(sa-\\)?safe.*/$" default-directory)
     (goto-char (point-max))
     (let* ((branch (magit-get-current-branch))
-           (ticket-number (second (split-string branch "-"))))
+           (parts (split-string branch "-"))
+           (project (first parts))
+           (ticket-number (second parts)))
       (when (and ticket-number (string-match "^[0-9]+$" ticket-number)
                  (= (point-min) (point-max)))
-        (insert "[#safe-" ticket-number "] ")))))
+        (insert "[#" project "-" ticket-number "] ")))))
+
+(eval-after-load 'magit
+  '(defadvice magit-log-edit-toggle-amending (before clear-ticket activate)
+     (delete-region (point-min) (point-max))))
 
 (add-hook 'magit-log-edit-mode-hook 'add-safe-ticket-number)
 
@@ -116,12 +112,38 @@ formatted, 1 if it isn't."
 (eval-after-load 'clojure-mode
   '(add-hook 'clojure-mode-hook
              (lambda ()
-               (font-lock-add-keywords
-                'clojure-mode
-                '(("(\\(with-[^[:space:]]*\\)" (1 font-lock-keyword-face))
-                  ("(\\(def[^[:space:]]*\\)" (1 font-lock-keyword-face))
-                  ("(\\(ns\\+\\)" (1 font-lock-keyword-face))
-                  ("(\\(try\\+\\)" (1 font-lock-keyword-face))
-                  ("(\\(throw\\+\\)" (1 font-lock-keyword-face)))))))
+               (progn
+                 (font-lock-add-keywords
+                  'clojure-mode
+                  '(("(\\(with-[^[:space:]]*\\)" (1 font-lock-keyword-face))
+                    ("(\\(def[^[:space:]]*\\)" (1 font-lock-keyword-face))
+                    ("(\\(ns\\+\\)" (1 font-lock-keyword-face))
+                    ("(\\(try\\+\\)" (1 font-lock-keyword-face))
+                    ("(\\(ensure-call-counts\\)" (1 font-lock-keyword-face))
+                    ("(\\(throw\\+\\)" (1 font-lock-keyword-face))))
+                 (put-clojure-indent 'ensure-call-counts 'defun)))))
+
+(defvar namespace-buffers '()
+  "alist of namespace => buffer")
+
+(add-hook 'clojure-mode-hook
+          (lambda ()
+            (let ((some-ns (clojure-find-ns)))
+              (setq namespace-buffers
+                    (cons (cons some-ns (current-buffer))
+                          (assq-delete-all some-ns namespace-buffers))))))
+
+(add-hook 'kill-buffer-hook
+          (lambda ()
+            (setq namespace-buffers
+                  (rassq-delete-all (current-buffer)
+                                    namespace-buffers))))
+
+(defun goto-namespace ()
+  (interactive)
+  (let ((buf-name (ido-completing-read "Goto ns: "
+                                       (mapcar (lambda (x) (car x))
+                                               namespace-buffers))))
+    (switch-to-buffer (cdr (assoc buf-name namespace-buffers)))))
 
 (provide 'sonian)

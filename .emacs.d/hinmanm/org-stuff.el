@@ -44,13 +44,15 @@
 (setq org-directory (concat "~" (user-login-name) "/org"))
 (setq org-agenda-files (list org-directory))
 (setq org-completion-use-ido 't)
+(setq org-refile-targets `((,(concat "~" (user-login-name)
+                                     "/org/todo.org") . (:level . 1))))
 (setq org-capture-templates
       '(("t" "Todo" entry (file "todo.org")
          "* TODO %i%?")
         ("p" "Project" entry (file "gtd.org")
          "* %i%? :project:")
         ("j" "Journal" entry (file+datetree "journal.org")
-         "* %i%?\n Entered on %T")))
+         "* %i%?")))
 
 ;;(add-hook 'remember-mode-hook 'org-remember-apply-template)
 

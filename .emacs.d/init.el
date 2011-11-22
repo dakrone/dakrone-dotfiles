@@ -15,85 +15,19 @@
 (smex-initialize)
 ;; dim parens
 (require 'parenface)
-;; notmuch
-;; (add-to-list 'load-path (concat "~/.emacs.d/" (user-login-name) "/notmuch"))
-;; (require 'notmuch)
 ;; org-mode
 (add-to-list 'load-path (concat "~/.emacs.d/" (user-login-name) "/org-mode"))
 (require 'org)
+;; auto-complete
+(require 'auto-complete-config)
+(add-to-list 'ac-dictionary-directories "~/.emacs.d/ac-dict")
+(ac-config-default)
 
 
 ;; ==== Repos ====
 ;; Marmalade
 (add-to-list 'package-archives
              '("marmalade" . "http://marmalade-repo.org/packages/"))
-
-
-
-;; ==== Clojure stuff ====
-(eval-after-load 'slime '(setq slime-protocol-version 'ignore))
-(add-to-list 'auto-mode-alist '("\\.cljs$" . clojure-mode))
-
-(defun lisp-enable-paredit-hook () (paredit-mode 1))
-(add-hook 'clojure-mode-hook 'lisp-enable-paredit-hook)
-(add-hook 'lisp-mode-hook 'lisp-enable-paredit-hook)
-
-(defmacro defclojureface (name color desc &optional others)
-  `(defface
-     ,name '((((class color)) (:foreground ,color ,@others)))
-     ,desc :group 'faces))
-
-(defclojureface clojure-parens       "DimGrey"   "Clojure parens")
-(defclojureface clojure-braces       "DimGrey"   "Clojure braces")
-(defclojureface clojure-brackets     "SteelBlue" "Clojure brackets")
-(defclojureface clojure-keyword      "#729FCF"   "Clojure keywords")
-(defclojureface clojure-namespace    "#c476f1"   "Clojure namespace")
-(defclojureface clojure-java-call    "#729FCF"   "Clojure Java calls")
-(defclojureface clojure-special      "#1BF21B"   "Clojure special")
-(defclojureface clojure-double-quote "#1BF21B"   "Clojure special")
-
-(defun tweak-clojure-syntax ()
-  (mapcar (lambda (x) (font-lock-add-keywords nil x))
-          '((("#?['`]*(\\|)"       . 'clojure-parens))
-            (("#?\\^?{\\|}"        . 'clojure-brackets))
-            (("\\[\\|\\]"          . 'clojure-braces))
-            ((":\\w+"              . 'clojure-keyword))
-            (("#?\""               0 'clojure-double-quote prepend))
-            (("nil\\|true\\|false\\|%[1-9]?" . 'clojure-special))
-            (("(\\(\\.[^ \n)]*\\|[^ \n)]+\\.\\|new\\)\\([ )\n]\\|$\\)" 1
-              'clojure-java-call)))))
-
-(when (eq window-system 'ns)
-  (add-hook 'clojure-mode-hook 'tweak-clojure-syntax))
-
-;; Better indention (from Kevin)
-(add-hook 'clojure-mode-hook
-          (lambda () (setq clojure-mode-use-backtracking-indent t)))
-
-;; syntax in REPL
-(add-hook 'slime-repl-mode-hook 'clojure-mode-font-lock-setup)
-
-;; Lazytest indention in clojure
-(eval-after-load 'clojure-mode
-  '(define-clojure-indent
-     (describe 'defun)
-     (testing 'defun)
-     (given 'defun)
-     (it 'defun)
-     (do-it 'defun)))
-
-;; compile faster
-(setq font-lock-verbose nil)
-
-;; slamhound support https://github.com/technomancy/slamhound
-(defun slamhound ()
-  (interactive)
-  (goto-char (point-min))
-  (kill-sexp)
-  (insert (first (slime-eval `(swank:eval-and-grab-output
-                               (format "(do (require 'slam.hound)
-                                          (slam.hound/reconstruct \"%s\"))"
-                                       ,buffer-file-name))))))
 
 
 
@@ -127,9 +61,82 @@
            (if sticky "yes" "no"))))
 
 
+;; ==== ERC stuff ====
+;; Only track my nick(s)
+(defadvice erc-track-find-face
+  (around erc-track-find-face-promote-query activate)
+  (if (erc-query-buffer-p)
+      (setq ad-return-value (intern "erc-current-nick-face"))
+    ad-do-it))
 
-;; ==== Put the column in the status bar ====
-(column-number-mode)
+(setq erc-keywords '("dakrone"
+                     "dakrone_"
+                     "dakrone__"))
+;;(setq erc-hide-list '("JOIN" "PART" "QUIT"))
+(setq erc-track-exclude-types '("JOIN" "NICK" "PART" "QUIT" "MODE"
+                                "324" "329" "332" "333" "353" "477"))
+
+(defun call-growl (matched-type nick msg)
+  (let* ((nick (first (split-string nick "!"))))
+    (growl-notification nick msg)))
+
+;; only add the hook for Mac
+(when (eq window-system 'ns)
+  (add-hook 'erc-text-matched-hook 'call-growl))
+
+(setq erc-button-url-regexp
+      "\\([-a-zA-Z0-9_=!?#$@~`%&*+\\/:;,]+\\.\\)+[-a-zA-Z0-9_=!?#$@~`%&*+\\/:;,]*[-a-zA-Z0-9\\/]")
+
+(and
+ (require 'erc-highlight-nicknames)
+ (add-to-list 'erc-modules 'highlight-nicknames)
+ (erc-update-modules))
+
+;; update ERC prompt with room name
+(setq erc-prompt (lambda ()
+                   (if (and (boundp 'erc-default-recipients)
+                            (erc-default-target))
+                       (erc-propertize (concat (erc-default-target) ">")
+                                       'read-only t 'rear-nonsticky t
+                                       'front-nonsticky t)
+                     (erc-propertize (concat "ERC>") 'read-only t
+                                     'rear-nonsticky t
+                                     'front-nonsticky t))))
+
+;; Don't highlight pals, because I like highlight-nicknames for that
+(setq erc-pal-highlight-type 'nil)
+
+(eval-after-load 'erc
+  '(progn
+     (setq erc-fill-column 75
+           erc-hide-list '("JOIN"
+                           "PART"
+                           "QUIT"
+                           ;;"NICK"
+                           )
+           erc-track-exclude-types (append '("324" "329" "332" "333"
+                                             "353" "477" "MODE")
+                                           erc-hide-list)
+           erc-nick '("dakrone" "dakrone_")
+           erc-autojoin-timing :ident
+           erc-flood-protect nil
+           erc-pals '("hiredman" "danlarkin" "drewr" "pjstadig" "scgilardi"
+                      "joegallo" "jimduey" "leathekd" "rhickey" "zkim" "steve"
+                      "imotov" "joekinsella" "craig")
+           erc-autojoin-channels-alist
+           '(("freenode.net"
+              "#clojure"
+              "#leiningen"
+              "#rawpacket"))
+           erc-prompt-for-nickserv-password nil)
+     (require 'erc-services)
+     (require 'erc-spelling)
+     (erc-services-mode 1)
+     (add-to-list 'erc-modules 'highlight-nicknames 'spelling)
+     (add-hook 'erc-connect-pre-hook (lambda (x) (erc-update-modules)))))
+
+(setq erc-server-reconnect-timeout 5)
+(setq erc-server-reconnect-attempts 4)
 
 
 
@@ -217,6 +224,9 @@
 (set-face-attribute 'default nil :height 115)
 ;; Anti-aliasing
 (setq mac-allow-anti-aliasing t)
+
+;; Put the column in the status bar
+(column-number-mode)
 
 ;; Transparency
 ;;(set-frame-parameter (selected-frame) 'alpha '(100 35))

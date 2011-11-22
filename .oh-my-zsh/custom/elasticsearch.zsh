@@ -1,5 +1,7 @@
 # shell aliases used for ES querying
 
+alias -g cs='curl -s'
+
 function dpaste () {
     zsh <(curl -s p.draines.com/sh) $1
 }

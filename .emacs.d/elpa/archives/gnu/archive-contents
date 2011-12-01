@@ -48,7 +48,7 @@
 	 [(0 1)
 	  nil "OAuth 2.0 Authorization Protocol" single])
  (org .
-      [(20111121)
+      [(20111129)
        nil "Outline-based notes management and organizer" tar])
  (quarter-plane .
 		[(0 1)
@@ -61,7 +61,7 @@
 		 nil "Interactively list/edit registers" single])
  (shen-mode .
 	    [(0 1)
-	     nil "A major mode for editing shen source code" single])
+	     nil "Utilities for working with Shen code." tar])
  (sisu-mode .
 	    [(3 0 3)
 	     nil "Major mode for SiSU markup text" single])

@@ -22,12 +22,21 @@
 (require 'auto-complete-config)
 (add-to-list 'ac-dictionary-directories "~/.emacs.d/ac-dict")
 (ac-config-default)
+;; go-to-char ('f' in vim)
+(require 'iy-go-to-char)
+;; minimap
+(require 'minimap)
+;; ace-jump-mode
+(require 'ace-jump-mode)
+(define-key global-map (kbd "C-c SPC") 'ace-jump-mode)
+
 
 
 ;; ==== Repos ====
 ;; Marmalade
 (add-to-list 'package-archives
              '("marmalade" . "http://marmalade-repo.org/packages/"))
+(add-to-list 'package-archives '("tromey" . "http://tromey.com/elpa/") t)
 
 
 
@@ -237,13 +246,16 @@
 
 ;; always turn whitespace mode on
 (whitespace-mode t)
-(add-hook 'clojure-mode-hook (lambda () (whitespace-mode t)))
-(add-hook 'prog-mode-hook (lambda () (whitespace-mode t)))
+(add-hook 'clojure-mode-hook (lambda ()
+                               (whitespace-mode t)
+                               (subword-mode t)))
+(add-hook 'prog-mode-hook (lambda ()
+                            (whitespace-mode t)
+                            (subword-mode t)
+                            (idle-highlight t)))
 
-;; Color Theme
-;;(color-theme-initialize)
-;; My custom theme
-;;(color-theme-dakrone)
+;; Display the battery level in the bottom bar
+(display-battery-mode t)
 
 ;; Show Paren Mode
 (setq show-paren-style 'expression)
@@ -267,9 +279,6 @@
 (remove-hook 'prog-mode-hook 'esk-turn-on-idle-highlight-mode)
 ;; no pretty fns
 (remove-hook 'clojure-mode-hook 'esk-pretty-fn)
-
-;; highlights
-(add-hook 'prog-mode-hook (lambda () (idle-highlight t)))
 
 ;; Fix the closing paren newline thing
 (eval-after-load 'paredit

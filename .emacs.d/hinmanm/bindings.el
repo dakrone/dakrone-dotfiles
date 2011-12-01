@@ -132,3 +132,8 @@
 (define-key emacs-lisp-mode-map (kbd "M-.") 'find-function-at-point)
 (define-key read-expression-map (kbd "TAB") 'lisp-complete-symbol)
 (define-key lisp-mode-shared-map (kbd "RET") 'reindent-then-newline-and-indent)
+
+(global-set-key (kbd "C-c f") 'iy-go-to-char)
+(global-set-key (kbd "C-c F") 'iy-go-to-char-backward)
+(global-set-key (kbd "C-c ;") 'iy-go-to-char-continue)
+(global-set-key (kbd "C-c ,") 'iy-go-to-char-continue-backward)

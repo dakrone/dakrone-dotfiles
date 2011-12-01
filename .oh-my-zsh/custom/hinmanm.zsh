@@ -1,7 +1,9 @@
 OS=$(uname)
 
 # path
-export PATH=/usr/local/bin:$PATH:/usr/local/sbin:/usr/local/sbin:/usr/libexec:/opt/local/sbin:/usr/local/mysql/bin
+export PATH=/usr/local/bin:$PATH
+export PATH=$PATH:/usr/local/sbin:/usr/local/sbin:/usr/libexec:/opt/local/sbin
+export PATH=$PATH:/usr/local/mysql/bin:~/.cabal/bin
 
 # Java opts (leiningen uses these)
 #export JAVA_OPTS="-Dfile.encoding=UTF-8 -Dslime.encoding=UTF-8 -Xmx512m -XX:+HeapDumpOnOutOfMemoryError"
@@ -10,7 +12,7 @@ export PATH=/usr/local/bin:$PATH:/usr/local/sbin:/usr/local/sbin:/usr/libexec:/o
 export MANPATH=$MANPATH:/usr/local/man:/opt/local/share/man
 
 # abbreviation
-export EDITOR=vim
+export EDITOR=emacs
 export PAGER=less
 
 # knife things

@@ -27,7 +27,7 @@ opml-url                    ""
 refresh-on-startup          no
 reload-only-visible-feeds   no
 reload-time                 60
-reload-threads              4
+reload-threads              1
 show-keymap-hint            yes
 show-read-articles          yes
 suppress-first-reload       yes

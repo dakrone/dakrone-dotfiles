@@ -9,14 +9,15 @@ then HN=""
 else HN="%{${fg[cyan]}%}$(hostname)%{${fg[grey]}%}:"
 fi
 
+#local return_code="%(?..%{$fg[red]%}%? ↵%{$reset_color%})"
+local return_code="%(?..%{$fg[red]%}%? %{$reset_color%})"
+#RPS1='${return_code} $HN'
+
 # Handle dumb (emacs) terminals with no color
 if [ $TERM = "dumb" ]
-then PROMPT='‹ %~ › ∴ '
-else PROMPT='%{$fg[grey]%}‹ $HN%{${fg[blue]}%}%~ $(git_prompt_info)%{$fg[grey]%}› %{${fg[$CARETCOLOR]}%}∴%{${reset_color}%} '
+then PROMPT='‹ %~ › %(?..%? )∴ '
+else PROMPT='%{$fg[grey]%}‹ $HN%{${fg[blue]}%}%~ $(git_prompt_info)%{$fg[grey]%}› ${return_code}%{${fg[$CARETCOLOR]}%}∴%{${reset_color}%} '
 fi
-
-#local return_code="%(?..%{$fg[red]%}%? ↵%{$reset_color%})"
-#RPS1='${return_code} $HN'
 
 # hostname
 #${fg[grey]}%}%m%{${fg[grey]}%}

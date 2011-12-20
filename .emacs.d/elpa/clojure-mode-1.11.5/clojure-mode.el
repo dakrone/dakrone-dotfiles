@@ -6,7 +6,7 @@
 ;;          Lennart Staflin <lenst@lysator.liu.se>
 ;;          Phil Hagelberg <technomancy@gmail.com>
 ;; URL: http://github.com/technomancy/clojure-mode
-;; Version: 1.11.4
+;; Version: 1.11.5
 ;; Keywords: languages, lisp
 
 ;; This file is not part of GNU Emacs.
@@ -147,7 +147,7 @@ numbers count from the end:
 
 (defun clojure-mode-version ()
   "Currently package.el doesn't support prerelease version numbers."
-  "1.11.4")
+  "1.11.5")
 
 ;;;###autoload
 (defun clojure-mode ()
@@ -875,7 +875,7 @@ use (put-clojure-indent 'some-symbol 'defun)."
       (let ((begin (point)))
         (when (not (search-forward ";;; Done bootstrapping." nil t))
           ;; fall back to possibly-ambiguous string if above isn't found
-          (search-forward "(run-hooks 'slime-load-hook) ; on port"))
+          (search-forward "(run-hooks 'slime-load-hook)"))
         (eval-region begin (point))))))
 
 ;;;###autoload

@@ -187,6 +187,7 @@ function fix-agent() {
     export SSH_AUTH_SOCK=`ls -t1 $(find /tmp/ -uid $UID -path \\*ssh\\* -type s 2> /dev/null) | head -1`
     enable -a ls
 }
+alias fa=fix-agent
 
 # colorful listings
 zmodload -i zsh/complist

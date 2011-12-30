@@ -5,7 +5,10 @@ if [[ $OS == "Linux" ]]; then
     # make emacs have 256 colors
     alias emacs='TERM=xterm-256color emacs'
 
-    function ec() { TERM=xterm-256color emacsclient -t $@ }
+    function ec () {
+        TERM=xterm-256color emacsclient -t $@
+    }
+
     # no growl on linux, so back to regular
     alias lt='lein test'
     alias lrt='lein retest'

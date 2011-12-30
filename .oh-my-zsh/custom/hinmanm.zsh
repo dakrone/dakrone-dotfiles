@@ -2,23 +2,18 @@ OS=$(uname)
 
 # path
 export PATH=/usr/local/bin:$PATH
-export PATH=$PATH:/usr/local/sbin:/usr/local/sbin:/usr/libexec:/opt/local/sbin
+export PATH=$PATH:/usr/local/sbin:/usr/libexec:/opt/local/sbin
 export PATH=$PATH:/usr/local/mysql/bin:~/.cabal/bin
 
 # Java opts (leiningen uses these)
 #export JAVA_OPTS="-Dfile.encoding=UTF-8 -Dslime.encoding=UTF-8 -Xmx512m -XX:+HeapDumpOnOutOfMemoryError"
 
 # manpath
-export MANPATH=$MANPATH:/usr/local/man:/opt/local/share/man
+export MANPATH=$MANPATH:/usr/local/man
 
 # abbreviation
 export EDITOR=emacs
 export PAGER=less
-
-# knife things
-export OPSCODE_USER="sonian_devs"
-export ENV="dev"
-export CHEF_USER="lee"
 
 # report things that take a while
 export REPORTTIME=5
@@ -31,7 +26,7 @@ export PATH=$PATH:/usr/local/share/npm/bin
 # To manually remove libraries installed by npm, delete this (hidden!) folder.
 
 # CVS options
-export CVSEDITOR=vim
+export CVSEDITOR=emacs
 
 # RSPEC for autotest
 export RSPEC=true
@@ -171,7 +166,10 @@ function bgrep() { git branch -a | grep "$*" | sed 's,remotes/,,'; }
 # public hostname for ec2 knife stuff
 #function eknife () { knife $@ -a ec2.public_hostname -x lee }
 
-export KNIFE_CMD=`which knife`
+if [[ ! -n $KNIFE_CMD ]]; then
+    export KNIFE_CMD=`which knife`
+fi
+
 function knife
 {
     if [ $1 = "ssh" ]; then
@@ -228,6 +226,10 @@ bindkey -r '^j' #unbind ctrl-j, I hit it all the time accidentaly
 # word chars
 # default is: *?_-.[]~=/&;!#$%^(){}<>
 export WORDCHARS="*?_-[]~=&!#$%^(){}<>"
+
+# this is AWESOME
+# try this: cat foo.clj > >(fgrep java | wc -l) > >(fgrep copy | wc -l)
+setopt multios
 
 # normal ls colors
 unset LSCOLORS

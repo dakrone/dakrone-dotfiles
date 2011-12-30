@@ -1,3 +1,8 @@
+# knife things
+export OPSCODE_USER="sonian_devs"
+export ENV="dev"
+export CHEF_USER="lee"
+
 export SONIAN_DIR=~/safe
 export SONIAN_USER=lee
 

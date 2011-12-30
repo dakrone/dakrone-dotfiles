@@ -3,10 +3,10 @@ then CARETCOLOR="red"
 else CARETCOLOR="green"
 fi
 
-# ignore Xanadu.local as a hostname
-if [ "$(hostname)" = "Xanadu.local" ]
-then HN=""
-else HN="%{${fg[cyan]}%}$(hostname)%{${fg[grey]}%}:"
+# hostname if ssh'd somewhere
+if [[ -n $SSH_CLIENT ]]
+then HN="%{${fg[cyan]}%}$(hostname)%{${fg[grey]}%}:"
+else HN=""
 fi
 
 #local return_code="%(?..%{$fg[red]%}%? ↵%{$reset_color%})"

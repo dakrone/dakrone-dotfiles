@@ -20,6 +20,9 @@ function termsupport_precmd {
     title $TERM_TAB_TITLE_IDLE $TERM_TITLE_IDLE
 }
 
+function notitle () { export DISABLE_AUTO_TITLE=true }
+function settitle () { export DISABLE_AUTO_TITLE=false }
+
 #Appears at the beginning of (and during) of command execution
 function termsupport_preexec {
     emulate -L zsh

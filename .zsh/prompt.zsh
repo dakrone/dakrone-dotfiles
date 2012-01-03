@@ -17,8 +17,8 @@ zstyle ':vcs_info:git*:*' get-revision true
 zstyle ':vcs_info:git*:*' check-for-changes true
 
 # hash changes branch misc
-zstyle ':vcs_info:git*' formats "(%s) %12.12i ${green}%c${red}%u${gray} %b%m"
-zstyle ':vcs_info:git*' actionformats "(%s|%a) %12.12i %c%u %b%m"
+zstyle ':vcs_info:git*' formats "(%s) %8.8i ${green}%c${red}%u${gray} %b%m"
+zstyle ':vcs_info:git*' actionformats "(%s|%a) %8.8i %c%u %b%m"
 zstyle ':vcs_info:git*+set-message:*' hooks git-st git-stash
 
 # Show remote ref name and number of commits ahead-of or behind
@@ -90,6 +90,7 @@ function setprompt() {
     i_width=${(S)infoline//\%\{*\%\}} # search-and-replace color escapes
     i_width=${#${(%)i_width}} # expand all escapes and count the chars
 
+    # the "-2" is for the < and > at each end
     filler="${gray}‹${(l:$(( $COLUMNS - $i_width - $i_pad - 2))::·:)}›${reset}"
     infoline[2]=( "${infoline[2]} ${filler} " )
 

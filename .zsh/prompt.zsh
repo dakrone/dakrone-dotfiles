@@ -73,12 +73,12 @@ function setprompt() {
 
     ### First, assemble the top line
     # Current dir; show in yellow if not writable
-    [[ -w $PWD ]] && infoline+=( ${green} ) || infoline+=( ${yellow} )
+    [[ -w $PWD ]] && infoline+=( ${blue} ) || infoline+=( ${yellow} )
     infoline+=( "%~${reset}" )
 
     # Username & host
-    infoline+=( "${blue}%n${gray}" )
-    [[ -n $SSH_CLIENT ]] && infoline+=( "${gray}@${blue}%m${gray}" )
+    infoline+=( "${green}%n${gray}" )
+    [[ -n $SSH_CLIENT ]] && infoline+=( "${gray}@${green}%m${gray}" )
 
     # Strip color to find text width & make the full-width filler
     zstyle -T ":pr-nethack:" show-pet && i_pad=4 || i_pad=0

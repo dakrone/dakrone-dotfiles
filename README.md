@@ -2,7 +2,12 @@ A small collection of my configuration files and Emacs/Vim plugins
 
 See the images directory for an example of what some of the stuff looks like.
 
-Instructions for using the Emacs stuff:
+# ZSH randomness:
+
+A random prompt pet is chosen, `export PROMPT_PETS=("a" "b" "c" ...)` to
+specify a list, or set PROMPT_PET explicitly to use that pet.
+
+# Instructions for using the Emacs stuff (requires Emacs 24):
 
 1. Move .emacs.d to ~/.emacs.d
 2. Rename ~/.emacs.d/hinmanm to ~/.emacs.d/<youruserid>

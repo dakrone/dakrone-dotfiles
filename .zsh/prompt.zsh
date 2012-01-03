@@ -62,6 +62,9 @@ function +vi-git-stash() {
 #######################################
 # based on http://eseth.org/2009/nethack-term.html#post-nethack-term
 # and http://eseth.org/2010/git-in-zsh.html
+PROMPT_PETS=("λ" "✝" "ƒ" "π" "♮" "§" "☊" "☋" "♿" "♈" "♉" "☩" "☡")
+export PROMPT_PET=$PROMPT_PETS[$RANDOM%$#PROMPT_PETS+1]
+
 function setprompt() {
     local -a lines infoline
     local x i pet dungeon filler i_width i_pad
@@ -69,7 +72,8 @@ function setprompt() {
     # A domestic animal, the _tame dog_ (_Canis familiaris_)
     #pet=d
     # how about a pet lambda instead? :)
-    pet=λ
+    #pet=λ
+    pet=$PROMPT_PET
 
     ### First, assemble the top line
     # Current dir; show in yellow if not writable

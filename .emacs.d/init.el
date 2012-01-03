@@ -136,6 +136,7 @@
            erc-pals '("hiredman" "danlarkin" "drewr" "pjstadig" "scgilardi"
                       "joegallo" "jimduey" "leathekd" "rhickey" "zkim" "steve"
                       "imotov" "joekinsella" "craig")
+           erc-ignore-list '("sonian-chef")
            erc-autojoin-channels-alist
            '(("freenode.net"
               "#clojure"

@@ -5,11 +5,11 @@
 
 IAM=$(whoami)
 
-rm -rf ~/.oh-my-zsh
+rm -rf ~/.zsh
 rm -rf ~/.dakrone
-git clone -q git://github.com/robbyrussell/oh-my-zsh.git ~/.oh-my-zsh
-cd ~/.oh-my-zsh/plugins && git clone -q git://github.com/zsh-users/zsh-syntax-highlighting.git
-git clone -q git://github.com/dakrone/dakrone-dotfiles.git ~/.dakrone
+mkdir ~/.zsh
+cd ~/.zsh && git clone -q git://github.com/zsh-users/zsh-syntax-highlighting.git
+git clone -q --max-depth=1 git://github.com/dakrone/dakrone-dotfiles.git ~/.dakrone
 
 # Only bootstrap the emacs stuff if Emacs 24 is installed
 HAVE24=$(emacs --version | grep "Emacs 24")
@@ -22,9 +22,8 @@ fi
 mv -n ~/.dakrone/bin ~/
 
 cp -f ~/.dakrone/.zshrc ~/
+cp -R ~/.dakrone/.zsh ~/
 cp -f ~/.dakrone/.gitconfig ~/
-cp -f ~/.dakrone/.oh-my-zsh/custom/*.zsh ~/.oh-my-zsh/custom/
-cp -f ~/.dakrone/.oh-my-zsh/themes/dakrone.zsh-theme ~/.oh-my-zsh/themes/
 cp -f ~/.dakrone/.tmux.conf ~/
 
 echo "Bootstrapped."

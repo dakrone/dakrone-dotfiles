@@ -34,22 +34,33 @@ export RSPEC=true
 # ledger
 export LEDGER_FILE=~/data/ledger.dat
 
+title () {
+    [ "$DISABLE_AUTO_TITLE" != "true" ] || return
+    if [[ "$TERM" = screen* ]]
+    then
+        print -Pn "\ek$1:q\e\\"
+    elif [[ "$TERM" = xterm* ]] || [[ $TERM = rxvt* ]] || [[ "$TERM_PROGRAM" = "iTerm.app" ]]
+    then
+        print -Pn "\e]2;$2:q\a"
+        print -Pn "\e]1;$1:q\a"
+    fi
+}
 # Source z.sh
 if [ -s ~/bin/z.sh ] ; then
     source ~/bin/z.sh ;
     function precmd () {
         z --add "$(pwd -P)"
         # oh-my-zsh stuff
-        title $ZSH_THEME_TERM_TAB_TITLE_IDLE $ZSH_THEME_TERM_TITLE_IDLE
+        #title $ZSH_THEME_TERM_TAB_TITLE_IDLE $ZSH_THEME_TERM_TITLE_IDLE
     }
     alias j='z'
 fi
 
 # rvm stuff (if it exists):
 if [ -s ~/.rvm/scripts/rvm ] ; then
-      source ~/.rvm/scripts/rvm
+    source ~/.rvm/scripts/rvm
       # Set default ruby install
-      rvm default
+    rvm default
 fi
 
 # rbenv path
@@ -67,9 +78,9 @@ alias mv='nocorrect mv'       # no spelling correction on mv
 alias cp='nocorrect cp'
 alias mkdir='nocorrect mkdir'
 if ls -F --color=auto >&/dev/null; then
-  alias ls="ls --color=auto -F"
+    alias ls="ls --color=auto -F"
 else
-  alias ls="ls -GF"
+    alias ls="ls -GF"
 fi
 alias l.='ls -d .*'
 alias ll='ls -lh'
@@ -235,10 +246,10 @@ setopt multios
 unset LSCOLORS
 
 if [[ "$TERM" == "dumb" ]] then
-  unsetopt zle
-  unsetopt prompt_cr
-  unsetopt prompt_subst
-  unfunction precmd
-  unfunction preexec
-  export PS1='$ '
+    unsetopt zle
+    unsetopt prompt_cr
+    unsetopt prompt_subst
+    unfunction precmd
+    unfunction preexec
+    export PS1='$ '
 fi

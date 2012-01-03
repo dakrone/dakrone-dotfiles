@@ -1,30 +1,242 @@
-# Path to your oh-my-zsh configuration.
-export ZSH=$HOME/.oh-my-zsh
+OS=$(uname)
 
-# Set name of the theme to load.
-# Look in ~/.oh-my-zsh/themes/
-# Optionally, if you set this to "random", it'll load a random theme each
-# time that oh-my-zsh is loaded.
-export ZSH_THEME="dakrone"
+# path
+export PATH=/usr/local/bin:$PATH
+export PATH=$PATH:/usr/local/sbin:/usr/libexec:/opt/local/sbin
+export PATH=$PATH:/usr/local/mysql/bin:~/.cabal/bin
 
-# Set to this to use case-sensitive completion
-export CASE_SENSITIVE="true"
+# Java opts (leiningen uses these)
+#export JAVA_OPTS="-Dfile.encoding=UTF-8 -Dslime.encoding=UTF-8 -Xmx512m -XX:+HeapDumpOnOutOfMemoryError"
 
-# Comment this out to disable weekly auto-update checks
-# export DISABLE_AUTO_UPDATE="true"
+# manpath
+export MANPATH=$MANPATH:/usr/local/man
 
-# Uncomment following line if you want to disable colors in ls
-# export DISABLE_LS_COLORS="true"
+# abbreviation
+export EDITOR=emacs
+export PAGER=less
 
-# Uncomment following line if you want to disable autosetting terminal title.
-# export DISABLE_AUTO_TITLE="true"
+# report things that take a while
+export REPORTTIME=5
 
-# Which plugins would you like to load? (plugins can be found in ~/.oh-my-zsh/plugins/*)
-# Example format: plugins=(rails git textmate ruby lighthouse)
-plugins=(git brew lein osx ruby vagrant zsh-syntax-highlighting)
+# node things
+export NODE_PATH=/usr/local/lib/node:/usr/local/lib/node_modules
+export PATH=$PATH:/usr/local/share/npm/bin
+# npm will install libraries to:
+#   /usr/local/lib/node/.npm
+# To manually remove libraries installed by npm, delete this (hidden!) folder.
 
-source $ZSH/oh-my-zsh.sh
+# CVS options
+export CVSEDITOR=emacs
 
-# Customize to your needs...
+# RSPEC for autotest
+export RSPEC=true
 
-# see ~/.oh-my-zsh/custom/hinmanm.zsh
+# ledger
+export LEDGER_FILE=~/data/ledger.dat
+
+# Source z.sh
+if [ -s ~/bin/z.sh ] ; then
+    source ~/bin/z.sh ;
+    alias j='z'
+fi
+
+# rvm stuff (if it exists):
+if [ -s ~/.rvm/scripts/rvm ] ; then
+    source ~/.rvm/scripts/rvm
+    # Set default ruby install
+    rvm default
+fi
+
+# rbenv path
+# export PATH=$HOME/.rbenv/bin:$HOME/.rbenv/shims:$PATH
+# export RBENV_VERSION=1.9.2-p290
+
+# Always override with my personal bin
+export PATH=~/bin:$PATH
+
+# IRBRC for RVM
+export IRBRC=~/.irbrc
+
+# set aliases
+# no spelling correction on mv
+alias mv='nocorrect mv'
+alias cp='nocorrect cp'
+alias mkdir='nocorrect mkdir'
+if ls -F --color=auto >&/dev/null; then
+    alias ls="ls --color=auto -F"
+else
+    alias ls="ls -GF"
+fi
+alias l.='ls -d .*'
+alias ll='ls -lh'
+alias la='ls -alh'
+alias lr='ls -lR'
+# if you have ls++, uncomment this
+# alias ll='ls++'
+# alias la='ls++ -a'
+
+alias less='less -FRX'
+alias grep='grep -i --color=auto'
+alias egrep='egrep -i --color=auto'
+alias cd..='cd ..'
+alias ..='cd ..'
+alias nsmc='cd ~/src/ruby/nsm-console'
+alias serv='cat /etc/services | grep'
+alias pg='ps aux | grep'
+alias dmesg='sudo dmesg'
+alias remhex='ssh -i ~/.ssh/id_rawpacket dakrone@localhost -p 6666'
+alias remblack='ssh -i ~/.ssh/id_rawpacket hinmanm@localhost -p 7777'
+alias remstyx='ssh -i ~/.ssh/id_rawpacket lee@localhost -p 6666'
+alias scsetup='sudo socat -d -d TCP4-listen:6666,fork OPENSSL:typoet.com:443,cert=host.pem,verify=0'
+alias scsetup2='sudo socat -d -d TCP4-listen:7777,fork OPENSSL:blackex:443,cert=host.pem,verify=0'
+alias blackexprox='ssh -i ~/.ssh/id_rawpacket -ND 9999 hinmanm@localhost -p 7777'
+alias blackprox='ssh -i ~/.ssh/id_rawpacket -ND 9999 hinmanm@black'
+alias styxprox='ssh -i ~/.ssh/id_rawpacket -ND 9999 lee@localhost -p 6666'
+alias tcpdump='tcpdump -ttttnnn'
+alias vless=/usr/share/vim/vim72/macros/less.sh
+alias jl='j --l'
+alias jr='j --r'
+alias js='j --s'
+alias givm='gvim'
+alias rsynco='rsync --compress-level=9 -azvvPhSImi'
+# Colored rspec
+alias cspec='spec -c --format specdoc'
+# Tmux stuff
+# force 256 color mode
+alias tmux='tmux -2'
+alias rvim='gvim --remote-tab-silent'
+alias screen='TERM=xterm-color && /opt/local/bin/screen'
+alias todo='ec -n ~/work.org'
+# elinks stuff
+alias el='TERM=xterm-color elinks'
+# autossh stuff
+alias -g ash='autossh'
+# 20 second poll time
+export AUTOSSH_POLL=20
+# keep an X connection open, with proxy
+alias keepircprox='autossh -M 21000 irc.sa2s.us -L 6667:irc.sa2s.us:31425'
+# keep an X connection open, without proxy
+alias keepx='autossh -M 22000 x'
+# reverse proxy & keepopen
+alias xprox='ssh -nNT -R 4444:localhost:22 x'
+alias prox='ssh -nNT -R 4444:localhost:22 localhost'
+alias autoxprox='autossh -M 22000 -nNT -R 4444:localhost:22 x'
+alias autoprox='autossh -M 22000 -nNT -R 4444:localhost:22 localhost'
+## ledger aliases
+# balance
+alias bal='ledger -s -V bal'
+# net between assets & liabilities
+alias netbal='ledger -s bal \^assets \^liab'
+# uncleared transactions
+alias uc='ledger -U reg'
+# show budgets starting in march (march is the first month I had complete
+# transactions for the whole month
+alias budget='ledger --budget -b Mar -M reg expenses'
+alias ytdbug='ledger -M -b Mar budget'
+
+# Stolen from Decklin
+alias e='$EDITOR'
+alias m='$PAGER'
+alias h='fc -l'
+alias g='egrep -i'
+alias rg='egrep -ir'
+alias v='egrep -iv'
+alias gf='fgrep -f'
+alias vf='fgrep -vf'
+
+# history
+HISTFILE=$HOME/.zsh-history
+HISTSIZE=5000
+SAVEHIST=1000
+setopt appendhistory autocd extendedglob
+setopt share_history
+function history-all { history -E 1 }
+
+# functions
+setenv() { export $1=$2 }  # csh compatibility
+rot13 () { tr "[a-m][n-z][A-M][N-Z]" "[n-z][a-m][N-Z][A-M]" }
+function maxhead() { head -n `echo $LINES - 5|bc` ; }
+function maxtail() { tail -n `echo $LINES - 5|bc` ; }
+function bgrep() { git branch -a | grep "$*" | sed 's,remotes/,,'; }
+
+# public hostname for ec2 knife stuff
+#function eknife () { knife $@ -a ec2.public_hostname -x lee }
+
+if [[ ! -n $KNIFE_CMD ]]; then
+    export KNIFE_CMD=`which knife`
+fi
+
+function knife
+{
+    if [ $1 = "ssh" ]; then
+        $KNIFE_CMD "$@" -a ec2.public_hostname -x lee
+    else
+        $KNIFE_CMD "$@"
+    fi
+}
+
+# function to fix ssh agent
+function fix-agent() {
+    disable -a ls
+    export SSH_AUTH_SOCK=`ls -t1 $(find /tmp/ -uid $UID -path \\*ssh\\* -type s 2> /dev/null) | head -1`
+    enable -a ls
+}
+alias fa=fix-agent
+
+# colorful listings
+zmodload -i zsh/complist
+zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
+zstyle ':completion:*' hosts $ssh_hosts
+zstyle ':completion:*:my-accounts' users-hosts $my_accounts
+zstyle ':completion:*:other-accounts' users-hosts $other_accounts
+
+### OPTIONS ###
+unsetopt BG_NICE             # do NOT nice bg commands
+unsetopt correct_all         # don't correct me, I know what I'm doing
+setopt EXTENDED_HISTORY      # puts timestamps in the history
+setopt NO_HUP                # don't send kill to background jobs when exiting
+
+# Keybindings
+# Emacs keybindings
+bindkey -e
+bindkey "^?"    backward-delete-char
+bindkey "^H"    backward-delete-char
+bindkey "^[[3~" backward-delete-char
+bindkey "^[[1~" beginning-of-line
+bindkey "^[[4~" end-of-line
+
+bindkey '^r' history-incremental-search-backward
+bindkey "^[[5~" up-line-or-history
+bindkey "^[[6~" down-line-or-history
+bindkey "^A" beginning-of-line
+bindkey "^E" end-of-line
+bindkey "^W" backward-delete-word
+bindkey "^k" kill-line
+bindkey ' ' magic-space    # also do history expansion on space
+bindkey '^I' complete-word # complete on tab, leave expansion to _expand
+bindkey -r '^j' #unbind ctrl-j, I hit it all the time accidentaly
+
+# word chars
+# default is: *?_-.[]~=/&;!#$%^(){}<>
+export WORDCHARS="*?_-[]~=/&;!#$%^(){}<>"
+
+# this is AWESOME
+# try this: cat foo.clj > >(fgrep java | wc -l) > >(fgrep copy | wc -l)
+setopt multios
+
+if [ -s ~/.zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh ] ; then
+    source ~/.zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+fi
+# Set prompt
+source ~/.zsh/prompt.zsh
+# ES helpers
+source ~/.zsh/elasticsearch.zsh
+# Sonian helpers
+source ~/.zsh/sonian.zsh
+# Linux commands
+source ~/.zsh/linux.zsh
+# OSX commands
+source ~/.zsh/osx.zsh
+# Setting tmux titles
+source ~/.zsh/title.zsh
+

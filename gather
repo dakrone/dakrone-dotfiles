@@ -4,10 +4,8 @@ echo "Gathering dotfiles..."
 
 cp -f -v ~/.vimrc .
 cp -f -v ~/.zshrc .
-mkdir -p .oh-my-zsh/custom
-mkdir -p .oh-my-zsh/themes
-cp -f -v ~/.oh-my-zsh/custom/*.zsh .oh-my-zsh/custom/
-cp -f -v ~/.oh-my-zsh/themes/dakrone.zsh-theme .oh-my-zsh/themes/
+mkdir -p .zsh
+cp -f -rv ~/.zsh .
 cp -f -v ~/.screenrc .
 mkdir -p .vim
 cp -f -rv ~/.vim .
@@ -47,4 +45,5 @@ rm -rf .emacs.d/auto-save-list/
 rm -rf .emacs.d/backups
 rm -rf .emacs.d/tramp
 rm -rf .emacs.d/places
+rm -rf .zsh/zsh-syntax-highlighting/
 

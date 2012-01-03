@@ -128,3 +128,14 @@ function precmd {
     setprompt
 }
 
+# Disable stuff when your term sucks
+function simple() {
+    export DISABLE_AUTO_TITLE=true
+    export ZSH_HIGHLIGHT_MAXLENGTH=0
+}
+
+# Re-enable the pretty things
+function complex() {
+    export DISABLE_AUTO_TITLE=false
+    unset ZSH_HIGHLIGHT_MAXLENGTH
+}

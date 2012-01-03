@@ -9,7 +9,7 @@ rm -rf ~/.zsh
 rm -rf ~/.dakrone
 mkdir ~/.zsh
 cd ~/.zsh && git clone -q git://github.com/zsh-users/zsh-syntax-highlighting.git
-git clone -q --max-depth=1 git://github.com/dakrone/dakrone-dotfiles.git ~/.dakrone
+git clone -q git://github.com/dakrone/dakrone-dotfiles.git ~/.dakrone
 
 # Only bootstrap the emacs stuff if Emacs 24 is installed
 HAVE24=$(emacs --version | grep "Emacs 24")

@@ -1,5 +1,8 @@
 A small collection of my configuration files and Emacs/Vim plugins
 
+Tango terminal colors are recommended with a dark background. Unicode
+is used, so hopefully your terminal supports it.
+
 See the images directory for an example of what some of the stuff looks like.
 
 # ZSH randomness:

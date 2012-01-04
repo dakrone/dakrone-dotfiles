@@ -62,16 +62,17 @@ function +vi-git-stash() {
 #######################################
 # based on http://eseth.org/2009/nethack-term.html#post-nethack-term
 # and http://eseth.org/2010/git-in-zsh.html
-PROMPT_PETS=("λ" "✝" "ƒ" "π" "♮" "§" "☊" "☋" "♿" "♈" "♉" "☩" "☡")
+
+# Define some random pets to wander around
+PROMPT_PETS=("λ" "✝" "ƒ" "π" "♮" "§" "☊" "☋" "♿" "♈" "♉" "☩")
+# Randomly choose one for the session
 export PROMPT_PET=$PROMPT_PETS[$RANDOM%$#PROMPT_PETS+1]
 
 function setprompt() {
     local -a lines infoline
     local x i pet dungeon filler i_width i_pad
 
-    # A domestic animal, the _tame dog_ (_Canis familiaris_)
-    #pet=d
-    # how about a pet lambda instead? :)
+    # how about a pet lambda? :)
     #pet=λ
     pet=$PROMPT_PET
 
@@ -83,6 +84,7 @@ function setprompt() {
     # Username & host
     infoline+=( "${green}%n${gray}" )
     [[ -n $SSH_CLIENT ]] && infoline+=( "${gray}@${green}%m${gray}" )
+    infoline+=( " ‹⋅⋅" )
 
     # Strip color to find text width & make the full-width filler
     zstyle -T ":pr-nethack:" show-pet && i_pad=4 || i_pad=0
@@ -91,7 +93,7 @@ function setprompt() {
     i_width=${#${(%)i_width}} # expand all escapes and count the chars
 
     # the "-2" is for the < and > at each end
-    filler="${gray}‹${(l:$(( $COLUMNS - $i_width - $i_pad - 2))::·:)}›${reset}"
+    filler="${gray}‹${(l:$(( $COLUMNS - $i_width - $i_pad - 2))::⋅:)}›${reset}"
     infoline[2]=( "${infoline[2]} ${filler} " )
 
     ### Now, assemble all prompt lines
@@ -102,7 +104,7 @@ function setprompt() {
     ### Add dungeon floor to each line
     # Allow easy toggling of pet display
     if zstyle -T ":pr-nethack:" show-pet ; then
-        dungeon=${(l:$(( ${#lines} * 3 ))::.:)}
+        dungeon=${(l:$(( ${#lines} * 3 ))::⋅:)}
         dungeon[$[${RANDOM}%${#dungeon}]+1]=$pet
 
         for (( i=1; i < $(( ${#lines} + 1 )); i++ )) ; do
@@ -122,6 +124,8 @@ function setprompt() {
         unfunction precmd
         unfunction preexec
         PROMPT='‹ %~ › %(?..%? )∴ '
+        export DISABLE_AUTO_TITLE=true
+        export ZSH_HIGHLIGHT_MAXLENGTH=0
     fi
 }
 

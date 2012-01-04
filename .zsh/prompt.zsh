@@ -59,6 +59,26 @@ function +vi-git-stash() {
     fi
 }
 
+load () {
+    setopt localoptions noksharrays
+    local -h loadavg
+
+    case "${OSTYPE:l}" in
+        linux*|cygwin*)
+            local -h one five fifteen rest
+            read one five fifteen rest </proc/loadavg
+            loadavg="$one $five $fifteen"
+            ;;
+        openbsd*)
+            loadavg=$(uptime | sed -e 's/.*load averages: \([.[:digit:]]*\), \([.[:digit:]]*\), \([.[:digit:]]\)/\1 \2 \3/')
+            ;;
+        darwin*)
+            loadavg=$(uptime | sed -e 's/.*load averages: \([.[:digit:]]*\) \([.[:digit:]]*\) \([.[:digit:]]\)/\1 \2 \3/')
+            ;;
+    esac
+    print $loadavg
+}
+
 #######################################
 # based on http://eseth.org/2009/nethack-term.html#post-nethack-term
 # and http://eseth.org/2010/git-in-zsh.html
@@ -96,9 +116,14 @@ function setprompt() {
     filler="${gray}‹${(l:$(( $COLUMNS - $i_width - $i_pad - 2))::⋅:)}›${reset}"
     infoline[2]=( "${infoline[2]} ${filler} " )
 
+
     ### Now, assemble all prompt lines
     lines+=( ${(j::)infoline} )
+    # vcs info
     [[ -n ${vcs_info_msg_0_} ]] && lines+=( "${gray}${vcs_info_msg_0_}${reset}" )
+    # system load
+    [[ "$SHOW_LOAD" == "true" ]] && lines+=( "‹$({load})›" )
+    # input prompt
     lines+=( "%(1j.${gray}%j${reset} .)%(0?.${green2}.${red})∴${reset} " )
 
     ### Add dungeon floor to each line

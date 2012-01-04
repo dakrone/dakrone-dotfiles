@@ -22,9 +22,6 @@ export REPORTTIME=5
 # node things
 export NODE_PATH=/usr/local/lib/node:/usr/local/lib/node_modules
 export PATH=$PATH:/usr/local/share/npm/bin
-# npm will install libraries to:
-#   /usr/local/lib/node/.npm
-# To manually remove libraries installed by npm, delete this (hidden!) folder.
 
 # CVS options
 export CVSEDITOR=emacs
@@ -35,115 +32,18 @@ export RSPEC=true
 # ledger
 export LEDGER_FILE=~/data/ledger.dat
 
-# Source z.sh
-if [ -s ~/bin/z.sh ] ; then
-    source ~/bin/z.sh ;
-    alias j='z'
-fi
-
-# rvm stuff (if it exists):
-if [ -s ~/.rvm/scripts/rvm ] ; then
-    source ~/.rvm/scripts/rvm
-    # Set default ruby install
-    rvm default
-fi
-
-# rbenv path
-# export PATH=$HOME/.rbenv/bin:$HOME/.rbenv/shims:$PATH
-# export RBENV_VERSION=1.9.2-p290
-
 # Always override with my personal bin
 export PATH=~/bin:$PATH
 
 # IRBRC for RVM
 export IRBRC=~/.irbrc
 
-# set aliases
-# no spelling correction on mv
-alias mv='nocorrect mv'
-alias cp='nocorrect cp'
-alias mkdir='nocorrect mkdir'
-if ls -F --color=auto >&/dev/null; then
-    alias ls="ls --color=auto -F"
-else
-    alias ls="ls -GF"
-fi
-alias l.='ls -d .*'
-alias ll='ls -lh'
-alias la='ls -alh'
-alias lr='ls -lR'
-# if you have ls++, uncomment this
-# alias ll='ls++'
-# alias la='ls++ -a'
-
-alias less='less -FRX'
-alias grep='grep -i --color=auto'
-alias egrep='egrep -i --color=auto'
-alias cd..='cd ..'
-alias ..='cd ..'
-alias nsmc='cd ~/src/ruby/nsm-console'
-alias serv='cat /etc/services | grep'
-alias pg='ps aux | grep'
-alias dmesg='sudo dmesg'
-alias remhex='ssh -i ~/.ssh/id_rawpacket dakrone@localhost -p 6666'
-alias remblack='ssh -i ~/.ssh/id_rawpacket hinmanm@localhost -p 7777'
-alias remstyx='ssh -i ~/.ssh/id_rawpacket lee@localhost -p 6666'
-alias scsetup='sudo socat -d -d TCP4-listen:6666,fork OPENSSL:typoet.com:443,cert=host.pem,verify=0'
-alias scsetup2='sudo socat -d -d TCP4-listen:7777,fork OPENSSL:blackex:443,cert=host.pem,verify=0'
-alias blackexprox='ssh -i ~/.ssh/id_rawpacket -ND 9999 hinmanm@localhost -p 7777'
-alias blackprox='ssh -i ~/.ssh/id_rawpacket -ND 9999 hinmanm@black'
-alias styxprox='ssh -i ~/.ssh/id_rawpacket -ND 9999 lee@localhost -p 6666'
-alias tcpdump='tcpdump -ttttnnn'
-alias vless=/usr/share/vim/vim72/macros/less.sh
-alias jl='j --l'
-alias jr='j --r'
-alias js='j --s'
-alias givm='gvim'
-alias rsynco='rsync --compress-level=9 -azvvPhSImi'
-# Colored rspec
-alias cspec='spec -c --format specdoc'
-# Tmux stuff
-# force 256 color mode
-alias tmux='tmux -2'
-alias rvim='gvim --remote-tab-silent'
-alias screen='TERM=xterm-color && /opt/local/bin/screen'
-alias todo='ec -n ~/work.org'
-# elinks stuff
-alias el='TERM=xterm-color elinks'
-# autossh stuff
-alias -g ash='autossh'
-# 20 second poll time
+# 20 second poll time for autossh
 export AUTOSSH_POLL=20
-# keep an X connection open, with proxy
-alias keepircprox='autossh -M 21000 irc.sa2s.us -L 6667:irc.sa2s.us:31425'
-# keep an X connection open, without proxy
-alias keepx='autossh -M 22000 x'
-# reverse proxy & keepopen
-alias xprox='ssh -nNT -R 4444:localhost:22 x'
-alias prox='ssh -nNT -R 4444:localhost:22 localhost'
-alias autoxprox='autossh -M 22000 -nNT -R 4444:localhost:22 x'
-alias autoprox='autossh -M 22000 -nNT -R 4444:localhost:22 localhost'
-## ledger aliases
-# balance
-alias bal='ledger -s -V bal'
-# net between assets & liabilities
-alias netbal='ledger -s bal \^assets \^liab'
-# uncleared transactions
-alias uc='ledger -U reg'
-# show budgets starting in march (march is the first month I had complete
-# transactions for the whole month
-alias budget='ledger --budget -b Mar -M reg expenses'
-alias ytdbug='ledger -M -b Mar budget'
 
-# Stolen from Decklin
-alias e='$EDITOR'
-alias m='$PAGER'
-alias h='fc -l'
-alias g='egrep -i'
-alias rg='egrep -ir'
-alias v='egrep -iv'
-alias gf='fgrep -f'
-alias vf='fgrep -vf'
+# word chars
+# default is: *?_-.[]~=/&;!#$%^(){}<>
+export WORDCHARS="*?_-[]~=/&;!#$%^(){}<>"
 
 # history
 HISTFILE=$HOME/.zsh-history
@@ -160,29 +60,12 @@ function maxhead() { head -n `echo $LINES - 5|bc` ; }
 function maxtail() { tail -n `echo $LINES - 5|bc` ; }
 function bgrep() { git branch -a | grep "$*" | sed 's,remotes/,,'; }
 
-# public hostname for ec2 knife stuff
-#function eknife () { knife $@ -a ec2.public_hostname -x lee }
-
-if [[ ! -n $KNIFE_CMD ]]; then
-    export KNIFE_CMD=`which knife`
-fi
-
-function knife
-{
-    if [ $1 = "ssh" ]; then
-        $KNIFE_CMD "$@" -a ec2.public_hostname -x lee
-    else
-        $KNIFE_CMD "$@"
-    fi
-}
-
 # function to fix ssh agent
 function fix-agent() {
     disable -a ls
     export SSH_AUTH_SOCK=`ls -t1 $(find /tmp/ -uid $UID -path \\*ssh\\* -type s 2> /dev/null) | head -1`
     enable -a ls
 }
-alias fa=fix-agent
 
 # colorful listings
 zmodload -i zsh/complist
@@ -200,6 +83,9 @@ unsetopt BG_NICE             # do NOT nice bg commands
 unsetopt correct_all         # don't correct me, I know what I'm doing
 setopt EXTENDED_HISTORY      # puts timestamps in the history
 setopt NO_HUP                # don't send kill to background jobs when exiting
+setopt multios               # allow pipes to be split/duplicated
+# ^^ try this: cat foo.clj > >(fgrep java | wc -l) > >(fgrep copy | wc -l)
+
 
 # Keybindings
 # Emacs keybindings
@@ -221,17 +107,27 @@ bindkey ' ' magic-space    # also do history expansion on space
 bindkey '^I' complete-word # complete on tab, leave expansion to _expand
 bindkey -r '^j' #unbind ctrl-j, I hit it all the time accidentaly
 
-# word chars
-# default is: *?_-.[]~=/&;!#$%^(){}<>
-export WORDCHARS="*?_-[]~=/&;!#$%^(){}<>"
+## Sourcing things
 
-# this is AWESOME
-# try this: cat foo.clj > >(fgrep java | wc -l) > >(fgrep copy | wc -l)
-setopt multios
+# Source z.sh if available
+if [ -s ~/bin/z.sh ] ; then
+    source ~/bin/z.sh ;
+fi
 
+# rvm stuff (if it exists):
+if [ -s ~/.rvm/scripts/rvm ] ; then
+    source ~/.rvm/scripts/rvm
+    # Set default ruby install
+    rvm default
+fi
+
+# Use zsh syntax highlighting if available
 if [ -s ~/.zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh ] ; then
     source ~/.zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 fi
+
+# Alias things
+source ~/.zsh/aliases.zsh
 # Set prompt
 source ~/.zsh/prompt.zsh
 # ES helpers
@@ -245,3 +141,11 @@ source ~/.zsh/osx.zsh
 # Setting tmux titles
 source ~/.zsh/title.zsh
 
+# function used to display some thing on shell start
+function startup () {
+    echo "› $({uptime}) "
+    echo "› $({df -Ph | grep --colour=never '^\/'})"
+}
+
+# run the startup commands
+startup

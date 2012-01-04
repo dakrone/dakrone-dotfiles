@@ -144,7 +144,7 @@ source ~/.zsh/title.zsh
 # function used to display some thing on shell start
 function startup () {
     echo "› $({uptime}) "
-    echo "› $({df -Ph | grep --colour=never '^\/'})"
+    df -Ph | grep --colour=never '^\/' | sed -e 's/\(.*\)/› \1/'
 }
 
 # run the startup commands

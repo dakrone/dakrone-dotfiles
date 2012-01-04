@@ -4,6 +4,7 @@ OS=$(uname)
 export PATH=/usr/local/bin:$PATH
 export PATH=$PATH:/usr/local/sbin:/usr/libexec:/opt/local/sbin
 export PATH=$PATH:/usr/local/mysql/bin:~/.cabal/bin
+export PATH=$PATH:/usr/local/git/libexec/git-core
 
 # Java opts (leiningen uses these)
 #export JAVA_OPTS="-Dfile.encoding=UTF-8 -Dslime.encoding=UTF-8 -Xmx512m -XX:+HeapDumpOnOutOfMemoryError"
@@ -189,6 +190,10 @@ zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
 zstyle ':completion:*' hosts $ssh_hosts
 zstyle ':completion:*:my-accounts' users-hosts $my_accounts
 zstyle ':completion:*:other-accounts' users-hosts $other_accounts
+
+# completion
+autoload -U compinit
+compinit
 
 ### OPTIONS ###
 unsetopt BG_NICE             # do NOT nice bg commands

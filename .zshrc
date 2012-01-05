@@ -44,6 +44,9 @@ export AUTOSSH_POLL=20
 # don't show load in prompt by default
 export SHOW_LOAD=false
 
+# start with a pre-title of nothing
+export PRETITLE=""
+
 # word chars
 # default is: *?_-.[]~=/&;!#$%^(){}<>
 export WORDCHARS="*?_-[]~=/&;!#$%^(){}<>"

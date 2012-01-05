@@ -1,4 +1,4 @@
-# Lifted from OMZ, this doesn't work yet
+# Lifted from OMZ
 function title {
     [ "$DISABLE_AUTO_TITLE" != "true" ] || return
     if [[ "$TERM" == screen* ]]; then
@@ -17,7 +17,7 @@ TERM_TITLE_IDLE="%n@%m: %~"
 
 #Appears when you have the prompt
 function termsupport_precmd {
-    title $TERM_TAB_TITLE_IDLE $TERM_TITLE_IDLE
+    title "$PRETITLE$TERM_TAB_TITLE_IDLE" $TERM_TITLE_IDLE
 }
 
 function notitle () { export DISABLE_AUTO_TITLE=true }
@@ -30,7 +30,7 @@ function termsupport_preexec {
     #cmd name only, or if this is sudo or ssh, the next cmd
     local CMD=${1[(wr)^(*=*|sudo|ssh|-*)]}
     #echo "setting title to $CMD"
-    title "$CMD" "%100>...>$2%<<"
+    title "$PRETITLE$CMD" "%100>...>$2%<<"
 }
 
 autoload -U add-zsh-hook

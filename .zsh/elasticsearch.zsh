@@ -50,3 +50,7 @@ function make-clean-shards () {
     curl -s p.draines.com/clean-shards.sh | zsh
 }
 
+function escolor () {
+    es indices > >(fgrep red | wc -l | awk '{ print "red: " $0 }') > >(fgrep yellow | wc -l | awk '{ print "yellow: " $0 }') > >(fgrep green | wc -l | awk '{ print "green: " $0 }')
+}
+

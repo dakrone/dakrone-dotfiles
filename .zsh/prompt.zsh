@@ -112,8 +112,8 @@ function setprompt() {
     i_width=${(S)infoline//\%\{*\%\}} # search-and-replace color escapes
     i_width=${#${(%)i_width}} # expand all escapes and count the chars
 
-    # the "-2" is for the < and > at each end
-    filler="${gray}‹${(l:$(( $COLUMNS - $i_width - $i_pad - 2))::⋅:)}›${reset}"
+    # the "-1" is for the < and > at each end
+    filler="${gray}‹${(l:$(( $COLUMNS - $i_width - $i_pad - 1))::⋅:)}›${reset}"
     infoline[2]=( "${infoline[2]} ${filler} " )
 
 

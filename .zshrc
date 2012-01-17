@@ -73,16 +73,24 @@ function fix-agent() {
     enable -a ls
 }
 
-# colorful listings
-zmodload -i zsh/complist
+# zsh completion
+zmodload zsh/complist
+autoload -U compinit && compinit
+
 zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
 zstyle ':completion:*' hosts $ssh_hosts
 zstyle ':completion:*:my-accounts' users-hosts $my_accounts
 zstyle ':completion:*:other-accounts' users-hosts $other_accounts
+zstyle ':completion:::::' completer _complete _approximate
+zstyle -e ':completion:*:approximate:*' max-errors 'reply=( $(( ($#PREFIX + $#SUFFIX) / 3 )) )'
+zstyle ':completion:*:descriptions' format "- %d -"
+zstyle ':completion:*:corrections' format "- %d - (errors %e})"
+zstyle ':completion:*:default' list-prompt '%S%M matches%s'
+zstyle ':completion:*' group-name ''
+zstyle ':completion:*:manuals' separate-sections true
+zstyle ':completion:*:manuals.(^1*)' insert-sections true
+zstyle ':completion:*' verbose yes
 
-# completion
-autoload -U compinit
-compinit
 
 ### OPTIONS ###
 unsetopt BG_NICE             # do NOT nice bg commands

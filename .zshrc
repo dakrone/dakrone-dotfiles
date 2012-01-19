@@ -74,6 +74,10 @@ function fix-agent() {
 }
 
 # zsh completion
+if [ -d ~/.zsh/zsh-completions ] ; then
+    fpath=(~/.zsh/zsh-completions $fpath)
+fi
+
 zmodload zsh/complist
 autoload -U compinit && compinit
 

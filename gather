@@ -46,4 +46,5 @@ rm -rf .emacs.d/backups
 rm -rf .emacs.d/tramp
 rm -rf .emacs.d/places
 rm -rf .zsh/zsh-syntax-highlighting/
+rm -rf .zsh/zsh-completions/
 

@@ -83,3 +83,9 @@ alias rg='egrep -ir'
 alias v='egrep -iv'
 alias gf='fgrep -f'
 alias vf='fgrep -vf'
+
+# knife stuff
+alias -g kssh='knife sq ssh'
+alias -g kps='knife sq ps'
+alias -g kst='knife sq status'
+alias -g kex='knife sq exec'

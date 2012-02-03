@@ -267,6 +267,23 @@
 
 
 
+;; ==== URL jumping ====
+(defun browse-last-url-in-brower ()
+  (interactive)
+  (save-excursion
+    (let ((ffap-url-regexp
+           (concat
+            "\\("
+            "news\\(post\\)?:\\|mailto:\\|file:"
+            "\\|"
+            "\\(ftp\\|https?\\|telnet\\|gopher\\|www\\|wais\\)://"
+            "\\).")))
+      (ffap-next-url t t))))
+
+(global-set-key (kbd "C-c u") 'browse-last-url-in-brower)
+
+
+
 ;; ==== Ispell/Aspell flyspell stuff ====
 ;; brew install aspell --lang=en
 (setq-default ispell-program-name "/usr/local/bin/aspell")

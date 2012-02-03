@@ -1,4 +1,7 @@
 (1
+ (adaptive-wrap .
+		[(0 1)
+		 nil "Smart line-wrapping with wrap-prefix" single])
  (all .
       [(1 0)
        nil "Edit all lines matching a given regexp" single])
@@ -14,6 +17,9 @@
  (djvu .
        [(0 5)
 	nil "edit and view Djvu files via djvused" single])
+ (ediprolog .
+	    [(1 0)
+	     nil "Emacs Does Interactive Prolog" single])
  (eldoc-eval .
 	     [(0 1)
 	      nil "Enable eldoc support when minibuffer is in use." single])
@@ -45,10 +51,10 @@
        [(3 20)
 	nil "Authoring and publishing tool" tar])
  (oauth2 .
-	 [(0 1)
+	 [(0 2)
 	  nil "OAuth 2.0 Authorization Protocol" single])
  (org .
-      [(20111229)
+      [(20120202)
        nil "Outline-based notes management and organizer" tar])
  (quarter-plane .
 		[(0 1)
@@ -66,7 +72,7 @@
 	    [(3 0 3)
 	     nil "Major mode for SiSU markup text" single])
  (svg-clock .
-	    [(0 2)
+	    [(0 3)
 	     nil "Analog clock using Scalable Vector Graphics" single])
  (undo-tree .
 	    [(0 3 1)

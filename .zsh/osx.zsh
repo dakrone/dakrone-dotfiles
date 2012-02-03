@@ -2,7 +2,7 @@ OS=$(uname)
 
 if [[ $OS == "Darwin" ]]; then
 
-    export JAVA_HOME=/System/Library/Frameworks/JavaVM.framework/Versions/1.6/Home
+    #export JAVA_HOME=/System/Library/Frameworks/JavaVM.framework/Versions/1.6/Home
     #export JAVA_HOME=/Library/Java/JavaVirtualMachines/1.7.0.jdk/Contents/Home
 
 

@@ -133,11 +133,14 @@ if [ -s ~/bin/z.sh ] ; then
 fi
 
 # rvm stuff (if it exists):
-if [ -s ~/.rvm/scripts/rvm ] ; then
-    source ~/.rvm/scripts/rvm
-    # Set default ruby install
-    rvm default
-fi
+# if [ -s ~/.rvm/scripts/rvm ] ; then
+#     source ~/.rvm/scripts/rvm
+#     # Set default ruby install
+#     rvm default
+# fi
+
+# rbenv stuff
+eval "$(rbenv init -)"
 
 # Use zsh syntax highlighting if available
 if [ -s ~/.zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh ] ; then

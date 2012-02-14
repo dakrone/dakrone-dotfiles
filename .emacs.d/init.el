@@ -73,7 +73,6 @@
            (replace-regexp-in-string "\"" "'" message)
            (if sticky "yes" "no"))))
 
-
 ;; ==== ERC stuff ====
 ;; Only track my nick(s)
 (defadvice erc-track-find-face
@@ -135,7 +134,7 @@
            erc-flood-protect nil
            erc-pals '("hiredman" "danlarkin" "drewr" "pjstadig" "scgilardi"
                       "joegallo" "jimduey" "leathekd" "rhickey" "zkim" "steve"
-                      "imotov" "joekinsella" "craig")
+                      "imotov" "joekinsella" "craig" "technomancy")
            erc-ignore-list '("sonian-chef")
            erc-autojoin-channels-alist
            '(("freenode.net"

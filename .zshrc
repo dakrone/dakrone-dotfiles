@@ -140,7 +140,9 @@ fi
 # fi
 
 # rbenv stuff
-eval "$(rbenv init -)"
+if [ -s ~/.rbenv ]; then
+    eval "$(rbenv init -)"
+fi
 
 # Use zsh syntax highlighting if available
 if [ -s ~/.zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh ] ; then

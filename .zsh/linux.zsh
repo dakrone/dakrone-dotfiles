@@ -17,5 +17,8 @@ if [[ $OS == "Linux" ]]; then
 
     # awesome
     alias gps='ps -eo cmd,fname,pid,pcpu,time --sort=-pcpu | head -n 11 && echo && ps -eo cmd,fname,pid,pmem,rss --sort=-rss | head -n 9'
+
+    # need this for gem path on my pair.io machine
+    export PATH=$PATH:/var/lib/gems/1.8/bin
 fi
 

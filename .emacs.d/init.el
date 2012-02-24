@@ -33,6 +33,8 @@
 (require 'yaml-mode)
 (add-to-list 'auto-mode-alist '("\\.yml$" . yaml-mode))
 (add-to-list 'auto-mode-alist '("\\.yaml$" . yaml-mode))
+;; javap mode
+(require 'javap-mode)
 
 
 
@@ -81,9 +83,10 @@
       (setq ad-return-value (intern "erc-current-nick-face"))
     ad-do-it))
 
-(setq erc-keywords '("dakrone"
-                     "dakrone_"
-                     "dakrone__"))
+(setq erc-keywords '("dakrone" "dakrone_" "dakrone__"
+                     "clj-http"
+                     "cheshire" "Cheshire"
+                     "clojure-opennlp"))
 ;;(setq erc-hide-list '("JOIN" "PART" "QUIT"))
 (setq erc-track-exclude-types '("JOIN" "NICK" "PART" "QUIT" "MODE"
                                 "324" "329" "332" "333" "353" "477"))
@@ -121,6 +124,7 @@
 (eval-after-load 'erc
   '(progn
      (setq erc-fill-column 75
+           erc-server-coding-system '(utf-8 . utf-8)
            erc-hide-list '("JOIN"
                            "PART"
                            "QUIT"
@@ -129,17 +133,18 @@
            erc-track-exclude-types (append '("324" "329" "332" "333"
                                              "353" "477" "MODE")
                                            erc-hide-list)
-           erc-nick '("dakrone" "dakrone_")
+           erc-nick '("dakrone" "dakrone_" "dakrone__")
            erc-autojoin-timing :ident
            erc-flood-protect nil
            erc-pals '("hiredman" "danlarkin" "drewr" "pjstadig" "scgilardi"
                       "joegallo" "jimduey" "leathekd" "rhickey" "zkim" "steve"
-                      "imotov" "joekinsella" "craig" "technomancy")
+                      "imotov" "joekinsella" "craig" "technomancy" "ddillinger")
            erc-ignore-list '("sonian-chef")
            erc-autojoin-channels-alist
            '(("freenode.net"
               "#clojure"
-              "#rawpacket"))
+              "#clojerks"
+              "#leiningen"))
            erc-prompt-for-nickserv-password nil)
      (require 'erc-services)
      (require 'erc-spelling)
@@ -260,7 +265,7 @@
   (let ((b (if mark-active (min (point) (mark)) (point-min)))
         (e (if mark-active (max (point) (mark)) (point-max))))
     (shell-command-on-region b e
-     "python -mjson.tool" (current-buffer) t)))
+                             "python -mjson.tool" (current-buffer) t)))
 
 (global-set-key (kbd "C-c C-f") 'beautify-json)
 

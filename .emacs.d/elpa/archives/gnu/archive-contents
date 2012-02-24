@@ -5,6 +5,9 @@
  (all .
       [(1 0)
        nil "Edit all lines matching a given regexp" single])
+ (ampc .
+       [(0 1 1)
+	nil "Asynchronous Music Player Controller" single])
  (auctex .
 	 [(11 86)
 	  nil "Integrated environment for *TeX*" tar])
@@ -26,6 +29,9 @@
  (epoch-view .
 	     [(0 0 1)
 	      nil "Minor mode to visualize epoch timestamps" single])
+ (f90-interface-browser .
+			[(1 0)
+			 nil "Parse and browse f90 interfaces" single])
  (jgraph-mode .
 	      [(0 0)
 	       nil "Major mode for Jgraph files" single])
@@ -54,7 +60,7 @@
 	 [(0 2)
 	  nil "OAuth 2.0 Authorization Protocol" single])
  (org .
-      [(20120202)
+      [(20120216)
        nil "Outline-based notes management and organizer" tar])
  (quarter-plane .
 		[(0 1)
@@ -72,15 +78,18 @@
 	    [(3 0 3)
 	     nil "Major mode for SiSU markup text" single])
  (svg-clock .
-	    [(0 3)
+	    [(0 4)
 	     nil "Analog clock using Scalable Vector Graphics" single])
  (undo-tree .
-	    [(0 3 1)
+	    [(0 3 3)
 	     nil "Treat undo history as a tree" single])
  (uni-confusables .
 		  [(0 1)
 		   nil "Unicode confusables table" tar])
  (windresize .
 	     [(0 1)
-	      nil "Resize windows interactively" single]))
+	      nil "Resize windows interactively" single])
+ (xclip .
+	[(1 0)
+	 nil "Emacs Interface to XClip" single]))
 

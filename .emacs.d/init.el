@@ -130,6 +130,7 @@
                            "QUIT"
                            ;;"NICK"
                            )
+           erc-ignore-list '("sonian-chef")
            erc-track-exclude-types (append '("324" "329" "332" "333"
                                              "353" "477" "MODE")
                                            erc-hide-list)
@@ -138,7 +139,8 @@
            erc-flood-protect nil
            erc-pals '("hiredman" "danlarkin" "drewr" "pjstadig" "scgilardi"
                       "joegallo" "jimduey" "leathekd" "rhickey" "zkim" "steve"
-                      "imotov" "joekinsella" "craig" "technomancy" "ddillinger")
+                      "imotov" "joekinsella" "craig" "technomancy" "ddillinger"
+                      "yazirian")
            erc-ignore-list '("sonian-chef")
            erc-autojoin-channels-alist
            '(("freenode.net"
@@ -559,3 +561,28 @@
   )
 (color-theme-dakrone)
 ;;(set-face-foreground 'paren-face "DimGrey")
+
+
+
+;; ==== Eclim stuff ====
+;; (add-to-list 'load-path (expand-file-name "~/src/elisp/emacs-eclim"))
+;; only add the vendor path when you want to use the libraries
+;; provided with emacs-eclim
+;; (add-to-list 'load-path (expand-file-name "~/src/elisp/emacs-eclim/vendor"))
+;; (require 'eclim)
+
+;; (setq eclim-auto-save t)
+;; (global-eclim-mode)
+
+;; (setq help-at-pt-display-when-idle t)
+;; (setq help-at-pt-timer-delay 0.1)
+;; (help-at-pt-set-timer)
+
+;; regular auto-complete initialization
+;; (require 'auto-complete-config)
+;; (ac-config-default)
+
+;; add the emacs-eclim source
+;; (require 'ac-emacs-eclim-source)
+;; (add-hook 'eclim-mode-hook
+;;           (lambda () (add-to-list 'ac-sources 'ac-source-emacs-eclim)))

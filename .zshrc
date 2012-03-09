@@ -163,6 +163,8 @@ source ~/.zsh/linux.zsh
 source ~/.zsh/osx.zsh
 # Setting tmux titles
 source ~/.zsh/title.zsh
+# Misc funcitions
+source ~/.zsh/misc.zsh
 
 # function used to display some thing on shell start
 function startup () {

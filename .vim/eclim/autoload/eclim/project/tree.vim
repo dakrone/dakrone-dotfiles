@@ -4,7 +4,7 @@
 "
 " License:
 "
-" Copyright (C) 2005 - 2010  Eric Van Dewoestine
+" Copyright (C) 2005 - 2011  Eric Van Dewoestine
 "
 " This program is free software: you can redistribute it and/or modify
 " it under the terms of the GNU General Public License as published by
@@ -25,9 +25,13 @@
   if !exists('g:EclimProjectTreeActions')
     let g:EclimProjectTreeActions = [
         \ {'pattern': '.*', 'name': 'Split', 'action': 'split'},
+        \ {'pattern': '.*', 'name': 'VSplit', 'action': 'vsplit'},
         \ {'pattern': '.*', 'name': 'Tab', 'action': 'tablast | tabnew'},
         \ {'pattern': '.*', 'name': 'Edit', 'action': 'edit'},
       \ ]
+  endif
+  if !exists('g:EclimProjectTreePathEcho')
+    let g:EclimProjectTreePathEcho = 1
   endif
 " }}}
 
@@ -73,10 +77,11 @@ function! eclim#project#tree#ProjectTree(...)
     let dir = eclim#project#util#GetProjectRoot(name)
     if dir != ''
       call add(dirs, dir)
+      let index += 1
     else
-      call remove(names_copy, name)
+      call eclim#util#EchoWarning('Project not found: ' . name)
+      call remove(names_copy, index)
     endif
-    let index += 1
   endfor
   let names = names_copy
 
@@ -248,6 +253,7 @@ endfunction " }}}
 function! s:Mappings()
   nnoremap <buffer> <silent> E :call <SID>OpenFile('edit')<cr>
   nnoremap <buffer> <silent> S :call <SID>OpenFile('split')<cr>
+  nnoremap <buffer> <silent> \| :call <SID>OpenFile('vsplit')<cr>
   nnoremap <buffer> <silent> T :call <SID>OpenFile('tablast \| tabnew')<cr>
   nnoremap <buffer> <silent> F :call <SID>OpenFileName()<cr>
 
@@ -258,6 +264,7 @@ function! s:Mappings()
       \ 'o - toggle dir fold, choose file open action',
       \ 'E - open with :edit',
       \ 'S - open in a new split window',
+      \ '| (pipe) - open in a new vertical split window',
       \ 'T - open in a new tab',
       \ 'R - refresh directory',
       \ 'i - view file info',
@@ -287,13 +294,33 @@ function! s:InfoLine()
       exec lnum . ',' . lnum . 'delete _'
     endif
 
-    let info = eclim#vcs#util#GetInfo(b:roots[0])
-    if info != ''
-      call append(line('$') - 1, '" ' . info)
-    endif
+    let GetInfo = function('vcs#util#GetInfo')
+    try
+      let info = GetInfo(b:roots[0])
+      if info != ''
+        call append(line('$') - 1, '" ' . info)
+      endif
+    catch /E117/
+      " noop if the function wasn't found
+    endtry
   endif
   call setpos('.', pos)
   setlocal nomodifiable
+endfunction " }}}
+
+" s:PathEcho() {{{
+function! s:PathEcho()
+  if mode() != 'n'
+    return
+  endif
+
+  let path = eclim#tree#GetPath()
+  let path = substitute(path, eclim#tree#GetRoot(), '', '')
+  if path !~ '^"'
+    call eclim#util#WideMessage('echo', path)
+  else
+    call eclim#util#WideMessage('echo', '')
+  endif
 endfunction " }}}
 
 " s:OpenFile(action) " {{{
@@ -333,12 +360,15 @@ function! eclim#project#tree#ProjectTreeSettings()
   call eclim#tree#RegisterDirAction(function('eclim#project#tree#InjectLinkedResources'))
 
   if exists('s:TreeSettingsFunction')
-    let Settings = function(s:TreeSettingsFunction)
-    call Settings()
+    let l:Settings = function(s:TreeSettingsFunction)
+    call l:Settings()
   endif
 
   augroup eclim_tree
     autocmd User <buffer> call <SID>InfoLine()
+    if g:EclimProjectTreePathEcho
+      autocmd CursorMoved <buffer> call <SID>PathEcho()
+    endif
   augroup END
 endfunction " }}}
 
@@ -359,7 +389,7 @@ function! eclim#project#tree#OpenProjectFile(cmd, cwd, file)
   endif
 
   " if the buffer is a no name and action is split, use edit instead.
-  if cmd == 'split' && expand('%') == '' &&
+  if cmd =~ 'split' && expand('%') == '' &&
    \ !&modified && line('$') == 1 && getline(1) == ''
     let cmd = 'edit'
   endif

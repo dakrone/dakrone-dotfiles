@@ -131,6 +131,16 @@ in the eclipse tree and then selecting:
 
 [image]
 
+Please note that if you want to use supported eclipse features (code
+completion, validation, searching, etc.) from the embedded gvim
+editor, you must have the eclimd view open.
+
+Note: If you'd like to have the embedded gvim editor as the default for
+  one or more file types, you can configure it to be in your eclipse
+  preferences:
+
+     Window > Preferences > General > Editors > File Associations
+
 The eclim installer should take care of locating your gvim
 installation for use inside of eclipse, but in the event that it could
 not locate it, you can set the location and other settings via the
@@ -247,6 +257,9 @@ which you would like to include.
 Ex.
 
 >
+
+   # Bind eclimd to all interfaces
+   nailgun.server.host=0.0.0.0
 
    # Specifies the port that nailgun / eclimd listens on for client requests.
    nailgun.server.port=10012

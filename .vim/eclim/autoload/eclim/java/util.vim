@@ -5,7 +5,7 @@
 "
 " License:
 "
-" Copyright (C) 2005 - 2010  Eric Van Dewoestine
+" Copyright (C) 2005 - 2011  Eric Van Dewoestine
 "
 " This program is free software: you can redistribute it and/or modify
 " it under the terms of the GNU General Public License as published by
@@ -30,6 +30,8 @@
   let s:update_command = '-command java_src_update -p "<project>" -f "<file>"'
   let s:command_src_exists = '-command java_src_exists -f "<file>"'
   let s:command_list_installs = '-command java_list_installs'
+  let s:command_classpath = '-command java_classpath -p "<project>"'
+  let s:command_read_class = '-command java_class_prototype -c <class>'
 
   let s:import_pattern = '^\s*import\_s\+<import>\_s*;'
 " }}}
@@ -344,39 +346,40 @@ function! eclim#java#util#Java(classname, args)
   if len(args)
     let command .= ' -a'
     for arg in args
+      let arg = substitute(arg, '^-', '\\-', '')
       let command .= ' "' . escape(arg, '"') . '"'
     endfor
   endif
 
-  call eclim#util#TempWindow('[Java Output]', [])
+  let results = split(eclim#util#Exec(command, 1), "\n")
+  call eclim#util#TempWindow('[Java Output]', results)
+  let b:project = project
 
-  let outfile = g:EclimTempDir . '/eclim_java_output.txt'
+  if exists(":Java") != 2
+    command -buffer -nargs=* Java :call eclim#java#util#Java('', <q-args>)
+  endif
+endfunction " }}}
 
-  if has('win32') || has('win64') || has('win32unix')
-    if executable('tee')
-      let command .= ' ^| tee "' . eclim#cygwin#CygwinPath(outfile) . '" 2>&1"'
-    else
-      let command .= ' >"' . outfile . '" 2>&1"'
-    endif
-  else
-    let command .= ' 2>&1| tee "' . outfile . '"'
+" Classpath(...) {{{
+function! eclim#java#util#Classpath(...)
+  if !eclim#project#util#IsCurrentFileInProject()
+    return
   endif
 
-  " ensure the temp window was opened (test for empty window vs dealing with
-  " all the escaping necessary to test against buffer name).
-  if len(getline(1)) == 0 && line('$') == 1
-    call eclim#util#Exec(command)
-    setlocal modifiable noreadonly
-    exec 'silent read ' . escape(outfile, ' ')
-    1,1delete _
-    $,$delete _
-    setlocal nomodifiable readonly
-    let b:project = project
-
-    if exists(":Java") != 2
-      command -buffer -nargs=* Java :call eclim#java#util#Java('', <q-args>)
+  let project = eclim#project#util#GetCurrentProjectName()
+  let command = s:command_classpath
+  let command = substitute(command, '<project>', project, '')
+  for arg in a:000
+    if arg == '\n'
+      let arg = "\n"
     endif
+    let command .= " \"" . arg . "\""
+  endfor
+  let result = eclim#ExecuteEclim(command)
+  if result == '0'
+    return
   endif
+  call eclim#util#Echo(result)
 endfunction " }}}
 
 " ListInstalls() {{{
@@ -390,6 +393,35 @@ function! eclim#java#util#ListInstalls()
     return
   endif
   call eclim#util#Echo(join(installs, "\n"))
+endfunction " }}}
+
+" ReadClassPrototype() {{{
+" Function for BufReadCmd autocmd which generates a prototype for a class
+" file.
+function! eclim#java#util#ReadClassPrototype()
+  let file = substitute(expand('%:p'), '\', '/', 'g')
+  let command = s:command_read_class
+  let command = substitute(command, '<class>', expand('%:t:r'), '')
+  let command .= ' -f "' . file . '"'
+
+  let file = eclim#ExecuteEclim(command)
+  if string(file) != '0'
+    let bufnum = bufnr('%')
+    if has('win32unix')
+      let file = eclim#cygwin#CygwinPath(file)
+    endif
+    silent exec "keepjumps edit! " . escape(file, ' ')
+
+    exec 'bdelete ' . bufnum
+
+    silent exec "doautocmd BufReadPre " . file
+    silent exec "doautocmd BufReadPost " . file
+
+    call eclim#util#DelayedCommand('set ft=java')
+    setlocal readonly
+    setlocal nomodifiable
+    setlocal noswapfile
+  endif
 endfunction " }}}
 
 " CommandCompleteProject(argLead, cmdLine, cursorPos) {{{

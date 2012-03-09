@@ -139,27 +139,4 @@ python and place your mappings there (:help ftplugin-name).
 
   <
 
-*VimScriptMappings*
-
-
-Vim Script Mappings
-===================
-
-Here are some mappings for the Vim script funtionality provided by
-eclim.  To make use of these mappings, simply create a ftplugin file
-for Vim and place your mappings there (:help ftplugin-name).
-
-- Perform a context sensitive search for the element under the cursor
-  using <enter>.
-
-  See |:FindByContext| for more info.
-
-  >
-     " avoid overwriting <cr> mapping in 'command-line' buffer (:h cmdwin).
-     if bufname('%') !~ '^\(command-line\|\[Command Line\]\)$'
-       nnoremap <silent> <buffer> <cr> :FindByContext<cr>
-     endif
-
-  <
-
 vim:ft=eclimhelp

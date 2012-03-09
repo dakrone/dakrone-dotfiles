@@ -4,6 +4,8 @@
 Javascript
 **********
 
+- Javascript Validation ()
+  - Configuration (#configuration)
 - Javascript Validation (|vim-javascript-validate|)
 
 vim:ft=eclimhelp

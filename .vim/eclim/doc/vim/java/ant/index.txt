@@ -4,6 +4,12 @@
 Ant
 ***
 
+- Ant Execution ()
+  - Configuration (#configuration)
+- Ant Code Completion ()
+- Ant File Validation ()
+  - Configuration (#configuration)
+- Ant Documentation Lookup ()
 - Ant Execution (|vim-java-ant-execute|)
 
 - Ant Code Completion (|vim-java-ant-complete|)

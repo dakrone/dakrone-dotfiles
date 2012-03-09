@@ -26,9 +26,4 @@ distributions:
 - Arch: aur (eclim) (http://aur.archlinux.org/packages.php?ID=7291),
   aur (eclim-git) (http://aur.archlinux.org/packages.php?ID=33120)
 
-- Gentoo: sunrise overlay (http://gpo.zugaina.org/dev-util/eclim)
-
-- Fedora (12.x and maybe higher): grond repository
-  (http://www.grond.org/downloads/repository/grond/fedora/)
-
 vim:ft=eclimhelp

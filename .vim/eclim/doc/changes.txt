@@ -1,6 +1,197 @@
 History of Changes
 ******************
 
+*1.7.2*
+
+
+1.7.2 (Sep. 10, 2011)
+=====================
+
+Bug Fixes:
+   - Various small bug fixes.
+
+Installer:
+   - Fixed deadlock on the vim install dir pane for java 7.
+
+Eclipse:
+   - Disabled listening for change events on embedded gvim. Should fix
+     most causes of gvim crashing.
+
+   - Other improvements for embedded gvim support.
+
+Eclimd:
+   - Improved OSX detection.
+
+   - Fix for passing jvm args to java when supplied as args to eclimd
+     script.
+
+Java:
+   - Fix passing of dash prefixed :Java args (ex. -p) to the class to
+     be run.
+
+Php:
+   - Improved completion of magic properties.
+
+   - Support new php 5.3 version in pdt.
+
+*1.7.1*
+
+
+1.7.1 (Jul. 02, 2011)
+=====================
+
+Bug Fixes:
+   - Fixed org.eclipse.swt.SWTError: Not implemented [multiple
+     displays] error when starting the eclipse gui after running
+     eclimd.
+
+Eclipse:
+   - Enable vim embedding on Solaris, AIX, and HP-UX versions of
+     eclipse.
+
+*1.7.0*
+
+
+1.7.0 (Jun. 26, 2011)
+=====================
+
+Bug Fixes:
+   - Bug fixes for eclipse 3.7 (Indigo) compatability.
+
+   - Other bug fixes.
+
+Eclipse:
+   - Eclim now requires the latest version of eclipse (Indigo, 3.7).
+
+*1.6.3*
+
+
+1.6.3 (Apr. 16, 2011)
+=====================
+
+Bug Fixes:
+   - Fixed bug where one or more closed projects would prevent working
+     with open projects.
+
+   - Other small bug fixes.
+
+Installer:
+   - Prevent possible OutOfMemoryError when invoking eclipse to
+     install plugin dependencies by setting a larger heap space.
+
+Java:
+   - Added |:JavaClasspath| to echo the project's current classpath.
+
+*1.6.2*
+
+
+1.6.2 (Feb. 26, 2011)
+=====================
+
+Bug Fixes:
+   - Fixed to use %USERPROFILE% on windows to retrieve the user home
+     (fixes several possible issues including "Unable to determine
+     your eclipse workspace").
+
+   - Various other bug fixes.
+
+Common:
+   - Added rudimentary auto generated menu items for gvim (can be
+     disabled via g:EclimMenus (|g-eclimmenus|)).
+
+   - Added support for displaying project info (|projectinfo|) vim's
+     status line (contributed by Brendan W. McAdams
+     (http://github.com/bwmcadams)).
+
+C/C++
+   - Updated context search to greatly improve performance in some
+     cases.
+
+Python:
+   - Updated all embedded python logic to be compatible with python
+     2.6 and higher.
+
+     Note: Support for vim embedded python 2.5 or less no longer
+       supported.
+
+Other:
+   - All relative commands (:SplitRelative, :EditRelative, etc), along
+     with :Split and :Tabnew broken out from eclim to
+     http://github.com/ervandew/relative
+     (http://github.com/ervandew/relative).
+
+   - Archive viewing support broken out from eclim to
+     http://github.com/ervandew/archive
+     (http://github.com/ervandew/archive).
+
+   - Maximize/Minimize vim window support broken out from eclim to
+     http://github.com/ervandew/maximize
+     (http://github.com/ervandew/maximize).
+
+   - Sgml (html, xml, etc.) end tag completion broken out from eclim
+     to http://github.com/ervandew/sgmlendtag
+     (http://github.com/ervandew/sgmlendtag).
+
+   - Vcs support broken out from eclim to
+     http://github.com/ervandew/vcs (http://github.com/ervandew/vcs).
+
+   - Taglist support broken out from eclim to
+     http://github.com/ervandew/taglisttoo
+     (http://github.com/ervandew/taglisttoo).
+
+   - Regex testing support (:JavaRegex, :PythonRegex) broken out from
+     eclim to http://github.com/ervandew/regex
+     (http://github.com/ervandew/regex).
+
+   - Vim script help lookup along with user defined
+     variable/command/function definition/references lookup support
+     broken out from eclim to http://github.com/ervandew/lookup
+     (http://github.com/ervandew/lookup).
+
+*1.6.1*
+
+
+1.6.1 (Oct. 23, 2010)
+=====================
+
+Bug Fixes:
+   - Fix for |:ProjectProblems| command when any filters have been set
+     from the eclipse gui.
+
+   - Merged in JRuby's improvements to nailgun's build scripts to
+     increase compatibility with more platforms.
+
+   - Updated the installer and eclimd to not use the eclipse binary
+     and instead run the launcher jar directly.  Removes the need to
+     locate the binary which varies by platform and some eclipse
+     distributions, and fixes issues with options located in the
+     eclipse.ini that are only supported by the IDE app.
+
+   - Various other bug fixes.
+
+Eclim:
+   - Add workspace locking to prevent colliding with other running
+     eclipse instances on the same workspace.
+
+Common:
+   - Added a |:TreeTab| command like |:ProjectTab| but for any
+     arbitrary directory.
+
+   - Added a |:BuffersToggle| command to toggle whether the eclim
+     buffers windows is open or closed.
+
+   - Refactored Vcs support, including a new :VcsLog layout.
+
+     Note: Support for cvs and subversion have been discontinued.
+
+Python:
+   - Upgraded included rope version to 0.9.3.
+
+   - Improved the detection of the completion entries types.
+
+Php:
+   - Fixed validating php files in eclipse 3.6.1.
+
 *1.6.0*
 
 
@@ -153,8 +344,7 @@ Common:
    - Added setting to allow |:ProjectTree| instances to be shared
      across vim tabs.
 
-   - Updated :VcsWeb* commands (|vcs-web|) to support github, google
-     code, and bitbucket.
+   - Updated :VcsWeb to support github, google code, and bitbucket.
 
 C/C++:
    - Improved |:CSearchContext| to search for declaration when on a
@@ -412,13 +602,11 @@ Php:
      (http://eclipse.org/pdt/) 2.0.
 
 Vcs:
-   - Added option to set the split orientation
-     (|g:EclimVcsDiffOrientation|) (horizontal or vertical) used when
-     executing diffs.
+   - Added option to set the split orientation (horizontal or
+     vertical) used when executing diffs.
 
-   - Added option to allow users to change the pattern
-     (|g:EclimVcsTrackerIdPatterns|) used to match tracker ticket
-     numbers in :VcsLog.
+   - Added option to allow users to change the pattern used to match
+     tracker ticket numbers in :VcsLog.
 
 *1.4.3*
 
@@ -460,7 +648,7 @@ Bug Fixes:
      apply a suggestion that is no longer valid.
 
 Vcs:
-   - Added support for git to :Vcs (|vim-common-vcs|) commands
+   - Added support for git to :Vcs commands
 
 *1.4.1*
 
@@ -516,8 +704,8 @@ Eclim:
 
    - Added |:Todo| and |:ProjectTodo|.
 
-   - Added |:TrackerTicket| for viewing tickets by id in your web
-     based tracking system.
+   - Added :TrackerTicket for viewing tickets by id in your web based
+     tracking system.
 
    - Renamed setting org.eclim.project.vcs.tracker to
      org.eclim.project.tracker.
@@ -534,12 +722,12 @@ Vcs:
    - Removed :VcsAnnotateOff in favor of invoking :VcsAnnotate again
      to remove the annotations.
 
-   - Added vcs editor (|vcseditor|) plugin which allows you to view
-     diff of a file by hitting <enter> on a file name in the cvs, svn,
-     or hg commit editor.
+   - Added vcs editor plugin which allows you to view diff of a file
+     by hitting <enter> on a file name in the cvs, svn, or hg commit
+     editor.
 
    - Removed :Trac* and :Viewvc* commands and replaced them with
-     :VcsWeb* (|vcs-web|) commands
+     :VcsWeb* commands
 
 Vim:
    - Added |:Only| as a configurable alternative to vim's :only
@@ -561,7 +749,7 @@ Bug Fixes:
    - Various bug fixes.
 
 Eclim:
-   - Added an archive (|vim-common-archive|) (jar, tar, etc.) viewer.
+   - Added an archive (jar, tar, etc.) viewer.
 
 Html:
    - Updated html validator to validate <style> and <script> tag
@@ -569,7 +757,7 @@ Html:
 
 Vcs:
    - Added support for limiting the number of log entries returned by
-     |:VcsLog| (limits to 50 entries by default).
+     :VcsLog (limits to 50 entries by default).
 
    - Updated :VcsLog, :VcsChangeSet, etc. to support cvs and hg where
      applicable.
@@ -640,10 +828,9 @@ Html / Xml:
      disabled by setting g:EclimSgmlCompleteEndTag to 0.
 
 Java / Python:
-   - :JavaRegex (|vim-java-regex|) and :PythonRegex
-     (|vim-python-regex|) now support b:eclim_regex_type to determine
-     if the regex should be applied to the whole sample text at once,
-     or to each line individually.
+   - :JavaRegex and :PythonRegex now support b:eclim_regex_type to
+     determine if the regex should be applied to the whole sample text
+     at once, or to each line individually.
 
 Java:
    - Updated the java logger (|vim-java-logging|) functionality to
@@ -662,23 +849,21 @@ Python:
      |:PyLint| command.
 
 Vcs:
-   - Added |:VcsInfo|, :ViewvcAnnotate, :ViewvcChangeSet, and
+   - Added :VcsInfo, :ViewvcAnnotate, :ViewvcChangeSet, and
      :ViewvcDiff.
 
 Vcs (subversion):
-   - Added |:VcsLog|, |:VcsChangeSet|, |:VcsDiff|, and |:VcsCat|.
+   - Added :VcsLog, :VcsDiff, and :VcsCat.
 
 Vim:
-   - Added vim window maximize and minimize (|vim-common-maximize|)
-     support.
+   - Added vim window maximize and minimize support.
 
-   - Added an alternate implementation of taglist (|taglisttoo|).
+   - Added an alternate implementation of taglist.
 
    - Added command |:Buffers|.
 
-   - Added |:VimgrepRelative|, |:VimgrepAddRelative|,
-     |:LvimgrepRelative|, |:LvimgrepAddRelative|, |:CdRelative|, and
-     |:LcdRelative|.
+   - Added :VimgrepRelative, :VimgrepAddRelative, :LvimgrepRelative,
+     :LvimgrepAddRelative, :CdRelative, and :LcdRelative.
 
 *1.3.1*
 
@@ -770,8 +955,7 @@ Log4j:
    - Added log4j xml file validation (|vim-java-log4j-validate|).
 
 Python:
-   - Added support for testing regular expressions
-     (|vim-python-regex|).
+   - Added support for testing regular expressions.
 
 Django:
    - Added Django manage.py (|djangomanage|), |:DjangoFind|,
@@ -782,12 +966,12 @@ WebXml:
    - Added web.xml file validation (|vim-java-webxml-validate|).
 
 Vim:
-   - Added |:ArgsRelative|, |:ArgAddRelative|, |:ReadRelative|.
+   - Added :ArgsRelative, :ArgAddRelative, :ReadRelative.
 
    - Added |:Sign|, |:Signs|, |:SignClearUser|, |:SignClearAll|.
 
 Vcs:
-   - Added |:VcsAnnotate| and :Viewvc.
+   - Added :VcsAnnotate and :Viewvc.
 
 Wsdl:
    - Added wsdl validation.  Requires the eclipse wst

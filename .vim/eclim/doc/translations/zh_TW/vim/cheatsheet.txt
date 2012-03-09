@@ -143,8 +143,6 @@ Java 指令集
 
 - |:JavaCorrect| - 建議應修正的程式碼.
 
-- |:JavaRegex| - 開啟一個視窗，進行 regular ecpression 測試.
-
 - Searching (|javadocsearch|) - 尋找 javadoc，如同 :JavaSearch 指令.
 
 - Commenting (|javadoccomment|) - 新增或修改目前游標位置元素的註解.
@@ -183,30 +181,8 @@ Maven 指令集
 Python 指令集
 ==========
 
-- |:PythonRegex| - 開啟一個視窗來測試 python regular expressions.
-
 - Django manage.py (|djangomanage|) - 存在 manage.py
   的同一個目錄下或子目錄下，自任何檔案中呼叫 django's manage.py.
-
-
-Vim 指令集
-=======
-
-- |:FindCommandDef| [<command>] - 尋找 command 的定義.
-
-- |:FindCommandRef| [<command>] - 尋找 command 的參考.
-
-- |:FindFunctionDef| [<function>] - 尋找函數的定義.
-
-- |:FindFunctionRef| [<function>] - 尋找函數的參考.
-
-- |:FindVariableDef| [<變數名稱>] - 尋找全區域變數的定義
-
-- |:FindVariableRef| [<變數名稱>] - 尋找全區域變數的參考.
-
-- |:FindByContext| - 以游標位置元素在內文中尋找 command, 函數或變數.
-
-- |:VimDoc| [<關鍵字>] - 以關鍵字開啟相關的 vim 說明文件.
 
 
 WebXml 指令集
@@ -233,37 +209,8 @@ Xsd 指令集
 - :Validate (|validate-xsd|) - 驗證目前的檔案.
 
 
-版本控制指令集
-=======
-
-Note: 目前這項指令集只支援 CVS 及 subversion 兩種系統.
-
-- |:VcsAnnotate| - 使用 vim 簽名對目前版本檔案作注釋.
-
-
 其他指令集
 =====
-
-- |:Split| 檔案 [檔案 ...] - 類似 :split 指令, 但允許同時開啟多個檔案.
-
-- |:SplitRelative| 檔案 [檔案 ...] - 類似 :Split 指令，但會個別將檔案分割至目前 buffer 內.
-
-- |:Tabnew| 檔案 [檔案 ...] - 類似 :Split 指令, 但會以 :tabnew 開啟個別的檔案.
-
-- |:TabnewRelative| - 檔案 [檔案...] - 類似 :SplitRelative 指令, 但會以 :tabnew
-  開啟個別的檔案.
-
-- |:EditRelative| 檔案 - 類似 :SplitRelative 指令, 但會以 edit
-  開啟檔案，並且一次只能開啟一個檔案.
-
-- |:ReadRelative| 檔案 - 類似 :SplitRelative 指令, 但會以 :read 指令開啟,
-  並同一次只能開啟一個檔案.
-
-- |:ArgsRelative| file_pattern [ file_pattern ...] - 類似 :SplitRelative
-  指令, 但會以 :args 指令執行動作.
-
-- |:ArgAddRelative| file_pattern [ file_pattern ...] - 類似
-  :SplitRelative 指令, 但會以 :argadd 指令執行動作.
 
 - |:DiffLastSaved| - 執行 diffsplit 比較目前修改的檔案內容與前一次存檔的內容.
 

@@ -4,13 +4,23 @@
 Python
 ******
 
+- Python Validation ()
+  - Configuration (#configuration)
+- Python Code Completion ()
+- Python Search ()
+  - Element Search (#element-search)
+  - Configuration (#configuration)
+- Django ()
+  - Django manage.py (#django-manage-py)
+  - Configuration (#configuration)
+  - Django python support (#django-python-support)
+  - Django html template support (#django-html-template-support)
+  - Configuration (#id1)
 - Python Validation (|vim-python-validate|)
 
 - Python Code Completion (|vim-python-complete|)
 
 - Python Search (|vim-python-search|)
-
-- Python Regex Testing (|vim-python-regex|)
 
 - Django (|vim-python-django|)
 

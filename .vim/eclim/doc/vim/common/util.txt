@@ -106,76 +106,6 @@ of eclim.
     'fuzzy' searching will be used on the no arugment version of
     :LocateFile.
 
-*:Split*
-
-- :Split file [file ...] - Behaves like the 'split' command, but
-  allows multiple files to be supplied. Supports '*' and '**'
-  wildcards.
-
-*:SplitRelative*
-
-- :SplitRelative file [file ...] - Like :Split this command provides
-  splitting of multiple files, but this command splits files relative
-  to the file in the current buffer. Supports '*' and '**' wildcards.
-
-*:Tabnew*
-
-- :Tabnew file [file ...] - Behaves like :Split, but issues a :tabnew
-  on each file.  Supports '*' and '**' wildcards.
-
-*:TabnewRelative*
-
-- :TabnewRelative file [file ...] - Behaves like :SplitRelative, but
-  issues a :tabnew on each file. Supports '*' and '**' wildcards.
-
-*:EditRelative*
-
-- :EditRelative file - Like :SplitRelative except issues an 'edit' and
-  only supports one file at a time.
-
-*:ReadRelative*
-
-- :ReadRelative file - Like :SplitRelative except issues a 'read' and
-  only supports one file at a time.
-
-*:ArgsRelative*
-
-- :ArgsRelative file_pattern [file_pattern ...] - Like :SplitRelative
-  except executes 'args'.
-
-*:ArgAddRelative*
-
-- :ArgAddRelative file_pattern [file_pattern ...] - Like
-  :SplitRelative except executes 'argadd'.
-
-*:VimgrepRelative*
-
-- :VimgrepRelative /regex/ file_pattern [ file_pattern ...] - Executes
-  :vimgrep relative to the current file.
-
-*:VimgrepAddRelative*
-
-- :VimgrepAddRelative /regex/ file_pattern [ file_pattern ...] -
-  Executes :vimgrepadd relative to the current file.
-
-*:LvimgrepRelative*
-
-- :LvimgrepRelative /regex/ file_pattern [ file_pattern ...] -
-  Executes :lvimgrep relative to the current file.
-
-*:LvimgrepAddRelative*
-
-- :LvimgrepAddRelative /regex/ file_pattern [ file_pattern ...] -
-  Executes :lvimgrepadd relative to the current file.
-
-*:CdRelative*
-
-- :CdRelative dir - Executes :cd relative to the current file.
-
-*:LcdRelative*
-
-- :LcdRelative dir - Executes :lcd relative to the current file.
-
 *:Tcd*
 
 - :Tcd dir - Mimics vim's :lcd command but sets the current working
@@ -259,6 +189,12 @@ of eclim.
   - g:EclimBuffersSortDirection (defaults to 'asc') Supports one of
     'asc' or 'desc'.
 
+*:BuffersToggle*
+
+- :BuffersToggle - A convenience command which opens the buffers
+  window if not open, otherwise closes it.  Useful for creating a key
+  mapping to quickly open/close the buffers window.
+
 *:Only*
 
 - :Only - Alternative for vim's :only command.  The purpose of this
@@ -266,15 +202,21 @@ of eclim.
   window.  Unfortunately there is no way to tell the vim version to
   exclude some windows you may wish to keep open (taglist, quickfix,
   etc.).  The eclim version provides that ability via the
-  g:EclimOnlyExclude variable.
+  g:EclimOnlyExclude and g:EclimOnlyExcludeFixed variables.
 
   Configuration
 
   Vim Settings
 
   *g:EclimOnlyExclude*
-  g:EclimOnlyExclude (defaults to
-  '(ProjectTree_*|__Tag_List__|-MiniBufExplorer-|command-line)')
+  - g:EclimOnlyExclude (defaults to '^NONE$') - Regex used to match
+    buffer names for windows that should not be closed when issuing
+    the :Only command.
+
+  *g:EclimOnlyExcludeFixed*
+  - g:EclimOnlyExcludeFixed (defaults to 1) When non-0 all fixed
+    windows (ones which have 'winfixwidth' or 'winfixheight' set) will
+    be preserved when issuing the :Only command.
 
 *:OtherWorkingCopyDiff*
 

@@ -1,5 +1,5 @@
 """
-Copyright (C) 2005 - 2009  Eric Van Dewoestine
+Copyright (C) 2005 - 2011  Eric Van Dewoestine
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -72,7 +72,14 @@ class Nailgun(object):
 
         return (retcode, result)
       except socket.error, ex:
-        return (ex.args[0], 'connect: %s' % ex.args[1])
+        args = ex.args
+        if len(args) > 1:
+          retcode, msg = args[0], args[1]
+        elif len(args):
+          retcode, msg = 1, args[0]
+        else:
+          retcode, msg = 1, 'No message'
+        return (retcode, 'send: %s' % msg)
     finally:
       if not self.keepAlive:
         try:
@@ -91,7 +98,14 @@ class Nailgun(object):
       sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
       sock.connect(('localhost', port))
     except socket.error, ex:
-      return (ex.args[0], 'connect: %s' % ex.args[1])
+      args = ex.args
+      if len(args) > 1:
+        retcode, msg = args[0], args[1]
+      elif len(args):
+        retcode, msg = 1, args[0]
+      else:
+        retcode, msg = 1, 'No message'
+      return (retcode, 'connect: %s' % msg)
 
     self.socket = sock
     return (0, '')
@@ -138,7 +152,7 @@ class Nailgun(object):
     """
     Sends a nailgun 'chunk' to the server.
     """
-    #print "sendChunk " + chunkType + " " + text
+    #print("sendChunk " + chunkType + " " + text)
     length = len(text)
     str = "%c%c%c%c%c" % (
         (length / (65536*256)) % 256,
@@ -156,13 +170,13 @@ class Nailgun(object):
     while exitFlag > 0:
       answer = self.recvBlocked(5)
       if len(answer) < 5:
-        print "error: socket closed unexpectedly\n"
+        print("error: socket closed unexpectedly\n")
         return None
       lenPayload = ord(answer[0]) * 65536 * 256 \
         + ord(answer[1]) * 65536 \
         + ord(answer[2]) * 256 \
         + ord(answer[3])
-      #print "lenPayload detected : %d" % lenPayload
+      #print("lenPayload detected : %d" % lenPayload)
       chunkType = answer[4]
       if chunkType == "1":
         # STDOUT
@@ -174,7 +188,7 @@ class Nailgun(object):
         exitFlag = exitFlag - 1
         exit = int(self.recvToFD(2, answer, lenPayload))
       else:
-        print "error: unknown chunk type = %d\n" % chunkType
+        print("error: unknown chunk type = %d\n" % chunkType)
         exitFlag = 0
 
     return [exit, result.getvalue()]

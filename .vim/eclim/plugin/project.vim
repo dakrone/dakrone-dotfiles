@@ -4,7 +4,7 @@
 "
 " License:
 "
-" Copyright (C) 2005 - 2010  Eric Van Dewoestine
+" Copyright (C) 2005 - 2011  Eric Van Dewoestine
 "
 " This program is free software: you can redistribute it and/or modify
 " it under the terms of the GNU General Public License as published by
@@ -45,7 +45,7 @@ if !exists('g:EclimProjectTreeExpandPathOnOpen')
 endif
 
 if !exists('g:EclimProjectTreeSharedInstance')
-  let g:EclimProjectTreeSharedInstance = 0
+  let g:EclimProjectTreeSharedInstance = 1
 endif
 
 if g:EclimProjectTreeAutoOpen && !exists('g:EclimProjectTreeAutoOpenProjects')
@@ -158,6 +158,8 @@ if !exists(":ProjectTree")
   command -nargs=1
     \ -complete=customlist,eclim#project#util#CommandCompleteProject
     \ ProjectTab :call eclim#project#util#ProjectTab('<args>')
+  command! -nargs=1 -complete=dir TreeTab
+    \ :call eclim#project#util#TreeTab('', expand('<args>', ':p'))
 endif
 
 if !exists(":ProjectCD")
@@ -185,10 +187,6 @@ if !exists(":Todo")
 endif
 if !exists(":ProjectTodo")
   command -nargs=0 ProjectTodo :call eclim#project#util#ProjectTodo()
-endif
-
-if !exists(":TrackerTicket")
-  command -nargs=1 TrackerTicket :call eclim#project#tracker#Ticket('<args>')
 endif
 " }}}
 

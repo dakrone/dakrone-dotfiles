@@ -30,39 +30,9 @@ Html code completion uses the standard Vim code completion mechanism
 <
 
 
-In addition to the standard code completion, eclim also supports auto
-completion of end tags. When you type '</' eclim will attempt to
-determine which element you are closing and complete it for you.  If
-you wish to disable this feature you can simply set
-g:EclimSgmlCompleteEndTag to 0.
-
 Warning: Html completion has been disabled on Windows when using the headless
   version of eclim because of a native call which blocks indefinitely.
   Hopefully in the future this issue will be resolved or a work around
   found.
-
-
-Configuration
-=============
-
-Vim Variables
-
-*g:EclimSgmlCompleteEndTag*
-
-- g:EclimSgmlCompleteEndTag - If set to 0, disables auto completion of
-  end tags.
-
-*g:EclimSgmlCompleteEndTagIgnore*
-
-- b:EclimSgmlCompleteEndTagIgnore - Buffer local variable that can be
-  set to a list of tags to ignore when searching for the start tag to
-  complete.
-
-  Example that can be added to an html ftplugin file:
-
-  >
-     let b:EclimSgmlCompleteEndTagIgnore = ['br', 'input']
-
-  <
 
 vim:ft=eclimhelp

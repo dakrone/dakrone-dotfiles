@@ -161,6 +161,24 @@ may use Vim's command line completion to complete the project name.
 
   Echo info about the current or supplied project.
 
+  *g:EclimProjectStatusLine*
+  Eclim supports displaying info about the current project in vim's
+  status line by adding a call to
+  eclim#project#util#ProjectStatusLine() to your statusline option:
+
+  >
+     set statusline=%<%f\ %M\ %h%r%=%-10.(%l,%c%V\ %{eclim#project#util#ProjectStatusLine()}%)\ %P
+
+  <
+
+  By default, this will just include the project name, but you can
+  customize the output by setting g:EclimProjectStatusLine:
+
+  >
+     let g:EclimProjectStatusLine = 'eclim(p=${name}, n=${natures})'
+
+  <
+
 *:ProjectOpen*
 
 - :ProjectOpen [<project>]
@@ -262,6 +280,8 @@ may use Vim's command line completion to complete the project name.
 
   - S - Opens the current file in a new split.
 
+  - | (pipe) - Opens the current file in a new vertical split.
+
   - T - Opens the current file in a new tab.
 
   - o - Toggles folding / unfolding of a directory, or opens a window
@@ -328,8 +348,14 @@ may use Vim's command line completion to complete the project name.
     When non 0, the path of the current file will be expanded in the
     project tree when the project tree window is opened.
 
+  *g:EclimProjectTreePathEcho*
+  - g:EclimProjectTreePathEcho (Default: 1)
+
+    When non 0, the root relative path of the node under the cursor
+    will be echoed as you move the cursor around.
+
   *g:EclimProjectTreeSharedInstance*
-  - g:EclimProjectTreeSharedInstance (Default: 0)
+  - g:EclimProjectTreeSharedInstance (Default: 1)
 
     When non 0, a tree instance with the same list of projects will be
     shared across vim tabs.  This allows you to have the same project
@@ -354,6 +380,11 @@ may use Vim's command line completion to complete the project name.
     for opening files that match those patterns.  Note that the first
     mapping is the list is used as the default (<cr>).
 
+  Note: ProjectTree honors vim's 'wildignore' option by filtering out
+    files matching those patterns from the tree. The 'A' mapping will
+    toggle the display of those files along with other hidden files
+    and directories.
+
 *:ProjectsTree*
 
 - :ProjectsTree
@@ -362,16 +393,23 @@ may use Vim's command line completion to complete the project name.
 
 *:ProjectTab*
 
-- :ProjectTab project
+- :ProjectTab <project>
 
   Command to initialize a new vim tab with the project tree open and
   the tab relative working directory set to the project root.  This
   allows you to work on multiple projects within a single vim instance
   where each project is isolated to its own tab.
 
+*:TreeTab*
+
+- :TreeTab <dir>
+
+  Like :ProjectTree, but opens a vim tab with a tree window for any
+  arbitrary directory.
+
 *:ProjectGrep*
 
-- :ProjectGrep /<pattern>/ file_pattern [file_pattern ...]
+- :ProjectGrep /<pattern>/ <file_pattern> [<file_pattern> ...]
 
   Executes vimgrep using the supplied arguments from the root of the
   current project allowing you to run a project wide grep from any
@@ -379,19 +417,19 @@ may use Vim's command line completion to complete the project name.
 
 *:ProjectGrepAdd*
 
-- :ProjectGrepAdd /<pattern>/ file_pattern [file_pattern ...]
+- :ProjectGrepAdd /<pattern>/ <file_pattern> [<file_pattern> ...]
 
   Just like :ProjectGrep but using vimgrepadd instead.
 
 *:ProjectLGrep*
 
-- :ProjectLGrep /<pattern>/ file_pattern [file_pattern ...]
+- :ProjectLGrep /<pattern>/ <file_pattern> [<file_pattern> ...]
 
   Just like :ProjectGrep but using lvimgrep instead.
 
 *:ProjectLGrepAdd*
 
-- :ProjectLGrepAdd /<pattern>/ file_pattern [file_pattern ...]
+- :ProjectLGrepAdd /<pattern>/ <file_pattern> [<file_pattern> ...]
 
   Just like :ProjectGrep but using lvimgrepadd instead.
 
@@ -439,39 +477,5 @@ may use Vim's command line completion to complete the project name.
 
     Defines a list of file extensions that will be searched for the
     todo / fixme entries.
-
-
-Tracker
-=======
-
-*:TrackerTicket*
-
-- :TrackerTicket <ticket_id>
-
-  Opens the supplied ticket via your web browser for the configured
-  tracking system configured via org.eclim.project.tracker.
-
-  Configuration
-
-  Eclim Settings
-
-  *org.eclim.project.tracker*
-  - org.eclim.project.tracker Url used to view tickets in your ticket
-    tracking software. This url supports the '<id>' placeholder which
-    will be replaced with the ticket id.
-
-    Ex. An example setting for a Trac installation:
-
-    >
-       org.eclim.project.tracker=http://somedomain.com/trac/ticket/<id>
-
-    <
-
-    In addition to being used by :TrackerTicket, this setting is also
-    used in conjunction with |:VcsLog| and |:VcsChangeSet| to enable
-    linking of ticket ids of the form #ticket_id (#1234) found in user
-    supplied commit comments.  You may also specify other patterns to
-    match by setting the g:EclimVcsTrackerIdPatterns
-    (|g-eclimvcstrackeridpatterns|) variable.
 
 vim:ft=eclimhelp

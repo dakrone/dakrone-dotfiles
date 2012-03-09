@@ -4,7 +4,7 @@
 "
 " License:
 "
-" Copyright (C) 2005 - 2009  Eric Van Dewoestine
+" Copyright (C) 2005 - 2011  Eric Van Dewoestine
 "
 " This program is free software: you can redistribute it and/or modify
 " it under the terms of the GNU General Public License as published by
@@ -32,8 +32,10 @@ if !exists('g:EclimBuffersDefaultAction')
   let g:EclimBuffersDefaultAction = g:EclimDefaultFileOpenAction
 endif
 if !exists('g:EclimOnlyExclude')
-  let g:EclimOnlyExclude =
-    \ '\(ProjectTree_*\|__Tag_List__\|-MiniBufExplorer-\|command-line\)'
+  let g:EclimOnlyExclude = '^NONE$'
+endif
+if !exists('g:EclimOnlyExcludeFixed')
+  let g:EclimOnlyExcludeFixed = 1
 endif
 " }}}
 
@@ -94,6 +96,7 @@ function! eclim#common#buffers#Buffers()
   nnoremap <silent> <buffer> S :call <SID>BufferOpen('split')<cr>
   nnoremap <silent> <buffer> T :call <SID>BufferOpen('tablast \| tabnew')<cr>
   nnoremap <silent> <buffer> D :call <SID>BufferDelete()<cr>
+  nnoremap <silent> <buffer> R :Buffers<cr>
 
   " assign to buffer var to get around weird vim issue passing list containing
   " a string w/ a '<' in it on execution of mapping.
@@ -103,6 +106,7 @@ function! eclim#common#buffers#Buffers()
       \ 'S - open in a new split window',
       \ 'T - open in a new tab',
       \ 'D - delete the buffer',
+      \ 'R - refresh the buffer list',
     \ ]
   nnoremap <buffer> <silent> ?
     \ :call eclim#help#BufferHelp(b:buffers_help, 'vertical', 40)<cr>
@@ -113,6 +117,16 @@ function! eclim#common#buffers#Buffers()
   "    \ call eclim#common#buffers#BuffersUpdate()
   "  autocmd BufUnload <buffer> autocmd! eclim_buffers
   "augroup END
+endfunction " }}}
+
+" BuffersToggle() {{{
+function! eclim#common#buffers#BuffersToggle()
+  let name = eclim#util#EscapeBufferName('[buffers]')
+  if bufwinnr(name) == -1
+    call eclim#common#buffers#Buffers()
+  else
+    exec "bdelete " . bufnr(name)
+  endif
 endfunction " }}}
 
 " BufferCompare(buffer1, buffer2) {{{
@@ -131,9 +145,11 @@ function! eclim#common#buffers#Only()
   let curwin = winnr()
   let winnum = 1
   while winnum <= winnr('$')
-    if winnum != curwin &&
-     \ getwinvar(winnum, '&ft') != 'qf' &&
-     \ bufname(winbufnr(winnum)) !~ g:EclimOnlyExclude
+    let fixed = g:EclimOnlyExcludeFixed && (
+      \ getwinvar(winnum, '&winfixheight') == 1 ||
+      \ getwinvar(winnum, '&winfixwidth') == 1)
+    let excluded = bufname(winbufnr(winnum)) =~ g:EclimOnlyExclude
+    if winnum != curwin && !fixed && !excluded
       if winnum < curwin
         let curwin -= 1
       endif
@@ -161,7 +177,19 @@ function! s:BufferDelete()
   setlocal readonly
   let buffer = b:eclim_buffers[index]
   call remove(b:eclim_buffers, index)
-  exec 'bd ' . buffer.bufnr
+
+  let winnr = bufwinnr(buffer.bufnr)
+  if winnr != -1
+    " if active in a window, go to the window to delete the buffer since that
+    " keeps eclim's prevention of closing the last non-utility window working
+    " properly.
+    let curwin = winnr()
+    exec winnr . 'winc w'
+    bdelete
+    exec curwin . 'winc w'
+  else
+    exec 'bd ' . buffer.bufnr
+  endif
 endfunction " }}}
 
 " s:BufferEntryToLine(buffer, filelength) {{{

@@ -71,6 +71,34 @@ Eclim Settings
   be executed against.  When unset, all your configured source
   directories will be used.
 
+*:JavaClasspath*
+
+
+Echo the classpath for the current project
+==========================================
+
+When editing a java file, eclim provides the command :JavaClasspath
+which will echo the project's resolved classpath entries separated by
+the system path separator or a supplied delimiter:
+
+>
+
+   :JavaClasspath
+   :JavaClasspath -d \\n
+
+<
+
+
+If you would like to get the classpath from a script, you can also
+call eclim directly:
+
+>
+
+   $ $ECLIPSE_HOME/eclim -command java_classpath -p <project_name>
+
+<
+
+
 *:JavaListInstalls*
 
 

@@ -4,6 +4,8 @@
 Log4j
 *****
 
+- Log4j File Validation ()
+  - Configuration (#configuration)
 - Log4j File Validation (|vim-java-log4j-validate|)
 
 vim:ft=eclimhelp

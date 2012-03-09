@@ -4,6 +4,8 @@
 WEB-INF/web.xml
 ***************
 
+- WEB-INF/web.xml Validation ()
+  - Configuration (#configuration)
 - WEB-INF/web.xml Validation (|vim-java-webxml-validate|)
 
 vim:ft=eclimhelp

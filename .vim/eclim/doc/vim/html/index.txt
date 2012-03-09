@@ -4,6 +4,10 @@
 Html
 ****
 
+- Html Code Completion ()
+- Html File Validation ()
+  - Configuration (#configuration)
+- Html File Utils ()
 - Html Code Completion (|vim-html-complete|)
 
 - Html File Validation (|vim-html-validate|)

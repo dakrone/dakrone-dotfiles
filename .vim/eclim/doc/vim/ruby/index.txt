@@ -4,6 +4,14 @@
 Ruby
 ****
 
+- Ruby Build Path ()
+- Ruby Code Completion ()
+- Ruby Validation ()
+  - Configuration (#configuration)
+- Ruby Search ()
+  - Pattern Search (#pattern-search)
+  - Element Search (#element-search)
+  - Configuration (#configuration)
 - Ruby Build Path (|vim-ruby-buildpath|)
 
 - Ruby Code Completion (|vim-ruby-complete|)

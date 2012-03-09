@@ -101,8 +101,6 @@ JavaScript Integration
 
 - File validation using jsl (http://www.javascriptlint.com/).
 
-- Improved taglist (outline) support.
-
 
 Log4j Integration
 =================
@@ -183,15 +181,8 @@ Xsd Integration
 Common Vim Functionality
 ========================
 
-- :Split / :Tabnew supporting multiple files.
-
-- :SplitRelative / :EditRelative / :TabnewRelative / :ReadRelative for
-  opening / reading a file relative to the current one.
-
 - Commands to locate a project, workspace, or current file relative
   file and open it (split, edit, or tabnew).
-
-- Enhanced taglist support.
 
 - Much more...
 

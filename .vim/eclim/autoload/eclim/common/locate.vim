@@ -38,6 +38,9 @@ endif
 if !exists('g:EclimLocateUserScopes')
   let g:EclimLocateUserScopes = []
 endif
+
+let g:eclim_locate_default_updatetime = &updatetime
+
 " }}}
 
 " Script Variables {{{
@@ -47,7 +50,6 @@ let s:scopes = [
     \ 'workspace',
     \ 'buffers',
     \ 'quickfix',
-    \ 'vcsmodified',
   \ ]
 
 let s:help = [
@@ -257,17 +259,16 @@ function! s:LocateFileCompletionInit(action, scope, project, workspace)
   let b:results_bufnum = results_bufnum
   let b:help_bufnum = 0
   let b:selection = 1
-  let b:updatetime = &updatetime
 
   set updatetime=300
 
   augroup locate_file_init
     autocmd!
     autocmd BufEnter <buffer> nested startinsert! | let &updatetime = 300
-    autocmd BufLeave <buffer> nested stopinsert | let &updatetime = b:updatetime
     autocmd BufLeave \[Locate*\]
       \ call eclim#util#DelayedCommand('call eclim#common#locate#LocateFileClose()')
     exec 'autocmd InsertLeave <buffer> ' .
+      \ 'let &updatetime = g:eclim_locate_default_updatetime | ' .
       \ 'doautocmd BufWinLeave | bw | ' .
       \ 'doautocmd BufWinLeave | bw ' . b:results_bufnum . ' | ' .
       \ 'call eclim#util#GoToBufferWindow(' .  b:bufnum . ') | ' .
@@ -373,12 +374,11 @@ function! s:LocateFileSelect(action)
     endif
     let bufnum = bufnr('%')
     let results_bufnum = b:results_bufnum
-    let updatetime = b:updatetime
+    let &updatetime = g:eclim_locate_default_updatetime
     call eclim#util#GoToBufferWindow(b:bufnum)
     call eclim#util#GoToBufferWindowOrOpen(file, a:action)
     call feedkeys(
-      \ "\<esc>:let &updatetime = " . updatetime . " | " .
-      \ ":bd " . bufnum . " | " .
+      \ "\<esc>:bd " . bufnum . " | " .
       \ "bd " . results_bufnum . " | " .
       \ "doautocmd WinEnter\<cr>", 'n')
   endif
@@ -460,26 +460,6 @@ function! s:ChooseScope()
   elseif scope == 'workspace'
     let project = ''
     let workspace = eclim#eclipse#ChooseWorkspace()
-
-  elseif scope == 'vcsmodified'
-    let winnr = winnr()
-    let bufwinnr = bufwinnr(getbufvar(b:locate_bufnr, 'bufnum'))
-    noautocmd exec bufwinnr . 'winc w'
-    let cwd = getcwd()
-    exec 'lcd ' . escape(expand('%:p:h'), ' ')
-    try
-      let vcs = eclim#vcs#util#GetVcsType()
-    finally
-      exec 'lcd ' . escape(cwd, ' ')
-      noautocmd exec winnr . 'winc w'
-    endtry
-    if vcs == ''
-      call eclim#util#EchoError('Unable to determine vcs type.')
-      return
-    elseif vcs == 'cvs'
-      call eclim#util#EchoError('cvs not yet supported')
-      return
-    endif
   endif
 
   call s:CloseScopeChooser()
@@ -626,41 +606,6 @@ function! s:LocateFile_quickfix(pattern)
     call writefile(buffers, tempfile)
     try
       return eclim#common#locate#LocateFileFromFileList(a:pattern, tempfile)
-    finally
-      call delete(tempfile)
-    endtry
-  endif
-  return []
-endfunction " }}}
-
-" s:LocateFile_vcsmodified(pattern) {{{
-function! s:LocateFile_vcsmodified(pattern)
-  " cache results
-  if !exists('b:locate_vcs_modified_files')
-    let winnr = winnr()
-    let bufwinnr = bufwinnr(b:bufnum)
-    exec bufwinnr . 'winc w'
-    try
-      let root = eclim#vcs#util#GetRoot('')
-      let files = eclim#vcs#util#GetModifiedFiles()
-      call map(files, "substitute(v:val, '^' . root . '/', '', '')")
-    finally
-      exec winnr . 'winc w'
-    endtry
-    let b:locate_vcs_root = root
-    let b:locate_vcs_modified_files = files
-  else
-    let root = b:locate_vcs_root
-    let files = b:locate_vcs_modified_files
-  endif
-
-  if len(files) > 0
-    let tempfile = substitute(tempname(), '\', '/', 'g')
-    call writefile(files, tempfile)
-    try
-      let results = eclim#common#locate#LocateFileFromFileList(a:pattern, tempfile)
-      call map(results, "substitute(v:val, '\\(.*|\\)', '\\1' . root . '/', '')")
-      return results
     finally
       call delete(tempfile)
     endtry

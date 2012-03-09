@@ -4,6 +4,7 @@
 Development Docs
 ****************
 
+- Eclim Architecture ()
 Eclim Architecture (|development-architecture|)
 
    Explains the underlying architecture that eclim utilizes including

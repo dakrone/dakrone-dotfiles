@@ -4,7 +4,7 @@
 "
 " License:
 "
-" Copyright (C) 2005 - 2009  Eric Van Dewoestine
+" Copyright (C) 2005 - 2010  Eric Van Dewoestine
 "
 " This program is free software: you can redistribute it and/or modify
 " it under the terms of the GNU General Public License as published by
@@ -25,5 +25,13 @@ runtime ftplugin/help.vim
 
 nnoremap <silent> <buffer> <cr> :call eclim#help#Help('', 1)<cr>
 nnoremap <silent> <buffer> <c-]> :call eclim#help#Help('', 1)<cr>
+
+if !exists("g:tlist_eclimhelp_settings")
+  let g:tlist_eclimhelp_settings = {
+      \ 'lang': 'eclimhelp',
+      \ 'parse': 'eclim#taglisttoo#lang#eclimhelp#Parse',
+      \ 'tags': {'s': 'section', 'a': 'anchor'}
+    \ }
+endif
 
 " vim:ft=vim:fdm=marker

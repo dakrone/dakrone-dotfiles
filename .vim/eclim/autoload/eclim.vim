@@ -9,7 +9,7 @@
 "
 " License:
 "
-" Copyright (C) 2005 - 2010  Eric Van Dewoestine
+" Copyright (C) 2005 - 2011  Eric Van Dewoestine
 "
 " This program is free software: you can redistribute it and/or modify
 " it under the terms of the GNU General Public License as published by
@@ -114,7 +114,12 @@ function! eclim#ExecuteEclim(command, ...)
       else
         let error = error . "\n" .
           \ 'while executing command (port: ' . port . '): ' . command
-        call eclim#util#EchoError(error)
+        " if we are not in an autocmd, echo the error, otherwise just log it.
+        if expand('<amatch>') == ''
+          call eclim#util#EchoError(error)
+        else
+          call eclim#util#EchoDebug(error)
+        endif
       endif
     endif
     return
@@ -141,9 +146,7 @@ endfunction " }}}
 
 " EclimAvailable() {{{
 function! eclim#EclimAvailable()
-  let instances = has('win32unix') ?
-    \ eclim#cygwin#WindowsHome() . '/.eclim/.eclimd_instances' :
-    \ expand('~/.eclim/.eclimd_instances')
+  let instances = eclim#UserHome() . '/.eclim/.eclimd_instances'
   return filereadable(instances)
 endfunction " }}}
 
@@ -298,6 +301,17 @@ function! eclim#ShutdownEclim()
     let port = eclim#client#nailgun#GetNgPort()
     call eclim#ExecuteEclim(s:command_shutdown, port)
   endif
+endfunction " }}}
+
+" UserHome() {{{
+function! eclim#UserHome()
+  let home = expand('$HOME')
+  if has('win32unix')
+    let home = eclim#cygwin#WindowsHome()
+  elseif has('win32') || has('win64')
+    let home = expand('$USERPROFILE')
+  endif
+  return substitute(home, '\', '/', 'g')
 endfunction " }}}
 
 " CommandCompleteScriptRevision(argLead, cmdLine, cursorPos) {{{

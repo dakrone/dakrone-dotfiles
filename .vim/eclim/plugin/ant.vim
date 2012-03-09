@@ -5,7 +5,7 @@
 "
 " License:
 "
-" Copyright (C) 2005 - 2010  Eric Van Dewoestine
+" Copyright (C) 2005 - 2011  Eric Van Dewoestine
 "
 " This program is free software: you can redistribute it and/or modify
 " it under the terms of the GNU General Public License as published by
@@ -22,20 +22,10 @@
 "
 " }}}
 
-" Auto Commands {{{
-augroup eclim_ant_make
-  autocmd!
-  if exists('*eclim#java#test#ResolveQuickfixResults')
-    autocmd QuickFixCmdPost make call eclim#java#test#ResolveQuickfixResults('junit')
-    autocmd QuickFixCmdPost make call eclim#java#test#ResolveQuickfixResults('testng')
-  endif
-augroup END
-" }}}
-
 " Command Declarations {{{
 if !exists(":Ant")
-  command -bang -nargs=* -complete=customlist,eclim#java#ant#run#CommandCompleteTarget
-    \ Ant :call eclim#java#ant#run#Ant('<bang>', '<args>')
+  command -bang -nargs=* -complete=customlist,eclim#java#ant#complete#CommandCompleteTarget
+    \ Ant :call eclim#util#MakeWithCompiler('eclim_ant', '<bang>', '<args>')
 endif
 " }}}
 

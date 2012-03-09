@@ -5,7 +5,7 @@
 "
 " License:
 "
-" Copyright (C) 2005 - 2010  Eric Van Dewoestine
+" Copyright (C) 2005 - 2011  Eric Van Dewoestine
 "
 " This program is free software: you can redistribute it and/or modify
 " it under the terms of the GNU General Public License as published by
@@ -72,7 +72,7 @@ function! eclim#tree#TreeHome()
   endif
   let s:tree_count += 1
 
-  call eclim#tree#Tree(name, [expand('$HOME')], [], 1, [])
+  call eclim#tree#Tree(name, [eclim#UserHome()], [], 1, [])
 endfunction " }}}
 
 " TreePanes() {{{
@@ -92,7 +92,36 @@ endfunction " }}}
 "   empty list for no filtering.
 function! eclim#tree#Tree(name, roots, aliases, expand, filters)
   silent exec 'edit ' . escape(a:name, ' ')
-  setlocal modifiable
+  setlocal ft=tree
+  setlocal nowrap
+  setlocal noswapfile
+  setlocal nobuflisted
+  setlocal buftype=nofile
+  setlocal bufhidden=delete
+  setlocal foldmethod=manual
+  setlocal foldtext=getline(v:foldstart)
+  setlocal sidescrolloff=0
+
+  call s:Mappings()
+  call eclim#tree#Syntax()
+
+  " initialize autocmds before loading custom settings so that settings can
+  " add autocmd events.
+  augroup eclim_tree
+    "autocmd! BufEnter,User <buffer>
+    autocmd BufEnter <buffer> silent doautocmd eclim_tree User <buffer>
+    exec 'autocmd BufDelete,BufUnload <buffer> ' .
+      \ 'autocmd! eclim_tree * <buffer=' . bufnr('%') . '>'
+  augroup END
+
+  " register setting prior to listing any directories
+  if exists("g:TreeSettingsFunction")
+    let l:Settings = function(g:TreeSettingsFunction)
+    call l:Settings()
+    let s:settings_loaded = 1
+  endif
+
+  setlocal noreadonly modifiable
   silent 1,$delete _
 
   let roots = map(copy(a:roots), 'substitute(v:val, "\\([^/]\\)$", "\\1/", "")')
@@ -116,13 +145,6 @@ function! eclim#tree#Tree(name, roots, aliases, expand, filters)
 
   call append(line('$'), roots)
 
-  " register setting prior to listing any directories
-  if exists("g:TreeSettingsFunction")
-    let Settings = function(g:TreeSettingsFunction)
-    call Settings()
-    let s:settings_loaded = 1
-  endif
-
   if a:expand
     let index = len(roots)
     while index > 0
@@ -132,30 +154,10 @@ function! eclim#tree#Tree(name, roots, aliases, expand, filters)
     endwhile
   endif
 
-  setlocal noreadonly modifiable
-
   " delete empty first line.
+  setlocal modifiable
   1,1delete _
-
-  setlocal ft=tree
-  setlocal nowrap
-  setlocal noswapfile
-  setlocal nobuflisted
-  setlocal buftype=nofile
-  setlocal bufhidden=delete
-  setlocal foldmethod=manual
-  setlocal foldtext=getline(v:foldstart)
   setlocal nomodifiable
-
-  call s:Mappings()
-  call eclim#tree#Syntax()
-
-  augroup eclim_tree
-    autocmd! BufEnter,User <buffer>
-    autocmd BufEnter <buffer> doautocmd eclim_tree User <buffer>
-    exec 'autocmd BufDelete,BufUnload <buffer> ' .
-      \ 'autocmd! eclim_tree * <buffer=' . bufnr('%') . '>'
-  augroup END
 endfunction " }}}
 
 " ToggleCollapsedDir(Expand) {{{
@@ -264,7 +266,7 @@ function! eclim#tree#GetParentPosition()
   let lnum = 0
   let line = getline('.')
   if line =~ '\s*' . s:node_prefix
-    if line =~ '^' . s:node_regex . '[.[:alnum:]_]'
+    if line =~ '^' . s:node_regex . '\S'
       let search = s:root_regex
     else
       let search = '^'
@@ -479,7 +481,11 @@ function! eclim#tree#Cursor(line, prevline)
     let start = len(line) - len(substitute(line, '^\s\+\W', '', ''))
 
     " only use the real previous line if we've only moved one line
-    let pline = abs(a:prevline - lnum) == 1 ? getline(a:prevline) : ''
+    let moved = a:prevline - lnum
+    if moved < 0
+      let moved = -moved
+    endif
+    let pline = moved == 1 ? getline(a:prevline) : ''
     let pstart = pline != '' ?
       \ len(pline) - len(substitute(pline, '^\s\+\W', '', '')) : -1
 
@@ -680,7 +686,12 @@ function! eclim#tree#Refresh()
       " if we are adding a new entry we'll just add one that has the correct
       " index + prefix and let the next block set the proper display path.
       if s:MatchesFilter(norm_entry)
-        let initial = fnamemodify(entry, ':t')
+        if isdirectory(entry)
+          let initial = fnamemodify(substitute(entry, '/$', '', ''), ':t') . '/'
+        else
+          let initial = fnamemodify(entry, ':t')
+        endif
+
         if index(dirs, entry) != -1
           let display_entry = indent . s:node_prefix . s:dir_closed_prefix . initial
         else
@@ -761,6 +772,12 @@ function! eclim#tree#Mkdir()
   let response = input('mkdir: ', path, 'dir')
   if response == '' || response == path
     return
+  endif
+
+  " work around apparent vim bug attempting to create a dir with a trailing
+  " slash.
+  if response[-1:] == '/'
+    let response = response[:-2]
   endif
 
   call mkdir(response, 'p')
@@ -999,8 +1016,8 @@ function! eclim#tree#ListDir(dir, ...)
   endif
 
   if exists('b:dir_actions') && (!a:0 || a:1)
-    for Action in b:dir_actions
-      call Action(a:dir, contents)
+    for l:Action in b:dir_actions
+      call l:Action(a:dir, contents)
     endfor
   endif
 
@@ -1105,10 +1122,6 @@ function! eclim#tree#DisplayActionChooser(file, actions, executeFunc)
   new
   let height = len(a:actions) + 1
 
-  " for maximize.vim
-  let b:eclim_temp_window = 1
-  let b:eclim_temp_window_height = height
-
   exec 'resize ' . height
 
   setlocal noreadonly modifiable
@@ -1165,7 +1178,7 @@ function! s:Mappings()
 
   nmap <buffer> <silent> A    :call eclim#tree#ToggleViewHidden()<cr>
 
-  nmap <buffer> <silent> ~    :call eclim#tree#SetRoot(expand('$HOME'))<cr>
+  nmap <buffer> <silent> ~    :call eclim#tree#SetRoot(eclim#UserHome())<cr>
   nmap <buffer> <silent> C    :call eclim#tree#SetRoot(eclim#tree#GetPath())<cr>
   nmap <buffer> <silent> K    :call eclim#tree#SetRoot(substitute(
     \ <SID>PathToAlias(eclim#tree#GetRoot()),
@@ -1180,7 +1193,8 @@ function! s:Mappings()
 
   nmap <buffer> <silent> D    :call eclim#tree#Mkdir()<cr>
 
-  nnoremap <buffer> <silent> <c-l> <c-l>:doautocmd eclim_tree User <buffer><cr>
+  let ctrl_l = escape(maparg('<c-l>'), '|')
+  exec 'nnoremap <buffer> <silent> <c-l> :silent doautocmd eclim_tree User <buffer><cr>' . ctrl_l
 
   command! -nargs=1 -complete=dir -buffer CD :call eclim#tree#SetRoot('<args>')
   command! -nargs=1 -complete=dir -buffer Cd :call eclim#tree#SetRoot('<args>')

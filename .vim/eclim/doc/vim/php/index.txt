@@ -4,6 +4,14 @@
 Php
 ***
 
+- PDT Build Path ()
+- Php Code Completion ()
+- Php Validation ()
+  - Configuration (#configuration)
+- Php Search ()
+  - Pattern Search (#pattern-search)
+  - Element Search (#element-search)
+  - Configuration (#configuration)
 - PDT Build Path (|vim-php-buildpath|)
 
 - Php Code Completion (|vim-php-complete|)

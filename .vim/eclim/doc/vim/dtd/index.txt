@@ -4,6 +4,8 @@
 Dtd
 ***
 
+- Dtd File Validation ()
+  - Configuration (#configuration)
 - Css Validation (|vim-css-validate|)
 
 vim:ft=eclimhelp

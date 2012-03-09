@@ -4,6 +4,8 @@
 Maven
 *****
 
+- Maven Execution ()
+- Maven Dependencies ()
 - Maven Execution (|vim-java-maven-execute|)
 
 - Maven Dependencies (|vim-java-maven-dependencies|)

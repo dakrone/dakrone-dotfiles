@@ -99,9 +99,6 @@ Project Commands
 - |:ProjectLGrepAdd| /<pattern>/ file_pattern [file_pattern ...] -
   Issues a lvimgrepadd starting at the root of the current project.
 
-- |:TrackerTicket| <ticket_id> - Opens the supplied ticket in your
-  configured web based tracking tool.
-
 - |:ProjectTodo| - Searches project files for todo / fixme patterns
   and adds them to the location list.
 
@@ -212,8 +209,6 @@ Java Commands
 
 - |:JavaCorrect| - Suggest possible corrections for a source error.
 
-- |:JavaRegex| - Opens a window for testing java regular expressions.
-
 - |:JavaDocSearch| - Search for javadocs.  Same usage as :JavaSearch.
 
 - |:JavaDocComment| - Adds or updates the comments for the element
@@ -224,6 +219,9 @@ Java Commands
 - |:Java| - Executes the java using your project's main class.
 
 - |:Javac| - Executes the javac utility against all source files.
+
+- |:JavaClasspath| [-d <delim>] - Echos the project's classpath
+  delimited by the system path separator or the supplied delimiter.
 
 - |:Javadoc| [file, file, ...] - Executes the javadoc utility against
   all or just the supplied source files.
@@ -326,9 +324,6 @@ Python Commands
 - |:PyLint| - Runs pylint (http://www.logilab.org/857) on the current
   file.
 
-- |:PythonRegex| - Opens a window for testing python regular
-  expressions.
-
 - |:DjangoManage| - Invokes django's manage.py from any file in the
   same directory as your manage.py or in any of the child directories.
 
@@ -360,29 +355,6 @@ Ruby Commands
 - :Validate (|validate-ruby|) - Manually runs source code validation.
 
 
-Vim Commands
-============
-
-- |:FindCommandDef| [<command>] - Finds a command definition.
-
-- |:FindCommandRef| [<command>] - Finds references of a command.
-
-- |:FindFunctionDef| [<function>] - Finds a function definition.
-
-- |:FindFunctionRef| [<function>] - Finds references of a function.
-
-- |:FindVariableDef| [<variable>] - Finds the definition of a global
-  variable.
-
-- |:FindVariableRef| [<variable>] - Finds references of a global
-  variable.
-
-- |:FindByContext| - Finds command, function, or variable based on the
-  context of the element under the cursor.
-
-- |:VimDoc| [<keyword>] - Opens the vim help for a keyword.
-
-
 WebXml Commands
 ===============
 
@@ -410,91 +382,10 @@ Xsd Commands
 - :Validate (|validate-xsd|) - Validate the current file.
 
 
-Version Control Commands
-========================
-
-Note: Currently cvs, subversion, mercurial, and git are supported by the
-  following commands where applicable.
-
-- |:VcsAnnotate| - Toggles annotation of the currently versioned file
-  using vim signs.
-
-- |:VcsInfo| - Echos vcs info about the current versioned file.
-
-- |:VcsLog| - Opens a buffer with log information for the current
-  file.
-
-- |:VcsChangeSet| [revision] - Opens a buffer with change set
-  information for the supplied repository version or the current
-  revision of the currently open file.
-
-- |:VcsDiff| [revision] - Performs a vertical diffsplit of the current
-  file against the last committed revision of the current file or the
-  revision supplied.
-
-- |:VcsCat| [revision] - Splits the current file with the contents of
-  the last committed version of the current file or the supplied
-  revision.
-
-- |:VcsWebLog| - Opens the log for the currently versioned file in the
-  configured vcs web app.
-
-- |:VcsWebAnnotate| [revision] - Opens the annotated view for the
-  currently versioned file in the configured vcs web app.
-
-- |:VcsWebChangeSet| [revision] - Opens the change set for the
-  currently versioned file in the configured vcs web app.
-
-- |:VcsWebDiff| [revision, revision] - Opens a diff view for the
-  currently versioned file in the configured in the configured vcs web
-  app.
-
-
 Misc. Commands
 ==============
 
 - |:LocateFile| [file] - Locates a relative file and opens it.
-
-- |:Split| file [file ...] - Behaves like the 'split' command, but
-  allows multiple files to be supplied.
-
-- |:SplitRelative| file [file ...] - Like :Split this command provides
-  splitting of multiple files, but this command splits file relative
-  to the file in the current buffer.
-
-- |:Tabnew| file [file ...] - Behaves like :Split, but issues a
-  :tabnew on each file.
-
-- |:TabnewRelative| - file [file ...] - Behaves like :SplitRelative,
-  but issues a :tabnew on each file.
-
-- |:EditRelative| file - Behaves like :SplitRelative, but issues an
-  'edit' and only supports one file at a time.
-
-- |:ReadRelative| file - Behaves like :SplitRelative, but issues a
-  'read' and only supports one file at a time.
-
-- |:ArgsRelative| file_pattern [ file_pattern ...] - Behaves like
-  :SplitRelative, but executes 'args'.
-
-- |:ArgAddRelative| file_pattern [ file_pattern ...] - Behaves like
-  :SplitRelative, but executes 'argadd'.
-
-- |:VimgrepRelative| /regex/ file_pattern [ file_pattern ...] -
-  Executes :vimgrep relative to the current file.
-
-- |:VimgrepAddRelative| /regex/ file_pattern [ file_pattern ...] -
-  Executes :vimgrepadd relative to the current file.
-
-- |:LvimgrepRelative| /regex/ file_pattern [ file_pattern ...] -
-  Executes :lvimgrep relative to the current file.
-
-- |:LvimgrepAddRelative| /regex/ file_pattern [ file_pattern ...] -
-  Executes :lvimgrepadd relative to the current file.
-
-- |:CdRelative| dir - Executes :cd relative to the current file.
-
-- |:LcdRelative| dir - Executes :lcd relative to the current file.
 
 - |:Tcd| dir - Like :lcd but sets the tab's local working directory.
 
@@ -519,15 +410,11 @@ Misc. Commands
 - |:LocationListClear| - Removes all entries from the location list
   window.
 
-- |:MaximizeWindow| - Toggles maximization of the current window.
-
-- |:MinimizeWindow| [winnr ...] - Minimizes the current window or the
-  windows corresponding to the window numbers supplied.
-
-- |:MinimizeRestore| - Restore all minimized windows.
-
 - |:Buffers| - Opens a temporary window with a list of all the
   currently listed buffers, allowing you to open or remove them.
+
+- |:BuffersToggle| - Opens the buffers window if not open, otherwise
+  closes it.
 
 - |:Only| - Closes all but the current window and any windows excluded
   by g:EclimOnlyExclude.

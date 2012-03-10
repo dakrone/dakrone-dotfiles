@@ -1,13 +1,16 @@
-# set aliases
+# Aliases
+
 # no spelling correction on mv
 alias mv='nocorrect mv'
 alias cp='nocorrect cp'
 alias mkdir='nocorrect mkdir'
+# colorful ls for whichever platform
 if ls -F --color=auto >&/dev/null; then
     alias ls="ls --color=auto -F"
 else
     alias ls="ls -GF"
 fi
+# various ls helpers
 alias l.='ls -d .*'
 alias ll='ls -lh'
 alias la='ls -alh'
@@ -17,16 +20,30 @@ alias ss='sl'
 # if you have ls++, uncomment this
 # alias ll='ls++'
 # alias la='ls++ -a'
+# quickjump to directories
 alias j='z'
+# various jump options
+alias jl='j --l'
+alias jr='j --r'
+alias js='j --s'
+# don't page unless needed
 alias less='less -FRX'
+# colorize greps
 alias grep='grep -i --color=auto'
 alias egrep='egrep -i --color=auto'
+alias fgrep='fgrep -i --color=auto'
+# cd helpers
 alias cd..='cd ..'
 alias ..='cd ..'
+# jump to nsm-console
 alias nsmc='cd ~/src/ruby/nsm-console'
+# look up a service port
 alias serv='cat /etc/services | grep'
-alias pg='ps aux | grep'
+# look up a process quickly
+alias pg='ps aux | fgrep'
+# eh, who likes typing sudo anyway?
 alias dmesg='sudo dmesg'
+# various port forwarding and hole-punching
 alias remhex='ssh -i ~/.ssh/id_rawpacket dakrone@localhost -p 6666'
 alias remblack='ssh -i ~/.ssh/id_rawpacket hinmanm@localhost -p 7777'
 alias remstyx='ssh -i ~/.ssh/id_rawpacket lee@localhost -p 6666'
@@ -35,26 +52,6 @@ alias scsetup2='sudo socat -d -d TCP4-listen:7777,fork OPENSSL:blackex:443,cert=
 alias blackexprox='ssh -i ~/.ssh/id_rawpacket -ND 9999 hinmanm@localhost -p 7777'
 alias blackprox='ssh -i ~/.ssh/id_rawpacket -ND 9999 hinmanm@black'
 alias styxprox='ssh -i ~/.ssh/id_rawpacket -ND 9999 lee@localhost -p 6666'
-alias tcpdump='tcpdump -ttttnnn'
-alias vless=/usr/share/vim/vim72/macros/less.sh
-alias jl='j --l'
-alias jr='j --r'
-alias js='j --s'
-alias givm='gvim'
-alias rsynco='rsync --compress-level=9 -azvvPhSImi'
-alias fa=fix-agent
-# Colored rspec
-alias cspec='spec -c --format specdoc'
-# Tmux stuff
-# force 256 color mode
-alias tmux='tmux -2'
-alias rvim='gvim --remote-tab-silent'
-alias screen='TERM=xterm-color && /opt/local/bin/screen'
-alias todo='ec -n ~/work.org'
-# elinks stuff
-alias el='TERM=xterm-color elinks'
-# autossh stuff
-alias -g ash='autossh'
 # keep an X connection open, with proxy
 alias keepircprox='autossh -M 21000 irc.sa2s.us -L 6667:irc.sa2s.us:31425'
 # keep an X connection open, without proxy
@@ -64,6 +61,33 @@ alias xprox='ssh -nNT -R 4444:localhost:22 x'
 alias prox='ssh -nNT -R 4444:localhost:22 localhost'
 alias autoxprox='autossh -M 22000 -nNT -R 4444:localhost:22 x'
 alias autoprox='autossh -M 22000 -nNT -R 4444:localhost:22 localhost'
+# tcpdump default opts
+alias tcpdump='tcpdump -ttttnnn'
+# vim less options
+alias vless=/usr/share/vim/vim72/macros/less.sh
+# correct mistypes for gvim
+alias givm='gvim'
+# remote gvim tab
+alias rvim='gvim --remote-tab-silent'
+# better rsync defaults
+alias rsynco='rsync --compress-level=9 -azvvPhSImi'
+# fix ssh agent
+alias fa=fix-agent
+# always try to fix our agent if we can before sshing
+alias ssh="fix-agent; ssh"
+# Colored rspec
+alias cspec='spec -c --format specdoc'
+# Tmux stuff
+# force 256 color mode
+alias tmux='tmux -2'
+# screen, although who uses screen anymore?
+alias screen='TERM=xterm-color && /opt/local/bin/screen'
+# open work file really quickly
+alias todo='ec -n ~/work.org'
+# open elinks quickly
+alias el='TERM=xterm-color elinks'
+# autossh stuff
+alias -g ash='autossh'
 ## ledger aliases
 # balance
 alias bal='ledger -s -V bal'
@@ -75,16 +99,6 @@ alias uc='ledger -U reg'
 # transactions for the whole month
 alias budget='ledger --budget -b Mar -M reg expenses'
 alias ytdbug='ledger -M -b Mar budget'
-
-# Stolen from Decklin
-alias e='$EDITOR'
-alias m='$PAGER'
-alias h='fc -l'
-alias g='egrep -i'
-alias rg='egrep -ir'
-alias v='egrep -iv'
-alias gf='fgrep -f'
-alias vf='fgrep -vf'
 
 # knife stuff
 alias -g kssh='knife sq ssh'

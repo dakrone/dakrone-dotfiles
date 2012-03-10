@@ -2,6 +2,8 @@
 
 alias -g cs='curl -s'
 
+alias -g csu='curl -s -u'
+
 function dpaste () {
     zsh <(curl -s p.draines.com/sh) $1
 }

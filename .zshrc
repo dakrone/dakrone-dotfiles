@@ -5,6 +5,8 @@ export PATH=/usr/local/bin:$PATH
 export PATH=$PATH:/usr/local/sbin:/usr/libexec:/opt/local/sbin
 export PATH=$PATH:/usr/local/mysql/bin:~/.cabal/bin
 export PATH=$PATH:/usr/local/git/libexec/git-core
+# Always override with my personal bin
+export PATH=~/bin:$PATH
 
 # Java opts (leiningen uses these)
 #export JAVA_OPTS="-Dfile.encoding=UTF-8 -Dslime.encoding=UTF-8 -Xmx512m -XX:+HeapDumpOnOutOfMemoryError"
@@ -32,9 +34,6 @@ export RSPEC=true
 # ledger
 export LEDGER_FILE=~/data/ledger.dat
 
-# Always override with my personal bin
-export PATH=~/bin:$PATH
-
 # IRBRC for RVM
 export IRBRC=~/.irbrc
 
@@ -53,8 +52,8 @@ export WORDCHARS="*?_-[]~=/&;!#$%^(){}<>"
 
 # history
 HISTFILE=$HOME/.zsh-history
-HISTSIZE=5000
-SAVEHIST=1000
+HISTSIZE=10000
+SAVEHIST=5000
 setopt appendhistory autocd extendedglob
 setopt share_history
 function history-all { history -E 1 }

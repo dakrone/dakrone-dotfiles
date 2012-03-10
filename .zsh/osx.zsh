@@ -14,19 +14,19 @@ if [[ $OS == "Darwin" ]]; then
     fi
 
     #function ec() { TERM=xterm-256color PATH=$EMACS_HOME/bin:$PATH emacsclient -t $@ }
-    alias -g e="TERM=xterm-256color PATH=$EMACS_HOME/bin:$PATH /Applications/Emacs.app/Contents/MacOS/Emacs -nw"
+    alias -g e="TERM=xterm-256color PATH=$EMACS_HOME/bin:$PATH $EMACS_HOME/Emacs -nw"
     alias -g ec="TERM=xterm-256color PATH=$EMACS_HOME/bin:$PATH emacsclient -t"
 
     #function el() { ps ax|grep Emacs }
     function ek() { $EMACS_HOME/bin/emacsclient -e '(kill-emacs)' -s $1 }
 
-    function tmacs () {
-        TERM=xterm-256color /Applications/Emacs.app/Contents/MacOS/Emacs -nw $@
-    }
+    # function tmacs () {
+    #     TERM=xterm-256color /Applications/Emacs.app/Contents/MacOS/Emacs -nw $@
+    # }
 
-    alias emacs=tmacs
+    alias -g emacs="TERM=xterm-256color PATH=$EMACS_HOME/bin:$PATH $EMACS_HOME/Emacs -nw"
 
-    export EDITOR="TERM=xterm-256color /Applications/Emacs.app/Contents/MacOS/Emacs -nw"
+    export EDITOR="TERM=xterm-256color PATH=$EMACS_HOME/bin:$PATH $EMACS_HOME/Emacs -nw"
 
     # Use MacVim's vim for terminal sessions, since it has everything compiled in.
     alias vim='/Applications/MacVim.app/Contents/MacOS/Vim'
@@ -37,8 +37,8 @@ if [[ $OS == "Darwin" ]]; then
     # growled lein test
     alias lt='ltest'
     alias lrt='lrtest'
-    # growled lein ptest (parallel test)
-    alias lpt='lptest'
+    alias l2t='l2test'
+    alias l2rt='l2rtest'
 
     # awesome
     alias gps="ps -c -r -ax -o command,pid,pcpu,time | sed 's/\(PID *\)%/\1 %/' | head -n 11 && echo && ps -c -m -ax -o command,pid,pmem,rss=RSIZE | sed 's/\(.\{23\}\)/\1 /' | head -n 9"

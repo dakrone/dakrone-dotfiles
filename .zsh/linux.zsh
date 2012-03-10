@@ -9,9 +9,15 @@ if [[ $OS == "Linux" ]]; then
         TERM=xterm-256color emacsclient -t $@
     }
 
+    function ek() { $EMACS_HOME/bin/emacsclient -e '(kill-emacs)' -s $1 }
+
+    alias -g e=emacs
+
     # no growl on linux, so back to regular
     alias lt='lein test'
     alias lrt='lein retest'
+    alias l2t='l2test'
+    alias l2rt='l2rtest'
 
     export EDITOR="emacs"
 

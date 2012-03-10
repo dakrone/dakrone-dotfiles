@@ -7,3 +7,7 @@
 .vim/*.txt
 .vim/README*
 .emacs.d/ac-comphist.dat
+.emacs.d/.*
+.emacs.d/bookmarks
+.emacs.d/swank/*
+.emacs.d/url/*

@@ -74,7 +74,7 @@ alias rsynco='rsync --compress-level=9 -azvvPhSImi'
 # fix ssh agent
 alias fa=fix-agent
 # always try to fix our agent if we can before sshing
-alias ssh="fix-agent; ssh"
+#alias ssh="fix-agent; ssh"
 # Colored rspec
 alias cspec='spec -c --format specdoc'
 # Tmux stuff

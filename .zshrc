@@ -168,7 +168,11 @@ source ~/.zsh/misc.zsh
 # function used to display some thing on shell start
 function startup () {
     echo "› $({uptime}) "
-    df -Ph | grep --colour=never '^\/' | awk '{ print "› " $0 }'
+    if dfc >&/dev/null; then
+        dfc -n | awk '{ print "› " $0 }'
+    else
+        df -Ph | grep --colour=never '^\/' | awk '{ print "› " $0 }'
+    fi
 }
 
 # run the startup commands

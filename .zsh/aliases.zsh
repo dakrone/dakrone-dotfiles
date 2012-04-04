@@ -10,6 +10,10 @@ if ls -F --color=auto >&/dev/null; then
 else
     alias ls="ls -GF"
 fi
+# dfc - http://projects.gw-computing.net/projects/dfc
+if dfc >&/dev/null; then
+    alias df="dfc"
+fi
 # various ls helpers
 alias l.='ls -d .*'
 alias ll='ls -lh'
@@ -32,6 +36,7 @@ alias less='less -FRX'
 alias grep='grep -i --color=auto'
 alias egrep='egrep -i --color=auto'
 alias fgrep='fgrep -i --color=auto'
+alias -g g='fgrep -i --color=auto'
 # cd helpers
 alias cd..='cd ..'
 alias ..='cd ..'

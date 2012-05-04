@@ -104,6 +104,8 @@ alias uc='ledger -U reg'
 # transactions for the whole month
 alias budget='ledger --budget -b Mar -M reg expenses'
 alias ytdbug='ledger -M -b Mar budget'
+# classpath reading! (wheeeeeee...)
+alias rcp="tr ':' '\n'"
 
 # knife stuff
 alias -g kssh='knife sq ssh'

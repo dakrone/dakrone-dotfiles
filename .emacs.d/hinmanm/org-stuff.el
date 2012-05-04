@@ -47,12 +47,9 @@
 (setq org-refile-targets `((,(concat "~" (user-login-name)
                                      "/org/todo.org") . (:level . 1))))
 (setq org-capture-templates
-      '(("t" "Todo" entry (file "todo.org")
-         "* TODO %i%?")
-        ("p" "Project" entry (file "gtd.org")
-         "* %i%? :project:")
-        ("j" "Journal" entry (file+datetree "journal.org")
-         "* %i%?")))
+      '(("t" "Todo" entry (file+headline "todo.org" "Unsorted") "* TODO %i%?")
+        ("n" "Notes" entry (file+headline "notes.org" "Notes") "** %? ")
+        ("j" "Journal" entry (file+datetree "journal.org") "* %i%?")))
 
 ;;(add-hook 'remember-mode-hook 'org-remember-apply-template)
 

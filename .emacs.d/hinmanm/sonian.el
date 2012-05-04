@@ -116,12 +116,20 @@ formatted, 1 if it isn't."
                  (font-lock-add-keywords
                   'clojure-mode
                   '(("(\\(with-[^[:space:]]*\\)" (1 font-lock-keyword-face))
+                    ("(\\(when-[^[:space:]]*\\)" (1 font-lock-keyword-face))
+                    ("(\\(if-[^[:space:]]*\\)" (1 font-lock-keyword-face))
                     ("(\\(def[^[:space:]]*\\)" (1 font-lock-keyword-face))
                     ("(\\(ns\\+\\)" (1 font-lock-keyword-face))
                     ("(\\(try\\+\\)" (1 font-lock-keyword-face))
                     ("(\\(ensure-call-counts\\)" (1 font-lock-keyword-face))
+                    ("(\\(while-guarded\\)" (1 font-lock-keyword-face))
                     ("(\\(throw\\+\\)" (1 font-lock-keyword-face))))
-                 (put-clojure-indent 'ensure-call-counts 'defun)))))
+                 (put-clojure-indent 'ensure-call-counts 'defun)
+                 (put-clojure-indent 'while-guarded 'defun)
+                 (put-clojure-indent 'when-lock 'defun)
+                 (put-clojure-indent 'if-lock 'defun)
+                 (put-clojure-indent 'parallel-calling-doseq 'defun)
+                 (put-clojure-indent 'do1 'defun)))))
 
 (defvar namespace-buffers '()
   "alist of namespace => buffer")

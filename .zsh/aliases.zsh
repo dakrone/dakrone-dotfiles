@@ -106,6 +106,8 @@ alias budget='ledger --budget -b Mar -M reg expenses'
 alias ytdbug='ledger -M -b Mar budget'
 # classpath reading! (wheeeeeee...)
 alias rcp="tr ':' '\n'"
+# lein aliases
+alias lr='lein repl'
 
 # knife stuff
 alias -g kssh='knife sq ssh'

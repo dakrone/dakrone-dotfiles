@@ -29,7 +29,7 @@ function cluster () {
 }
 
 function health () {
-    curl -s p.draines.com/131337422702048bcf752.txt | zsh
+    curl -s p.draines.com/1336417317985b7d30212.txt | zsh
 }
 
 function health-nocolor () {

@@ -35,6 +35,11 @@
 (add-to-list 'auto-mode-alist '("\\.yaml$" . yaml-mode))
 ;; javap mode
 (require 'javap-mode)
+;; kibit-mode
+(add-to-list 'load-path (concat "~/.emacs.d/" (user-login-name) "/kibit-mode"))
+(require 'compile)
+(require 'kibit-mode)
+(add-hook 'clojure-mode-hook 'kibit-mode)
 
 
 

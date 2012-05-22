@@ -19,7 +19,7 @@
   stat = status
   unpushed = log --branches --not --remotes --simplify-by-decoration --decorate --oneline
   lg = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr)%Creset' --abbrev-commit --date=relative
-  l = log --pretty="format:'%h  %aN  %s%G?'" --show-signature
+  l = log --pretty="format:'%C(yellow)%h %C(red)%G? %C(blue)%aN%C(reset)  %s'" --show-signature
   lol = log --graph --decorate --pretty=oneline --abbrev-commit
   lola = log --graph --decorate --pretty=oneline --abbrev-commit --all
   rips = rebase -i -p -s subtree

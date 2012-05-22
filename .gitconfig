@@ -1,6 +1,7 @@
 [user]
   name = Lee Hinman
   email = lee@writequit.org
+  signingkey = 3ACECAE0
 
 [core]
   pager = less -FRSX
@@ -10,9 +11,6 @@
 [color]
   ui = auto
 
-[merge]
-  tool = vimdiff
-
 [alias]
   co = checkout
   cob = checkout -b
@@ -21,10 +19,11 @@
   stat = status
   unpushed = log --branches --not --remotes --simplify-by-decoration --decorate --oneline
   lg = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr)%Creset' --abbrev-commit --date=relative
+  l = log --pretty="format:'%h  %aN  %s%G?'" --show-signature
   lol = log --graph --decorate --pretty=oneline --abbrev-commit
   lola = log --graph --decorate --pretty=oneline --abbrev-commit --all
   rips = rebase -i -p -s subtree
-  headless = !sh -c 'git symbolic-ref HEAD refs/heads/$0 && rm .git/index && git clean -fdx' 
+  headless = !sh -c 'git symbolic-ref HEAD refs/heads/$0 && rm .git/index && git clean -fdx'
 
 [github]
   user = dakrone

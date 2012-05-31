@@ -15,8 +15,10 @@
   co = checkout
   cob = checkout -b
   cot = checkout -t
-  st = status
-  stat = status
+  count = shortlog -sn
+  st = status -sb
+  stat = status -sb
+  status = status -sb
   unpushed = log --branches --not --remotes --simplify-by-decoration --decorate --oneline
   lg = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr)%Creset' --abbrev-commit --date=relative
   l = log --pretty="format:'%C(yellow)%h %C(red)%G? %C(blue)%aN%C(reset)  %s'" --show-signature

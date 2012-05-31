@@ -6,39 +6,55 @@
 ;; ==== Imports ====
 ;; Gist support
 (require 'gist)
+
 ;; Undo tree support
 (require 'undo-tree)
 (global-undo-tree-mode)
+
 ;; magic dired
-(require 'dired-x)
+;;(require 'dired-x)
+
 ;; smex
 (smex-initialize)
+
 ;; dim parens
 (require 'parenface)
+
 ;; org-mode
 (add-to-list 'load-path (concat "~/.emacs.d/" (user-login-name) "/org-mode"))
 (require 'org)
+
 ;; auto-complete
 (require 'auto-complete-config)
 (add-to-list 'ac-dictionary-directories "~/.emacs.d/ac-dict")
 (ac-config-default)
+
 ;; go-to-char ('f' in vim)
-(require 'iy-go-to-char)
+;;(require 'iy-go-to-char)
+
 ;; minimap
-(require 'minimap)
+;;(require 'minimap)
+
 ;; ace-jump-mode
-(require 'ace-jump-mode)
-(define-key global-map (kbd "C-c SPC") 'ace-jump-mode)
+;;(require 'ace-jump-mode)
+;;(define-key global-map (kbd "C-c SPC") 'ace-jump-mode)
+
 ;; yaml-mode
-(require 'yaml-mode)
+;;(require 'yaml-mode)
+(autoload 'yaml-mode "yaml-mode" "YAML Mode." t)
 (add-to-list 'auto-mode-alist '("\\.yml$" . yaml-mode))
 (add-to-list 'auto-mode-alist '("\\.yaml$" . yaml-mode))
+
 ;; javap mode
-(require 'javap-mode)
+;;(require 'javap-mode)
+(autoload 'javap-mode "javap-mode" "Javap Mode." t)
+(add-to-list 'auto-mode-alist '("\\.class$" . javap-mode))
+
 ;; kibit-mode
 (add-to-list 'load-path (concat "~/.emacs.d/" (user-login-name) "/kibit-mode"))
-(require 'compile)
-(require 'kibit-mode)
+(autoload 'kibit-mode "kibit-mode" "Kibit Mode." t)
+(add-to-list 'auto-mode-alist '("\\.clj$" . clojure-mode))
+(add-to-list 'auto-mode-alist '("\\.cljs$" . clojure-mode))
 (add-hook 'clojure-mode-hook 'kibit-mode)
 
 
@@ -115,10 +131,10 @@
 (setq erc-button-url-regexp
       "\\([-a-zA-Z0-9_=!?#$@~`%&*+\\/:;,]+\\.\\)+[-a-zA-Z0-9_=!?#$@~`%&*+\\/:;,]*[-a-zA-Z0-9\\/]")
 
-(and
- (require 'erc-highlight-nicknames)
- (add-to-list 'erc-modules 'highlight-nicknames)
- (erc-update-modules))
+;; (and
+;;  (require 'erc-highlight-nicknames)
+;;  (add-to-list 'erc-modules 'highlight-nicknames)
+;;  (erc-update-modules))
 
 ;; update ERC prompt with room name
 (setq erc-prompt (lambda ()
@@ -163,6 +179,10 @@
            erc-prompt-for-nickserv-password nil)
      (require 'erc-services)
      (require 'erc-spelling)
+     (and
+      (require 'erc-highlight-nicknames)
+      (add-to-list 'erc-modules 'highlight-nicknames)
+      (erc-update-modules))
      (erc-services-mode 1)
      (add-to-list 'erc-modules 'highlight-nicknames 'spelling)
      (add-hook 'erc-connect-pre-hook (lambda (x) (erc-update-modules)))))
@@ -369,7 +389,9 @@
 
 ;; ==== ledger stuff ====
 (add-to-list 'load-path (concat "~/.emacs.d/" (user-login-name) "/ledger"))
-(require 'ledger)
+(autoload 'ledger-mode "ledger-mode" "Ledger Mode." t)
+(add-to-list 'auto-mode-alist '("\\.dat$" . ledger-mode))
+;;(require 'ledger)
 (setq ledger-binary-path "/usr/local/bin/ledger")
 (setenv "LEDGER_FILE" "/Users/hinmanm/data/ledger.dat")
 

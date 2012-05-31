@@ -50,6 +50,9 @@ export PRETITLE=""
 # default is: *?_-.[]~=/&;!#$%^(){}<>
 export WORDCHARS="*?_-[]~=/&;!#$%^(){}<>"
 
+export JIRAPATH=~/src/jira
+alias jira="$JIRAPATH/jira.sh --action getIssue --issue "
+
 # history
 HISTFILE=$HOME/.zsh-history
 HISTSIZE=10000

@@ -24,7 +24,7 @@ if [[ $OS == "Darwin" ]]; then
     #     TERM=xterm-256color /Applications/Emacs.app/Contents/MacOS/Emacs -nw $@
     # }
 
-    alias -g emacs="TERM=xterm-256color PATH=$EMACS_HOME/bin:$PATH $EMACS_HOME/Emacs -nw"
+    alias emacs="TERM=xterm-256color PATH=$EMACS_HOME/bin:$PATH $EMACS_HOME/Emacs -nw"
 
     export EDITOR="TERM=xterm-256color PATH=$EMACS_HOME/bin:$PATH $EMACS_HOME/Emacs -nw"
 

@@ -539,16 +539,22 @@
   (tool-bar-mode -1))
 (menu-bar-mode -1)
 
-;; Cosmetics for diffs
+;; Cosmetics for diffs, also contained as part of color-theme-dakrone.el
 (eval-after-load 'diff-mode
   '(progn
      (set-face-foreground 'diff-added "green4")
-     (set-face-foreground 'diff-removed "red3")))
+     (set-face-background 'diff-added "gray10")
+     (set-face-foreground 'diff-removed "red3")
+     (set-face-background 'diff-removed "gray10")))
 
 (eval-after-load 'magit
   '(progn
      (set-face-foreground 'magit-diff-add "green3")
-     (set-face-foreground 'magit-diff-del "red3")))
+     (set-face-background 'magit-diff-add "gray10")
+     (set-face-foreground 'magit-diff-del "red3")
+     (set-face-background 'magit-diff-del "gray10")
+     (set-face-background 'magit-diff-file-header "gray10")
+     (set-face-background 'magit-diff-hunk-header "gray10")))
 
 
 (defun untabify-buffer ()

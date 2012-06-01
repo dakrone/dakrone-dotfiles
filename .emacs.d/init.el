@@ -596,10 +596,12 @@
 
 ;; My custom theme
 ;;(require 'color-theme-zenburn)
+;; (if (eq window-system 'ns)
+;;     (color-theme-dakrone)
+;;   ;;(color-theme-zenburn)
+;;   )
 (if (eq window-system 'ns)
-    (color-theme-dakrone)
-  ;;(color-theme-zenburn)
-  )
+    (set-face-background 'default "gray10"))
 (color-theme-dakrone)
 ;;(set-face-foreground 'paren-face "DimGrey")
 

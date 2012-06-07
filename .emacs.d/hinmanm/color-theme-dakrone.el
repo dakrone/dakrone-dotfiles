@@ -39,7 +39,7 @@ widget, custom, latex, ediff."
       (border-color . "black")
       (background-mode . dark))
      ;;(default ((t (nil))))
-     (default ((t (:background "gray5"))))
+     (default ((t (:background "gray10"))))
      (modeline ((t (:foreground "black" :background "wheat"))))
      (modeline-buffer-id ((t (:foreground "black" :background "wheat"))))
      (modeline-mousable ((t (:foreground "black" :background "wheat"))))

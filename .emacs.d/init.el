@@ -4,9 +4,6 @@
 
 
 ;; ==== Imports ====
-;; Gist support
-(require 'gist)
-
 ;; Undo tree support
 (require 'undo-tree)
 (global-undo-tree-mode)
@@ -643,3 +640,8 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  )
+
+;; start with todo opened
+(if (and (eq window-system 'ns)
+         (file-exists-p "~/org/todo.org"))
+    (find-file "~/org/todo.org"))

@@ -30,6 +30,7 @@
 [github]
   user = dakrone
   token = !cat ~/.github.token
+  oauth-token = !cat ~/.github.oauth-token
 
 [rerere]
   enabled = 1

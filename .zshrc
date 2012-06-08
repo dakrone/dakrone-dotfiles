@@ -127,6 +127,15 @@ bindkey ' ' magic-space    # also do history expansion on space
 bindkey '^I' complete-word # complete on tab, leave expansion to _expand
 bindkey -r '^j' #unbind ctrl-j, I hit it all the time accidentaly
 
+
+## GPG
+# brew install gpg gpg-agent keychain
+which keychain 2>1 > /dev/null
+if [[ $? -eq 0 ]]; then
+    eval `keychain --eval --agents gpg,ssh --inherit any id_rawpacket`
+fi
+
+
 ## Sourcing things
 
 # Source z.sh if available

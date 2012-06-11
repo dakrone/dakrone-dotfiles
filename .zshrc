@@ -179,13 +179,13 @@ source ~/.zsh/misc.zsh
 
 # function used to display some thing on shell start
 function startup () {
-    echo "› $(ps aux | fgrep gpg-agent | fgrep -v fgrep | wc -l | tr -d ' ') gpg-agents running"
     echo "› $({uptime}) "
     if dfc >&/dev/null; then
         dfc -n | awk '{ print "› " $0 }'
     else
         df -Ph | grep --colour=never '^\/' | awk '{ print "› " $0 }'
     fi
+    echo "› $(ps aux | fgrep gpg-agent | fgrep -v fgrep | wc -l | tr -d ' ') gpg-agents running"
 }
 
 # run the startup commands

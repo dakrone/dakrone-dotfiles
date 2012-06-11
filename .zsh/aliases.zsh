@@ -33,19 +33,22 @@ alias js='j --s'
 # don't page unless needed
 alias less='less -FRX'
 # colorize greps
-alias grep='grep -i --color=auto'
-alias egrep='egrep -i --color=auto'
-alias fgrep='fgrep -i --color=auto'
-alias -g g='fgrep -i --color=auto'
+alias grep='grep --color=auto'
+alias egrep='egrep --color=auto'
+alias fgrep='fgrep --color=auto'
+alias -g g='fgrep --color=auto'
 # cd helpers
 alias cd..='cd ..'
 alias ..='cd ..'
 # jump to nsm-console
-alias nsmc='cd ~/src/ruby/nsm-console'
+alias nsmc='cd ~/src/ruby/nsm-console && ./nsm'
 # look up a service port
 alias serv='cat /etc/services | grep'
 # look up a process quickly
-alias pg='ps aux | fgrep'
+function pg {
+    # doing it again afterwards for the coloration
+    ps aux | fgrep -i $1 | fgrep -v fgrep | fgrep -i $1
+}
 # eh, who likes typing sudo anyway?
 alias dmesg='sudo dmesg'
 # various port forwarding and hole-punching

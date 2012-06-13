@@ -36,7 +36,7 @@ alias less='less -FRX'
 alias grep='grep --color=auto'
 alias egrep='egrep --color=auto'
 alias fgrep='fgrep --color=auto'
-alias -g g='fgrep --color=auto'
+alias g='fgrep --color=auto'
 # cd helpers
 alias cd..='cd ..'
 alias ..='cd ..'

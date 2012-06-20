@@ -2,3 +2,7 @@ curl -u user:Passw0rd localhost:9200/_rebalance
 sudo /etc/init.d/elasticsearch stop
 sudo /etc/init.d/elasticsearch shut-down-cluster
 sudo /etc/init.d/elasticsearch start
+sudo rabbitmqctl list_queues -p production-2010-05-08 messages messages_unacknowledged name | grep safe | sort -k3 | fgrep -v sensu
+es health
+safectl util repl
+tail -n250 /var/log/es.log

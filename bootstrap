@@ -23,6 +23,7 @@ fi
 mv -n ~/.dakrone/bin ~/
 
 cp -f ~/.dakrone/.zshrc ~/
+cp -f ~/.important_commands ~/
 cp -R ~/.dakrone/.zsh ~/
 cp -f ~/.dakrone/.gitconfig ~/
 cp -f ~/.dakrone/.tmux.conf ~/

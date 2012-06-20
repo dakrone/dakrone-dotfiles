@@ -6,6 +6,7 @@ cp -f -v ~/.vimrc .
 cp -f -v ~/.zshrc .
 mkdir -p .zsh
 cp -f -rv ~/.zsh .
+cp -f -v ~/.important_commands .
 cp -f -v ~/.screenrc .
 mkdir -p .vim
 cp -f -rv ~/.vim .

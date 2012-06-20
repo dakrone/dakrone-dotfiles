@@ -1,0 +1,4 @@
+curl -u user:Passw0rd localhost:9200/_rebalance
+sudo /etc/init.d/elasticsearch stop
+sudo /etc/init.d/elasticsearch shut-down-cluster
+sudo /etc/init.d/elasticsearch start

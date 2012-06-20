@@ -48,7 +48,7 @@ export PRETITLE=""
 
 # word chars
 # default is: *?_-.[]~=/&;!#$%^(){}<>
-export WORDCHARS="*?_-[]~=/&;!#$%^(){}<>"
+export WORDCHARS="*?_-.[]~=/&;!#$%^(){}<>\"'\\"
 
 export JIRAPATH=~/src/jira
 alias jira="$JIRAPATH/jira.sh --action getIssue --issue "
@@ -57,23 +57,22 @@ alias jira="$JIRAPATH/jira.sh --action getIssue --issue "
 HISTFILE=$HOME/.zsh-history
 HISTSIZE=10000
 SAVEHIST=5000
-setopt appendhistory autocd extendedglob
-setopt share_history
-function history-all { history -E 1 }
+# "persistent history"
+# just write important commands you always need to ~/.important_commands
+if [[ -r ~/.important_commands ]] ; then
+    fc -R ~/.important_commands
+fi
 
-# functions
-setenv() { export $1=$2 }  # csh compatibility
-rot13 () { tr "[a-m][n-z][A-M][N-Z]" "[n-z][a-m][N-Z][A-M]" }
-function maxhead() { head -n `echo $LINES - 5|bc` ; }
-function maxtail() { tail -n `echo $LINES - 5|bc` ; }
-function bgrep() { git branch -a | grep "$*" | sed 's,remotes/,,'; }
+# support colors in less
+export LESS_TERMCAP_mb=$'\E[01;31m'
+export LESS_TERMCAP_md=$'\E[01;31m'
+export LESS_TERMCAP_me=$'\E[0m'
+export LESS_TERMCAP_se=$'\E[0m'
+export LESS_TERMCAP_so=$'\E[01;44;33m'
+export LESS_TERMCAP_ue=$'\E[0m'
+export LESS_TERMCAP_us=$'\E[01;32m'
 
-# function to fix ssh agent
-function fix-agent() {
-    disable -a ls
-    export SSH_AUTH_SOCK=`ls -t1 $(find /tmp/ -uid $UID -path \\*ssh\\* -type s 2> /dev/null) | head -1`
-    enable -a ls
-}
+
 
 # zsh completion
 if [ -d ~/.zsh/zsh-completions ] ; then
@@ -99,13 +98,22 @@ zstyle ':completion:*' verbose yes
 
 
 ### OPTIONS ###
-unsetopt BG_NICE             # do NOT nice bg commands
+unsetopt bg_nice             # do NOT nice bg commands
 unsetopt correct_all         # don't correct me, I know what I'm doing
-setopt EXTENDED_HISTORY      # puts timestamps in the history
-setopt NO_HUP                # don't send kill to background jobs when exiting
 setopt multios               # allow pipes to be split/duplicated
+setopt auto_cd
+setopt extended_glob
+setopt append_history
+setopt extended_history
+setopt share_history
+setopt histignorealldups
+setopt nohup
+setopt longlistjobs
+setopt notify
 # ^^ try this: cat foo.clj > >(fgrep java | wc -l) > >(fgrep copy | wc -l)
 
+autoload -U url-quote-magic
+zle -N self-insert url-quote-magic
 
 # Keybindings
 # Emacs keybindings
@@ -126,6 +134,7 @@ bindkey "^k" kill-line
 bindkey ' ' magic-space    # also do history expansion on space
 bindkey '^I' complete-word # complete on tab, leave expansion to _expand
 bindkey -r '^j' #unbind ctrl-j, I hit it all the time accidentaly
+
 
 
 ## GPG
@@ -162,6 +171,8 @@ fi
 
 # Alias things
 source ~/.zsh/aliases.zsh
+# Functions
+source ~/.zsh/functions.zsh
 # Set prompt
 source ~/.zsh/prompt.zsh
 # ES helpers
@@ -176,17 +187,6 @@ source ~/.zsh/osx.zsh
 source ~/.zsh/title.zsh
 # Misc funcitions
 source ~/.zsh/misc.zsh
-
-# function used to display some thing on shell start
-function startup () {
-    echo "› $({uptime}) "
-    if dfc >&/dev/null; then
-        dfc -n | awk '{ print "› " $0 }'
-    else
-        df -Ph | grep --colour=never '^\/' | awk '{ print "› " $0 }'
-    fi
-    echo "› $(ps aux | fgrep gpg-agent | fgrep -v fgrep | wc -l | tr -d ' ') gpg-agents running"
-}
 
 # run the startup commands
 startup

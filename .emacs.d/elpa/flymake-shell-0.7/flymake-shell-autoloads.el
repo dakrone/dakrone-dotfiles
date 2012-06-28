@@ -4,7 +4,7 @@
 
 
 ;;;### (autoloads (flymake-shell-load) "flymake-shell" "flymake-shell.el"
-;;;;;;  (20330 25860))
+;;;;;;  (20460 41312))
 ;;; Generated autoloads from flymake-shell.el
 
 (autoload 'flymake-shell-load "flymake-shell" "\
@@ -18,7 +18,7 @@ does not alter flymake's global configuration, so function
 
 ;;;***
 
-;;;### (autoloads nil nil ("flymake-shell-pkg.el") (20330 25860 613536))
+;;;### (autoloads nil nil ("flymake-shell-pkg.el") (20460 41312 283330))
 
 ;;;***
 

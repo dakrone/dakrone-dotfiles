@@ -4,11 +4,11 @@
 
 ;; Author: Phil Hagelberg
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/SCPaste
-;; Version: 0.5
+;; Version: 0.6
 ;; Created: 2008-04-02
 ;; Keywords: convenience hypermedia
 ;; EmacsWiki: SCPaste
-;; Package-Requires: ((htmlfontify "0.21"))
+;; Package-Requires: ((htmlize "1.39"))
 
 ;; This file is NOT part of GNU Emacs.
 
@@ -72,7 +72,10 @@
 ;;; Code:
 
 (require 'url)
-(require 'htmlfontify)
+(require 'htmlize)
+
+(defvar scpaste-scp-port
+  "22")
 
 (defvar scpaste-http-destination
   "http://p.hagelb.org"
@@ -97,9 +100,7 @@ You must have write-access to this directory via `scp'.")
 (defun scpaste (original-name)
   "Paste the current buffer via `scp' to `scpaste-http-destination'."
   (interactive "MName (defaults to buffer name): ")
-  (let* ((b (save-excursion
-              (htmlfontify-buffer)
-              (current-buffer)))
+  (let* ((b (htmlize-buffer))
          (name (url-hexify-string (if (equal "" original-name)
                                       (buffer-name)
                                     original-name)))
@@ -119,8 +120,11 @@ You must have write-access to this directory via `scp'.")
       (write-file tmp-file)
       (kill-buffer b))
 
-    (shell-command (concat "scp " tmp-file " " scp-destination))
-    (shell-command (concat "scp " (buffer-file-name (current-buffer))
+    (shell-command (concat "scp -P " scpaste-scp-port
+                           " " tmp-file
+                           " " scp-destination))
+    (shell-command (concat "scp -P " scpaste-scp-port
+                           " " (buffer-file-name (current-buffer))
                            " " scp-original-destination))
 
     ;; Notify user and put the URL on the kill ring

@@ -6,7 +6,7 @@
       [(1 0)
        nil "Edit all lines matching a given regexp" single])
  (ampc .
-       [(0 1 2)
+       [(0 1 3)
 	nil "Asynchronous Music Player Controller" single])
  (auctex .
 	 [(11 86)
@@ -28,7 +28,7 @@
 	       (0 1 1))
 	      (heap
 	       (0 3)))
-	     "Dictionary data structure package" single])
+	     "Dictionary data structure" single])
  (djvu .
        [(0 5)
 	nil "Edit and view Djvu files via djvused" single])
@@ -77,11 +77,14 @@
  (nhexl-mode .
 	     [(0 1)
 	      nil "Minor mode to edit files via hex-dump format" single])
+ (nlinum .
+	 [(1 0)
+	  nil "Show line numbers in the margin" single])
  (oauth2 .
-	 [(0 4)
+	 [(0 5)
 	  nil "OAuth 2.0 Authorization Protocol" single])
  (org .
-      [(20120522)
+      [(20120628)
        nil "Outline-based notes management and organizer" tar])
  (quarter-plane .
 		[(0 1)
@@ -111,19 +114,20 @@
 	"Tagged non-deterministic finite-state automata" single])
  (trie .
        [(0 2 5)
-	((emacs
-	  (24 1))
-	 (tNFA
+	((tNFA
 	  (0 1 1))
 	 (heap
 	  (0 3)))
 	"Trie data structure" single])
  (undo-tree .
-	    [(0 4)
+	    [(0 5 2)
 	     nil "Treat undo history as a tree" single])
  (uni-confusables .
 		  [(0 1)
 		   nil "Unicode confusables table" tar])
+ (vlf .
+      [(0 2)
+       nil "View Large Files" single])
  (windresize .
 	     [(0 1)
 	      nil "Resize windows interactively" single])

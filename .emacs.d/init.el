@@ -71,7 +71,27 @@
 ;; Marmalade
 (add-to-list 'package-archives
              '("marmalade" . "http://marmalade-repo.org/packages/"))
+;; Melpa
+(add-to-list 'package-archives
+             '("melpa" . "http://melpa.milkbox.net/packages/") t)
 (add-to-list 'package-archives '("tromey" . "http://tromey.com/elpa/") t)
+(defadvice package-compute-transaction
+  (before
+   package-compute-transaction-reverse (package-list requirements)
+   activate compile)
+  "reverse the requirements"
+  (setq requirements (reverse requirements))
+  (print requirements))
+
+(defadvice package-download-tar
+  (after package-download-tar-initialize activate compile)
+  "initialize the package after compilation"
+  (package-initialize))
+
+(defadvice package-download-single
+  (after package-download-single-initialize activate compile)
+  "initialize the package after compilation"
+  (package-initialize))
 
 
 
@@ -604,6 +624,16 @@
     (set-face-background 'default "gray10"))
 (color-theme-dakrone)
 ;;(set-face-foreground 'paren-face "DimGrey")
+
+;; haven't gotten this to work yet
+(eval-after-load 'net-urls
+  '(progn
+     (add-hook 'network-connection-mode
+               (lambda ()
+                 (if (eq system-type 'darwin)
+                     (add-to-list 'netstat-program-options "-n")
+                   (add-to-list 'netstat-program-options "-tun"))))))
+
 
 
 

@@ -49,6 +49,8 @@
      (describe 'defun)
      (testing 'defun)
      (given 'defun)
+     (scenario 'defun)
+     (expect 'defun)
      (it 'defun)
      (do-it 'defun)))
 

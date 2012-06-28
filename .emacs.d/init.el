@@ -58,6 +58,15 @@
 ;; ssh-config-mode
 (add-to-list 'auto-mode-alist '(".ssh/config$" . ssh-config-mode))
 
+;; powerline
+(if (eq window-system 'ns)
+    (progn
+      (add-to-list 'load-path (concat "~/.emacs.d/" (user-login-name) "/powerline"))
+      (require 'powerline))
+  ;; Display the battery level in the bottom bar
+  (display-battery-mode t))
+
+
 
 ;; ==== Backup files ====
 (setq backup-directory-alist
@@ -237,9 +246,6 @@
                             (whitespace-mode t)
                             (subword-mode t)
                             (idle-highlight t)))
-
-;; Display the battery level in the bottom bar
-(display-battery-mode t)
 
 ;; Show Paren Mode
 (setq show-paren-style 'expression)

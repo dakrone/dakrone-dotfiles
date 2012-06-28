@@ -14,8 +14,8 @@ if [[ $OS == "Darwin" ]]; then
     fi
 
     #function ec() { TERM=xterm-256color PATH=$EMACS_HOME/bin:$PATH emacsclient -t $@ }
-    alias -g e="TERM=xterm-256color PATH=$EMACS_HOME/bin:$PATH $EMACS_HOME/Emacs -nw"
-    alias -g ec="TERM=xterm-256color PATH=$EMACS_HOME/bin:$PATH emacsclient -t"
+    alias e="TERM=xterm-256color PATH=$EMACS_HOME/bin:$PATH $EMACS_HOME/Emacs -nw"
+    alias ec="TERM=xterm-256color PATH=$EMACS_HOME/bin:$PATH emacsclient -t"
 
     #function el() { ps ax|grep Emacs }
     function ek() { $EMACS_HOME/bin/emacsclient -e '(kill-emacs)' -s $1 }

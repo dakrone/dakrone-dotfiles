@@ -111,6 +111,7 @@ alias ytdbug='ledger -M -b Mar budget'
 alias rcp="tr ':' '\n'"
 # lein aliases
 alias lr='lein repl'
+alias ldt='lein difftest'
 
 # knife stuff
 alias -g kssh='knife sq ssh'

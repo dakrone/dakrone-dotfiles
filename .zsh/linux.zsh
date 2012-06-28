@@ -11,7 +11,7 @@ if [[ $OS == "Linux" ]]; then
 
     function ek() { $EMACS_HOME/bin/emacsclient -e '(kill-emacs)' -s $1 }
 
-    alias -g e=emacs
+    alias e=emacs
 
     # no growl on linux, so back to regular
     alias lt='lein test'

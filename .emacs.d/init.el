@@ -53,7 +53,10 @@
 (add-to-list 'auto-mode-alist '("\\.clj$" . clojure-mode))
 (add-to-list 'auto-mode-alist '("\\.cljs$" . clojure-mode))
 (add-hook 'clojure-mode-hook 'kibit-mode)
+(add-hook 'clojure-mode-hook 'expectations-mode)
 
+;; ssh-config-mode
+(add-to-list 'auto-mode-alist '(".ssh/config$" . ssh-config-mode))
 
 
 ;; ==== Backup files ====

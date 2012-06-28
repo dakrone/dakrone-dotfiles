@@ -118,3 +118,6 @@ alias -g kssh='knife sq ssh'
 alias -g kps='knife sq ps'
 alias -g kst='knife sq status'
 alias -g kex='knife sq exec'
+
+# global json prettification
+alias -g pj='python -mjson.tool'

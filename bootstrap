@@ -20,7 +20,7 @@ if [ $? -eq 0 ]; then
 else
     cp -R ~/.dakrone/.emacs.d/backup23.el ~/.emacs.el
 fi
-mv -n ~/.dakrone/bin ~/
+cp ~/.dakrone/bin/* ~/bin/
 
 cp -f ~/.dakrone/.zshrc ~/
 cp -f ~/.dakrone/.important_commands ~/

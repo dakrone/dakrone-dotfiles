@@ -444,9 +444,9 @@ install the memoized function over the original function."
 (defpowerline status      "%s")
 (defpowerline global      global-mode-string)
 (defpowerline emacsclient mode-line-client)
-(defpowerline vc          (when (and (buffer-file-name (current-buffer))
-                                     vc-mode)
-                                  vc-mode-line))
+;; (defpowerline vc          (when (and (buffer-file-name (current-buffer))
+;;                                      vc-mode)
+;;                                   vc-mode-line))
 (defpowerline percent-xpm (propertize "  "
                                       'display
                                       (let (pmax
@@ -470,7 +470,7 @@ install the memoized function over the original function."
                              (powerline-minor-modes    'left        powerline-color1  )
                              (powerline-narrow         'left        powerline-color1  powerline-color2  )
                              (powerline-global         'center                        powerline-color2  )
-                             (powerline-vc             'center                        powerline-color2  )
+                             ;;(powerline-vc             'center                        powerline-color2  )
                              (powerline-make-fill                                     powerline-color2  )
                              (powerline-row            'right       powerline-color1  powerline-color2  )
                              (powerline-make-text      ":"          powerline-color1  )

@@ -26,16 +26,6 @@
 (add-to-list 'ac-dictionary-directories "~/.emacs.d/ac-dict")
 (ac-config-default)
 
-;; go-to-char ('f' in vim)
-;;(require 'iy-go-to-char)
-
-;; minimap
-;;(require 'minimap)
-
-;; ace-jump-mode
-;;(require 'ace-jump-mode)
-;;(define-key global-map (kbd "C-c SPC") 'ace-jump-mode)
-
 ;; yaml-mode
 ;;(require 'yaml-mode)
 (autoload 'yaml-mode "yaml-mode" "YAML Mode." t)
@@ -61,8 +51,29 @@
 ;; powerline
 (if (eq window-system 'ns)
     (progn
-      (add-to-list 'load-path (concat "~/.emacs.d/" (user-login-name) "/powerline"))
-      (require 'powerline))
+      (add-to-list 'load-path (concat "~/.emacs.d/" (user-login-name)
+                                      "/powerline"))
+      (require 'powerline)
+      (set-face-attribute 'mode-line nil
+                          :background "OliveDrab3"
+                          :box nil)
+      (set-face-attribute 'powerline-active1 nil
+                          :background "grey9"
+                          :foreground "grey90"
+                          :box nil)
+      (set-face-attribute 'powerline-active2 nil
+                          :background "grey20"
+                          :foreground "grey80"
+                          :box nil)
+      (set-face-attribute 'powerline-inactive1 nil
+                          :background "grey10"
+                          :box nil)
+      (set-face-attribute 'powerline-inactive2 nil
+                          :background "grey15"
+                          :box nil)
+      (set-face-attribute 'mode-line-inactive nil
+                          :box nil)
+      (powerline-default))
   ;; Display the battery level in the bottom bar
   (display-battery-mode t))
 
@@ -183,12 +194,7 @@
   '(progn
      (setq erc-fill-column 75
            erc-server-coding-system '(utf-8 . utf-8)
-           erc-hide-list '("JOIN"
-                           "PART"
-                           "QUIT"
-                           ;;"NICK"
-                           )
-           erc-ignore-list '("sonian-chef")
+           erc-hide-list '("JOIN" "PART" "QUIT" "NICK")
            erc-track-exclude-types (append '("324" "329" "332" "333"
                                              "353" "477" "MODE")
                                            erc-hide-list)
@@ -199,12 +205,13 @@
                       "joegallo" "jimduey" "leathekd" "rhickey" "zkim" "steve"
                       "imotov" "joekinsella" "craig" "technomancy" "ddillinger"
                       "yazirian")
+           erc-keywords '("clojuredocs" "clj-http" "cheshire" "itsy" "opennlp"
+                          "clj-json")
            erc-ignore-list '("sonian-chef")
-           erc-autojoin-channels-alist
-           '(("freenode.net"
-              "#clojure"
-              "#clojerks"
-              "#leiningen"))
+           erc-log-matches-types-alist
+           '((keyword . "ERC Keywords")
+             (current-nick . "ERC Messages Addressed To You"))
+           erc-log-matches-flag t
            erc-prompt-for-nickserv-password nil)
      (require 'erc-services)
      (require 'erc-spelling)

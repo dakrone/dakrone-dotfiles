@@ -46,6 +46,9 @@ export SHOW_LOAD=false
 # start with a pre-title of nothing
 export PRETITLE=""
 
+# drip
+DRIP_SHUTDOWN=30
+
 # word chars
 # default is: *?_-.[]~=/&;!#$%^(){}<>
 export WORDCHARS="*?_-.[]~=/&;!#$%^(){}<>\"'\\"

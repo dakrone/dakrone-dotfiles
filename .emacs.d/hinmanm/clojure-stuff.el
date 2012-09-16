@@ -38,7 +38,9 @@
 
 ;; Better indention (from Kevin)
 (add-hook 'clojure-mode-hook
-          (lambda () (setq clojure-mode-use-backtracking-indent t)))
+          (lambda ()
+            (setq clojure-mode-use-backtracking-indent t)
+            (eldoc-mode t)))
 
 ;; syntax in REPL
 (add-hook 'slime-repl-mode-hook 'clojure-mode-font-lock-setup)

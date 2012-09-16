@@ -6,3 +6,4 @@ sudo rabbitmqctl list_queues -p production-2010-05-08 messages messages_unacknow
 es health
 safectl util repl
 tail -n250 /var/log/es.log
+ENV=dev kssh -m search_0 "curl -s p.draines.com/diskeph.sh | zsh" | sort -rnk5

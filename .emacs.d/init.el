@@ -9,7 +9,7 @@
 (global-undo-tree-mode)
 
 ;; magic dired
-;;(require 'dired-x)
+(require 'dired-x)
 
 ;; smex
 (smex-initialize)
@@ -20,6 +20,19 @@
 ;; org-mode
 (add-to-list 'load-path (concat "~/.emacs.d/" (user-login-name) "/org-mode"))
 (require 'org)
+
+;; nrepl
+(add-to-list 'load-path "~/src/elisp/nrepl.el")
+(require 'nrepl)
+(add-hook 'nrepl-interaction-mode-hook
+          'nrepl-turn-on-eldoc-mode)
+
+(add-to-list 'load-path "~/src/elisp/ac-nrepl")
+(require 'ac-nrepl)
+(add-hook 'nrepl-mode-hook 'ac-nrepl-setup)
+(add-hook 'clojure-nrepl-mode-hook 'ac-nrepl-setup)
+(eval-after-load "auto-complete"
+  '(add-to-list 'ac-modes 'nrepl-mode))
 
 ;; auto-complete
 (require 'auto-complete-config)
@@ -77,6 +90,11 @@
   ;; Display the battery level in the bottom bar
   (display-battery-mode t))
 
+;; xiki
+;;(add-to-list 'load-path "/Users/hinmanm/.rbenv/versions/1.9.2-p290/share/emacs/site-lisp")
+;;(require 'el4r)
+;;(el4r-boot)
+
 
 
 ;; ==== Backup files ====
@@ -130,6 +148,19 @@
 ;; ==== Unicode stuff ====
 (set-language-environment "UTF-8")
 (setq slime-net-coding-system 'utf-8-unix)
+
+(prefer-coding-system 'utf-8)
+(set-default-coding-systems 'utf-8)
+(set-terminal-coding-system 'utf-8)
+(set-keyboard-coding-system 'utf-8)
+;; backwards compatibility as default-buffer-file-coding-system
+;; is deprecated in 23.2.
+(if (boundp buffer-file-coding-system)
+    (setq buffer-file-coding-system 'utf-8)
+  (setq default-buffer-file-coding-system 'utf-8))
+
+;; Treat clipboard input as UTF-8 string first; compound text next, etc.
+(setq x-select-request-type '(UTF8_STRING COMPOUND_TEXT TEXT STRING))
 
 
 
@@ -610,6 +641,9 @@
 ;; Require a newline at the end
 (setq require-final-newline t)
 
+(when (eq system-type 'darwin)
+  (require 'ls-lisp)
+  (setq ls-lisp-use-insert-directory-program nil))
 
 
 
@@ -649,31 +683,7 @@
 
 
 
-
-;; ==== Eclim stuff ====
-;; (add-to-list 'load-path (expand-file-name "~/src/elisp/emacs-eclim"))
-;; only add the vendor path when you want to use the libraries
-;; provided with emacs-eclim
-;; (add-to-list 'load-path (expand-file-name "~/src/elisp/emacs-eclim/vendor"))
-;; (require 'eclim)
-
-;; (setq eclim-auto-save t)
-;; (global-eclim-mode)
-
-;; (setq help-at-pt-display-when-idle t)
-;; (setq help-at-pt-timer-delay 0.1)
-;; (help-at-pt-set-timer)
-
-;; regular auto-complete initialization
-;; (require 'auto-complete-config)
-;; (ac-config-default)
-
-;; add the emacs-eclim source
-;; (require 'ac-emacs-eclim-source)
-;; (add-hook 'eclim-mode-hook
-;;           (lambda () (add-to-list 'ac-sources 'ac-source-emacs-eclim)))
-
-
+;; Emacs custom set vars
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -686,8 +696,3 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  )
-
-;; start with todo opened
-(if (and (eq window-system 'ns)
-         (file-exists-p "~/org/todo.org"))
-    (find-file "~/org/todo.org"))

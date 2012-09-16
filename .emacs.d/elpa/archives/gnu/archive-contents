@@ -81,10 +81,10 @@
 	 [(1 0)
 	  nil "Show line numbers in the margin" single])
  (oauth2 .
-	 [(0 5)
+	 [(0 7)
 	  nil "OAuth 2.0 Authorization Protocol" single])
  (org .
-      [(20120628)
+      [(20120717)
        nil "Outline-based notes management and organizer" tar])
  (quarter-plane .
 		[(0 1)

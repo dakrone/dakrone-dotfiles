@@ -61,14 +61,18 @@ alias blackexprox='ssh -i ~/.ssh/id_rawpacket -ND 9999 hinmanm@localhost -p 7777
 alias blackprox='ssh -i ~/.ssh/id_rawpacket -ND 9999 hinmanm@black'
 alias styxprox='ssh -i ~/.ssh/id_rawpacket -ND 9999 lee@localhost -p 6666'
 # keep an X connection open, with proxy
-alias keepircprox='autossh -M 21000 irc.sa2s.us -L 6667:irc.sa2s.us:31425'
+alias keepircprox='autossh -M 21000 corinth -L 6667:corinth:31425'
 # keep an X connection open, without proxy
 alias keepx='autossh -M 22000 x'
+alias keepc='autossh -M 22000 corinth'
 # reverse proxy & keepopen
 alias xprox='ssh -nNT -R 4444:localhost:22 x'
+alias cprox='ssh -nNT -R 4444:corinth:22 x'
 alias prox='ssh -nNT -R 4444:localhost:22 localhost'
 alias autoxprox='autossh -M 22000 -nNT -R 4444:localhost:22 x'
+alias autocprox='autossh -M 22000 -nNT -R 4444:corinth:22 x'
 alias autoprox='autossh -M 22000 -nNT -R 4444:localhost:22 localhost'
+alias recon='autossh -M 21234 ssh corinth'
 # tcpdump default opts
 alias tcpdump='tcpdump -ttttnnn'
 # vim less options
@@ -78,7 +82,7 @@ alias givm='gvim'
 # remote gvim tab
 alias rvim='gvim --remote-tab-silent'
 # better rsync defaults
-alias rsynco='rsync --compress-level=9 -azvvPhSImi'
+alias rsynco='rsync --checksum --delete -aPhSImi'
 # fix ssh agent
 alias fa=fix-agent
 # always try to fix our agent if we can before sshing

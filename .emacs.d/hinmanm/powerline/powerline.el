@@ -216,11 +216,12 @@ static char * %s[] = {
 
 ;;;###autoload
 (defun powerline-raw (str &optional face pad)
-  (propertize  (concat
-                (when (and str (eq pad 'l)) " ")
-                (format-mode-line str)
-                (when (and str (eq pad 'r)) " "))
-               'face face))
+  (let ((rendered-str (format-mode-line str)))
+    (propertize  (concat
+                  (when (and rendered-str (eq pad 'l)) " ")
+                  str
+                  (when (and rendered-str (eq pad 'r)) " "))
+                 'face face)))
 
 
 ;;;###autoload
@@ -228,15 +229,13 @@ static char * %s[] = {
   (unless reserve
     (setq reserve 20))
   (when (eq 'right (get-scroll-bar-mode))
-    (setq reserve (+ reserve 3)))
-  (propertize " " 'display `((space :align-to (- right-fringe ,reserve))) 'face face))
+    (setq reserve (- reserve 3)))
+  (propertize " " 'display `((space :align-to (- right-margin ,reserve))) 'face face))
 
 (defun powerline-fill-center (face reserve)
   (unless reserve
     (setq reserve 20))
-  (when (eq 'right (get-scroll-bar-mode))
-    (setq reserve (+ reserve 3)))
-  (propertize " " 'display `((space :align-to (- center ,reserve))) 'face face))
+  (propertize " " 'display `((space :align-to (- (- center ,reserve) (.5 . left-margin)))) 'face face))
 
 
 ;;;###autoload
@@ -303,15 +302,42 @@ static char * %s[] = {
 (defpowerline powerline-buffer-id
   (format-mode-line mode-line-buffer-identification))
 
+;;;###autoload
+(defpowerline powerline-process
+  (cond
+   ((listp mode-line-process) (car mode-line-process))
+   ((stringp mode-line-process) mode-line-process)))
+
+(defvar pl/minibuffer-selected-window-list '())
+
+(defun pl/minibuffer-selected-window ()
+  "Return the selected window when entereing the minibuffer."
+  (when pl/minibuffer-selected-window-list
+    (car pl/minibuffer-selected-window-list)))
+
+(defun pl/minibuffer-setup ()
+  "Save the minibuffer-selected-window to `pl/minibuffer-selected-window'."
+  (push (minibuffer-selected-window) pl/minibuffer-selected-window-list))
+
+(add-hook 'minibuffer-setup-hook 'pl/minibuffer-setup)
+
+(defun pl/minibuffer-exit ()
+  "Set `pl/minibuffer-selected-window' to nil."
+  (pop pl/minibuffer-selected-window-list))
+
+(add-hook 'minibuffer-exit-hook 'pl/minibuffer-exit)
+
 
 ;;;###autoload
-(defun powerline-default-center ()
+(defun powerline-center-theme ()
   "Setup a default mode-line with major and minor modes centered."
   (interactive)
   (setq-default mode-line-format
                 '("%e"
                   (:eval
-                   (let* ((active (eq (frame-selected-window) (selected-window)))
+                   (let* ((active (or (eq (frame-selected-window) (selected-window))
+                                      (and (minibuffer-window-active-p (frame-selected-window))
+                                           (eq (pl/minibuffer-selected-window) (selected-window)))))
                           (face1 (if active 'powerline-active1 'powerline-inactive1))
                           (face2 (if active 'powerline-active2 'powerline-inactive2))
                           (lhs (list
@@ -322,13 +348,11 @@ static char * %s[] = {
                                 (powerline-raw " ")
                                 (powerline-arrow-right nil face1)
 
-                                (powerline-raw mode-line-process face1 'l)
-
                                 (powerline-narrow face1 'l)
 
                                 (powerline-vc face1)))
                           (rhs (list
-                                (powerline-raw global-mode-string face2 'r)
+                                (powerline-raw global-mode-string face1 'r)
 
                                 (powerline-raw "%4l" face1 'r)
                                 (powerline-raw ":" face1)
@@ -345,6 +369,7 @@ static char * %s[] = {
                                      (powerline-raw erc-modified-channels-object
                                                     face1 'l))
                                    (powerline-major-mode face2 'l)
+                                   (powerline-process face2)
                                    (powerline-raw " :" face2)
                                    (powerline-minor-modes face2 'l)
                                    (powerline-raw " " face2)
@@ -357,15 +382,19 @@ static char * %s[] = {
                       (powerline-fill face1 (powerline-width rhs))
                       (powerline-render rhs)))))))
 
+;;;###autoload
+(fset 'powerline-default-center 'powerline-center-theme)
 
 ;;;###autoload
-(defun powerline-default ()
+(defun powerline-default-theme ()
   "Setup a default mode-line."
   (interactive)
   (setq-default mode-line-format
                 '("%e"
                   (:eval
-                   (let* ((active (eq (frame-selected-window) (selected-window)))
+                   (let* ((active (or (eq (frame-selected-window) (selected-window))
+                                      (and (minibuffer-window-active-p (frame-selected-window))
+                                           (eq (pl/minibuffer-selected-window) (selected-window)))))
                           (face1 (if active 'powerline-active1 'powerline-inactive1))
                           (face2 (if active 'powerline-active2 'powerline-inactive2))
                           (lhs (list
@@ -381,8 +410,8 @@ static char * %s[] = {
                                                  face1 'l))
 
                                 (powerline-major-mode face1 'l)
+                                (powerline-process face1)
                                 (powerline-minor-modes face1 'l)
-                                (powerline-raw mode-line-process face1 'l)
                                 (powerline-narrow face1 'l)
 
                                 (powerline-raw " " face1)
@@ -410,10 +439,45 @@ static char * %s[] = {
                       (powerline-render rhs)))))))
 
 
+;;;###autoload
+(fset 'powerline-default 'powerline-default-theme)
+
+
+;;;###autoload
+(defun powerline-nano-theme ()
+  "Setup a nano-like mode-line."
+  (interactive)
+  (setq-default mode-line-format
+                '("%e"
+                  (:eval
+                   (let* ((active (or (eq (frame-selected-window) (selected-window))
+                                      (and (minibuffer-window-active-p (frame-selected-window))
+                                           (eq (pl/minibuffer-selected-window) (selected-window)))))
+                          (lhs (list
+                                (powerline-raw (concat
+                                                "GNU Emacs "
+                                                (number-to-string emacs-major-version)
+                                                "."
+                                                (number-to-string emacs-minor-version))
+                                               nil 'l)))
+                          (rhs (list
+                                (if (buffer-modified-p)
+                                    (powerline-raw "Modified" nil 'r))))
+                          (center (list
+                                   (powerline-raw "%b" nil))))
+
+                     (concat
+                      (powerline-render lhs)
+                      (powerline-fill-center nil (/ (powerline-width center) 2.0))
+                      (powerline-render center)
+                      (powerline-fill nil (powerline-width rhs))
+                      (powerline-render rhs)))))))
+
+
 (defun pl/render (item)
-  (if (listp item)
-      (propertize " " 'display item)
-    item))
+  (cond
+   ((and (listp item) (eq 'image (car item))) (propertize " " 'display item))
+   (item item)))
 
 (defun powerline-render (values)
   (mapconcat 'pl/render values ""))

@@ -1686,7 +1686,7 @@
 	      [(20110305 249)
 	       nil "Swap buffers without typing C-x b on each window [source: wiki]" single])
  (browse-url-dwim .
-		  [(20121005 2049)
+		  [(20121016 1724)
 		   ((string-utils
 		     (0 0 3)))
 		   "Context-sensitive external browse URL or Internet search [source: github]" single])

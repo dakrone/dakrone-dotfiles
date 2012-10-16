@@ -8,6 +8,15 @@ export PATH=$PATH:/usr/local/git/libexec/git-core
 # Always override with my personal bin
 export PATH=~/bin:$PATH
 
+# plan9
+export PLAN9=/Users/hinmanm/src/plan9
+export PATH=$PATH:$PLAN9/bin
+export MANPATH=$MANPATH:$PLAN9/man
+
+# go
+export GOROOT=/usr/local/go
+export PATH=$PATH:$GOROOT/bin
+
 # Java opts (leiningen uses these)
 #export JAVA_OPTS="-Dfile.encoding=UTF-8 -Dslime.encoding=UTF-8 -Xmx512m -XX:+HeapDumpOnOutOfMemoryError"
 

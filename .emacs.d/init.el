@@ -21,23 +21,36 @@
 (add-to-list 'load-path (concat "~/.emacs.d/" (user-login-name) "/org-mode"))
 (require 'org)
 
+;; auto-complete
+(require 'popup)
+(require 'auto-complete-config)
+(ac-config-default)
+(define-key ac-mode-map (kbd "M-TAB") 'auto-complete)
+(ac-set-trigger-key "TAB")
+
 ;; nrepl
 (add-to-list 'load-path "~/src/elisp/nrepl.el")
 (require 'nrepl)
 (add-hook 'nrepl-interaction-mode-hook
           'nrepl-turn-on-eldoc-mode)
 
-(add-to-list 'load-path "~/src/elisp/ac-nrepl")
-(require 'ac-nrepl)
-(add-hook 'nrepl-mode-hook 'ac-nrepl-setup)
-(add-hook 'clojure-nrepl-mode-hook 'ac-nrepl-setup)
-(eval-after-load "auto-complete"
-  '(add-to-list 'ac-modes 'nrepl-mode))
+;; nrepl auto-complete
+;; (add-to-list 'load-path "~/src/elisp/ac-nrepl")
+;; (require 'ac-nrepl)
+;; (add-hook 'nrepl-mode-hook 'ac-nrepl-setup)
+;; (add-hook 'clojure-nrepl-mode-hook 'ac-nrepl-setup)
+;; (eval-after-load "auto-complete"
+;;   '(add-to-list 'ac-modes 'nrepl-mode))
 
-;; auto-complete
-(require 'auto-complete-config)
-(add-to-list 'ac-dictionary-directories "~/.emacs.d/ac-dict")
-(ac-config-default)
+;; (defun set-auto-complete-as-completion-at-point-function ()
+;;   (setq completion-at-point-functions '(auto-complete)))
+;; (add-hook 'auto-complete-mode-hook
+;;           'set-auto-complete-as-completion-at-point-function)
+
+;; (add-hook 'nrepl-mode-hook
+;;           'set-auto-complete-as-completion-at-point-function)
+;; (add-hook 'nrepl-interaction-mode-hook
+;;           'set-auto-complete-as-completion-at-point-function)
 
 ;; yaml-mode
 ;;(require 'yaml-mode)
@@ -56,7 +69,6 @@
 (add-to-list 'auto-mode-alist '("\\.clj$" . clojure-mode))
 (add-to-list 'auto-mode-alist '("\\.cljs$" . clojure-mode))
 (add-hook 'clojure-mode-hook 'kibit-mode)
-;;(add-hook 'clojure-mode-hook 'expectations-mode)
 
 ;; ssh-config-mode
 (add-to-list 'auto-mode-alist '(".ssh/config$" . ssh-config-mode))
@@ -68,6 +80,7 @@
                                       "/powerline"))
       (require 'powerline)
       (set-face-attribute 'mode-line nil
+                          :foreground "black"
                           :background "OliveDrab3"
                           :box nil)
       (set-face-attribute 'powerline-active1 nil
@@ -90,11 +103,13 @@
   ;; Display the battery level in the bottom bar
   (display-battery-mode t))
 
-;; xiki
-;;(add-to-list 'load-path "/Users/hinmanm/.rbenv/versions/1.9.2-p290/share/emacs/site-lisp")
-;;(require 'el4r)
-;;(el4r-boot)
-
+;; helm
+(require 'helm-config)
+(helm-mode 1)
+(global-set-key (kbd "C-c h") 'helm-mini)
+(global-set-key (kbd "M-x") 'helm-M-x)
+(global-set-key (kbd "C-x C-b") 'helm-buffers-list)
+(global-set-key (kbd "C-x f") 'helm-recentf)
 
 
 ;; ==== Backup files ====
@@ -333,10 +348,10 @@
                                    ido-execute-command-cache))))))
        ido-execute-command-cache)))))
 
-(add-hook 'ido-setup-hook
-          (lambda ()
-            (setq ido-enable-flex-matching t)
-            (global-set-key "\M-x" 'ido-execute-command)))
+;; (add-hook 'ido-setup-hook
+;;           (lambda ()
+;;             (setq ido-enable-flex-matching t)
+;;             (global-set-key "\M-x" 'ido-execute-command)))
 
 
 
@@ -552,8 +567,8 @@
 (random t) ;; Seed the random-number generator
 
 ;; Hippie expand: at times perhaps too hip
-(dolist (f '(try-expand-line try-expand-list try-complete-file-name-partially))
-  (delete f hippie-expand-try-functions-list))
+;; (dolist (f '(try-expand-line try-expand-list try-complete-file-name-partially))
+;;   (delete f hippie-expand-try-functions-list))
 
 ;; Associate modes with file extensions
 

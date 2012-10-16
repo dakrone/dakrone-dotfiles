@@ -2,9 +2,8 @@ OS=$(uname)
 
 if [[ $OS == "Darwin" ]]; then
 
-    #export JAVA_HOME=/System/Library/Frameworks/JavaVM.framework/Versions/1.6/Home
+    export JAVA_HOME=/System/Library/Frameworks/JavaVM.framework/Versions/1.6/Home
     #export JAVA_HOME=/Library/Java/JavaVirtualMachines/1.7.0.jdk/Contents/Home
-
 
     export EMACS_HOME="/Applications/Emacs.app/Contents/MacOS"
 
@@ -42,5 +41,7 @@ if [[ $OS == "Darwin" ]]; then
 
     # awesome
     alias gps="ps -c -r -ax -o command,pid,pcpu,time | sed 's/\(PID *\)%/\1 %/' | head -n 11 && echo && ps -c -m -ax -o command,pid,pmem,rss=RSIZE | sed 's/\(.\{23\}\)/\1 /' | head -n 9"
+
+    alias acme='acme -a -f /mnt/font/AnonymousPro/13a/font'
 
 fi

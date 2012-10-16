@@ -33,10 +33,10 @@ alias js='j --s'
 # don't page unless needed
 alias less='less -FRX'
 # colorize greps
-alias grep='grep --color=auto'
-alias egrep='egrep --color=auto'
-alias fgrep='fgrep --color=auto'
-alias g='fgrep -i --color=auto'
+alias grep='grep -n --color=auto'
+alias egrep='egrep -n --color=auto'
+alias fgrep='fgrep -n --color=auto'
+alias g='fgrep -i -n --color=auto'
 # cd helpers
 alias cd..='cd ..'
 alias ..='cd ..'
@@ -62,6 +62,7 @@ alias blackprox='ssh -i ~/.ssh/id_rawpacket -ND 9999 hinmanm@black'
 alias styxprox='ssh -i ~/.ssh/id_rawpacket -ND 9999 lee@localhost -p 6666'
 # keep an X connection open, with proxy
 alias keepircprox='autossh -M 21000 corinth -L 6667:corinth:31425'
+alias keepbprox='autossh -M 23000 corinth -L 7778:corinth:6667'
 # keep an X connection open, without proxy
 alias keepx='autossh -M 22000 x'
 alias keepc='autossh -M 22000 corinth'

@@ -42,9 +42,6 @@
             (setq clojure-mode-use-backtracking-indent t)
             (eldoc-mode t)))
 
-;; syntax in REPL
-(add-hook 'slime-repl-mode-hook 'clojure-mode-font-lock-setup)
-
 ;; Lazytest indention in clojure
 (eval-after-load 'clojure-mode
   '(define-clojure-indent
@@ -58,14 +55,4 @@
 
 ;; compile faster
 (setq font-lock-verbose nil)
-
-;; slamhound support https://github.com/technomancy/slamhound
-(defun slamhound ()
-  (interactive)
-  (goto-char (point-min))
-  (kill-sexp)
-  (insert (first (slime-eval `(swank:eval-and-grab-output
-                               (format "(do (require 'slam.hound)
-                                          (slam.hound/reconstruct \"%s\"))"
-                                       ,buffer-file-name))))))
 

@@ -1,10 +1,13 @@
 ;; Key bindings, a of these are taken from ESK
 
+;; C-; to enter/exit iedit-mode
+(global-set-key (kbd "C-;") 'iedit-mode)
+
 ;; You know, like Readline.
 (global-set-key (kbd "C-M-h") 'backward-kill-word)
 
 ;; Completion that uses many different methods to find options.
-(global-set-key (kbd "M-/") 'hippie-expand)
+;;(global-set-key (kbd "M-/") 'hippie-expand)
 
 ;; Perform general cleanup.
 (global-set-key (kbd "C-c n") 'cleanup-buffer)
@@ -32,7 +35,7 @@
     (when file
       (find-file file))))
 
-(global-set-key (kbd "C-x f") 'recentf-ido-find-file)
+;;(global-set-key (kbd "C-x f") 'recentf-ido-find-file)
 
 (global-set-key (kbd "C-c y") 'bury-buffer)
 (global-set-key (kbd "C-c r") 'revert-buffer)
@@ -79,10 +82,10 @@
       (occur (if isearch-regexp isearch-string (regexp-quote isearch-string))))))
 
 ;; Fullscreen (start fullscreen)
-(when (eq window-system 'ns)
-  (defun toggle-fullscreen () (interactive) (ns-toggle-fullscreen))
-  (ns-toggle-fullscreen)
-  (global-set-key [f11] 'toggle-fullscreen))
+;; (when (eq window-system 'ns)
+;;   (defun toggle-fullscreen () (interactive) (ns-toggle-fullscreen))
+;;   (ns-toggle-fullscreen)
+;;   (global-set-key [f11] 'toggle-fullscreen))
 
 ;; ==== Window switching ====
 (global-set-key [C-tab] 'other-window)
@@ -129,8 +132,8 @@
   '(define-key paredit-mode-map (kbd "M-)") 'paredit-forward-slurp-sexp))
 
 ;; lisp stuff
-(define-key emacs-lisp-mode-map (kbd "M-.") 'find-function-at-point)
-(define-key read-expression-map (kbd "TAB") 'lisp-complete-symbol)
+;;(define-key emacs-lisp-mode-map (kbd "M-.") 'find-function-at-point)
+;;(define-key read-expression-map (kbd "TAB") 'lisp-complete-symbol)
 (define-key lisp-mode-shared-map (kbd "RET") 'reindent-then-newline-and-indent)
 
 (global-set-key (kbd "C-c f") 'iy-go-to-char)

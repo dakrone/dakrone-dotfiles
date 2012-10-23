@@ -76,30 +76,31 @@
 ;; powerline
 (if (eq window-system 'ns)
     (progn
-      (add-to-list 'load-path (concat "~/.emacs.d/" (user-login-name)
-                                      "/powerline"))
-      (require 'powerline)
-      (set-face-attribute 'mode-line nil
-                          :foreground "black"
-                          :background "OliveDrab3"
-                          :box nil)
-      (set-face-attribute 'powerline-active1 nil
-                          :background "grey9"
-                          :foreground "grey90"
-                          :box nil)
-      (set-face-attribute 'powerline-active2 nil
-                          :background "grey20"
-                          :foreground "grey80"
-                          :box nil)
-      (set-face-attribute 'powerline-inactive1 nil
-                          :background "grey10"
-                          :box nil)
-      (set-face-attribute 'powerline-inactive2 nil
-                          :background "grey15"
-                          :box nil)
-      (set-face-attribute 'mode-line-inactive nil
-                          :box nil)
-      (powerline-default))
+;;      (add-to-list 'load-path (concat "~/.emacs.d/" (user-login-name)
+;;                                      "/powerline"))
+;;      (require 'powerline)
+;;      (set-face-attribute 'mode-line nil
+;;                          :foreground "black"
+;;                          :background "OliveDrab3"
+;;                          :box nil)
+;;      (set-face-attribute 'powerline-active1 nil
+;;                          :background "grey9"
+;;                          :foreground "grey90"
+;;                          :box nil)
+;;      (set-face-attribute 'powerline-active2 nil
+;;                          :background "grey20"
+;;                          :foreground "grey80"
+;;                          :box nil)
+;;      (set-face-attribute 'powerline-inactive1 nil
+;;                          :background "grey10"
+;;                          :box nil)
+;;      (set-face-attribute 'powerline-inactive2 nil
+;;                          :background "grey15"
+;;                          :box nil)
+;;      (set-face-attribute 'mode-line-inactive nil
+;;                          :box nil)
+;;      (powerline-default))
+      )
   ;; Display the battery level in the bottom bar
   (display-battery-mode t))
 

@@ -18,7 +18,7 @@
 (defclojureface clojure-brackets     "SteelBlue" "Clojure brackets")
 (defclojureface clojure-keyword      "#729FCF"   "Clojure keywords")
 (defclojureface clojure-namespace    "#c476f1"   "Clojure namespace")
-(defclojureface clojure-java-call    "#729FCF"   "Clojure Java calls")
+(defclojureface clojure-java-call    "DarkCyan"   "Clojure Java calls")
 (defclojureface clojure-special      "#1BF21B"   "Clojure special")
 (defclojureface clojure-double-quote "#1BF21B"   "Clojure special")
 
@@ -33,8 +33,7 @@
             (("(\\(\\.[^ \n)]*\\|[^ \n)]+\\.\\|new\\)\\([ )\n]\\|$\\)" 1
               'clojure-java-call)))))
 
-(when (eq window-system 'ns)
-  (add-hook 'clojure-mode-hook 'tweak-clojure-syntax))
+(add-hook 'clojure-mode-hook 'tweak-clojure-syntax)
 
 ;; Better indention (from Kevin)
 (add-hook 'clojure-mode-hook

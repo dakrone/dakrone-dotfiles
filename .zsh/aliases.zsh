@@ -17,6 +17,7 @@ fi
 # various ls helpers
 alias l.='ls -d .*'
 alias ll='ls -lh'
+alias l='ls -lh'
 alias la='ls -alh'
 alias lr='ls -lR'
 # for sl: http://practicalthought.com/sl/

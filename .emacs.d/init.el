@@ -28,6 +28,11 @@
 (define-key ac-mode-map (kbd "M-TAB") 'auto-complete)
 (ac-set-trigger-key "TAB")
 
+;; expand-region
+(require 'expand-region)
+(global-set-key (kbd "M-'") 'er/expand-region)
+(global-set-key (kbd "M-,") 'er/contract-region)
+
 ;; nrepl
 (add-to-list 'load-path "~/src/elisp/nrepl.el")
 (require 'nrepl)
@@ -111,6 +116,7 @@
 (global-set-key (kbd "M-x") 'helm-M-x)
 (global-set-key (kbd "C-x C-b") 'helm-buffers-list)
 (global-set-key (kbd "C-x f") 'helm-recentf)
+
 
 
 ;; ==== Backup files ====
@@ -711,4 +717,4 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- )
+ '(helm-visible-mark ((t (:background "IndianRed4" :foreground "midnight blue")))))

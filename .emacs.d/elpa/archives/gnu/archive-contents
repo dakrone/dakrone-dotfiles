@@ -21,7 +21,7 @@
 	  [(0 5)
 	   nil "Flexible inline text and code completion" tar])
  (csv-mode .
-	   [(1 0)
+	   [(1 1)
 	    nil "Major mode for editing comma/char separated values" single])
  (debbugs .
 	  [(0 3)
@@ -87,7 +87,7 @@
 	 [(1 0)
 	  nil "Show line numbers in the margin" single])
  (num3-mode .
-	    [(1 0)
+	    [(1 1)
 	     nil "highlight groups of digits in long numbers" single])
  (oauth2 .
 	 [(0 8)

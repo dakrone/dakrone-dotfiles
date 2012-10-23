@@ -88,7 +88,7 @@ export LESS_TERMCAP_us=$'\E[01;32m'
 
 # zsh completion
 if [ -d ~/.zsh/zsh-completions ] ; then
-    fpath=(~/.zsh/zsh-completions $fpath)
+    fpath=(~/.zsh/zsh-completions/src $fpath)
 fi
 
 zmodload zsh/complist
@@ -106,6 +106,8 @@ if [ -f ~/.zsh/auto-fu ] ; then
     zstyle ':auto-fu:var' track-keymap-skip opp
 #    zstyle ':auto-fu:var' autoable-function/skipwords "('|$'|\")*" "^((?)##)"
     zstyle ':auto-fu:var' autoable-function/skiplbuffers 'rm -[![:blank:]]#' '(cvs|svn) co *'
+    # don't auto-complete z.sh (j)
+    zstyle ':auto-fu:var' autoable-function/skiplbuffers 'j *'
     zle-line-init () {auto-fu-init;}; zle -N zle-line-init
     zle -N zle-keymap-select auto-fu-zle-keymap-select
 else

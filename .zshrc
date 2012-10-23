@@ -94,11 +94,28 @@ fi
 zmodload zsh/complist
 autoload -U compinit && compinit
 
+# zsh incremental completion, to compile:
+# A=~/.zsh/auto-fu.zsh/auto-fu.zsh;
+# zsh -c "source $A ; auto-fu-zcompile $A ~/.zsh"
+if [ -f ~/.zsh/auto-fu ] ; then
+    { . ~/.zsh/auto-fu; auto-fu-install; }
+    zstyle ':auto-fu:highlight' input bold
+    zstyle ':auto-fu:highlight' completion fg=black,bold
+    zstyle ':auto-fu:highlight' completion/one fg=white,bold,underline
+    zstyle ':auto-fu:var' postdisplay $'\n-ido-'
+    zstyle ':auto-fu:var' track-keymap-skip opp
+#    zstyle ':auto-fu:var' autoable-function/skipwords "('|$'|\")*" "^((?)##)"
+    zstyle ':auto-fu:var' autoable-function/skiplbuffers 'rm -[![:blank:]]#' '(cvs|svn) co *'
+    zle-line-init () {auto-fu-init;}; zle -N zle-line-init
+    zle -N zle-keymap-select auto-fu-zle-keymap-select
+else
+    zstyle ':completion:::::' completer _complete _approximate
+fi
+
 zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
 zstyle ':completion:*' hosts $ssh_hosts
 zstyle ':completion:*:my-accounts' users-hosts $my_accounts
 zstyle ':completion:*:other-accounts' users-hosts $other_accounts
-zstyle ':completion:::::' completer _complete _approximate
 zstyle -e ':completion:*:approximate:*' max-errors 'reply=( $(( ($#PREFIX + $#SUFFIX) / 3 )) )'
 zstyle ':completion:*:descriptions' format "- %d -"
 zstyle ':completion:*:corrections' format "- %d - (errors %e})"
@@ -107,6 +124,7 @@ zstyle ':completion:*' group-name ''
 zstyle ':completion:*:manuals' separate-sections true
 zstyle ':completion:*:manuals.(^1*)' insert-sections true
 zstyle ':completion:*' verbose yes
+zstyle ':completion:*' file-list list=20 insert=10
 
 
 ### OPTIONS ###

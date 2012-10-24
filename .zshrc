@@ -106,8 +106,8 @@ if [ -f ~/.zsh/auto-fu ] ; then
     zstyle ':auto-fu:var' track-keymap-skip opp
 #    zstyle ':auto-fu:var' autoable-function/skipwords "('|$'|\")*" "^((?)##)"
     zstyle ':auto-fu:var' autoable-function/skiplbuffers 'rm -[![:blank:]]#' '(cvs|svn) co *'
-    # don't auto-complete z.sh (j)
-    zstyle ':auto-fu:var' autoable-function/skiplbuffers 'j *'
+    # don't auto-complete z.sh (j) or rm commands
+    zstyle ':auto-fu:var' autoable-function/skiplbuffers 'j *' 'rm *'
     zle-line-init () {auto-fu-init;}; zle -N zle-line-init
     zle -N zle-keymap-select auto-fu-zle-keymap-select
 else

@@ -32,6 +32,7 @@
 (require 'expand-region)
 (global-set-key (kbd "M-'") 'er/expand-region)
 (global-set-key (kbd "M-,") 'er/contract-region)
+(setq pending-delete-mode t)
 
 ;; nrepl
 (add-to-list 'load-path "~/src/elisp/nrepl.el")

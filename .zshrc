@@ -97,6 +97,7 @@ autoload -U compinit && compinit
 # zsh incremental completion, to compile:
 # A=~/.zsh/auto-fu.zsh/auto-fu.zsh;
 # zsh -c "source $A ; auto-fu-zcompile $A ~/.zsh"
+# make sure you are using the 'pu' branch
 if [ -f ~/.zsh/auto-fu ] ; then
     { . ~/.zsh/auto-fu; auto-fu-install; }
     zstyle ':auto-fu:highlight' input bold
@@ -114,6 +115,8 @@ else
     zstyle ':completion:::::' completer _complete _approximate
 fi
 
+zstyle ':completion:*' use-cache on
+zstyle ':completion:*' cache-path ~/.zsh-cache
 zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
 zstyle ':completion:*' hosts $ssh_hosts
 zstyle ':completion:*:my-accounts' users-hosts $my_accounts
@@ -142,6 +145,9 @@ setopt histignorealldups
 setopt nohup
 setopt longlistjobs
 setopt notify
+# I use dvorak, so correct spelling mistakes that a dvorak user would make
+setopt dvorak
+setopt correct                # Spelling correction
 # ^^ try this: cat foo.clj > >(fgrep java | wc -l) > >(fgrep copy | wc -l)
 
 autoload -U url-quote-magic

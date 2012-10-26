@@ -40,23 +40,10 @@
 (add-hook 'nrepl-interaction-mode-hook
           'nrepl-turn-on-eldoc-mode)
 
-;; nrepl auto-complete
-;; (add-to-list 'load-path "~/src/elisp/ac-nrepl")
-;; (require 'ac-nrepl)
-;; (add-hook 'nrepl-mode-hook 'ac-nrepl-setup)
-;; (add-hook 'clojure-nrepl-mode-hook 'ac-nrepl-setup)
-;; (eval-after-load "auto-complete"
-;;   '(add-to-list 'ac-modes 'nrepl-mode))
-
-;; (defun set-auto-complete-as-completion-at-point-function ()
-;;   (setq completion-at-point-functions '(auto-complete)))
-;; (add-hook 'auto-complete-mode-hook
-;;           'set-auto-complete-as-completion-at-point-function)
-
-;; (add-hook 'nrepl-mode-hook
-;;           'set-auto-complete-as-completion-at-point-function)
-;; (add-hook 'nrepl-interaction-mode-hook
-;;           'set-auto-complete-as-completion-at-point-function)
+;; folding-mode
+(autoload 'folding-mode          "folding" "Folding mode" t)
+(autoload 'turn-off-folding-mode "folding" "Folding mode" t)
+(autoload 'turn-on-folding-mode  "folding" "Folding mode" t)
 
 ;; yaml-mode
 ;;(require 'yaml-mode)
@@ -82,30 +69,30 @@
 ;; powerline
 (if (eq window-system 'ns)
     (progn
-;;      (add-to-list 'load-path (concat "~/.emacs.d/" (user-login-name)
-;;                                      "/powerline"))
-;;      (require 'powerline)
-;;      (set-face-attribute 'mode-line nil
-;;                          :foreground "black"
-;;                          :background "OliveDrab3"
-;;                          :box nil)
-;;      (set-face-attribute 'powerline-active1 nil
-;;                          :background "grey9"
-;;                          :foreground "grey90"
-;;                          :box nil)
-;;      (set-face-attribute 'powerline-active2 nil
-;;                          :background "grey20"
-;;                          :foreground "grey80"
-;;                          :box nil)
-;;      (set-face-attribute 'powerline-inactive1 nil
-;;                          :background "grey10"
-;;                          :box nil)
-;;      (set-face-attribute 'powerline-inactive2 nil
-;;                          :background "grey15"
-;;                          :box nil)
-;;      (set-face-attribute 'mode-line-inactive nil
-;;                          :box nil)
-;;      (powerline-default))
+      ;;      (add-to-list 'load-path (concat "~/.emacs.d/" (user-login-name)
+      ;;                                      "/powerline"))
+      ;;      (require 'powerline)
+      ;;      (set-face-attribute 'mode-line nil
+      ;;                          :foreground "black"
+      ;;                          :background "OliveDrab3"
+      ;;                          :box nil)
+      ;;      (set-face-attribute 'powerline-active1 nil
+      ;;                          :background "grey9"
+      ;;                          :foreground "grey90"
+      ;;                          :box nil)
+      ;;      (set-face-attribute 'powerline-active2 nil
+      ;;                          :background "grey20"
+      ;;                          :foreground "grey80"
+      ;;                          :box nil)
+      ;;      (set-face-attribute 'powerline-inactive1 nil
+      ;;                          :background "grey10"
+      ;;                          :box nil)
+      ;;      (set-face-attribute 'powerline-inactive2 nil
+      ;;                          :background "grey15"
+      ;;                          :box nil)
+      ;;      (set-face-attribute 'mode-line-inactive nil
+      ;;                          :box nil)
+      ;;      (powerline-default))
       )
   ;; Display the battery level in the bottom bar
   (display-battery-mode t))

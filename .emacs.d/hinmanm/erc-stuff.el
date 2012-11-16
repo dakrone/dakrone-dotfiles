@@ -2,15 +2,15 @@
 
 
 ;; ==== Growl support on OSX ====
-(defun growl-notification (title message &optional sticky)
-  "Send a Growl notification"
-  (do-applescript
-   (format "tell application \"GrowlHelperApp\"
-              notify with name \"Emacs Notification\" title \"%s\" description \"%s\" application name \"Emacs.app\" sticky %s
-           end tell"
-           title
-           (replace-regexp-in-string "\"" "'" message)
-           (if sticky "yes" "no"))))
+;; (defun growl-notification (title message &optional sticky)
+;;   "Send a Growl notification"
+;;   (do-applescript
+;;    (format "tell application \"GrowlHelperApp\"
+;;               notify with name \"Emacs Notification\" title \"%s\" description \"%s\" application name \"Emacs.app\" sticky %s
+;;            end tell"
+;;            title
+;;            (replace-regexp-in-string "\"" "'" message)
+;;            (if sticky "yes" "no"))))
 
 ;; ==== ERC stuff ====
 ;; Only track my nick(s)
@@ -28,13 +28,13 @@
 (setq erc-track-exclude-types '("JOIN" "NICK" "PART" "QUIT" "MODE"
                                 "324" "329" "332" "333" "353" "477"))
 
-(defun call-growl (matched-type nick msg)
-  (let* ((nick (first (split-string nick "!"))))
-    (growl-notification nick msg)))
+;; (defun call-growl (matched-type nick msg)
+;;   (let* ((nick (first (split-string nick "!"))))
+;;     (growl-notification nick msg)))
 
 ;; only add the hook for Mac
-(when (eq window-system 'ns)
-  (add-hook 'erc-text-matched-hook 'call-growl))
+;; (when (eq window-system 'ns)
+;;   (add-hook 'erc-text-matched-hook 'call-growl))
 
 (setq erc-button-url-regexp
       "\\([-a-zA-Z0-9_=!?#$@~`%&*+\\/:;,]+\\.\\)+[-a-zA-Z0-9_=!?#$@~`%&*+\\/:;,]*[-a-zA-Z0-9\\/]")
@@ -73,8 +73,7 @@
                       "joegallo" "jimduey" "leathekd" "rhickey" "zkim" "steve"
                       "imotov" "joekinsella" "craig" "technomancy" "ddillinger"
                       "yazirian")
-           erc-keywords '("clojuredocs" "clj-http" "cheshire" "itsy" "opennlp"
-                          "clj-json")
+           erc-keywords '("clojuredocs" "clj-http" "cheshire" "itsy" "opennlp")
            erc-ignore-list '("sonian-chef")
            erc-log-matches-types-alist
            '((keyword . "ERC Keywords")
@@ -82,7 +81,7 @@
            erc-log-matches-flag t
            erc-prompt-for-nickserv-password nil)
      (require 'erc-services)
-     (require 'erc-spelling)
+;;     (require 'erc-spelling)
      (and
       (require 'erc-highlight-nicknames)
       (add-to-list 'erc-modules 'highlight-nicknames)

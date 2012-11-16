@@ -141,3 +141,4 @@
 (global-set-key (kbd "C-c ;") 'iy-go-to-char-continue)
 (global-set-key (kbd "C-c ,") 'iy-go-to-char-continue-backward)
 
+(global-set-key (kbd "C-c m") 'mu4e)

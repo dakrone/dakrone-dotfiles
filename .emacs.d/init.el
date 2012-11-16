@@ -3,6 +3,7 @@
 (add-to-list 'load-path "~/.emacs.d/")
 (add-to-list 'load-path (concat "~/.emacs.d/" (user-login-name)))
 
+;; loads ~/.emacs.d/hinmanm/<file>.el safely
 (     load "safe-load" nil t)
 (safe-load "imports" nil t)
 (safe-load "clojure-stuff" nil t)

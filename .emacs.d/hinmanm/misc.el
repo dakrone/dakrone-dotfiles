@@ -68,6 +68,7 @@
 
 
 ;; ==== Appearance ====
+(set-fontset-font "fontset-default" 'symbol "Monaco")
 (set-default-font "Anonymous Pro")
 (set-face-attribute 'default nil :height 115)
 ;; Anti-aliasing

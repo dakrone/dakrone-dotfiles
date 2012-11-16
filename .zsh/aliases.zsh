@@ -38,6 +38,7 @@ alias grep='grep -n --color=auto'
 alias egrep='egrep -n --color=auto'
 alias fgrep='fgrep -n --color=auto'
 alias g='fgrep -i -n --color=auto'
+
 # cd helpers
 alias cd..='cd ..'
 alias ..='cd ..'

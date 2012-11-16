@@ -254,3 +254,9 @@ widget, custom, latex, ediff."
        (set-face-background 'magit-diff-del "gray10")
        (set-face-background 'magit-diff-file-header "gray10")
        (set-face-background 'magit-diff-hunk-header "gray10"))))
+
+;; My custom theme
+(if (eq window-system 'ns)
+    (set-face-background 'default "gray10"))
+(color-theme-dakrone)
+;;(set-face-foreground 'paren-face "DimGrey")

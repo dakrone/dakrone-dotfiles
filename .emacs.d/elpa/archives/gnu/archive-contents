@@ -24,7 +24,7 @@
 	   [(1 1)
 	    nil "Major mode for editing comma/char separated values" single])
  (debbugs .
-	  [(0 3)
+	  [(0 4)
 	   nil "SOAP library to access debbugs servers" tar])
  (dict-tree .
 	    [(0 12 8)
@@ -84,14 +84,20 @@
 	     [(0 1)
 	      nil "Minor mode to edit files via hex-dump format" single])
  (nlinum .
-	 [(1 0)
+	 [(1 1)
 	  nil "Show line numbers in the margin" single])
+ (notes-mode .
+	     [(0 0)
+	      nil "Indexing system for on-line note-taking" single])
  (num3-mode .
 	    [(1 1)
 	     nil "highlight groups of digits in long numbers" single])
  (oauth2 .
 	 [(0 8)
 	  nil "OAuth 2.0 Authorization Protocol" single])
+ (org .
+      [(20121112)
+       nil "Outline-based notes management and organizer" tar])
  (quarter-plane .
 		[(0 1)
 		 nil "Minor mode for quarter-plane style editing" single])
@@ -99,7 +105,7 @@
 	[(0 1)
 	 nil "Queue data structure" single])
  (rainbow-mode .
-	       [(0 2)
+	       [(0 4)
 		nil "Colorize color names in buffers" single])
  (register-list .
 		[(0 1)
@@ -113,6 +119,9 @@
  (smart-operator .
 		 [(4 0)
 		  nil "Insert operators with surrounding spaces smartly" single])
+ (sml-mode .
+	   [(6 1)
+	    nil "Major mode for editing (Standard) ML" single])
  (svg-clock .
 	    [(0 4)
 	     nil "Analog clock using Scalable Vector Graphics" single])

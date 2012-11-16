@@ -21,6 +21,7 @@
 (defclojureface clojure-java-call    "DarkCyan"   "Clojure Java calls")
 (defclojureface clojure-special      "#1BF21B"   "Clojure special")
 (defclojureface clojure-double-quote "#1BF21B"   "Clojure special")
+(defclojureface clojure-collapsed-fn "Cyan"      "Clojure special")
 
 (defun tweak-clojure-syntax ()
   (mapcar (lambda (x) (font-lock-add-keywords nil x))

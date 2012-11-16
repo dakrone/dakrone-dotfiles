@@ -108,7 +108,7 @@ if [ -f ~/.zsh/auto-fu ] ; then
 #    zstyle ':auto-fu:var' autoable-function/skipwords "('|$'|\")*" "^((?)##)"
     zstyle ':auto-fu:var' autoable-function/skiplbuffers 'rm -[![:blank:]]#' '(cvs|svn) co *'
     # don't auto-complete z.sh (j) or rm commands
-    zstyle ':auto-fu:var' autoable-function/skiplbuffers 'j *' 'rm *'
+    zstyle ':auto-fu:var' autoable-function/skiplbuffers 'j *' 'rm *' 'ENV*'
     zle-line-init () {auto-fu-init;}; zle -N zle-line-init
     zle -N zle-keymap-select auto-fu-zle-keymap-select
 else
@@ -136,6 +136,7 @@ zstyle ':completion:*' file-list list=20 insert=10
 unsetopt bg_nice             # do NOT nice bg commands
 unsetopt correct_all         # don't correct me, I know what I'm doing
 setopt multios               # allow pipes to be split/duplicated
+# ^^ try this: cat foo.clj > >(fgrep java | wc -l) > >(fgrep copy | wc -l)
 setopt auto_cd
 setopt extended_glob
 setopt append_history
@@ -148,7 +149,7 @@ setopt notify
 # I use dvorak, so correct spelling mistakes that a dvorak user would make
 setopt dvorak
 setopt correct                # Spelling correction
-# ^^ try this: cat foo.clj > >(fgrep java | wc -l) > >(fgrep copy | wc -l)
+
 
 autoload -U url-quote-magic
 zle -N self-insert url-quote-magic
@@ -172,7 +173,6 @@ bindkey "^k" kill-line
 bindkey ' ' magic-space    # also do history expansion on space
 bindkey '^I' complete-word # complete on tab, leave expansion to _expand
 bindkey -r '^j' #unbind ctrl-j, I hit it all the time accidentaly
-
 
 
 ## GPG

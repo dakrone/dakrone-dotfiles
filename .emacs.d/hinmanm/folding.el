@@ -6,3 +6,5 @@
 
 ;; hidestuff
 (setq hs-isearch-open t)
+
+(global-set-key (kbd "C-c TAB") 'fold-dwim-toggle)

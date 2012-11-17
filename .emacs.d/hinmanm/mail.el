@@ -7,8 +7,6 @@
 
 (setq mu4e-mu-binary "/usr/local/bin/mu")
 
-(setq mu4e-get-mail-command "offlineimap")
-
 (setq smtpmail-smtp-server "smtp.example.org")
 ;;(setq mu4e-sent-messages-behavior 'delete)
 
@@ -18,6 +16,8 @@
 (setq mu4e-view-show-images t
       mu4e-view-image-max-width 800)
 
+(setq smtpmail-queue-mail nil ;; start in non-queuing mode
+      smtpmail-queue-dir        "~/Mail/queue/")
 
 ;; David's (and now my) config
 
@@ -52,12 +52,11 @@
       ;; Unicode FTW
       ;;      mu4e-use-fancy-chars t
       mu4e-use-fancy-chars nil
-      ;; Let gmail handle putting the message into Sent
-      ;;      mu4e-sent-messages-behavior 'delete
       ;; use the python html2text shell command to strip html
-      ;;      mu4e-html2text-command "/Users/david/dev/html2text/html2text.py -b 72"
-      ;; check for new messages ever 30 minutes
-      mu4e-update-interval 180)
+      ;; brew install html2text
+      mu4e-html2text-command "/usr/local/bin/html2text -nobs"
+      ;; check for new messages ever 5 minutes
+      mu4e-update-interval 300)
 
  ;; Multi-account support
 (defun kdl-mu4e-current-account (&optional msg ignore-message-at-point)
@@ -73,15 +72,29 @@
         (string-match "/\\(.*?\\)/" maildir)
         (match-string 1 maildir)))))
 
+(defun is-gmail-account? (acct)
+  (if (or (equal "sonian" acct) (equal "gmail" acct))
+      t nil))
+
+;; my elisp is bad and I should feel bad
+(defun mlh-folder-for (acct g-folder-name other-folder-name)
+  (if (or (equal "sonian" acct) (equal "gmail" acct))
+      (format "/%s/[Gmail].%s" acct g-folder-name)
+    (format "/%s/INBOX.%s" acct other-folder-name)))
+
 ;; Support for multiple accounts
-(setq mu4e-sent-folder   (lambda (msg) (format "/%s/[Gmail].Sent Mail"
-                                               (kdl-mu4e-current-account msg)))
-      mu4e-drafts-folder (lambda (msg) (format "/%s/[Gmail].Drafts"
-                                               (kdl-mu4e-current-account msg)))
-      mu4e-trash-folder  (lambda (msg) (format "/%s/[Gmail].Trash"
-                                               (kdl-mu4e-current-account msg)))
-      mu4e-refile-folder (lambda (msg) (format "/%s/[Gmail].All Mail"
-                                               (kdl-mu4e-current-account msg)))
+(setq mu4e-sent-folder   (lambda (msg)
+                           (mlh-folder-for (kdl-mu4e-current-account msg)
+                                           "Sent Mail" "Sent"))
+      mu4e-drafts-folder (lambda (msg)
+                           (mlh-folder-for (kdl-mu4e-current-account msg)
+                                           "Drafts" "Drafts"))
+      mu4e-trash-folder  (lambda (msg)
+                           (mlh-folder-for (kdl-mu4e-current-account msg)
+                                           "Trash" "Trash"))
+      mu4e-refile-folder (lambda (msg)
+                           (mlh-folder-for (kdl-mu4e-current-account msg)
+                                           "All Mail" "Archive"))
       ;; The following list represents the account followed by key /
       ;; value pairs of vars to set when the account is chosen
       kdl-mu4e-account-alist
@@ -244,9 +257,13 @@
 (setq mu4e-bookmarks
       `((,(kdl-mu4e-unread-mail-query) "New messages"         ?b)
         ("date:today..now"             "Today's messages"     ?t)
-        ("date:7d..now"                "Last 7 days"          ?w)
-        ("mime:image/*"                "Messages with images" ?p)
-        ("size:5M..500M"               "Big messages"         ?B)))
+        ("date:7d..now"                "Last 7 days"          ?W)
+        ("maildir:/writequit/INBOX"    "Writequit"            ?w)
+        ("maildir:/sonian/INBOX"       "Sonian"               ?s)
+        ("maildir:/gmail/INBOX"        "Gmail"                ?g)
+        ("maildir:/writequit/INBOX OR maildir:/sonian/INBOX OR maildir:/gmail/INBOX"
+         "All Mail" ?a)
+        ("mime:image/*"                "Messages with images" ?p)))
 
 ;; Skip the main mu4e screen and go right to unread
 (defun kdl-mu4e-view-unread ()

@@ -14,6 +14,9 @@
  (auctex .
 	 [(11 86)
 	  nil "Integrated environment for *TeX*" tar])
+ (cl-lib .
+	 [(0 1)
+	  nil "Properly prefixed CL functions and macros" single])
  (coffee-mode .
 	      [(0 4 1)
 	       nil "Major mode for CoffeeScript files" tar])
@@ -105,7 +108,7 @@
 	[(0 1)
 	 nil "Queue data structure" single])
  (rainbow-mode .
-	       [(0 4)
+	       [(0 5)
 		nil "Colorize color names in buffers" single])
  (register-list .
 		[(0 1)

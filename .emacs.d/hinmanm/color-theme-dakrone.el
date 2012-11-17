@@ -25,6 +25,39 @@
 ;; Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
 ;; MA 02111-1307, USA.
 
+;; color definitions stolen from zenburn
+;; colors with +x are lighter, colors with -x are darker
+(defvar zenburn-fg "#dcdccc")
+(defvar zenburn-bg-1 "#2b2b2b")
+(defvar zenburn-bg "#3f3f3f")
+(defvar zenburn-bg+1 "#4f4f4f")
+(defvar zenburn-bg+2 "#5f5f5f")
+(defvar zenburn-red+1 "#dca3a3")
+(defvar zenburn-red "#cc9393")
+(defvar zenburn-red-1 "#bc8383")
+(defvar zenburn-red-2 "#ac7373")
+(defvar zenburn-red-3 "#9c6363")
+(defvar zenburn-red-4 "#8c5353")
+(defvar zenburn-orange "#dfaf8f")
+(defvar zenburn-yellow "#f0dfaf")
+(defvar zenburn-yellow-1 "#e0cf9f")
+(defvar zenburn-yellow-2 "#d0bf8f")
+(defvar zenburn-green-1 "#5f7f5f")
+(defvar zenburn-green "#7f9f7f")
+(defvar zenburn-green+1 "#8fb28f")
+(defvar zenburn-green+2 "#9fc59f")
+(defvar zenburn-green+3 "#afd8af")
+(defvar zenburn-green+4 "#bfebbf")
+(defvar zenburn-cyan "#93e0e3")
+(defvar zenburn-blue+1 "#94bff3")
+(defvar zenburn-blue "#8cd0d3")
+(defvar zenburn-blue-1 "#7cb8bb")
+(defvar zenburn-blue-2 "#6ca0a3")
+(defvar zenburn-blue-3 "#5c888b")
+(defvar zenburn-blue-4 "#4c7073")
+(defvar zenburn-blue-5 "#366060")
+(defvar zenburn-magenta "#dc8cc3")
+
 (defun color-theme-dakrone ()
   "Cornsilk on black.
 Includes info, diary, font-lock, eshell, sgml, message, gnus,
@@ -40,12 +73,27 @@ widget, custom, latex, ediff."
       (background-mode . dark))
      ;;(default ((t (nil))))
      (default ((t (:background "gray10"))))
-     (modeline ((t (:foreground "black" :background "wheat"))))
-     (mode-line ((t (:foreground "white" :background "darkblack"))))
-     (mode-line-inactive ((t (:foreground "gray20" :background "darkblack"))))
-     (mode-line-buffer-id ((t (:foreground "white" :background "gray20"))))
-     (modeline-mousable ((t (:foreground "black" :background "wheat"))))
-     (modeline-mousable-minor-mode ((t (:foreground "black" :background "wheat"))))
+     ;; (modeline ((t (:foreground "black" :background "wheat"))))
+     ;; (mode-line ((t (:foreground "white" :background "darkblack"))))
+     ;; (mode-line-inactive ((t (:foreground "gray20" :background "darkblack"))))
+     ;; (mode-line-buffer-id ((t (:foreground "white" :background "gray20"))))
+     ;; (modeline-mousable ((t (:foreground "black" :background "wheat"))))
+     ;; (modeline-mousable-minor-mode ((t (:foreground "black"
+     ;; :background "wheat"))))
+
+     ;; copy zenburn's modeline stuff
+     (zenburn-strong-1-face ((t (:foreground "#f0dfaf" :weight bold))))
+     (zenburn-strong-2-face ((t (:foreground "#dfaf8f" :weight bold))))
+     (zenburn-warning-face ((t (:foreground "#e0cf9f" :weight bold :underline t))))
+     (zenburn-error-face ((t (:foreground "#bc8383" :weight bold :underline t))))
+
+     (mode-line
+      ((t (:foreground "#bfebbf" :background "#2b2b2b"))))
+     (mode-line-buffer-id ((t (:inherit zenburn-strong-1-face))))
+     (mode-line-inactive
+      ((t (:foreground "#5f7f5f"  :background "#2b2b2b"))))
+
+     ;; back to mine
      (highlight ((t (:foreground "wheat" :background "darkslategray"))))
      (minibuffer-prompt ((t (:foreground "cyan"))))
      (bold ((t (:bold t))))

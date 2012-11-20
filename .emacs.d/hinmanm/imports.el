@@ -68,3 +68,6 @@
 (global-set-key (kbd "C-x C-b") 'helm-buffers-list)
 (global-set-key (kbd "C-x f") 'helm-recentf)
 
+;; gpg stuff
+(require 'epa-file)
+(epa-file-enable)

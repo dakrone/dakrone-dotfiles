@@ -94,23 +94,28 @@ fi
 zmodload zsh/complist
 autoload -U compinit && compinit
 
+# auto-fu:
+# export AUTO_FU_ENABLED=y
+
 # zsh incremental completion, to compile:
 # A=~/.zsh/auto-fu.zsh/auto-fu.zsh;
 # zsh -c "source $A ; auto-fu-zcompile $A ~/.zsh"
 # make sure you are using the 'pu' branch
-if [ -f ~/.zsh/auto-fu ] ; then
-    { . ~/.zsh/auto-fu; auto-fu-install; }
-    zstyle ':auto-fu:highlight' input bold
-    zstyle ':auto-fu:highlight' completion fg=black,bold
-    zstyle ':auto-fu:highlight' completion/one fg=white,bold,underline
-    zstyle ':auto-fu:var' postdisplay $'\n-ido-'
-    zstyle ':auto-fu:var' track-keymap-skip opp
-#    zstyle ':auto-fu:var' autoable-function/skipwords "('|$'|\")*" "^((?)##)"
-    zstyle ':auto-fu:var' autoable-function/skiplbuffers 'rm -[![:blank:]]#' '(cvs|svn) co *'
-    # don't auto-complete z.sh (j) or rm commands
-    zstyle ':auto-fu:var' autoable-function/skiplbuffers 'j *' 'rm *' 'ENV*'
-    zle-line-init () {auto-fu-init;}; zle -N zle-line-init
-    zle -N zle-keymap-select auto-fu-zle-keymap-select
+if [ $AUTO_FU_ENABLED ]; then
+    if [ -f ~/.zsh/auto-fu ] ; then
+        { . ~/.zsh/auto-fu; auto-fu-install; }
+        zstyle ':auto-fu:highlight' input bold
+        zstyle ':auto-fu:highlight' completion fg=black,bold
+        zstyle ':auto-fu:highlight' completion/one fg=white,bold,underline
+        zstyle ':auto-fu:var' postdisplay $'\n-ido-'
+        zstyle ':auto-fu:var' track-keymap-skip opp
+#       zstyle ':auto-fu:var' autoable-function/skipwords "('|$'|\")*" "^((?)##)"
+        zstyle ':auto-fu:var' autoable-function/skiplbuffers 'rm -[![:blank:]]#' '(cvs|svn) co *'
+        # don't auto-complete z.sh (j) or rm commands
+        zstyle ':auto-fu:var' autoable-function/skiplbuffers 'j *' 'rm *' 'ENV*'
+        zle-line-init () {auto-fu-init;}; zle -N zle-line-init
+        zle -N zle-keymap-select auto-fu-zle-keymap-select
+    fi
 else
     zstyle ':completion:::::' completer _complete _approximate
 fi

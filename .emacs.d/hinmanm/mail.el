@@ -19,6 +19,12 @@
 (setq smtpmail-queue-mail nil ;; start in non-queuing mode
       smtpmail-queue-dir        "~/Mail/queue/")
 
+;; Always use pgg to sign messages
+(setq mml2015-use 'epg)
+;; Always use pgg to sign messages
+(setq pgg-default-user-id "3acecae0")
+(setq epg-gpg-program "/usr/local/bin/gpg")
+
 ;; David's (and now my) config
 
  ;; Vars used below

@@ -34,10 +34,11 @@ alias js='j --s'
 # don't page unless needed
 alias less='less -FRX'
 # colorize greps
-alias grep='grep -n --color=auto'
-alias egrep='egrep -n --color=auto'
-alias fgrep='fgrep -n --color=auto'
-alias g='fgrep -i -n --color=auto'
+alias grep='grep --color=auto'
+alias egrep='egrep --color=auto'
+alias fgrep='fgrep --color=auto'
+alias g='fgrep -i --color=auto'
+alias gn='fgrep -i -n --color=auto'
 
 # cd helpers
 alias cd..='cd ..'

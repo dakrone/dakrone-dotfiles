@@ -78,8 +78,9 @@
 (column-number-mode)
 
 ;; Transparency
-;;(set-frame-parameter (selected-frame) 'alpha '(100 35))
-;;(add-to-list 'default-frame-alist '(alpha 100 35))
+(when (eq window-system 'ns)
+  (set-frame-parameter (selected-frame) 'alpha '(100 100))
+  (add-to-list 'default-frame-alist '(alpha 100 100)))
 
 ;; split the way I want
 (setq split-height-threshold nil)
@@ -430,6 +431,3 @@
 (when (eq system-type 'darwin)
   (require 'ls-lisp)
   (setq ls-lisp-use-insert-directory-program nil))
-
-
-

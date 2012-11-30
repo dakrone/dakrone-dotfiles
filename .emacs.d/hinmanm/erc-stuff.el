@@ -11,7 +11,8 @@
   (setq grr-command "/usr/local/bin/growlnotify")
 
   (setq ercn-notify-rules
-        '((message . ("#84115" "#search" "#devs" "#safe"))
+        '((message . ("#84115" "#search" "#devs" "#safe"
+                      "#raxacoricofallapatorius"))
           (current-nick . all)
           (keyword . all)
           ;;(pal . all)

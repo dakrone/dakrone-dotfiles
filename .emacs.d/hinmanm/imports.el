@@ -36,6 +36,7 @@
 (require 'nrepl)
 (add-hook 'nrepl-interaction-mode-hook
           'nrepl-turn-on-eldoc-mode)
+(setq nrepl-popup-stacktraces nil)
 
 ;; clojure-mode, work around a weird clojure-test-mode error
 (add-to-list 'load-path "~/src/elisp/clojure-mode")

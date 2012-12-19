@@ -56,3 +56,15 @@
 ;; compile faster
 (setq font-lock-verbose nil)
 
+(defun nrepl-popup-tip-symbol-at-point ()
+  "show docs for the symbol at point -- AWESOMELY"
+  (interactive)
+  (popup-tip (ac-nrepl-documentation (symbol-at-point))
+             :point (ac-nrepl-symbol-start-pos)
+             :around t
+             :scroll-bar t
+             :margin t))
+
+(define-key nrepl-interaction-mode-map
+  (kbd "C-c C-d")
+  'nrepl-popup-tip-symbol-at-point)

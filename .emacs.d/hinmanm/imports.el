@@ -38,6 +38,23 @@
           'nrepl-turn-on-eldoc-mode)
 (setq nrepl-popup-stacktraces nil)
 
+;; ac-nrepl
+(add-to-list 'load-path "~/src/elisp/ac-nrepl")
+(require 'ac-nrepl)
+ (add-hook 'nrepl-mode-hook 'ac-nrepl-setup)
+ (add-hook 'nrepl-interaction-mode-hook 'ac-nrepl-setup)
+ (eval-after-load "auto-complete"
+   '(add-to-list 'ac-modes 'nrepl-mode))
+
+(defun set-auto-complete-as-completion-at-point-function ()
+  (setq completion-at-point-functions '(auto-complete)))
+(add-hook 'auto-complete-mode-hook
+          'set-auto-complete-as-completion-at-point-function)
+
+(add-hook 'nrepl-mode-hook 'set-auto-complete-as-completion-at-point-function)
+(add-hook 'nrepl-interaction-mode-hook
+          'set-auto-complete-as-completion-at-point-function)
+
 ;; clojure-mode, work around a weird clojure-test-mode error
 (add-to-list 'load-path "~/src/elisp/clojure-mode")
 (safe-load "~/src/elisp/clojure-mode/clojure-mode.el" nil t)

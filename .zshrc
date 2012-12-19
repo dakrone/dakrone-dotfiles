@@ -212,6 +212,11 @@ if [ -s ~/.zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh ] ; then
     source ~/.zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 fi
 
+# Use zsh-functional if available
+if [ -s ~/.zsh/zsh-functional/functional.plugin.zsh ] ; then
+    source ~/.zsh/zsh-functional/functional.plugin.zsh
+fi
+
 # Alias things
 source ~/.zsh/aliases.zsh
 # Functions
@@ -228,8 +233,6 @@ source ~/.zsh/linux.zsh
 source ~/.zsh/osx.zsh
 # Setting tmux titles
 source ~/.zsh/title.zsh
-# Misc funcitions
-source ~/.zsh/misc.zsh
 
 # run the startup commands
 startup

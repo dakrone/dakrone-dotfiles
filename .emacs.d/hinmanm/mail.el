@@ -177,7 +177,7 @@
           global-mode-string
         (cons
          ;;         '(kdl-mu4e-new-mail "✉" "")
-         '(kdl-mu4e-new-mail "MAIL" "")
+         '(kdl-mu4e-new-mail "Mail" "")
          global-mode-string)))
 
 (defun kdl-mu4e-unread-mail-query ()

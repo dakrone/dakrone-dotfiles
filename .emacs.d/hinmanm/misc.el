@@ -431,3 +431,5 @@
 (when (eq system-type 'darwin)
   (require 'ls-lisp)
   (setq ls-lisp-use-insert-directory-program nil))
+
+(add-hook 'dired-mode-hook (lambda () (hl-line-mode)))

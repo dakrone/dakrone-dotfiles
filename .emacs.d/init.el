@@ -6,6 +6,7 @@
 ;; loads ~/.emacs.d/hinmanm/<file>.el safely
 (     load "safe-load" nil t)
 (safe-load "imports" nil t)
+;;(safe-load "mode-line" nil t)
 (safe-load "clojure-stuff" nil t)
 (safe-load "elmer" nil t)
 (safe-load "org-stuff" nil t)
@@ -29,3 +30,4 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(helm-visible-mark ((t (:background "IndianRed4" :foreground "midnight blue")))))
+(put 'narrow-to-region 'disabled nil)

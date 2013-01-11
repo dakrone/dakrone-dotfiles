@@ -89,3 +89,10 @@
 ;; gpg stuff
 (require 'epa-file)
 (epa-file-enable)
+
+;; diminish undo-tree because it takes lots of space
+(require 'diminish)
+(diminish 'undo-tree-mode)
+(require 'paredit)
+(diminish 'paredit-mode "()")
+

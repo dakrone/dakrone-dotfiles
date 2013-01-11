@@ -5,6 +5,12 @@ is used, so hopefully your terminal supports it.
 
 See the images directory for an example of what some of the stuff looks like.
 
+# Bootstrap the config
+
+```
+curl -s https://raw.github.com/dakrone/dakrone-dotfiles/master/bootstrap | zsh
+```
+
 # ZSH randomness:
 
 A random prompt pet is chosen, `export PROMPT_PETS=("a" "b" "c" ...)` to

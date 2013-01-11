@@ -1,6 +1,6 @@
 ;;; ob-sql.el --- org-babel functions for sql evaluation
 
-;; Copyright (C) 2009-2011  Free Software Foundation, Inc.
+;; Copyright (C) 2009-2013  Free Software Foundation, Inc.
 
 ;; Author: Eric Schulte
 ;; Keywords: literate programming, reproducible research
@@ -24,6 +24,7 @@
 ;;; Commentary:
 
 ;; Org-Babel support for evaluating sql source code.
+;; (see also ob-sqlite.el)
 ;;
 ;; SQL is somewhat unique in that there are many different engines for
 ;; the evaluation of sql (Mysql, PostgreSQL, etc...), so much of this
@@ -39,19 +40,21 @@
 ;; - add more useful header arguments (user, passwd, database, etc...)
 ;; - support for more engines (currently only supports mysql)
 ;; - what's a reasonable way to drop table data into SQL?
-;; 
+;;
 
 ;;; Code:
 (require 'ob)
 (eval-when-compile (require 'cl))
 
 (declare-function org-table-import "org-table" (file arg))
-(declare-function orgtbl-to-csv "org-table" (TABLE PARAMS))
+(declare-function orgtbl-to-csv "org-table" (table params))
+(declare-function org-table-to-lisp "org-table" (&optional txt))
 
 (defvar org-babel-default-header-args:sql '())
 
-(defvar org-babel-header-arg-names:sql
-  '(engine out-file))
+(defvar org-babel-header-args:sql
+  '((engine   . :any)
+    (out-file . :any)))
 
 (defun org-babel-expand-body:sql (body params)
   "Expand BODY according to the values of PARAMS."
@@ -69,6 +72,15 @@ This function is called by `org-babel-execute-src-block'."
                        (org-babel-temp-file "sql-out-")))
 	 (header-delim "")
          (command (case (intern engine)
+                    ('dbi (format "dbish --batch '%s' < %s | sed '%s' > %s"
+				  (or cmdline "")
+				  (org-babel-process-file-name in-file)
+				  "/^+/d;s/^\|//;$d"
+				  (org-babel-process-file-name out-file)))
+                    ('monetdb (format "mclient -f tab %s < %s > %s"
+                                      (or cmdline "")
+                                      (org-babel-process-file-name in-file)
+                                      (org-babel-process-file-name out-file)))
                     ('msosql (format "osql %s -s \"\t\" -i %s -o %s"
                                      (or cmdline "")
                                      (org-babel-process-file-name in-file)
@@ -79,20 +91,20 @@ This function is called by `org-babel-execute-src-block'."
 				    (org-babel-process-file-name out-file)))
 		    ('postgresql (format
 				  "psql -A -P footer=off -F \"\t\"  -f %s -o %s %s"
-				    (org-babel-process-file-name in-file)
-				    (org-babel-process-file-name out-file)
-				    (or cmdline "")))
-                    (t (error "no support for the %s sql engine" engine)))))
+				  (org-babel-process-file-name in-file)
+				  (org-babel-process-file-name out-file)
+				  (or cmdline "")))
+                    (t (error "No support for the %s SQL engine" engine)))))
     (with-temp-file in-file
-      (insert (org-babel-expand-body:sql body params)))
+      (insert
+       (case (intern engine)
+	 ('dbi "/format partbox\n")
+	 (t ""))
+       (org-babel-expand-body:sql body params)))
     (message command)
     (shell-command command)
-    (if (or (member "scalar" result-params)
-	    (member "verbatim" result-params)
-	    (member "html" result-params)
-	    (member "code" result-params)
-	    (equal (point-min) (point-max)))
-	(with-temp-buffer
+    (org-babel-result-cond result-params
+      (with-temp-buffer
 	  (progn (insert-file-contents-literally out-file) (buffer-string)))
       (with-temp-buffer
 	;; need to figure out what the delimiter is for the header row
@@ -133,8 +145,8 @@ This function is called by `org-babel-execute-src-block'."
 		      (with-temp-file data-file
 			(insert (orgtbl-to-csv
 				 val '(:fmt (lambda (el) (if (stringp el)
-							el
-						      (format "%S" el)))))))
+							     el
+							   (format "%S" el)))))))
 		      data-file)
 		    (org-babel-temp-file "sql-data-"))
 		 (if (stringp val) val (format "%S" val))))
@@ -145,7 +157,7 @@ This function is called by `org-babel-execute-src-block'."
 
 (defun org-babel-prep-session:sql (session params)
   "Raise an error because Sql sessions aren't implemented."
-  (error "sql sessions not yet implemented"))
+  (error "SQL sessions not yet implemented"))
 
 (provide 'ob-sql)
 

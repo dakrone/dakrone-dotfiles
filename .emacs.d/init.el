@@ -2,11 +2,11 @@
 (package-initialize)
 (add-to-list 'load-path "~/.emacs.d/")
 (add-to-list 'load-path (concat "~/.emacs.d/" (user-login-name)))
+(setq esk-user-dir "esk")
 
 ;; loads ~/.emacs.d/hinmanm/<file>.el safely
 (     load "safe-load" nil t)
 (safe-load "imports" nil t)
-;;(safe-load "mode-line" nil t)
 (safe-load "clojure-stuff" nil t)
 (safe-load "elmer" nil t)
 (safe-load "org-stuff" nil t)
@@ -16,6 +16,7 @@
 (safe-load "misc" nil t)
 (safe-load "bindings" nil t)
 (safe-load "color-theme-dakrone" nil t)
+(safe-load "mode-line" nil t)
 
 ;; Emacs custom set vars
 (custom-set-variables

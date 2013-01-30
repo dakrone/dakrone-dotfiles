@@ -70,7 +70,7 @@
            erc-pals '("hiredman" "danlarkin" "drewr" "pjstadig" "scgilardi"
                       "joegallo" "jimduey" "leathekd" "rhickey" "zkim" "steve"
                       "imotov" "joekinsella" "craig" "technomancy" "ddillinger"
-                      "yazirian")
+                      "yazirian" "danielglauser")
            erc-keywords '("clojuredocs" "clj-http" "cheshire" "itsy" "opennlp")
            erc-ignore-list '("sonian-chef")
            erc-log-matches-types-alist
@@ -89,3 +89,5 @@
 
 (setq erc-server-reconnect-timeout 5)
 (setq erc-server-reconnect-attempts 4)
+
+(setq erc-fill-column 100)

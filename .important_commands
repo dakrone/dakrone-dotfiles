@@ -7,3 +7,4 @@ es health
 safectl util repl
 tail -n250 /var/log/es.log
 ENV=dev kssh -m search_0 "curl -s p.draines.com/diskeph.sh | zsh" | sort -rnk5
+curl -s https://raw.github.com/dakrone/dakrone-dotfiles/master/bootstrap | zsh

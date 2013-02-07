@@ -68,9 +68,10 @@
 
 
 ;; ==== Appearance ====
-(set-fontset-font "fontset-default" 'symbol "Monaco")
-(set-default-font "Anonymous Pro")
-(set-face-attribute 'default nil :height 115)
+(when (eq window-system 'ns)
+  (set-fontset-font "fontset-default" 'symbol "Monaco")
+  (set-default-font "Anonymous Pro")
+  (set-face-attribute 'default nil :height 115))
 ;; Anti-aliasing
 (setq mac-allow-anti-aliasing t)
 

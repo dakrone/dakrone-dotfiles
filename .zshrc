@@ -63,7 +63,7 @@ DRIP_SHUTDOWN=30
 
 # word chars
 # default is: *?_-.[]~=/&;!#$%^(){}<>
-export WORDCHARS="*?_-.[]~=&;!#$%^(){}<>\"'\\"
+export WORDCHARS="*?_-.[]~=&;!#$%^(){}<>\\"
 
 export JIRAPATH=~/src/jira
 alias jira="$JIRAPATH/jira.sh --action getIssue --issue "

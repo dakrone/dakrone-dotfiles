@@ -5,7 +5,6 @@
 
 [core]
   pager = less -FRSX
-  editor = nano
   excludesfile = /Users/hinmanm/.gitignore
 
 [color]
@@ -27,6 +26,7 @@
   rips = rebase -i -p -s subtree
   headless = !sh -c 'git symbolic-ref HEAD refs/heads/$0 && rm .git/index && git clean -fdx'
   vtags = !sh -c 'git tag -l | xargs git tag -v'
+  ver = "!git log --pretty=format:'%ai %h' -1 | perl -pe 's,(\\d\\d\\d\\d)-(\\d\\d)-(\\d\\d) (\\d\\d):(\\d\\d):(\\d\\d) [^ ]+ ([a-z0-9]+),\\1\\2\\3+\\7,'"
 
 [github]
   user = dakrone
@@ -41,3 +41,9 @@
 
 [push]
   default = tracking
+
+[diff]
+  tool = p4merge
+
+[difftool "p4merge"]
+  cmd = "/Applications/p4merge.app/Contents/MacOS/p4merge $LOCAL $REMOTE"

@@ -1,5 +1,20 @@
 ;; ERC-related things
 
+(setq tls-program
+      '("openssl s_client -connect %h:%p -no_ssl2 -ign_eof -cert ~/host.pem"
+        "gnutls-cli --priority secure256 --x509certfile ~/host.pem -p %p %h"
+        "gnutls-cli --priority secure256 -p %p %h"))
+
+;; Load passwords from file, if it doesn't exist no worries
+(safe-load "~/.ercpass")
+
+(defun start-irc ()
+  "Connect to IRC."
+  (interactive)
+  (erc-tls :server "freenode" :port 31425
+           :nick "freenode" :password freenode-pass)
+  (erc-tls :server "subrosa" :port 31425
+           :nick "subrosa" :password subrosa-pass))
 
 (when (eq window-system 'ns)
   (add-to-list 'load-path "~/src/elisp/ercn")

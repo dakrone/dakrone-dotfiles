@@ -96,3 +96,9 @@
 (require 'paredit)
 (diminish 'paredit-mode "()")
 
+(require 'git-gutter)
+(global-git-gutter-mode t)
+(diminish 'git-gutter-mode "gg")
+;; Jump to next/previous hunk
+(global-set-key (kbd "C-c P") 'git-gutter:previous-hunk)
+(global-set-key (kbd "C-c N") 'git-gutter:next-hunk)

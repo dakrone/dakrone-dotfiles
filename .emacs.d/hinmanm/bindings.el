@@ -109,8 +109,7 @@
 (global-set-key (kbd "M-p") 'scroll-up-keep-cursor)
 
 ;; ==== Dvorak niceity ====
-(when (eq window-system 'ns)
-  (define-key key-translation-map "\C-t" "\C-x"))
+(define-key key-translation-map "\C-t" "\C-x")
 
 ;; ==== transpose buffers ====
 (defun transpose-buffers (arg)

@@ -38,6 +38,30 @@
   (add-hook 'ercn-notify 'do-notify)
   (add-to-list 'erc-modules 'ercn))
 
+(when (eq window-system 'x)
+  (add-to-list 'load-path "~/src/elisp/ercn")
+  (require 'ercn)
+
+  (add-to-list 'load-path "~/src/elisp/grr.el")
+  (require 'grr)
+
+  (setq grr-command "/usr/bin/notify-send")
+
+  (setq ercn-notify-rules
+        '((message . ("#84115" "#search" "#devs" "#safe"))
+          (current-nick . all)
+          (keyword . all)
+          ;;(pal . all)
+          (query-buffer . all)))
+
+  (defun do-notify (nickname message)
+    (grr-notify (concat (buffer-name) " - " (concat nickname ": " message))
+                (concat (buffer-name) " - " (concat nickname ": " message))
+                nil))
+
+  (add-hook 'ercn-notify 'do-notify)
+  (add-to-list 'erc-modules 'ercn))
+
 ;; ==== ERC stuff ====
 ;; Only track my nick(s)
 (defadvice erc-track-find-face

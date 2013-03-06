@@ -71,50 +71,50 @@
 (set-face-attribute 'mode-line nil
     :foreground "gray60" :background "gray20"
     :inverse-video nil
-    :family "Muli" :height 110
+    :family "Monaco" :height 85
     :box '(:line-width 6 :color "gray20" :style nil))
 (set-face-attribute 'mode-line-inactive nil
     :foreground "gray40" :background "gray15"
     :inverse-video nil
-    :family "Muli" :height 110
+    :family "Monaco" :height 85
     :box '(:line-width 6 :color "gray15" :style nil))
 (set-face-attribute 'mode-line-read-only-face nil
     :inherit 'mode-line-face
     :foreground "#4271ae"
-    :family "Muli" :height 110
+    :family "Monaco" :height 95
     :box '(:line-width 2 :color "#4271ae"))
 (set-face-attribute 'mode-line-modified-face nil
     :inherit 'mode-line-face
     :foreground "#c82829"
     :background "#ffffff"
-    :family "Muli" :height 110
+    :family "Monaco" :height 95
     :box '(:line-width 2 :color "#c82829"))
 (set-face-attribute 'mode-line-folder-face nil
     :inherit 'mode-line-face
-    :family "Muli" :height 110
+    :family "Monaco" :height 95
     :foreground "gray60")
 (set-face-attribute 'mode-line-filename-face nil
     :inherit 'mode-line-face
     :foreground "#eab700"
-    :family "Muli" :height 110
+    :family "Monaco" :height 95
     :weight 'bold)
 (set-face-attribute 'mode-line-position-face nil
     :inherit 'mode-line-face
-    :family "Muli" :height 110)
+    :family "Monaco" :height 95)
 (set-face-attribute 'mode-line-mode-face nil
     :inherit 'mode-line-face
-    :family "Muli" :height 110
+    :family "Monaco" :height 95
     :foreground "gray80")
 (set-face-attribute 'mode-line-minor-mode-face nil
     :inherit 'mode-line-mode-face
     :foreground "gray40"
-    :family "Muli"
-    :height 100)
+    :family "Monaco"
+    :height 85)
 (set-face-attribute 'mode-line-process-face nil
     :inherit 'mode-line-face
-    :family "Muli" :height 110
+    :family "Monaco" :height 95
     :foreground "#718c00")
 (set-face-attribute 'mode-line-80col-face nil
     :inherit 'mode-line-position-face
-    :family "Muli" :height 110
+    :family "Monaco" :height 95
     :foreground "black" :background "#eab700")

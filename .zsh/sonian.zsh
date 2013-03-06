@@ -22,12 +22,12 @@ if [[ ! -n $KNIFE_CMD ]]; then
     export KNIFE_CMD=`which knife`
 fi
 
-function knife
-{
-    if [ $1 = "ssh" ]; then
-        $KNIFE_CMD "$@" -a ec2.public_hostname -x lee
-    else
-        $KNIFE_CMD "$@"
-    fi
-}
+# function knife
+# {
+#     if [ $1 = "ssh" ]; then
+#         $KNIFE_CMD "$@" -a ec2.public_hostname -x lee
+#     else
+#         $KNIFE_CMD "$@"
+#     fi
+# }
 

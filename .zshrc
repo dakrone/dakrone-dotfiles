@@ -156,7 +156,7 @@ setopt longlistjobs
 setopt notify
 # I use dvorak, so correct spelling mistakes that a dvorak user would make
 setopt dvorak
-setopt correct                # Spelling correction
+#setopt correct                # Spelling correction
 
 
 autoload -U url-quote-magic

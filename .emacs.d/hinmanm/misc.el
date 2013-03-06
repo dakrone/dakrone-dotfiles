@@ -72,6 +72,11 @@
   (set-fontset-font "fontset-default" 'symbol "Monaco")
   (set-default-font "Anonymous Pro")
   (set-face-attribute 'default nil :height 115))
+(when (eq window-system 'x)
+  ;; Font family
+  (set-default-font "Monaco")
+  ;; Font size
+  (set-face-attribute 'default nil :height 85))
 ;; Anti-aliasing
 (setq mac-allow-anti-aliasing t)
 
@@ -85,6 +90,7 @@
 
 ;; split the way I want
 (setq split-height-threshold nil)
+(setq split-width-threshold 180)
 
 ;; always turn whitespace mode on
 (whitespace-mode t)
@@ -174,7 +180,7 @@
 
 ;; ==== Ispell/Aspell flyspell stuff ====
 ;; brew install aspell --lang=en
-(setq-default ispell-program-name "/usr/local/bin/aspell")
+(setq-default ispell-program-name "/usr/bin/aspell")
 (setq ispell-extra-args '("--sug-mode=ultra" "--ignore=3"))
 (setq flyspell-issue-message-flag nil)
 (setq ispell-personal-dictionary "~/.flydict")
@@ -231,7 +237,7 @@
 
 ;; ==== Emacs Client Setup ====
 ;; only start the server for the graphical one
-(when (eq window-system 'ns)
+(when (or (eq window-system 'ns) (eq window-system 'x))
   (server-start))
 
 

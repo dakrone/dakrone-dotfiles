@@ -39,7 +39,7 @@
     flycheck
 
     ;; clojure
-    clojure-mode nrepl paredit parenface
+    clojure-mode nrepl paredit parenface kibit-mode
 
     ;; coffee-script
     coffee-mode
@@ -53,7 +53,7 @@
     ;; ruby
     ruby-block ruby-compilation ruby-end ruby-interpolation
     ruby-mode ruby-test-mode ruby-tools inf-ruby
-    yari
+    yari ruby-electric rsense
 
     ;; emacs-lisp
     elisp-slime-nav thingopt

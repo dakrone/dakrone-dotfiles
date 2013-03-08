@@ -18,7 +18,7 @@ git clone -q git://github.com/dakrone/dakrone-dotfiles.git ~/.dakrone
 HAVE24=$(emacs --version | grep "Emacs 24")
 if [ $? -eq 0 ]; then
     cp -R ~/.dakrone/.emacs.d ~/
-    mv ~/.emacs.d/hinmanm ~/.emacs.d/$IAM
+    emacs -q -batch -l ~/.emacs.d/setup.el -kill
 else
     cp -R ~/.dakrone/.emacs.d/backup23.el ~/.emacs.el
 fi

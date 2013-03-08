@@ -69,8 +69,14 @@
 (eval-after-load "flycheck"
   '(progn
      (set-face-attribute 'flycheck-error-face nil
-                         :foreground "yellow" :weight 'bold
-                         :background "red")
+                         :foreground "yellow"
+                         ;;:weight 'bold
+                         :underline t
+                         :background "red"
+                         )
      (set-face-attribute 'flycheck-warning-face nil
-                         :foreground "white" :weight 'bold
-                         :background "dark orange")))
+                         ;;:foreground "white"
+                         ;;:weight 'bold
+                         :underline t
+                         ;;:background "dark orange"
+                         )))

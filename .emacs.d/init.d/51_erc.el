@@ -18,7 +18,7 @@
            :nick "subrosa" :password subrosa-pass))
 
 (when (eq window-system 'ns)
-  (add-to-list 'load-path "~/src/elisp/ercn")
+  ;; (add-to-list 'load-path "~/src/elisp/ercn")
   (require 'ercn)
 
   (add-to-list 'load-path "~/src/elisp/grr.el")
@@ -40,7 +40,7 @@
   (add-to-list 'erc-modules 'ercn))
 
 (when (eq window-system 'x)
-  (add-to-list 'load-path "~/src/elisp/ercn")
+  ;; (add-to-list 'load-path "~/src/elisp/ercn")
   (require 'ercn)
 
   ;; (add-to-list 'load-path "~/src/elisp/grr.el")

@@ -12,7 +12,7 @@
     color-theme rainbow-mode
 
     ;;;; misc
-    diminish dired+ erc-hl-nicks
+    diminish dired+ erc-hl-nicks ercn
 
     ;;;; for auto-complete
     auto-complete fuzzy popup ac-slime pos-tip ac-nrepl

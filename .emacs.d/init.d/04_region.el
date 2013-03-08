@@ -1,7 +1,7 @@
 ;;;; region setting
 
 ;; expand region
-(global-set-key (kbd "C-@") 'er/expand-region)
+;;(global-set-key (kbd "C-@") 'er/expand-region)
 (global-set-key (kbd "C-M-@") 'er/contract-region)
 
 ;; multimark
@@ -49,6 +49,7 @@
 ;; set majar mode derived `prog-mode'
 (dolist (hook '(c-mode-hook
                 c++-mode-hook
+                clojure-mode-hook
                 python-mode-hook
                 haskell-mode-hook
                 ruby-mode-hook

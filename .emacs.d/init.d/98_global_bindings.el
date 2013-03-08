@@ -1,4 +1,46 @@
-;; Key bindings, a of these are taken from ESK
+;; Key bindings
+
+(global-set-key (kbd "C-M-z")   'helm-resume)
+(global-set-key (kbd "C-x C-r") 'helm-recentf)
+;;(global-set-key (kbd "C-x C-c") 'helm-M-x)
+(global-set-key (kbd "M-y")     'helm-show-kill-ring)
+(global-set-key (kbd "C-h a")   'helm-apropos)
+(global-set-key (kbd "C-x C-i") 'helm-imenu)
+;;(global-set-key (kbd "C-x b")   'helm-buffers-list)
+
+;; M-g mapping
+(global-set-key (kbd "M-g .") 'helm-ag)
+(global-set-key (kbd "M-g ,") 'helm-ag-pop-stack)
+(global-set-key (kbd "M-g M-f") 'ffap)
+
+;; duplicate current line
+(defun duplicate-thing (n)
+  (interactive "p")
+  (save-excursion
+    (let ((orig-line (line-number-at-pos))
+          (str (if mark-active
+                   (buffer-substring (region-beginning) (region-end))
+                 (buffer-substring (line-beginning-position)
+                                   (line-end-position)))))
+      (forward-line 1)
+      ;; maybe last line
+      (when (= orig-line (line-number-at-pos))
+        (insert "\n"))
+      (dotimes (i (or n 1))
+        (insert str "\n"))))
+  (forward-line 1))
+
+(smartrep-define-key
+    global-map "M-g" '(("c" . duplicate-thing)))
+
+;; flymake
+(smartrep-define-key
+    global-map "M-g" '(("n" . 'next-error)
+                       ("p" . 'previous-error)))
+
+(smartrep-define-key
+    global-map "M-g" '(("M-n" . 'flymake-goto-next-error)
+                       ("M-p" . 'flymake-goto-prev-error)))
 
 ;; C-; to enter/exit iedit-mode
 (global-set-key (kbd "C-;") 'iedit-mode)
@@ -7,7 +49,7 @@
 (global-set-key (kbd "C-M-h") 'backward-kill-word)
 
 ;; Completion that uses many different methods to find options.
-;;(global-set-key (kbd "M-/") 'hippie-expand)
+(global-set-key (kbd "M-/") 'hippie-expand)
 
 ;; Perform general cleanup.
 (global-set-key (kbd "C-c n") 'cleanup-buffer)
@@ -22,8 +64,6 @@
 ;; Use regex searches by default.
 (global-set-key (kbd "C-s") 'isearch-forward-regexp)
 (global-set-key (kbd "\C-r") 'isearch-backward-regexp)
-(global-set-key (kbd "C-M-s") 'isearch-forward)
-(global-set-key (kbd "C-M-r") 'isearch-backward)
 
 ;; File finding
 (global-set-key (kbd "C-x M-f") 'ido-find-file-other-window)
@@ -56,9 +96,6 @@
 
 ;; If you want to be able to M-x without meta (phones, etc)
 (global-set-key (kbd "C-c C-x") 'execute-extended-command)
-
-;; Help should search more than just commands
-(global-set-key (kbd "C-h a") 'apropos)
 
 ;; M-S-6 is awkward
 (global-set-key (kbd "C-c q") 'join-line)

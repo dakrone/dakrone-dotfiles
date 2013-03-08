@@ -35,6 +35,8 @@ cp -f -v ~/.tmux.conf .
 
 mkdir -p .emacs.d
 cp -f -rv ~/.emacs.d .
+rm -rf .emacs.d/elpa
+rm -f .emacs.d/history
 # Remove elc files
 find . -name "*.elc" -exec rm {} \;
 find . -name "*._*" -exec rm {} \;

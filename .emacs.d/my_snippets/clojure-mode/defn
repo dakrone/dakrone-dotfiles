@@ -2,7 +2,7 @@
 #name : defn
 # --
 (defn ${1:name}
-  "TODO: Document"
-  []
+  "${2:TODO: Document}"
+  [$3]
   $0)
 

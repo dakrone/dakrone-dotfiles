@@ -39,7 +39,8 @@
     flycheck
 
     ;; clojure
-    clojure-mode nrepl paredit parenface kibit-mode
+    clojure-mode nrepl paredit parenface kibit-mode clojure-test-mode
+    clojure-snippets
 
     ;; coffee-script
     coffee-mode

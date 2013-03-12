@@ -22,7 +22,7 @@
 
     ;;;; editing utilities
     expand-region wrap-region smex windresize
-    undo-tree mark-multiple redo+ smartrep
+    undo-tree mark-multiple redo+ smartrep iedit
     yasnippet goto-chg find-file-in-project idle-highlight-mode
 
     ;;;; buffer utils

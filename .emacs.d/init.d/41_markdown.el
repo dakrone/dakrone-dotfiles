@@ -5,7 +5,9 @@
 (eval-after-load "markdown-mode"
   '(progn
      (setq markdown-command "Markdown.pl")
-     (add-hook 'markdown-mode-hook 'my/markdown-mode-hook)))
+     (add-hook 'markdown-mode-hook 'my/markdown-mode-hook)
+     (define-key markdown-mode-map (kbd "C-M-f") 'forward-symbol)
+     (define-key markdown-mode-map (kbd "C-M-b") 'backward-symbol)))
 
 (defvar markdown-imenu-generic-expression
   '(("title"  "^\\(.+?\\)[\n]=+$" 1)

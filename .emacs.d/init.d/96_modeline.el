@@ -70,12 +70,12 @@
     :foreground "gray60" :background "gray20"
     :inverse-video nil
     :family "Monaco" :height 85
-    :box '(:line-width 6 :color "gray20" :style nil))
+    :box '(:line-width 3 :color "gray20" :style nil))
 (set-face-attribute 'mode-line-inactive nil
     :foreground "gray40" :background "gray15"
     :inverse-video nil
     :family "Monaco" :height 85
-    :box '(:line-width 6 :color "gray15" :style nil))
+    :box '(:line-width 3 :color "gray15" :style nil))
 (set-face-attribute 'mode-line-read-only-face nil
     :inherit 'mode-line-face
     :foreground "#4271ae"

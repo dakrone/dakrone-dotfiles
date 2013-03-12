@@ -6,8 +6,8 @@
 "set guioptions+=B
 
 " Source noscript plugin
-"source ~/.vimperator/noscript.js
-"nnoremap ,n :noscript popup<CR>
+source ~/.vimperator/noscript.js
+nnoremap ,n :noscript popup<CR>
 
 " Show status bar in fullscreen mode
 nmap ,ss :js document.getElementById("status-bar").setAttribute("moz-collapsed", false)<CR>

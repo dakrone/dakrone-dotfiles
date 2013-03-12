@@ -6,6 +6,7 @@
 ;; enable yasnippet mode
 (dolist (hook '(c-mode-hook
                 c++-mode-hook
+                clojure-mode-hook
                 cperl-mode-hook
                 emacs-lisp-mode-hook
                 js-mode-hook

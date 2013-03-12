@@ -43,6 +43,7 @@
 
 ;; enable yascrollbar
 (global-yascroll-bar-mode)
+(add-to-list 'yascroll:disabled-modes 'git-gutter-mode)
 
 ;; not create backup file
 (setq backup-inhibited t)
@@ -79,7 +80,7 @@
 (require 'which-func)
 (set-face-foreground 'which-func "chocolate4")
 (set-face-bold-p 'which-func t)
-(which-func-mode t)
+(which-function-mode t)
 
 ;; invisible mouse cursor when editing text
 (setq make-pointer-invisible t)
@@ -126,4 +127,3 @@
 ;; gpg stuff
 (require 'epa-file)
 (epa-file-enable)
-

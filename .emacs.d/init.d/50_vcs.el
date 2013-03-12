@@ -6,13 +6,6 @@
 ;; disable vc-mode
 (setq vc-handled-backends '())
 
-;;; Setting for Git
-;; sgit
-;; (require 'sgit)
-;; (global-set-key (kbd "C-x v l") 'sgit:log)
-;; (global-set-key (kbd "C-x v d") 'sgit:diff)
-;; (global-set-key (kbd "C-x v s") 'sgit:status)
-
 ;; git-gutter
 (global-git-gutter-mode t)
 (global-set-key (kbd "C-x C-a") 'git-gutter:toggle)
@@ -28,6 +21,9 @@
 ;; Jump to next/previous hunk
 (global-set-key (kbd "C-c P") 'git-gutter:previous-hunk)
 (global-set-key (kbd "C-c N") 'git-gutter:next-hunk)
+(global-set-key (kbd "C-x p") 'git-gutter:previous-hunk)
+(global-set-key (kbd "C-x n") 'git-gutter:next-hunk)
+(global-set-key (kbd "C-c G") 'git-gutter:popup-diff)
 
 
 ;; magit

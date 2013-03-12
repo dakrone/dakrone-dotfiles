@@ -11,3 +11,5 @@
 .emacs.d/bookmarks
 .emacs.d/swank/*
 .emacs.d/url/*
+.emacs.d/session*
+.emacs.d/eshell

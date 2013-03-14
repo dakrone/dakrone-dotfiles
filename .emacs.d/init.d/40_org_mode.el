@@ -4,7 +4,7 @@
   (setq org-startup-truncated nil)
   (setq org-return-follows-link t)
   (add-to-list 'auto-mode-alist '("\\.org$" . org-mode))
-  (org-remember-insinuate)
+  ;; (org-remember-insinuate)
   (setq org-directory user-emacs-directory)
 ;;  (setq org-startup-folded 'nofold)
   (setq org-use-fast-todo-selection t)
@@ -18,11 +18,12 @@
           ("WAITING"   . (:foreground "orange" :weight bold))))
 
   ;; faces
-  (set-face-foreground 'org-block "green")
-  (set-face-foreground 'org-tag "green yellow")
+  ;; (set-face-foreground 'org-block "green")
+  ;; (set-face-foreground 'org-tag "green yellow")
 
   ;; function of org-open-at-point
-  (setf (cdr (assoc 'file org-link-frame-setup)) 'find-file))
+  ;; (setf (cdr (assoc 'file org-link-frame-setup)) 'find-file))
+  )
 
 (eval-after-load "org"
   '(progn

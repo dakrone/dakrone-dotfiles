@@ -43,9 +43,9 @@
   ;; (add-to-list 'load-path "~/src/elisp/ercn")
   (require 'ercn)
 
-  ;; (add-to-list 'load-path "~/src/elisp/grr.el")
-  ;; (require 'grr)
-  ;; (setq grr-command "/usr/bin/notify-send")
+  (add-to-list 'load-path "~/src/elisp/grr.el")
+  (require 'grr)
+  (setq grr-command "/usr/bin/notify-send")
 
   (require 'notifications)
 
@@ -57,8 +57,12 @@
           (query-buffer . all)))
 
   (defun do-notify (nickname message)
-    (notifications-notify :title (buffer-name)
-                          :body (concat nickname ": " message)))
+    (grr-notify (concat (buffer-name) " - " (concat nickname ": " message))
+                (concat (buffer-name) " - " (concat nickname ": " message))
+                nil)
+    ;; (notifications-notify :title (buffer-name)
+    ;;                       :body (concat nickname ": " message))
+    )
 
   ;; (grr-notify (concat (buffer-name) " - " (concat nickname ": " message))
   ;;             (concat (buffer-name) " - " (concat nickname ": " message))

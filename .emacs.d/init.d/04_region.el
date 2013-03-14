@@ -1,7 +1,7 @@
 ;;;; region setting
 
 ;; expand region
-;;(global-set-key (kbd "C-@") 'er/expand-region)
+(global-set-key (kbd "C-c e") 'er/expand-region)
 (global-set-key (kbd "C-M-@") 'er/contract-region)
 
 ;; multimark

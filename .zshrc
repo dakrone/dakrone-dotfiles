@@ -93,6 +93,10 @@ export LESS_TERMCAP_us=$'\E[01;32m'
 if [ -d ~/.zsh/zsh-completions ] ; then
     fpath=(~/.zsh/zsh-completions/src $fpath)
 fi
+# additional completions
+if [ -d ~/.zsh/completions ] ; then
+    fpath=(~/.zsh/completions $fpath)
+fi
 
 zmodload zsh/complist
 autoload -U compinit && compinit

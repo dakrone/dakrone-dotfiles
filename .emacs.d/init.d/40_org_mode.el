@@ -38,7 +38,9 @@
                               ("b" . 'org-shiftleft)))
      (smartrep-define-key
          org-mode-map "C-c" '(("C-n" . (outline-next-visible-heading 1))
-                              ("C-p" . (outline-previous-visible-heading 1))))))
+                              ("C-p" . (outline-previous-visible-heading 1))))
+     (setq org-clock-persist 'history)
+     (org-clock-persistence-insinuate)))
 
 (add-to-list 'auto-mode-alist '("\\.\\(org\\|org_archive\\|txt\\)$" . org-mode))
 

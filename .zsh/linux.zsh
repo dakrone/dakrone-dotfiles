@@ -19,7 +19,7 @@ if [[ $OS == "Linux" ]]; then
     alias l2t='l2test'
     alias l2rt='l2rtest'
 
-    export EDITOR="emacs"
+    export EDITOR="emacs -nw"
 
     # awesome
     alias gps='ps -eo cmd,fname,pid,pcpu,time --sort=-pcpu | head -n 11 && echo && ps -eo cmd,fname,pid,pmem,rss --sort=-rss | head -n 9'
@@ -31,4 +31,3 @@ if [[ $OS == "Linux" ]]; then
     # export JAVA_HOME=/home/hinmanm/jvm/current
     # export PATH=$PATH:$JAVA_HOME/bin
 fi
-

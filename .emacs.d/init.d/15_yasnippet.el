@@ -1,7 +1,10 @@
 ;;;; yasnippet
 (require 'yasnippet)
-(custom-set-variables
- '(yas/snippet-dirs `(,(concat user-emacs-directory "my_snippets"))))
+
+(require 'clojure-snippets)
+(clojure-snippets-initialize)
+
+(add-to-list 'yas/snippet-dirs (concat user-emacs-directory "my_snippets"))
 
 ;; enable yasnippet mode
 (dolist (hook '(c-mode-hook
@@ -22,12 +25,14 @@
   '(progn
      (defun my-yas/prompt (prompt choices &optional display-fn)
        (let* ((names (loop for choice in choices
-                           collect (or (and display-fn (funcall display-fn choice))
+                           collect (or (and display-fn
+                                            (funcall display-fn choice))
                                        coice)))
               (selected (helm-other-buffer
                          `(((name . ,(format "%s" prompt))
                             (candidates . names)
-                            (action . (("Insert snippet" . (lambda (arg) arg))))))
+                            (action . (("Insert snippet" . (lambda (arg)
+                                                             arg))))))
                          "*helm yas/prompt*")))
          (if selected
              (let ((n (position selected names :test 'equal)))

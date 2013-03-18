@@ -17,13 +17,16 @@
   (erc-tls :server "subrosa" :port 31425
            :nick "subrosa" :password subrosa-pass))
 
-(when (eq window-system 'ns)
+;; (grr-notify (concat (buffer-name) " - " (concat nickname ": " message))
+;;             (concat (buffer-name) " - " (concat nickname ": " message))
+;;             nil)
+;; (grr-notify (buffer-name) (concat nickname ": " message) nil)
+;; (notifications-notify :title (buffer-name)
+;;                       :body (concat nickname ": " message))
+
+(when window-system
   (require 'ercn)
-
-  (add-to-list 'load-path "~/src/elisp/grr.el")
-  (require 'grr)
-
-  (setq grr-command "/usr/local/bin/growlnotify")
+  (require 'todochiku)
 
   (setq ercn-notify-rules
         '((message . ("#84115" "#search" "#devs" "#safe"))
@@ -33,44 +36,20 @@
           (query-buffer . all)))
 
   (defun do-notify (nickname message)
-    (grr-notify (buffer-name) (concat nickname ": " message) nil))
-
-  (add-hook 'ercn-notify 'do-notify)
-  (add-to-list 'erc-modules 'ercn))
-
-(when (eq window-system 'x)
-  (require 'ercn)
-
-  ;; (add-to-list 'load-path "~/src/elisp/grr.el")
-  ;; (require 'grr)
-  ;; (setq grr-command "/usr/bin/notify-send")
-
-  (require 'notifications)
-
-  (setq ercn-notify-rules
-        '((message . ("#84115" "#search" "#devs" "#safe"))
-          (current-nick . all)
-          (keyword . all)
-          ;;(pal . all)
-          (query-buffer . all)))
-
-  (defun do-notify (nickname message)
-    ;; (grr-notify (concat (buffer-name) " - " (concat nickname ": " message))
-    ;;             (concat (buffer-name) " - " (concat nickname ": " message))
-    ;;             nil)
-    (notifications-notify :title (buffer-name)
-                          :body (concat nickname ": " message)))
+    (todochiku-message (buffer-name)
+                       (concat nickname ": " message)
+                       (todochiku-icon 'irc)))
 
   (add-hook 'ercn-notify 'do-notify)
   (add-to-list 'erc-modules 'ercn))
 
 ;; ==== ERC stuff ====
 ;; Only track my nick(s)
-;; (defadvice erc-track-find-face
-;;   (around erc-track-find-face-promote-query activate)
-;;   (if (erc-query-buffer-p)
-;;       (setq ad-return-value (intern "erc-current-nick-face"))
-;;     ad-do-it))
+(defadvice erc-track-find-face
+  (around erc-track-find-face-promote-query activate)
+  (if (erc-query-buffer-p)
+      (setq ad-return-value (intern "erc-current-nick-face"))
+    ad-do-it))
 
 (eval-after-load 'erc
   '(progn

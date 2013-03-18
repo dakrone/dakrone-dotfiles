@@ -9,7 +9,7 @@
 ;; git-gutter
 (global-git-gutter-mode t)
 (global-set-key (kbd "C-x C-a") 'git-gutter:toggle)
-(global-set-key (kbd "C-x =") 'git-gutter:popup-diff)
+(global-set-key (kbd "C-x =") 'git-gutter:popup-hunk)
 
 ;; (eval-after-load "git-gutter"
 ;;   '(progn
@@ -23,7 +23,7 @@
 (global-set-key (kbd "C-c N") 'git-gutter:next-hunk)
 (global-set-key (kbd "C-x p") 'git-gutter:previous-hunk)
 (global-set-key (kbd "C-x n") 'git-gutter:next-hunk)
-(global-set-key (kbd "C-c G") 'git-gutter:popup-diff)
+(global-set-key (kbd "C-c G") 'git-gutter:popup-hunk)
 
 
 ;; magit

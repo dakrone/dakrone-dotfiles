@@ -18,7 +18,6 @@
            :nick "subrosa" :password subrosa-pass))
 
 (when (eq window-system 'ns)
-  ;; (add-to-list 'load-path "~/src/elisp/ercn")
   (require 'ercn)
 
   (add-to-list 'load-path "~/src/elisp/grr.el")
@@ -40,12 +39,11 @@
   (add-to-list 'erc-modules 'ercn))
 
 (when (eq window-system 'x)
-  ;; (add-to-list 'load-path "~/src/elisp/ercn")
   (require 'ercn)
 
-  (add-to-list 'load-path "~/src/elisp/grr.el")
-  (require 'grr)
-  (setq grr-command "/usr/bin/notify-send")
+  ;; (add-to-list 'load-path "~/src/elisp/grr.el")
+  ;; (require 'grr)
+  ;; (setq grr-command "/usr/bin/notify-send")
 
   (require 'notifications)
 
@@ -57,56 +55,26 @@
           (query-buffer . all)))
 
   (defun do-notify (nickname message)
-    (grr-notify (concat (buffer-name) " - " (concat nickname ": " message))
-                (concat (buffer-name) " - " (concat nickname ": " message))
-                nil)
-    ;; (notifications-notify :title (buffer-name)
-    ;;                       :body (concat nickname ": " message))
-    )
-
-  ;; (grr-notify (concat (buffer-name) " - " (concat nickname ": " message))
-  ;;             (concat (buffer-name) " - " (concat nickname ": " message))
-  ;;             nil)
+    ;; (grr-notify (concat (buffer-name) " - " (concat nickname ": " message))
+    ;;             (concat (buffer-name) " - " (concat nickname ": " message))
+    ;;             nil)
+    (notifications-notify :title (buffer-name)
+                          :body (concat nickname ": " message)))
 
   (add-hook 'ercn-notify 'do-notify)
   (add-to-list 'erc-modules 'ercn))
 
 ;; ==== ERC stuff ====
 ;; Only track my nick(s)
-(defadvice erc-track-find-face
-  (around erc-track-find-face-promote-query activate)
-  (if (erc-query-buffer-p)
-      (setq ad-return-value (intern "erc-current-nick-face"))
-    ad-do-it))
-
-(setq erc-keywords '("dakrone" "dakrone_" "dakrone__"
-                     "clj-http"
-                     "cheshire" "Cheshire"
-                     "clojure-opennlp"))
-;;(setq erc-hide-list '("JOIN" "PART" "QUIT"))
-(setq erc-track-exclude-types '("JOIN" "NICK" "PART" "QUIT" "MODE"
-                                "324" "329" "332" "333" "353" "477"))
-
-(setq erc-button-url-regexp
-      "\\([-a-zA-Z0-9_=!?#$@~`%&*+\\/:;,]+\\.\\)+[-a-zA-Z0-9_=!?#$@~`%&*+\\/:;,]*[-a-zA-Z0-9\\/]")
-
-;; update ERC prompt with room name
-(setq erc-prompt (lambda ()
-                   (if (and (boundp 'erc-default-recipients)
-                            (erc-default-target))
-                       (erc-propertize (concat (erc-default-target) ">")
-                                       'read-only t 'rear-nonsticky t
-                                       'front-nonsticky t)
-                     (erc-propertize (concat "ERC>") 'read-only t
-                                     'rear-nonsticky t
-                                     'front-nonsticky t))))
-
-;; Don't highlight pals, because I like highlight-nicknames for that
-(setq erc-pal-highlight-type 'nil)
+;; (defadvice erc-track-find-face
+;;   (around erc-track-find-face-promote-query activate)
+;;   (if (erc-query-buffer-p)
+;;       (setq ad-return-value (intern "erc-current-nick-face"))
+;;     ad-do-it))
 
 (eval-after-load 'erc
   '(progn
-     (setq erc-fill-column 75
+     (setq erc-fill-column 100
            erc-server-coding-system '(utf-8 . utf-8)
            erc-hide-list '("JOIN" "PART" "QUIT" "NICK")
            erc-track-exclude-types (append '("324" "329" "332" "333"
@@ -119,13 +87,32 @@
                       "joegallo" "jimduey" "leathekd" "rhickey" "zkim" "steve"
                       "imotov" "joekinsella" "craig" "technomancy" "ddillinger"
                       "yazirian" "danielglauser")
-           erc-keywords '("clj-http" "cheshire" "itsy" "opennlp")
+           erc-pal-highlight-type 'nil
+           erc-keywords '("dakrone" "dakrone_" "dakrone__" "clj-http"
+                          "cheshire" "Cheshire" "clojure-opennlp" "itsy"
+                          "opennlp")
            erc-ignore-list '("sonian-chef")
+           erc-track-exclude-types '("JOIN" "NICK" "PART" "QUIT" "MODE"
+                                     "324" "329" "332" "333" "353" "477")
+           erc-button-url-regexp
+           "\\([-a-zA-Z0-9_=!?#$@~`%&*+\\/:;,]+\\.\\)+[-a-zA-Z0-9_=!?#$@~`%&*+\\/:;,]*[-a-zA-Z0-9\\/]"
            erc-log-matches-types-alist
            '((keyword . "ERC Keywords")
              (current-nick . "ERC Messages Addressed To You"))
            erc-log-matches-flag t
-           erc-prompt-for-nickserv-password nil)
+           erc-prompt-for-nickserv-password nil
+           erc-server-reconnect-timeout 5
+           erc-server-reconnect-attempts 4
+           ;; update ERC prompt with room name
+           erc-prompt (lambda ()
+                        (if (and (boundp 'erc-default-recipients)
+                                 (erc-default-target))
+                            (erc-propertize (concat (erc-default-target) ">")
+                                            'read-only t 'rear-nonsticky t
+                                            'front-nonsticky t)
+                          (erc-propertize (concat "ERC>") 'read-only t
+                                          'rear-nonsticky t
+                                          'front-nonsticky t))))
      (require 'erc-services)
      (and
       (require 'erc-hl-nicks)
@@ -135,8 +122,3 @@
      (add-to-list 'erc-modules 'hl-nicks 'spelling)
      (erc-spelling-mode 1)
      (add-hook 'erc-connect-pre-hook (lambda (x) (erc-update-modules)))))
-
-(setq erc-server-reconnect-timeout 5)
-(setq erc-server-reconnect-attempts 4)
-
-(setq erc-fill-column 100)

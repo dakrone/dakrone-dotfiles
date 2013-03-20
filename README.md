@@ -16,6 +16,9 @@ curl -s https://raw.github.com/dakrone/dakrone-dotfiles/master/bootstrap | zsh
 A random prompt pet is chosen, `export PROMPT_PETS=("a" "b" "c" ...)` to
 specify a list, or set PROMPT_PET explicitly to use that pet.
 
+Put important commands in ~/.important_commands and they'll always be
+in your backwards search history.
+
 # Instructions for using the Emacs stuff (requires Emacs 24):
 
 1. Move the `.emacs.d` directory to `~/.emacs.d`
@@ -28,3 +31,21 @@ emacs -q -batch -l ~/.emacs.d/setup.el -kill
 Much package installing will commence.
 
 3. Run `emacs`
+
+## Notes
+
+My emacs config uses
+[mu4e](http://www.djcbsoftware.nl/code/mu/mu4e.html) for email, ERC
+for IRC, twittering-mode for twitter and all kinds of goodies for
+clojure development.
+
+All files in ~/.emacs.d/init.d are loaded in order and errors are
+displayed when loading. I've tried to make everything as portable as
+possible, so if you use this and have loading errors other than mail
+stuff, which is purposefully non-portable (unless you're trying to
+send email as me?!), let me know and I'll try to fix it.
+
+I recommend you install [ack](http://betterthangrep.com/) and
+[ag](https://github.com/ggreer/the_silver_searcher) for searching
+also and [gpg](http://www.gnupg.org/) for crypto stuff to get the
+full benefit.

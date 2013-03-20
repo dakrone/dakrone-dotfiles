@@ -129,6 +129,7 @@
 ;;   (global-set-key [f11] 'toggle-fullscreen))
 
 ;; ==== Window switching ====
+(global-set-key (kbd "M-'") 'other-window)
 (global-set-key [C-tab] 'other-window)
 (global-set-key [C-S-tab]
                 (lambda ()

@@ -41,7 +41,7 @@
 
 (defun my/wrap-region-as-autopair ()
   (local-set-key (kbd "M-\"") (my/wrap-region-trigger "\""))
-  (local-set-key (kbd "M-'")  (my/wrap-region-trigger "'"))
+  ;;(local-set-key (kbd "M-'")  (my/wrap-region-trigger "'"))
   (local-set-key (kbd "M-(")  (my/wrap-region-trigger "("))
   (local-set-key (kbd "M-[")  (my/wrap-region-trigger "["))
   (local-set-key (kbd "M-{")  (my/wrap-region-trigger "{")))

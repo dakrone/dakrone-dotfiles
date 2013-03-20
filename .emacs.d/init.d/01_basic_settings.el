@@ -43,8 +43,8 @@
 
 ;; enable yascrollbar
 ;; Disable until https://github.com/m2ym/yascroll-el/issues/9 is resolved
-;; (global-yascroll-bar-mode)
-;; (add-to-list 'yascroll:disabled-modes 'git-gutter-mode)
+(global-yascroll-bar-mode)
+(add-to-list 'yascroll:disabled-modes 'org-mode)
 
 ;; not create backup file
 (setq backup-inhibited t)

@@ -46,16 +46,33 @@
             (setq clojure-mode-use-backtracking-indent t)
             (eldoc-mode t)))
 
-;; Lazytest indention in clojure
+;; custom test locations instead of foo_test.clj, use test/foo.clj
+(defun my-clojure-test-for (namespace)
+  (let* ((namespace (clojure-underscores-for-hyphens namespace))
+         (segments (split-string namespace "\\."))
+         (before (subseq segments 0 1))
+         (after (subseq segments 1))
+         (test-segments (append before (list "test") after)))
+    (format "%stest/%s.clj"
+            (locate-dominating-file buffer-file-name "src/")
+            (mapconcat 'identity test-segments "/"))))
+
+(defun my-clojure-test-implementation-for (namespace)
+  (let* ((namespace (clojure-underscores-for-hyphens namespace))
+         (segments (split-string namespace "\\."))
+         (before (subseq segments 0 1))
+         (after (subseq segments 2))
+         (impl-segments (append before after)))
+    (format "%s/src/%s.clj"
+            (locate-dominating-file buffer-file-name "src/")
+            (mapconcat 'identity impl-segments "/"))))
+
 (eval-after-load 'clojure-mode
-  '(define-clojure-indent
-     (describe 'defun)
-     (testing 'defun)
-     (given 'defun)
-     (scenario 'defun)
-     (expect 'defun)
-     (it 'defun)
-     (do-it 'defun)))
+  '(progn
+     (setq clojure-test-for-fn 'my-clojure-test-for)
+     (setq clojure-test-implementation-for-fn
+           'my-clojure-test-implementation-for)
+     (global-set-key (kbd "C-c t") 'clojure-jump-between-tests-and-code)))
 
 ;; compile faster
 (setq font-lock-verbose nil)

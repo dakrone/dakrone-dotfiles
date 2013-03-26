@@ -13,15 +13,14 @@
                 markdown-mode))
   (add-to-list 'ac-modes mode))
 
-(setq ac-auto-start nil)
+(setq ac-auto-start t
+      ac-use-menu-map t
+      ac-quick-help-delay 1.0)
 
-(setq ac-use-menu-map t)
 (define-key ac-complete-mode-map (kbd "C-n") 'ac-next)
 (define-key ac-complete-mode-map (kbd "C-p") 'ac-previous)
 (define-key ac-complete-mode-map (kbd "C-s") 'ac-isearch)
 (define-key ac-completing-map (kbd "<tab>") 'ac-complete)
-
-(setq ac-quick-help-delay 1.0)
 
 ;; for global minor mode
 (defun my/auto-complete ()
@@ -33,12 +32,12 @@
 
 ;; look command with auto-complete
 (defun ac-look-candidates ()
-  (unless (executable-find "look")
-    (error "Please install `look' command"))
-  (let ((cmd (format "look -f %s" ac-prefix)))
-    (ignore-errors
-      (split-string
-       (shell-command-to-string cmd) "\n"))))
+  (if (not (executable-find "look"))
+      (message "error: not found `look'")
+    (let ((cmd (format "look -f %s" ac-prefix)))
+      (ignore-errors
+        (split-string
+         (shell-command-to-string cmd) "\n")))))
 
 (defun ac-look ()
   (interactive)
@@ -48,4 +47,4 @@
   '((candidates . ac-look-candidates)
     (requires . 2)))
 
-(global-set-key (kbd "C-M-l") 'ac-look)
+(global-set-key (kbd "M-l") 'ac-look)

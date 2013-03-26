@@ -159,4 +159,26 @@
 (define-key ctl-x-map (kbd "%") 'goto-match-paren)
 
 ;; grep
-(setq grep-command "ack --nocolor --nogroup ")
+(setq grep-command "ag --nocolor --nogroup ")
+
+;; autopair
+(eval-after-load "autopair"
+  '(progn
+     (setq autopair-blink-delay 0)))
+
+(dolist (hook '(c-mode-hook
+                c++-mode-hook
+                python-mode-hook
+                haskell-mode-hook
+                ruby-mode-hook
+                coffee-mode-hook
+                cperl-mode-hook))
+  (add-hook hook 'autopair-mode))
+
+;; highlight specified words
+(defun my/add-watchwords ()
+  (font-lock-add-keywords
+   nil '(("\\<\\(FIXME\\|TODO\\|XXX\\|REFACTOR\\|NOCOMMIT\\)"
+          1 '((:foreground "yellow") (:weight bold)) t))))
+
+(add-hook 'prog-mode-hook 'my/add-watchwords)

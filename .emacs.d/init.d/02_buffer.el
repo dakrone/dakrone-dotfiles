@@ -68,9 +68,3 @@
 
 (global-set-key (kbd "M-9") 'my/next-buffer)
 (global-set-key (kbd "M-0") 'my/previous-buffer)
-
-(defun my/push-mark ()
-  (interactive)
-  (push-mark))
-(global-set-key (kbd "C-x C-SPC") 'my/push-mark)
-(global-set-key (kbd "C-x C-x") 'pop-global-mark)

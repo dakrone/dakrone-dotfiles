@@ -93,11 +93,11 @@
                                           'rear-nonsticky t
                                           'front-nonsticky t))))
      (require 'erc-services)
-     (and
-      (require 'erc-hl-nicks)
-      (add-to-list 'erc-modules 'hl-nicks)
-      (erc-update-modules))
+     (require 'erc-tweet)
+     (require 'erc-hl-nicks)
+     (add-to-list 'erc-modules 'tweet)
+     (add-to-list 'erc-modules 'hl-nicks)
+     (add-to-list 'erc-modules 'spelling)
      (erc-services-mode 1)
-     (add-to-list 'erc-modules 'hl-nicks 'spelling)
      (erc-spelling-mode 1)
      (add-hook 'erc-connect-pre-hook (lambda (x) (erc-update-modules)))))

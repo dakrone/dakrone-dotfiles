@@ -10,5 +10,5 @@
 (dolist (hook '(c-mode-common-hook
                 c++-mode-hook
                 java-mode-hook
-                asm-mode))
+                asm-mode-hook))
   (add-hook hook 'helm-gtags-mode))

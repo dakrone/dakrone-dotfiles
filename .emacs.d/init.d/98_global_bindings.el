@@ -1,5 +1,6 @@
 ;; Key bindings
 
+(global-set-key (kbd "M-g M-q") 'quickrun)
 (global-set-key (kbd "C-M-z")   'helm-resume)
 (global-set-key (kbd "C-x C-r") 'helm-recentf)
 ;;(global-set-key (kbd "C-x C-c") 'helm-M-x)
@@ -11,6 +12,7 @@
 ;; M-g mapping
 (global-set-key (kbd "M-g .") 'helm-ag)
 (global-set-key (kbd "M-g ,") 'helm-ag-pop-stack)
+(global-set-key (kbd "M-g M-i") 'import-popwin)
 (global-set-key (kbd "M-g M-f") 'ffap)
 
 ;; duplicate current line

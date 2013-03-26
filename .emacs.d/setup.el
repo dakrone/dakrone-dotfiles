@@ -12,7 +12,7 @@
     color-theme rainbow-mode
 
     ;;;; misc
-    diminish dired+ erc-hl-nicks ercn todochiku twittering-mode
+    diminish dired+ erc-hl-nicks ercn erc-tweet todochiku twittering-mode
 
     ;;;; for auto-complete
     auto-complete fuzzy popup ac-slime pos-tip ac-nrepl
@@ -21,8 +21,8 @@
     ace-jump-mode vline col-highlight
 
     ;;;; editing utilities
-    expand-region wrap-region smex windresize
-    undo-tree mark-multiple redo+ smartrep iedit
+    expand-region wrap-region smex windresize autopair
+    undo-tree mark-multiple smartrep iedit
     yasnippet goto-chg find-file-in-project idle-highlight-mode
 
     ;;;; buffer utils

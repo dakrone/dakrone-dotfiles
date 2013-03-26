@@ -47,10 +47,8 @@
 (add-to-list 'yascroll:disabled-modes 'org-mode)
 
 ;; not create backup file
-(setq backup-inhibited t)
-
-;; not create auto save file
-(setq delete-auto-save-files t)
+(setq backup-inhibited t
+      delete-auto-save-files t)
 
 ;; Disable menu bar
 (menu-bar-mode -1)

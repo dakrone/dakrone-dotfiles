@@ -52,9 +52,11 @@
         (set-face-attribute 'popup-tip-face nil (car orig-face) (cadr orig-face))
         (setq orig-face (cddr orig-face))))))
 
-(defadvice flymake-goto-prev-error (after flymake-goto-prev-error-display-message)
+(defadvice flymake-goto-prev-error
+  (after flymake-goto-prev-error-display-message)
   (my/display-error-message))
-(defadvice flymake-goto-next-error (after flymake-goto-next-error-display-message)
+(defadvice flymake-goto-next-error
+  (after flymake-goto-next-error-display-message)
   (my/display-error-message))
 
 (ad-activate 'flymake-goto-prev-error 'flymake-goto-prev-error-display-message)

@@ -1,29 +1,10 @@
-;;; color-theme-dakrone.el --- My theme
-
-;; Copyright (C) 2005, 2006  Xavier Maillard <zedek@gnu.org>
-;; Copyright (C) 2005, 2006  Brian Palmer <bpalmer@gmail.com>
+;;; color-theme-dakrone.el --- My dark theme
 
 ;; Version: 0.0.1
 ;; Keywords: themes
 ;; Author: Lee Hinman
 ;; Maintainer: Lee Hinman <lee@writequit.org>
-
 ;; This file is not part of GNU Emacs.
-
-;; This is free software; you can redistribute it and/or modify it under
-;; the terms of the GNU General Public License as published by the Free
-;; Software Foundation; either version 2, or (at your option) any later
-;; version.
-;;
-;; This is distributed in the hope that it will be useful, but WITHOUT
-;; ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-;; FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-;; for more details.
-;;
-;; You should have received a copy of the GNU General Public License
-;; along with GNU Emacs; see the file COPYING.  If not, write to the
-;; Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
-;; MA 02111-1307, USA.
 
 ;; color definitions stolen from zenburn
 ;; colors with +x are lighter, colors with -x are darker
@@ -315,24 +296,58 @@ widget, custom, latex, ediff."
 (defun set-show-paren-face-background-light ()
   (set-face-background 'show-paren-match-face "#dddddd"))
 
+;; clojure-specific colors
+(defmacro defclojureface (name color desc &optional others)
+  `(defface
+     ,name '((((class color)) (:foreground ,color ,@others)))
+     ,desc :group 'faces))
+
 ;; My custom theme
 (defun dakrone-dark ()
+  (interactive)
   (if (eq window-system 'ns)
-p      (set-face-background 'default "gray10"))
+      (set-face-background 'default "gray10"))
   (color-theme-dakrone)
   (set-face-foreground 'paren-face "DimGrey")
-  (add-hook 'show-paren-mode-hook 'set-show-paren-face-background-dark))
+  (add-hook 'show-paren-mode-hook 'set-show-paren-face-background-dark)
+  (defclojureface clojure-parens       "DimGrey"   "Clojure parens")
+  (defclojureface clojure-braces       "DimGrey"   "Clojure braces")
+  (defclojureface clojure-brackets     "SteelBlue" "Clojure brackets")
+  (defclojureface clojure-keyword      "#729FCF"   "Clojure keywords")
+  (defclojureface clojure-namespace    "#c476f1"   "Clojure namespace")
+  (defclojureface clojure-java-call    "DarkCyan"   "Clojure Java calls")
+  (defclojureface clojure-special      "#1BF21B"   "Clojure special")
+  (defclojureface clojure-double-quote "#1BF21B"   "Clojure special")
+  (defclojureface clojure-collapsed-fn "Cyan"      "Clojure special"))
 
 (defun dakrone-light ()
+  (interactive)
   (load-theme 'tsdh-light)
   (setq frame-background-mode 'light)
   (set-face-foreground 'paren-face "DimGrey")
-  (add-hook 'show-paren-mode-hook 'set-show-paren-face-background-light))
+  (add-hook 'show-paren-mode-hook 'set-show-paren-face-background-light)
+  (defclojureface clojure-parens       "#696969"   "Clojure parens")
+  (defclojureface clojure-braces       "#696969"   "Clojure braces")
+  (defclojureface clojure-brackets     "#4682b4"   "Clojure brackets")
+  (defclojureface clojure-keyword      "DarkCyan"  "Clojure keywords")
+  (defclojureface clojure-namespace    "#c476f1"   "Clojure namespace")
+  (defclojureface clojure-java-call    "#008b8b"   "Clojure Java calls")
+  (defclojureface clojure-special      "#006400"   "Clojure special")
+  (defclojureface clojure-double-quote "#006400"   "Clojure special"))
+
+(defun tweak-clojure-syntax ()
+  (mapcar (lambda (x) (font-lock-add-keywords nil x))
+          '((("#?['`]*(\\|)"       . 'clojure-parens))
+            (("#?\\^?{\\|}"        . 'clojure-brackets))
+            (("\\[\\|\\]"          . 'clojure-braces))
+            ((":\\w+"              . 'clojure-keyword))
+            (("nil\\|true\\|false\\|%[1-9]?" . 'clojure-special))
+            (("(\\(\\.[^ \n)]*\\|[^ \n)]+\\.\\|new\\)\\([ )\n]\\|$\\)" 1
+              'clojure-java-call)))))
+
+(add-hook 'clojure-mode-hook 'tweak-clojure-syntax)
 
 ;; Currently using light-colored theme
+;;(dakrone-dark)
 (dakrone-light)
 (enable-show-paren-mode)
-
-(when window-system
-  (set-cursor-color "turquoise")
-  (blink-cursor-mode t))

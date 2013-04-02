@@ -8,11 +8,6 @@
 (when (file-exists-p "/mnt/ramdisk")
   (setq temporary-file-directory "/mnt/ramdisk/"))
 
-;; cursor
-(when window-system
-  (set-cursor-color "chartreuse2")
-  (blink-cursor-mode t))
-
 ;; for GC
 (setq gc-cons-threshold (* gc-cons-threshold 10))
 
@@ -42,9 +37,8 @@
   (tool-bar-mode 0))
 
 ;; enable yascrollbar
-;; Disable until https://github.com/m2ym/yascroll-el/issues/9 is resolved
-(global-yascroll-bar-mode)
-(add-to-list 'yascroll:disabled-modes 'org-mode)
+;; (global-yascroll-bar-mode)
+;; (add-to-list 'yascroll:disabled-modes 'org-mode)
 
 ;; not create backup file
 (setq backup-inhibited t

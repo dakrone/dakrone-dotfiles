@@ -303,9 +303,36 @@ widget, custom, latex, ediff."
        (set-face-background 'magit-diff-file-header "gray10")
        (set-face-background 'magit-diff-hunk-header "gray10"))))
 
-;; My custom theme
-(if (eq window-system 'ns)
-    (set-face-background 'default "gray10"))
-(color-theme-dakrone)
+;; Show Paren Mode
+(setq show-paren-style 'expression)
 
-(set-face-foreground 'paren-face "DimGrey")
+(defun enable-show-paren-mode ()
+  (interactive)
+  (show-paren-mode t))
+
+(defun set-show-paren-face-background-dark ()
+  (set-face-background 'show-paren-match-face "#232323"))
+(defun set-show-paren-face-background-light ()
+  (set-face-background 'show-paren-match-face "#dddddd"))
+
+;; My custom theme
+(defun dakrone-dark ()
+  (if (eq window-system 'ns)
+p      (set-face-background 'default "gray10"))
+  (color-theme-dakrone)
+  (set-face-foreground 'paren-face "DimGrey")
+  (add-hook 'show-paren-mode-hook 'set-show-paren-face-background-dark))
+
+(defun dakrone-light ()
+  (load-theme 'tsdh-light)
+  (setq frame-background-mode 'light)
+  (set-face-foreground 'paren-face "DimGrey")
+  (add-hook 'show-paren-mode-hook 'set-show-paren-face-background-light))
+
+;; Currently using light-colored theme
+(dakrone-light)
+(enable-show-paren-mode)
+
+(when window-system
+  (set-cursor-color "turquoise")
+  (blink-cursor-mode t))

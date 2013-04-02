@@ -1,8 +1,4 @@
 ;; eshell
-(eval-after-load "em-prompt"
-  '(progn
-     (set-face-attribute 'eshell-prompt nil
-                         :foreground "yellow")))
 
 (defun my/eshell-mode-hook ()
   (define-key eshell-mode-map (kbd "M-r") 'helm-eshell-history))

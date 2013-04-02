@@ -34,10 +34,10 @@
      (define-key magit-status-mode-map (kbd "W") 'magit-toggle-whitespace)
 
      ;; faces
-     (set-face-attribute 'magit-branch nil
-                         :foreground "yellow" :weight 'bold :underline t)
+     ;; (set-face-attribute 'magit-branch nil
+     ;;                     :foreground "yellow" :weight 'bold :underline t)
      (set-face-attribute 'magit-item-highlight nil
-                         :background "gray3")
+                         :background nil)
      (custom-set-variables
       '(magit-set-upstream-on-push (quote dontask)))))
 

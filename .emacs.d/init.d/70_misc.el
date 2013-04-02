@@ -64,20 +64,7 @@
                             (subword-mode t)
                             (idle-highlight-mode t)))
 
-;; Show Paren Mode
-(setq show-paren-style 'expression)
-(add-hook 'clojure-mode-hook 'enable-show-paren-mode)
-(defun enable-show-paren-mode ()
-  (interactive)
-  (show-paren-mode t))
-;; (defun set-show-paren-face-background ()
-;;   (set-face-background 'show-paren-match-face "#232323"))
-(defun set-show-paren-face-background ()
-  (set-face-background 'show-paren-match-face "#dddddd"))
-(defun set-show-paren-face-background-dark ()
-  (set-face-background 'show-paren-match-face "#232323"))
 
-(add-hook 'show-paren-mode-hook 'set-show-paren-face-background-dark)
 
 ;; ==== Fix ssh-agent ====
 (defun find-agent ()

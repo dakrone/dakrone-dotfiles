@@ -43,28 +43,5 @@
 
 (define-key ibuffer-mode-map "R" 'ibuffer-menu-grep-delete)
 
-;; based on http://ergoemacs.org/emacs/elisp_examples.html
-(defvar my/cycle-buffer-limit 30)
-
-(defun my/buffer-not-switch-p ()
-  (or (string-match "^*" (buffer-name)) (eq major-mode 'dired-mode)
-      (eq major-mode 'direx:direx-mode)))
-
-(defun my/next-buffer ()
-  (interactive)
-  (next-buffer)
-  (let ((i 0))
-    (while (and (my/buffer-not-switch-p) (< i my/cycle-buffer-limit))
-      (incf i)
-      (next-buffer))))
-
-(defun my/previous-buffer ()
-  (interactive)
-  (previous-buffer)
-  (let ((i 0))
-    (while (and (my/buffer-not-switch-p) (< i my/cycle-buffer-limit))
-      (incf i)
-      (previous-buffer))))
-
-(global-set-key (kbd "M-9") 'my/next-buffer)
-(global-set-key (kbd "M-0") 'my/previous-buffer)
+(global-set-key (kbd "M-9") 'bs-cycle-next)
+(global-set-key (kbd "M-0") 'bs-cycle-previous)

@@ -333,7 +333,9 @@ widget, custom, latex, ediff."
   (defclojureface clojure-namespace    "#c476f1"   "Clojure namespace")
   (defclojureface clojure-java-call    "#008b8b"   "Clojure Java calls")
   (defclojureface clojure-special      "#006400"   "Clojure special")
-  (defclojureface clojure-double-quote "#006400"   "Clojure special"))
+  (defclojureface clojure-double-quote "#006400"   "Clojure special")
+  (if window-system
+      (set-face-foreground 'region nil)))
 
 (defun tweak-clojure-syntax ()
   (mapcar (lambda (x) (font-lock-add-keywords nil x))

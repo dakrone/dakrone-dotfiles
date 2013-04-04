@@ -1,10 +1,9 @@
 ;;;; yasnippet
 (require 'yasnippet)
+(add-to-list 'yas/snippet-dirs (concat user-emacs-directory "my_snippets"))
 
 (require 'clojure-snippets)
 (clojure-snippets-initialize)
-
-(add-to-list 'yas/snippet-dirs (concat user-emacs-directory "my_snippets"))
 
 ;; enable yasnippet mode
 (dolist (hook '(c-mode-hook

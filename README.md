@@ -49,3 +49,19 @@ I recommend you install [ack](http://betterthangrep.com/) and
 [ag](https://github.com/ggreer/the_silver_searcher) for searching
 also and [gpg](http://www.gnupg.org/) for crypto stuff to get the
 full benefit.
+
+### Emacs themes
+
+I used a custom Emacs theme called 'color-theme-dakrone' for dark
+background, and tsdh-light for light-colored backgrounds (working
+outside).
+
+To swap between them, change the line at the end of
+`~/.emacs.d/init.d/95_theme.el` to whichever you'd like to use (the
+dark probably looks better, but sucks for working outdoors):
+
+```
+;; Currently using light-colored theme
+;;(dakrone-dark)
+(dakrone-light)
+```

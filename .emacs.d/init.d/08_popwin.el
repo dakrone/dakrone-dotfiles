@@ -2,10 +2,9 @@
 (require 'popwin)
 (defvar popwin:special-display-config-backup popwin:special-display-config)
 (setq display-buffer-function 'popwin:display-buffer)
-(setq popwin:special-display-config
-      (append '(("*Apropos*") ("*Faces*" :stick t)
-                ("*Colors*" :stick t) ("*Help*" :stick t))
-              popwin:special-display-config))
+
+;; basic
+(push '("*Help*" :stick t :noselect t) popwin:special-display-config)
 
 ;; quickrun
 (push '("*quickrun*" :stick t) popwin:special-display-config)
@@ -30,7 +29,7 @@
 ;; python
 (push '("*Python*"   :stick t) popwin:special-display-config)
 (push '("*Python Help*" :stick t :height 20) popwin:special-display-config)
-(push '("*jedi:doc*" :stick t) popwin:special-display-config)
+(push '("*jedi:doc*" :stick t :noselect t) popwin:special-display-config)
 
 ;; Haskell
 (push '("*haskell*" :stick t) popwin:special-display-config)

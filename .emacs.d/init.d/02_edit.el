@@ -166,19 +166,23 @@
   '(progn
      (setq autopair-blink-delay 0)))
 
-(dolist (hook '(c-mode-hook
-                c++-mode-hook
-                python-mode-hook
-                haskell-mode-hook
-                ruby-mode-hook
-                coffee-mode-hook
-                cperl-mode-hook))
-  (add-hook hook 'autopair-mode))
+(defvar my/autopair-enabled-modes
+  '(c-mode
+    c++-mode
+    python-mode
+    haskell-mode
+    sh-mode
+    js-mode
+    coffee-mode
+    cperl-mode))
+
+(dolist (mode my/autopair-enabled-modes)
+  (add-hook (intern (format "%s-hook" mode)) 'autopair-mode))
 
 ;; highlight specified words
 (defun my/add-watchwords ()
   (font-lock-add-keywords
-   nil '(("\\<\\(FIXME\\|TODO\\|XXX\\|REFACTOR\\|NOCOMMIT\\)"
-          1 '((:foreground "yellow") (:weight bold)) t))))
+   nil '(("\\<\\(FIXME\\|TODO\\|XXX\\|@@@\\)\\>"
+          1 '((:foreground "pink") (:weight bold)) t))))
 
 (add-hook 'prog-mode-hook 'my/add-watchwords)

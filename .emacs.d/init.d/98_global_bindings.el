@@ -6,6 +6,7 @@
 ;;(global-set-key (kbd "C-x C-c") 'helm-M-x)
 (global-set-key (kbd "M-y")     'helm-show-kill-ring)
 (global-set-key (kbd "C-h a")   'helm-apropos)
+(global-set-key (kbd "C-h e")   'popwin:messages)
 (global-set-key (kbd "C-x C-i") 'helm-imenu)
 ;;(global-set-key (kbd "C-x b")   'helm-buffers-list)
 
@@ -36,14 +37,23 @@
     global-map "M-g" '(("c" . duplicate-thing)))
 
 ;; flymake
-(smartrep-define-key
-    global-map "M-g" '(("n" . 'next-error)
-                       ("p" . 'previous-error)))
+(defun my/flymake-goto-next-error (arg)
+  (interactive "P")
+  (if (and (boundp 'flycheck-mode) flycheck-mode)
+      (next-error arg)
+    (flymake-goto-next-error)))
+
+(defun my/flymake-goto-previous-error (arg)
+  (interactive "P")
+  (if (and (boundp 'flycheck-mode) flycheck-mode)
+      (previous-error arg)
+    (flymake-goto-prev-error)))
 
 (smartrep-define-key
-    global-map "M-g" '(("M-n" . 'flymake-goto-next-error)
-                       ("M-p" . 'flymake-goto-prev-error)))
+    global-map "M-g" '(("M-n" . 'my/flymake-goto-next-error)
+                       ("M-p" . 'my/flymake-goto-previous-error)))
 
+;; git-gutter
 (smartrep-define-key
     global-map  "C-x" '(("p" . 'git-gutter:previous-diff)
                         ("n" . 'git-gutter:next-diff)))

@@ -36,7 +36,7 @@
     ssh-config-mode
 
     ;; flymake
-    flycheck
+    flycheck flymake-jslint
 
     ;; clojure
     clojure-mode nrepl paredit parenface kibit-mode clojure-test-mode

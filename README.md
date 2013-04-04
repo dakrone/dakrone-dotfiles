@@ -65,3 +65,5 @@ dark probably looks better, but sucks for working outdoors):
 ;;(dakrone-dark)
 (dakrone-light)
 ```
+
+(you can call these functions interactively also)

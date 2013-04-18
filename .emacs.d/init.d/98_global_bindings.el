@@ -3,10 +3,12 @@
 (global-set-key (kbd "M-g M-q") 'quickrun)
 (global-set-key (kbd "C-M-z")   'helm-resume)
 (global-set-key (kbd "C-x C-r") 'helm-recentf)
+(global-set-key (kbd "C-x M-o") 'helm-occur)
 ;;(global-set-key (kbd "C-x C-c") 'helm-M-x)
 (global-set-key (kbd "M-y")     'helm-show-kill-ring)
 (global-set-key (kbd "C-h a")   'helm-apropos)
 (global-set-key (kbd "C-h e")   'popwin:messages)
+(global-set-key (kbd "C-h C-p") 'popwin:special-display-config)
 (global-set-key (kbd "C-x C-i") 'helm-imenu)
 ;;(global-set-key (kbd "C-x b")   'helm-buffers-list)
 
@@ -19,22 +21,24 @@
 ;; duplicate current line
 (defun duplicate-thing (n)
   (interactive "p")
-  (save-excursion
-    (let ((orig-line (line-number-at-pos))
-          (str (if mark-active
-                   (buffer-substring (region-beginning) (region-end))
-                 (buffer-substring (line-beginning-position)
-                                   (line-end-position)))))
-      (forward-line 1)
-      ;; maybe last line
-      (when (= orig-line (line-number-at-pos))
-        (insert "\n"))
-      (dotimes (i (or n 1))
-        (insert str "\n"))))
-  (forward-line 1))
+  (let ((orig-column (current-column)))
+    (save-excursion
+      (let ((orig-line (line-number-at-pos))
+            (str (if mark-active
+                     (buffer-substring (region-beginning) (region-end))
+                   (buffer-substring (line-beginning-position)
+                                     (line-end-position)))))
+        (forward-line 1)
+        ;; maybe last line
+        (when (= orig-line (line-number-at-pos))
+          (insert "\n"))
+        (dotimes (i (or n 1))
+          (insert str "\n"))))
+    (forward-line 1)
+    (move-to-column orig-column)))
 
 (smartrep-define-key
-    global-map "M-g" '(("c" . duplicate-thing)))
+    global-map "M-g" '(("d" . duplicate-thing)))
 
 ;; flymake
 (defun my/flymake-goto-next-error (arg)
@@ -52,11 +56,6 @@
 (smartrep-define-key
     global-map "M-g" '(("M-n" . 'my/flymake-goto-next-error)
                        ("M-p" . 'my/flymake-goto-previous-error)))
-
-;; git-gutter
-(smartrep-define-key
-    global-map  "C-x" '(("p" . 'git-gutter:previous-diff)
-                        ("n" . 'git-gutter:next-diff)))
 
 ;; C-; to enter/exit iedit-mode
 (global-set-key (kbd "C-;") 'iedit-mode)

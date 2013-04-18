@@ -1,5 +1,13 @@
 ;;;; editing operations
 
+;; replace query
+(defun my/query-replace ()
+  (interactive)
+  (if current-prefix-arg
+      (call-interactively 'query-replace-regexp)
+    (call-interactively 'query-replace)))
+(global-set-key (kbd "M-%") 'my/query-replace)
+
 ;; thingopt
 (require 'thingopt)
 (define-thing-commands)

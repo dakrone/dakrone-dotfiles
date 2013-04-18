@@ -6,6 +6,9 @@
 ;; basic
 (push '("*Help*" :stick t :noselect t) popwin:special-display-config)
 
+;; magit
+(push '("*magit-process*" :stick t) popwin:special-display-config)
+
 ;; quickrun
 (push '("*quickrun*" :stick t) popwin:special-display-config)
 

@@ -1,7 +1,8 @@
 ;; Emacs package system
 (require 'package)
 (setq package-user-dir (concat user-emacs-directory "elpa"))
-(add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/"))
+(add-to-list 'package-archives
+             '("melpa" . "http://melpa.milkbox.net/packages/"))
 (package-initialize)
 
 (package-refresh-contents)
@@ -12,7 +13,7 @@
     color-theme rainbow-mode
 
     ;;;; misc
-    diminish dired+ erc-hl-nicks ercn erc-tweet todochiku twittering-mode
+    diminish dired+ erc-hl-nicks ercn erc-tweet todochiku twittering-mode yagist
 
     ;;;; for auto-complete
     auto-complete fuzzy popup ac-slime pos-tip ac-nrepl
@@ -40,7 +41,7 @@
 
     ;; clojure
     clojure-mode nrepl paredit parenface kibit-mode clojure-test-mode
-    clojure-snippets
+    clojure-snippets nrepl-ritz slamhound
 
     ;; coffee-script
     coffee-mode

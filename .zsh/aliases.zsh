@@ -39,6 +39,7 @@ alias egrep='egrep --color=auto'
 alias fgrep='fgrep --color=auto'
 alias g='fgrep -i --color=auto'
 alias gn='fgrep -i -n --color=auto'
+alias kat='pygmentize -f terminal -g'
 
 # cd helpers
 alias cd..='cd ..'
@@ -129,3 +130,6 @@ alias -g kex='knife sq exec'
 
 # global json prettification
 alias -g pj='python -mjson.tool'
+
+# get source deps
+alias getsource='lein pom && maven dependency:sources'

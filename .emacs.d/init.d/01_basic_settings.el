@@ -66,8 +66,8 @@
 ;; yes-or-no-p
 (defalias 'yes-or-no-p 'y-or-n-p)
 
-;; move physical line
-(setq line-move-visual nil)
+;; move by visual line
+(setq line-move-visual t)
 
 ;; which-func
 (require 'which-func)

@@ -1,0 +1,95 @@
+#!/usr/bin/env ruby
+# -*- coding: utf-8 -*-
+
+# Rodentless skype UI.
+# Based on skype-status © 14/11/2007 Adrian Bridgett <adrian@smop.co.uk>
+# http://www.smop.co.uk/blog/index.php/2007/11/14/skype-d-bus-notification/
+
+# Released under GPLv3
+
+begin
+  require 'dbus'
+  system("which dmenu > /dev/null && which zenity > /dev/null") or raise "deps!"
+rescue LoadError, Exception
+  abort "Try this: sudo apt-get install libdbus-ruby suckless-tools zenity; gem install ruby-dbus"
+end
+
+PROTOCOL = 5
+
+def invoke(command)
+  @skype ||= begin
+               service = DBus::SessionBus.instance.service("com.Skype.API")
+               skype = service.object("/com/Skype")
+               skype.introspect
+               skype["com.Skype.API"].Invoke("NAME #{$0}")
+               skype["com.Skype.API"].Invoke("PROTOCOL #{PROTOCOL}")
+               skype["com.Skype.API"]
+             end
+  @skype.Invoke(command)
+end
+
+def get(query) # get list
+  invoke(query).first.split(/,? /)[1 .. -1]
+end
+
+def pick_user
+  ARGV.empty? ? `echo \"#{get("SEARCH FRIENDS").join("\n")}\" | dmenu` : ARGV.join(' ')
+end
+
+def friendly_name(id)
+  invoke("GET CHAT #{id} FRIENDLYNAME").first.split(/FRIENDLYNAME /).last
+end
+
+def go(command)
+  case command
+  when nil
+    go `echo \"mute\nunmute\nanswer\nstatus\ncall\nhangup\ninvite\nchat\" | dmenu`
+
+  when /help/
+    abort "Commands: answer, status [MSG], call [USER], invite [USER], hangup"
+
+  when "answer"
+    get("SEARCH ACTIVECALLS").
+      select {|c| invoke("GET CALL #{c} STATUS").first =~ /RINGING$/ }.
+      each {|c| invoke("SET CALL #{c} STATUS INPROGRESS") }
+
+  when "status"
+    msg = ARGV.empty? ? `zenity --text-info --editable` : ARGV.join(' ')
+    invoke("SET PROFILE RICH_MOOD_TEXT #{msg}")
+
+  when "call"
+    user = pick_user
+    invoke("CALL #{user}") unless user.empty?
+
+  when "mute"
+    invoke("SET MUTE ON")
+
+  when "unmute"
+    invoke("SET MUTE OFF")
+
+  when "hangup"
+    get("SEARCH ACTIVECALLS").each {|c| invoke("SET CALL #{c} STATUS FINISHED")}
+
+  when "chat"
+    chats = get("SEARCH MISSEDCHATS").map{|c| [c, friendly_name(c)] }
+    chat_name = `echo \"#{chats.map{|c| c.last }.join("\n")}\" | dmenu`
+    invoke("OPEN CHAT #{chats.detect{|c| c.last == chat_name}.first}")
+
+  when "invite"
+    user = pick_user
+    unless user.empty?
+      original_call = get("SEARCH ACTIVECALLS").first
+      invoke("SET CALL #{original_call} STATUS ONHOLD")
+      invoke("CALL #{user}")
+      invoke("SET CALL #{original_call} STATUS INPROGRESS")
+      new_call = get("SEARCH ACTIVECALLS").last
+      # until invoke("GET CALL #{new_call} STATUS").first =~ /INPROGRESS$/
+      #   sleep 0.1
+      # end
+      sleep 1 # TODO: poll until in progress
+      invoke("SET CALL #{new_call} JOIN_CONFERENCE #{original_call}")
+    end
+  end
+end
+
+go ARGV.shift

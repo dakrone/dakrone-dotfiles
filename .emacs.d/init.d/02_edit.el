@@ -4,7 +4,8 @@
 (defun my/query-replace ()
   (interactive)
   (if current-prefix-arg
-      (call-interactively 'query-replace-regexp)
+      (let ((current-prefix-arg nil))
+        (call-interactively 'query-replace-regexp))
     (call-interactively 'query-replace)))
 (global-set-key (kbd "M-%") 'my/query-replace)
 
@@ -170,22 +171,24 @@
 (setq grep-command "ag --nocolor --nogroup ")
 
 ;; autopair
-(eval-after-load "autopair"
-  '(progn
-     (setq autopair-blink-delay 0)))
+;; (eval-after-load "autopair"
+;;   '(progn
+;;      (setq autopair-blink-delay 0)))
 
-(defvar my/autopair-enabled-modes
-  '(c-mode
-    c++-mode
-    python-mode
-    haskell-mode
-    sh-mode
-    js-mode
-    coffee-mode
-    cperl-mode))
+;; (defvar my/autopair-enabled-modes
+;;   '(c-mode
+;;     c++-mode
+;;     python-mode
+;;     haskell-mode
+;;     sh-mode
+;;     js-mode
+;;     coffee-mode
+;;     cperl-mode))
 
-(dolist (mode my/autopair-enabled-modes)
-  (add-hook (intern (format "%s-hook" mode)) 'autopair-mode))
+;; (dolist (mode my/autopair-enabled-modes)
+;;   (add-hook (intern (format "%s-hook" mode)) 'autopair-mode))
+;; autopair
+(electric-pair-mode t)
 
 ;; highlight specified words
 (defun my/add-watchwords ()

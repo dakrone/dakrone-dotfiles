@@ -22,9 +22,9 @@
     ace-jump-mode vline col-highlight
 
     ;;;; editing utilities
-    expand-region wrap-region smex windresize autopair
-    undo-tree mark-multiple smartrep iedit
-    yasnippet goto-chg find-file-in-project idle-highlight-mode
+    expand-region wrap-region smex windresize autopair ido-hacks
+    undo-tree mark-multiple smartrep iedit ido-ubiquitous ido-vertical-mode
+    yasnippet goto-chg find-file-in-project idle-highlight-mode org org-magit
 
     ;;;; buffer utils
     popwin elscreen yascroll

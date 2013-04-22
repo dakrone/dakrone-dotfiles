@@ -18,6 +18,17 @@
 (global-set-key (kbd "M-g M-i") 'import-popwin)
 (global-set-key (kbd "M-g M-f") 'ffap)
 
+(defun yank-to-x-clipboard ()
+  (interactive)
+  (if (region-active-p)
+      (progn
+        (shell-command-on-region (region-beginning) (region-end) "xsel -i -b")
+        (message "Yanked region to clipboard!")
+        (deactivate-mark))
+    (message "No region active; can't yank to clipboard!")))
+
+(global-set-key (kbd "C-M-w") 'yank-to-x-clipboard)
+
 ;; duplicate current line
 (defun duplicate-thing (n)
   (interactive "p")

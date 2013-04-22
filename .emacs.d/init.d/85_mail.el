@@ -76,6 +76,8 @@
       ;; use the python html2text shell command to strip html
       ;; brew/apt-get install html2text
       mu4e-html2text-command "/usr/bin/html2text -nobs"
+      ;; mu4e-html2text-command
+      ;; "/usr/bin/html2markdown | fgrep -v '&nbsp_place_holder;'"
       ;; check for new messages ever 5 minutes
       mu4e-update-interval 300)
 

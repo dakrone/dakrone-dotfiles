@@ -141,6 +141,9 @@
   (delete-trailing-whitespace))
 
 ;; Make rgrep actually work
-(setq ido-ubiquitous-enabled nil)
+;;(setq ido-ubiquitous-enabled nil)
+(require 'ido-ubiquitous)
+(require 'ido-vertical-mode)
+(ido-vertical-mode t)
 ;; Require a newline at the end
 (setq require-final-newline t)

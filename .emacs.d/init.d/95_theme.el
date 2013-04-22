@@ -350,6 +350,6 @@ widget, custom, latex, ediff."
 (add-hook 'clojure-mode-hook 'tweak-clojure-syntax)
 
 ;; Currently using light-colored theme
-;;(dakrone-dark)
-(dakrone-light)
+(dakrone-dark)
+;;(dakrone-light)
 (enable-show-paren-mode)

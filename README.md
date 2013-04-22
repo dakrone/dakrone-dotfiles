@@ -66,4 +66,12 @@ dark probably looks better, but sucks for working outdoors):
 (dakrone-light)
 ```
 
+You also need to change which mode-line is being set up, in
+`~/.emacs.d/init.d/96_modeline.el`:
+
+```
+;;(modeline-setup-face-light)
+(modeline-setup-face-dark)
+```
+
 (you can call these functions interactively also)

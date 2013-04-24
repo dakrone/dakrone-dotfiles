@@ -170,25 +170,10 @@
 ;; grep
 (setq grep-command "ag --nocolor --nogroup ")
 
-;; autopair
-;; (eval-after-load "autopair"
-;;   '(progn
-;;      (setq autopair-blink-delay 0)))
-
-;; (defvar my/autopair-enabled-modes
-;;   '(c-mode
-;;     c++-mode
-;;     python-mode
-;;     haskell-mode
-;;     sh-mode
-;;     js-mode
-;;     coffee-mode
-;;     cperl-mode))
-
-;; (dolist (mode my/autopair-enabled-modes)
-;;   (add-hook (intern (format "%s-hook" mode)) 'autopair-mode))
-;; autopair
+;; random electric modes
 (electric-pair-mode t)
+(electric-layout-mode t)
+(electric-indent-mode t)
 
 ;; highlight specified words
 (defun my/add-watchwords ()

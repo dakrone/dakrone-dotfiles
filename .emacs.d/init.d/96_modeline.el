@@ -175,6 +175,7 @@
                       :foreground "black" :background "#eab700"))
 
 (modeline-setup)
+;;(modeline-setup-face-light)
 (modeline-setup-face-dark)
 ;; Display the battery level in the bottom bar
 (display-battery-mode t)

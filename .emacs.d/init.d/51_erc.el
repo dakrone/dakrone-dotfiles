@@ -12,6 +12,7 @@
 (defun start-irc ()
   "Connect to IRC."
   (interactive)
+  (pause-ercn 3)
   (erc-tls :server "freenode" :port 31425
            :nick "freenode" :password freenode-pass)
   (erc-tls :server "subrosa" :port 31425
@@ -41,7 +42,20 @@
                        (todochiku-icon 'irc)))
 
   (add-hook 'ercn-notify 'do-notify)
-  (add-to-list 'erc-modules 'ercn))
+  (add-to-list 'erc-modules 'ercn)
+
+  (defvar saved-ercn-rules nil)
+  (defun pause-ercn (seconds)
+    (setq saved-ercn-rules ercn-notify-rules)
+    (setq ercn-notify-rules
+          '((current-nick . nil)
+            (keyword . nil)
+            (pal . nil)
+            (query-buffer . nil)))
+    (run-with-idle-timer
+     seconds nil
+     (lambda ()
+       (setq ercn-notify-rules saved-ercn-rules)))))
 
 ;; ==== ERC stuff ====
 ;; Only track my nick(s)

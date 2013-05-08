@@ -10,7 +10,7 @@
 (defvar my/install-packages
   '(
     ;;;; themeing
-    color-theme rainbow-mode
+    color-theme rainbow-mode rainbow-delimiters
 
     ;;;; misc
     diminish dired+ erc-hl-nicks ercn erc-tweet todochiku twittering-mode yagist

@@ -12,7 +12,7 @@
 (defun start-irc ()
   "Connect to IRC."
   (interactive)
-  (pause-ercn 3)
+  (pause-ercn 6)
   (erc-tls :server "freenode" :port 31425
            :nick "freenode" :password freenode-pass)
   (erc-tls :server "subrosa" :port 31425

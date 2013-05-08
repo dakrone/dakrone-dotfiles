@@ -1,13 +1,9 @@
 ;;;; editing operations
 
-;; replace query
-(defun my/query-replace ()
-  (interactive)
-  (if current-prefix-arg
-      (let ((current-prefix-arg nil))
-        (call-interactively 'query-replace-regexp))
-    (call-interactively 'query-replace)))
-(global-set-key (kbd "M-%") 'my/query-replace)
+;; Use regexp version as Default
+(global-set-key (kbd "C-s") 'isearch-forward-regexp)
+(global-set-key (kbd "C-r") 'isearch-backward-regexp)
+(global-set-key (kbd "M-%") 'query-replace-regexp)
 
 ;; thingopt
 (require 'thingopt)

@@ -308,3 +308,6 @@
   (mu4e~start)
   ;; check for unread messages
   (kdl-mu4e-notify))
+
+(add-to-list 'mu4e-view-actions
+  '("ViewInBrowser" . mu4e-action-view-in-browser) t)

@@ -167,7 +167,7 @@
 (setq grep-command "ag --nocolor --nogroup ")
 
 ;; random electric modes
-(electric-pair-mode t)
+;; (electric-pair-mode t)
 (electric-layout-mode t)
 (electric-indent-mode t)
 

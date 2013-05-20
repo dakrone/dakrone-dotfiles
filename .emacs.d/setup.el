@@ -22,7 +22,7 @@
     ace-jump-mode vline col-highlight
 
     ;;;; editing utilities
-    expand-region wrap-region smex windresize autopair ido-hacks ag
+    expand-region wrap-region smex windresize autopair ido-hacks ag minimap
     undo-tree mark-multiple smartrep iedit ido-ubiquitous ido-vertical-mode
     yasnippet goto-chg find-file-in-project idle-highlight-mode org org-magit
 
@@ -31,7 +31,7 @@
 
     ;;;; programming
     ;; haskell
-    haskell-mode
+    haskell-mode ghc ghci-completion
 
     ;; config
     ssh-config-mode

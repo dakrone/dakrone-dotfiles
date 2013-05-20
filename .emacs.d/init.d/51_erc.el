@@ -29,12 +29,15 @@
   (require 'ercn)
   (require 'todochiku)
 
-  (setq ercn-notify-rules
-        '((message . ("#84115" "#search" "#devs" "#safe"))
-          (current-nick . all)
-          (keyword . all)
-          ;;(pal . all)
-          (query-buffer . all)))
+  ;; load private ercn notify rules if the file exists
+  (if (file-exists-p "~/.ercrules")
+      (load-file "~/.ercrules")
+    (setq ercn-notify-rules
+          '((message . ("#search" "#devs" "#safe" "#denofclojure"))
+            (current-nick . all)
+            (keyword . all)
+            ;;(pal . all)
+            (query-buffer . all))))
 
   (defun do-notify (nickname message)
     (todochiku-message (buffer-name)

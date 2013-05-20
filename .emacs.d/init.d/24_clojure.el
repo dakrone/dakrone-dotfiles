@@ -1,7 +1,3 @@
-;; Clojure
-(add-hook 'nrepl-mode-hook 'subword-mode)
-(add-hook 'nrepl-interaction-mode-hook 'nrepl-turn-on-eldoc-mode)
-
 ;; ==== Clojure stuff ====
 (eval-after-load 'slime '(setq slime-protocol-version 'ignore))
 (add-to-list 'auto-mode-alist '("\\.cljs$" . clojure-mode))
@@ -9,14 +5,7 @@
 (add-to-list 'auto-mode-alist '("\\.md$" . markdown-mode))
 
 (defun lisp-enable-paredit-hook () (paredit-mode 1))
-(add-hook 'clojure-mode-hook 'lisp-enable-paredit-hook)
 (add-hook 'lisp-mode-hook 'lisp-enable-paredit-hook)
-
-;; Better indention (from Kevin)
-(add-hook 'clojure-mode-hook
-          (lambda ()
-            (setq clojure-mode-use-backtracking-indent t)
-            (eldoc-mode t)))
 
 ;; custom test locations instead of foo_test.clj, use test/foo.clj
 (defun my-clojure-test-for (namespace)
@@ -39,16 +28,6 @@
             (locate-dominating-file buffer-file-name "src/")
             (mapconcat 'identity impl-segments "/"))))
 
-(eval-after-load 'clojure-mode
-  '(progn
-     (setq clojure-test-for-fn 'my-clojure-test-for)
-     (setq clojure-test-implementation-for-fn
-           'my-clojure-test-implementation-for)
-     (global-set-key (kbd "C-c t") 'clojure-jump-between-tests-and-code)))
-
-;; compile faster
-(setq font-lock-verbose nil)
-
 (defun nrepl-popup-tip-symbol-at-point ()
   "show docs for the symbol at point -- AWESOMELY"
   (interactive)
@@ -58,29 +37,51 @@
              :scroll-bar t
              :margin t))
 
+;; Auto completion for NREPL
+(require 'ac-nrepl)
+(eval-after-load "auto-complete" '(add-to-list 'ac-modes 'nrepl-mode))
+
+;; nrepl auto-complete
+(defun set-auto-complete-as-completion-at-point-function ()
+  (setq completion-at-point-functions '(auto-complete)))
+
+(add-hook 'auto-complete-mode-hook
+          'set-auto-complete-as-completion-at-point-function)
+
+;; Clojure-mode hooks
+(add-hook
+ 'clojure-mode-hook
+ (lambda ()
+   ;; Better indention (from Kevin)
+   (setq clojure-mode-use-backtracking-indent t)
+   ;; enable eldoc
+   (eldoc-mode t)
+   ;; use my test layout fns
+   (setq clojure-test-for-fn 'my-clojure-test-for)
+   (setq clojure-test-implementation-for-fn 'my-clojure-test-implementation-for)
+   ;; compile faster
+   (setq font-lock-verbose nil)
+   (global-set-key (kbd "C-c t") 'clojure-jump-between-tests-and-code)
+   (lisp-enable-paredit-hook)))
+
+;; Nrepl-mode hooks
 (add-hook 'nrepl-mode-hook
           (lambda ()
             (define-key nrepl-interaction-mode-map
               (kbd "C-c C-d")
-              'nrepl-popup-tip-symbol-at-point)))
-(setq nrepl-popup-stacktraces nil)
+              'nrepl-popup-tip-symbol-at-point)
+            (paredit-mode t)
+            (subword-mode t)
+            (eldoc-mode t)
+            (setq nrepl-history-file "~/.nrepl-history")
+            (setq nrepl-hide-special-buffers t)
+            (setq nrepl-popup-stacktraces-in-repl t)
+            (ac-nrepl-setup)
+            (set-auto-complete-as-completion-at-point-function)))
 
-;; nrepl auto-complete
-(add-hook 'nrepl-mode-hook 'ac-nrepl-setup)
-(add-hook 'nrepl-interaction-mode-hook 'ac-nrepl-setup)
-(eval-after-load "auto-complete"
-  '(add-to-list 'ac-modes 'nrepl-mode))
-
-(defun set-auto-complete-as-completion-at-point-function ()
-  (setq completion-at-point-functions '(auto-complete)))
-(add-hook 'auto-complete-mode-hook
-          'set-auto-complete-as-completion-at-point-function)
-
-(add-hook 'nrepl-mode-hook 'set-auto-complete-as-completion-at-point-function)
+;; Nrepl-interaction-mode hooks
 (add-hook 'nrepl-interaction-mode-hook
-          'set-auto-complete-as-completion-at-point-function)
-
-(defun my/nrepl-mode-setup ()
-  (require 'nrepl-ritz))
-
-(add-hook 'nrepl-interaction-mode-hook 'my/nrepl-mode-setup)
+          (lambda ()
+            (require 'nrepl-ritz)
+            (set-auto-complete-as-completion-at-point-function)
+            (nrepl-turn-on-eldoc-mode)))

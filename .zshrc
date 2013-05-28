@@ -191,7 +191,7 @@ bindkey -r '^j' #unbind ctrl-j, I hit it all the time accidentaly
 # brew install gpg gpg-agent keychain
 which keychain 2>&1 > /dev/null
 if [[ $? -eq 0 ]]; then
-    eval `keychain --eval --agents gpg,ssh --inherit any id_rawpacket`
+    eval `keychain --eval --agents gpg,ssh --inherit any id_rsa`
 fi
 
 

@@ -59,7 +59,7 @@ export SHOW_LOAD=false
 export PRETITLE=""
 
 # AWS stuff
-export AWS_CONFIG_FILE=~/.awscreds
+export AWS_CONFIG_FILE=~/.notify-aws-creds
 export AWS_DEFAULT_REGION=us-east-1
 
 # drip

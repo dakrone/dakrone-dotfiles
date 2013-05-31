@@ -1,5 +1,5 @@
 ;; setting haskell language
-(load "haskell-site-file") ;; load haskell-mode/haskell-site-file.el
+;;(load "haskell-site-file") ;; load haskell-mode/haskell-site-file.el
 
 (add-to-list 'auto-mode-alist
          '("\\.\\(hs\\|hi\\|gs\\)\\'" . haskell-mode))

@@ -110,9 +110,9 @@
                                           'rear-nonsticky t
                                           'front-nonsticky t))))
      (require 'erc-services)
-     (require 'erc-tweet)
+     ;;(require 'erc-tweet)
      (require 'erc-hl-nicks)
-     (add-to-list 'erc-modules 'tweet)
+     ;;(add-to-list 'erc-modules 'tweet)
      (add-to-list 'erc-modules 'hl-nicks)
      (add-to-list 'erc-modules 'spelling)
      (erc-services-mode 1)

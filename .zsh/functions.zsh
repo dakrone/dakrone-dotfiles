@@ -246,3 +246,13 @@ function define(){
         curl "dict://dict.org/d:$1"
     fi
 }
+
+# Notifications to SQS
+export QUEUENAME=''
+function notify() {
+    if [[ $QUEUENAME = '' ]]; then
+        export QUEUENAME=`aws sqs list-queues | fgrep notifications | tr -d ' ' | tr -d "\""`
+    fi
+    # echo "Notifying to $QUEUENAME"
+    aws sqs send-message --queue-url $QUEUENAME --message-body "$*"
+}

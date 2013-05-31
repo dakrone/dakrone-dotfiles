@@ -58,6 +58,10 @@ export SHOW_LOAD=false
 # start with a pre-title of nothing
 export PRETITLE=""
 
+# AWS stuff
+export AWS_CONFIG_FILE=~/.awscreds
+export AWS_DEFAULT_REGION=us-east-1
+
 # drip
 DRIP_SHUTDOWN=30
 

@@ -14,7 +14,7 @@ if [[ $OS == "Linux" ]]; then
     alias e='emacs -nw'
 
     # no growl on linux, so back to regular
-    alias lt='lt'
+    alias lt='ltest'
     alias lrt='lein retest'
 
     export EDITOR="emacs -nw"

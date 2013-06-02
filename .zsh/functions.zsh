@@ -254,5 +254,11 @@ function notify() {
         export QUEUENAME=`aws sqs list-queues | fgrep notifications | tr -d ' ' | tr -d "\""`
     fi
     # echo "Notifying to $QUEUENAME"
-    aws sqs send-message --queue-url $QUEUENAME --message-body "$*"
+    aws sqs send-message --queue-url $QUEUENAME --message-body \
+        "{:queue \"queue.notifications\" :msg \"$*\"}"
+}
+
+# youtube-dl
+function ydl() {
+    echo -n "$1" | http localhost:8080/metube
 }

@@ -36,8 +36,6 @@ if [[ $OS == "Darwin" ]]; then
     # growled lein test
     alias lt='ltest'
     alias lrt='lrtest'
-    alias l2t='l2test'
-    alias l2rt='l2rtest'
 
     # awesome
     alias gps="ps -c -r -ax -o command,pid,pcpu,time | sed 's/\(PID *\)%/\1 %/' | head -n 11 && echo && ps -c -m -ax -o command,pid,pmem,rss=RSIZE | sed 's/\(.\{23\}\)/\1 /' | head -n 9"

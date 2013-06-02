@@ -61,6 +61,7 @@ export PRETITLE=""
 # AWS stuff
 export AWS_CONFIG_FILE=~/.notify-aws-creds
 export AWS_DEFAULT_REGION=us-east-1
+export QUEUENAME=''
 
 # drip
 DRIP_SHUTDOWN=30

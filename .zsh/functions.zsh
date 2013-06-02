@@ -247,9 +247,8 @@ function define(){
     fi
 }
 
-# Notifications to SQS
-export QUEUENAME=''
-function notify() {
+# Notifications to SQS as a shell fn
+function notify-fn() {
     if [[ $QUEUENAME = '' ]]; then
         export QUEUENAME=`aws sqs list-queues | fgrep notifications | tr -d ' ' | tr -d "\""`
     fi

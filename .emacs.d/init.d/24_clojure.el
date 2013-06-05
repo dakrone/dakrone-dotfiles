@@ -62,7 +62,15 @@
    ;; compile faster
    (setq font-lock-verbose nil)
    (global-set-key (kbd "C-c t") 'clojure-jump-between-tests-and-code)
-   (lisp-enable-paredit-hook)))
+   (lisp-enable-paredit-hook)
+   ;; folding ala jcrossley3
+   (require 'fold-dwim-org)
+   (hs-minor-mode t)
+   (fold-dwim-org/minor-mode t)
+   (local-set-key (kbd "C-c TAB") 'fold-dwim-org/minor-mode)
+   (local-set-key (kbd "C-c C-u") 'fold-dwim-hide-all)
+   (local-set-key (kbd "C-c C-o") 'fold-dwim-show-all)
+   (local-set-key (kbd "C-u") 'fold-dwim-toggle)))
 
 ;; Nrepl-mode hooks
 (add-hook 'nrepl-mode-hook

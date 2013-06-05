@@ -29,19 +29,6 @@
 ;; Treat clipboard input as UTF-8 string first; compound text next, etc.
 (setq x-select-request-type '(UTF8_STRING COMPOUND_TEXT TEXT STRING))
 
-(when (eq window-system 'ns)
-  (set-fontset-font "fontset-default" 'symbol "Monaco")
-  (set-default-font "Anonymous Pro")
-  (set-face-attribute 'default nil :height 115))
-(when (eq window-system 'x)
-  ;; Font family
-  (set-fontset-font "fontset-default" 'symbol "Bitstream Vera Sans Mono")
-  (set-default-font "Bitstream Vera Sans Mono")
-  ;; Font size
-  (set-face-attribute 'default nil :height 90))
-;; Anti-aliasing
-(setq mac-allow-anti-aliasing t)
-
 ;; Put the column in the status bar
 (column-number-mode)
 

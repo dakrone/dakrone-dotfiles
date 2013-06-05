@@ -10,7 +10,7 @@
 (defvar my/install-packages
   '(
     ;;;; themeing
-    color-theme rainbow-mode rainbow-delimiters
+    color-theme rainbow-mode rainbow-delimiters maxframe fold-dwim-org
 
     ;;;; misc
     diminish dired+ erc-hl-nicks ercn erc-tweet todochiku twittering-mode yagist

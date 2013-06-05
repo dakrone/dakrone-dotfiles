@@ -6,7 +6,7 @@ if [[ $? -eq 0 ]]; then
     curl -s http://localhost:8080/screamy -d"$*" > /dev/null
 else
     if [[ $QUEUENAME = '' ]]; then
-        export QUEUENAME=`aws sqs list-queues | fgrep notifications | tr -d ' ' | tr -d "\""`
+        export QUEUENAME=`aws sqs list-queues | fgrep norad | tr -d ' ' | tr -d "\""`
     fi
     # echo "Notifying to $QUEUENAME"
     aws sqs send-message --queue-url $QUEUENAME --message-body \

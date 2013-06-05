@@ -190,6 +190,7 @@ bindkey "^k" kill-line
 bindkey ' ' magic-space    # also do history expansion on space
 bindkey '^I' complete-word # complete on tab, leave expansion to _expand
 bindkey -r '^j' #unbind ctrl-j, I hit it all the time accidentaly
+bindkey -r '^[x' # remove M-x for emacs-things
 
 
 ## GPG

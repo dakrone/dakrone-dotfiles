@@ -9,6 +9,6 @@
   (set-default-font "Bitstream Vera Sans Mono")
   ;; Font size
   ;; 100 is too small, 105 is too big, 103 is juuuuuust right
-  (set-face-attribute 'default nil :height 103))
+  (set-face-attribute 'default nil :height 90))
 ;; Anti-aliasing
 (setq mac-allow-anti-aliasing t)

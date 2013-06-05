@@ -17,8 +17,8 @@
       ac-use-menu-map t
       ac-quick-help-delay 1.0)
 
-(define-key ac-complete-mode-map (kbd "C-n") 'ac-next)
-(define-key ac-complete-mode-map (kbd "C-p") 'ac-previous)
+(define-key ac-complete-mode-map (kbd "M-n") 'ac-next)
+(define-key ac-complete-mode-map (kbd "M-p") 'ac-previous)
 (define-key ac-complete-mode-map (kbd "C-s") 'ac-isearch)
 (define-key ac-completing-map (kbd "<tab>") 'ac-complete)
 

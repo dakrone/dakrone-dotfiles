@@ -53,7 +53,7 @@
                    ("414 Request-URI Too Large")
                    ("415 Unsupported Media Type")
                    ("416 Request Range Not Satisfiable")
-                   ("417 Expectation Failed") ("418 I''m a teapot")
+                   ("417 Expectation Failed") ("418 I'm a teapot")
                    ("422 Unprocessable Entity") ("423 Locked")
                    ("424 Failed Dependency") ("425 No code")
                    ("426 Upgrade Required") ("428 Precondition Required")

@@ -47,10 +47,10 @@
 ;; Disable menu bar
 (menu-bar-mode -1)
 
-;; not beep
+;; don't beep
 (setq ring-bell-function (lambda()))
 
-;; not display start message
+;; don't display start message
 (setq inhibit-startup-message t)
 
 ;; display line infomation

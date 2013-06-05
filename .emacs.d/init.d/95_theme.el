@@ -324,6 +324,9 @@ widget, custom, latex, ediff."
   (interactive)
   (load-theme 'tsdh-light)
   (setq frame-background-mode 'light)
+  (set-background-color "#fcf4dc")
+  (set-cursor-color "#52676f")
+  (set-foreground-color "#52676f")
   (set-face-foreground 'paren-face "DimGrey")
   (add-hook 'show-paren-mode-hook 'set-show-paren-face-background-light)
   (defclojureface clojure-parens       "#696969"   "Clojure parens")
@@ -350,6 +353,6 @@ widget, custom, latex, ediff."
 (add-hook 'clojure-mode-hook 'tweak-clojure-syntax)
 
 ;; Currently using light-colored theme
-(dakrone-dark)
-;;(dakrone-light)
+;;(dakrone-dark)
+(dakrone-light)
 (enable-show-paren-mode)

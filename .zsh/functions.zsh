@@ -259,5 +259,5 @@ function notify-fn() {
 
 # youtube-dl
 function ydl() {
-    echo -n "$1" | http localhost:8080/metube
+    curl -s localhost:8080/metube -d"$1"
 }

@@ -70,7 +70,7 @@
 
 (eval-after-load 'erc
   '(progn
-     (setq erc-fill-column 100
+     (setq erc-fill-column 80
            erc-server-coding-system '(utf-8 . utf-8)
            erc-hide-list '("JOIN" "PART" "QUIT" "NICK")
            erc-track-exclude-types (append '("324" "329" "332" "333"

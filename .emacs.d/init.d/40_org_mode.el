@@ -1,20 +1,21 @@
 ;; org-mode
 (when (require 'org-install nil t)
   (define-key global-map (kbd "C-c l") 'org-store-link)
-  (setq org-startup-truncated nil)
-  (setq org-return-follows-link t)
-  (add-to-list 'auto-mode-alist '("\\.org$" . org-mode))
-  (setq org-directory user-emacs-directory)
-  (setq org-use-fast-todo-selection t)
-  (setq org-todo-keywords
+  (setq org-startup-truncated nil
+        org-return-follows-link t
+        org-directory user-emacs-directory
+        org-use-fast-todo-selection t
+        org-src-fontify-natively t
+        org-todo-keywords
         '((sequence "TODO(t)" "STARTED(s)" "WAITING(w)"
                     "|" "DONE(x)" "CANCEL(c)")
-          (sequence "WAITING(f)" "|" "DONE(x)" "CANCEL(c)")))
-  (setq org-todo-keyword-faces
+          (sequence "WAITING(f)" "|" "DONE(x)" "CANCEL(c)"))
+        org-todo-keyword-faces
         '(;;("TODO"      . org-warning)
           ("STARTED"   . (:foreground "deep sky blue" :weight bold))
           ("DONE"      . (:foreground "SpringGreen1" :weight bold))
-          ("WAITING"   . (:foreground "orange" :weight bold)))))
+          ("WAITING"   . (:foreground "orange" :weight bold))))
+  (add-to-list 'auto-mode-alist '("\\.org$" . org-mode)))
 
 (eval-after-load "org"
   '(progn

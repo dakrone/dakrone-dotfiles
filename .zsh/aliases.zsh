@@ -133,3 +133,7 @@ alias -g pj='python -mjson.tool'
 
 # get source deps
 alias getsource='lein pom && maven dependency:sources'
+
+alias -g nn='notify'
+# start a master tmux
+alias tm='tmux -2 -u -S /tmp/mastermux -f .tmux.master'

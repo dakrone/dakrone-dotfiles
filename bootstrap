@@ -31,6 +31,6 @@ cp -f ~/.dakrone/.important_commands ~/
 cp -R ~/.dakrone/.zsh ~/
 cp -R ~/.dakrone/.zsh/completions ~/.zsh/
 cp -f ~/.dakrone/.gitconfig ~/
-cp -f ~/.dakrone/.tmux.conf ~/
+cp -f ~/.dakrone/.tmux.* ~/
 
 echo "Bootstrapped."

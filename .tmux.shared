@@ -123,7 +123,7 @@ set-option -g status-left-length 15
 set-option -g status-left '#[fg=cyan,bright]#10H#[fg=green]:#[fg=cyan]#S#[fg=green,bright] | #[default]'
 #set-option -g status-left ' #[fg=cyan]#10H#[fg=green]:#[fg=black]#S#[fg=green] | #[default]'
 set-option -g status-right '#[fg=green,bright]| #[fg=cyan]#(up) '
-set-option -g status-justify left
+set-option -g status-justify centre
 set-window-option -g window-status-current-fg black
 #set-window-option -g window-status-current-attr bright
 

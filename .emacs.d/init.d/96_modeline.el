@@ -175,8 +175,8 @@
                       :foreground "black" :background "#eab700"))
 
 (modeline-setup)
-(modeline-setup-face-light)
-;;(modeline-setup-face-dark)
+;;(modeline-setup-face-light)
+(modeline-setup-face-dark)
 ;; Display the battery level in the bottom bar
 (if (eq nil window-system)
     (display-battery-mode t))

@@ -28,6 +28,9 @@ bind-key M-C-p previous-window
 bind-key -n M-C-n select-pane -t :.-
 bind-key -n M-C-p select-pane -t :.+
 
+# number windows from 1
+set -g base-index 1
+
 # Alt-# window nav
 bind-key -n M-1 select-window -t 1
 bind-key -n M-2 select-window -t 2

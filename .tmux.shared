@@ -12,9 +12,6 @@ bind E setw synchronize-panes off
 unbind-key '"'
 bind-key '"' choose-window
 
-# number windows from 1
-set -g base-index 1
-
 # don't wait after escape
 set -s escape-time 0
 

@@ -4,6 +4,9 @@ setw -g mode-keys emacs
 # make it easy to grab a pane and put it into the current window
 bind-key @ command-prompt -p "create pane from:"  "join-pane -s ':%%'"
 
+# and to break the current pane into a new window thing
+bind-key B break-pane
+
 # easily toggle synchronization (mnemonic: e is for echo)
 bind e setw synchronize-panes on
 bind E setw synchronize-panes off

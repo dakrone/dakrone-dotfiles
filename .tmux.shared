@@ -119,7 +119,8 @@ set-option -g status-bg black
 #set-option -g status-bg white
 set-option -g status-fg white
 #set-option -g status-fg black
-set-option -g status-left-length 15
+set-option -g status-left-length 25
+set-option -g status-right-length 25
 set-option -g status-left '#[fg=cyan,bright]#10H#[fg=green]:#[fg=cyan]#S#[fg=green,bright] | #[default]'
 #set-option -g status-left ' #[fg=cyan]#10H#[fg=green]:#[fg=black]#S#[fg=green] | #[default]'
 set-option -g status-right '#[fg=green,bright]| #[fg=cyan]#(up) '

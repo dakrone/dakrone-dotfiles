@@ -13,3 +13,6 @@
 .emacs.d/url/*
 .emacs.d/session*
 .emacs.d/eshell
+.emacs.d/init.d/disabled/*
+.emacs.d/woman_cache.el
+.emacs.d/org-clock-save.el

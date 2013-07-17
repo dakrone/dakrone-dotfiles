@@ -86,7 +86,8 @@
            erc-pal-highlight-type 'nil
            erc-keywords '("dakrone" "dakrone_" "dakrone__" "clj-http"
                           "cheshire" "Cheshire" "clojure-opennlp" "itsy"
-                          "opennlp")
+                          "opennlp" "elasticsearch-zookeeper"
+                          "elasticsearch-jetty" "elasticsearch-equilibrium")
            erc-ignore-list '("sonian-chef")
            erc-track-exclude-types '("JOIN" "NICK" "PART" "QUIT" "MODE"
                                      "324" "329" "332" "333" "353" "477")

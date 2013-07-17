@@ -19,8 +19,6 @@
 (global-set-key (kbd "M-g M-i") 'import-popwin)
 (global-set-key (kbd "M-g M-f") 'ffap)
 
-(global-set-key (kbd "C-c M") 'minimap-toggle)
-
 (defun yank-to-x-clipboard ()
   (interactive)
   (if (region-active-p)

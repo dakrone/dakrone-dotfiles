@@ -65,18 +65,19 @@
 ;; flycheck faces
 (eval-after-load "flycheck"
   '(progn
-     (set-face-attribute 'flycheck-error-face nil
+     (set-face-attribute 'flycheck-error nil
                          :foreground "yellow"
                          ;;:weight 'bold
                          :underline t
                          :background "red"
                          )
-     (set-face-attribute 'flycheck-warning-face nil
+     (set-face-attribute 'flycheck-warning nil
                          ;;:foreground "white"
                          ;;:weight 'bold
                          :underline t
                          ;;:background "dark orange"
-                         )))
+                         )
+     ))
 
 (flycheck-declare-checker yaml
   "A YAML syntax checker using kwalify

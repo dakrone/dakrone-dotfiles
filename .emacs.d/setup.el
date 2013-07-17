@@ -22,7 +22,7 @@
     ace-jump-mode vline col-highlight
 
     ;;;; editing utilities
-    expand-region wrap-region smex windresize autopair ido-hacks ag minimap
+    expand-region wrap-region smex windresize autopair ido-hacks ag
     undo-tree mark-multiple smartrep iedit ido-ubiquitous ido-vertical-mode
     yasnippet goto-chg find-file-in-project idle-highlight-mode org org-magit
 

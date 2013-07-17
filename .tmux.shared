@@ -99,7 +99,7 @@ set-window-option -g mode-keys emacs
 #set-window-option -g mode-mouse on
 
 # drew paste
-bind-key P run-shell 'tmux saveb -| curl -s -XPOST -H "Content-type: text/plain" --data-binary @- http://p.sa2s.us/'
+bind-key P run-shell 'tmux saveb -| curl -s -XPOST -H "Content-type: text/plain" --data-binary @- http://p.draines.com/'
 # x clipboard
 bind-key > run-shell "tmux saveb -| xclip -selection clipboard -i"
 

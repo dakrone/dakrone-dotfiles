@@ -19,6 +19,9 @@
 (global-set-key (kbd "M-g M-i") 'import-popwin)
 (global-set-key (kbd "M-g M-f") 'ffap)
 
+;; ace-jump
+(global-set-key (kbd "C-c SPC") 'ace-jump-mode)
+
 (defun yank-to-x-clipboard ()
   (interactive)
   (if (region-active-p)

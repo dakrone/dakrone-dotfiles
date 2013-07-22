@@ -62,10 +62,13 @@
 (global-set-key (kbd "M-<backspace>") 'my/backward-kill-word)
 
 ;; moving with ace-jump-mode
-(require 'ace-jump-mode)
-(set-face-foreground 'ace-jump-face-foreground "lime green")
-(set-face-bold-p 'ace-jump-face-foreground t)
-(set-face-underline-p 'ace-jump-face-foreground t)
+(eval-after-load "ace-jump-mode"
+  '(progn
+     (set-face-foreground 'ace-jump-face-foreground "lime green")
+     (set-face-bold-p 'ace-jump-face-foreground nil)
+     (set-face-underline-p 'ace-jump-face-foreground nil)
+     ))
+
 (defun backward-symbol (arg)
   (interactive "p")
   (forward-symbol (- arg)))
@@ -167,9 +170,9 @@
 (setq grep-command "ag --nocolor --nogroup ")
 
 ;; random electric modes
-;; (electric-pair-mode t)
-(electric-layout-mode t)
-(electric-indent-mode t)
+;;(electric-pair-mode t)
+;;(electric-layout-mode t)
+;;(electric-indent-mode t)
 
 ;; highlight specified words
 (defun my/add-watchwords ()

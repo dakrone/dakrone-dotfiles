@@ -2,8 +2,8 @@ OS=$(uname)
 
 if [[ $OS == "Darwin" ]]; then
 
-    export JAVA_HOME=/System/Library/Frameworks/JavaVM.framework/Versions/1.6/Home
-    #export JAVA_HOME=/Library/Java/JavaVirtualMachines/1.7.0.jdk/Contents/Home
+    #export JAVA_HOME=/System/Library/Frameworks/JavaVM.framework/Versions/1.6/Home
+    export JAVA_HOME=/Library/Java/JavaVirtualMachines/jdk1.7.0_25.jdk/Contents/Home
 
     export EMACS_HOME="/Applications/Emacs.app/Contents/MacOS"
 
@@ -24,6 +24,7 @@ if [[ $OS == "Darwin" ]]; then
     # }
 
     alias emacs="TERM=xterm-256color PATH=$EMACS_HOME/bin:$PATH $EMACS_HOME/Emacs -nw"
+    alias gemacs="TERM=xterm-256color PATH=$EMACS_HOME/bin:$PATH $EMACS_HOME/Emacs"
 
     export EDITOR="TERM=xterm-256color PATH=$EMACS_HOME/bin:$PATH $EMACS_HOME/Emacs -nw"
 

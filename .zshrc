@@ -23,6 +23,9 @@ export PATH=$PATH:/usr/local/share/python
 # Java opts (leiningen uses these)
 #export JAVA_OPTS="-Dfile.encoding=UTF-8 -Dslime.encoding=UTF-8 -Xmx512m -XX:+HeapDumpOnOutOfMemoryError"
 
+# Maven opts
+export MAVEN_OPTS="-Xmx512m"
+
 # manpath
 export MANPATH=$MANPATH:/usr/local/man
 

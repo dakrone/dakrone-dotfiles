@@ -1,0 +1,6 @@
+# OSX tmux config that uses the wrapper from 
+# https://github.com/ChrisJohnsen/tmux-MacOSX-pasteboard
+
+set-option -g default-command "reattach-to-user-namespace -l zsh"
+
+source-file ~/.tmux.conf

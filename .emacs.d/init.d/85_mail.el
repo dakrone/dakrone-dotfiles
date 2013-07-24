@@ -2,6 +2,7 @@
 
 ;; ==== Mail stuff ====
 ;; mu4e stuff
+(add-to-list 'load-path "~/src/elisp/mu4e")
 (require 'mu4e)
 
 (setq mu4e-mu-binary "/usr/local/bin/mu")
@@ -22,7 +23,7 @@
 (setq mml2015-use 'epg)
 ;; Always use pgg to sign messages
 (setq pgg-default-user-id "3acecae0")
-(setq epg-gpg-program "/usr/bin/gpg")
+(setq epg-gpg-program "/usr/local/bin/gpg")
 
 (require 'gnus-dired)
 ;; make the `gnus-dired-mail-buffers' function also work on
@@ -58,7 +59,7 @@
 (setq message-kill-buffer-on-exit t ;; kill sent msg buffers
       ;; use msmtp
       message-send-mail-function 'message-send-mail-with-sendmail
-      sendmail-program   "/usr/bin/msmtp"
+      sendmail-program   "/usr/local/bin/msmtp"
       ;; Look at the from header to determine the account from which
       ;; to send. Might not be needed b/c of kdl-msmtp
       mail-specify-envelope-from t
@@ -75,11 +76,11 @@
       mu4e-use-fancy-chars nil
       ;; use the python html2text shell command to strip html
       ;; brew/apt-get install html2text
-      mu4e-html2text-command "/usr/bin/html2text -nobs"
+      mu4e-html2text-command "/usr/local/bin/html2text -nobs"
       ;; mu4e-html2text-command
       ;; "/usr/bin/html2markdown | fgrep -v '&nbsp_place_holder;'"
       ;; check for new messages ever 5 minutes
-      mu4e-update-interval 300)
+      mu4e-update-interval 450)
 
  ;; Multi-account support
 (defun kdl-mu4e-current-account (&optional msg ignore-message-at-point)

@@ -24,7 +24,7 @@ if [[ $OS == "Darwin" ]]; then
     # }
 
     alias emacs="TERM=xterm-256color PATH=$EMACS_HOME/bin:$PATH $EMACS_HOME/Emacs -nw"
-    alias gemacs="TERM=xterm-256color PATH=$EMACS_HOME/bin:$PATH $EMACS_HOME/Emacs"
+    alias gemacs="TERM=xterm-256color PATH=$EMACS_HOME/bin:$PATH $EMACS_HOME/Emacs 2>&1 > /dev/null &"
 
     export EDITOR="TERM=xterm-256color PATH=$EMACS_HOME/bin:$PATH $EMACS_HOME/Emacs -nw"
 
@@ -42,5 +42,6 @@ if [[ $OS == "Darwin" ]]; then
     alias gps="ps -c -r -ax -o command,pid,pcpu,time | sed 's/\(PID *\)%/\1 %/' | head -n 11 && echo && ps -c -m -ax -o command,pid,pmem,rss=RSIZE | sed 's/\(.\{23\}\)/\1 /' | head -n 9"
 
     alias acme='acme -a -f /mnt/font/AnonymousPro/13a/font'
+    alias tmux='tmux -2 -f .tmux.osx'
 
 fi

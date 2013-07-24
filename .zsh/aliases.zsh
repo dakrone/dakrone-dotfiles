@@ -94,9 +94,6 @@ alias fa=fix-agent
 #alias ssh="fix-agent; ssh"
 # Colored rspec
 alias cspec='spec -c --format specdoc'
-# Tmux stuff
-# force 256 color mode
-alias tmux='tmux -2'
 # screen, although who uses screen anymore?
 alias screen='TERM=xterm-color && /opt/local/bin/screen'
 # open work file really quickly

@@ -19,6 +19,8 @@ if [[ $OS == "Linux" ]]; then
 
     export EDITOR="emacs -nw"
 
+    alias tmux='tmux -2'
+
     # awesome
     alias gps='ps -eo cmd,fname,pid,pcpu,time --sort=-pcpu | head -n 11 && echo && ps -eo cmd,fname,pid,pmem,rss --sort=-rss | head -n 9'
 

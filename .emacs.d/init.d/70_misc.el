@@ -86,19 +86,18 @@
 (setq scpaste-scp-destination "p.writequit.org:~/public_html/wq/paste/")
 
 ;; ==== copy-paste on Mac ====
-(defun mac-copy ()
-  (shell-command-to-string "pbpaste"))
+(defun copy-from-osx ()
+  (shell-command-to-string "/usr/bin/pbpaste"))
 
-(defun mac-paste (text &optional push)
+(defun paste-to-osx (text &optional push)
   (let ((process-connection-type nil))
-    (let ((proc (start-process "pbcopy" "*Messages*" "pbcopy")))
+    (let ((proc (start-process "pbcopy" "*Messages*" "/usr/bin/pbcopy")))
       (process-send-string proc text)
       (process-send-eof proc))))
 
-(when (eq window-system 'ns)
-  (scroll-bar-mode -1)
-  (setq interprogram-cut-function 'mac-paste)
-  (setq interprogram-paste-function 'mac-copy))
+(when (macosx-p)
+  (setq interprogram-cut-function 'paste-to-osx)
+  (setq interprogram-paste-function 'copy-from-osx))
 
 ;; ==== path env stuff ====
 (defun add-to-path (path-element)
@@ -110,7 +109,9 @@
                       path-separator (getenv "PATH")))))
 
 (add-to-path (concat "~/bin"))
+(add-to-path "/usr/bin")
 (add-to-path "/usr/local/bin")
+(add-to-path "/usr/local/MacGPG2/bin")
 
 (defun untabify-buffer ()
   (interactive)

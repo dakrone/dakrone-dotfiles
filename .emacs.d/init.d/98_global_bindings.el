@@ -56,21 +56,24 @@
     global-map "M-g" '(("d" . duplicate-thing)))
 
 ;; flymake
-(defun my/flymake-goto-next-error (arg)
-  (interactive "P")
-  (if (and (boundp 'flycheck-mode) flycheck-mode)
-      (next-error arg)
-    (flymake-goto-next-error)))
+;; (defun my/flymake-goto-next-error (arg)
+;;   (interactive "P")
+;;   (if (and (boundp 'flycheck-mode) flycheck-mode)
+;;       (next-error arg)
+;;     (flymake-goto-next-error)))
 
-(defun my/flymake-goto-previous-error (arg)
-  (interactive "P")
-  (if (and (boundp 'flycheck-mode) flycheck-mode)
-      (previous-error arg)
-    (flymake-goto-prev-error)))
+;; (defun my/flymake-goto-previous-error (arg)
+;;   (interactive "P")
+;;   (if (and (boundp 'flycheck-mode) flycheck-mode)
+;;       (previous-error arg)
+;;     (flymake-goto-prev-error)))
 
-(smartrep-define-key
-    global-map "M-g" '(("M-n" . 'my/flymake-goto-next-error)
-                       ("M-p" . 'my/flymake-goto-previous-error)))
+(global-set-key (kbd "M-g M-n") 'flymake-goto-next-error)
+(global-set-key (kbd "M-g M-p") 'flymake-goto-prev-error)
+
+;; (smartrep-define-key
+;;     global-map "M-g" '(("M-n" . 'my/flymake-goto-next-error)
+;;                        ("M-p" . 'my/flymake-goto-previous-error)))
 
 ;; C-; to enter/exit iedit-mode
 (global-set-key (kbd "C-;") 'iedit-mode)

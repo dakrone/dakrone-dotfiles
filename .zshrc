@@ -20,6 +20,9 @@ export PATH=$PATH:$GOROOT/bin
 # crazy pip/homebrew things
 export PATH=$PATH:/usr/local/share/python
 
+# haskell
+export PATH=$PATH:~/Library/Haskell/bin
+
 # Java opts (leiningen uses these)
 #export JAVA_OPTS="-Dfile.encoding=UTF-8 -Dslime.encoding=UTF-8 -Xmx512m -XX:+HeapDumpOnOutOfMemoryError"
 

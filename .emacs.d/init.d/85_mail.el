@@ -80,17 +80,17 @@
       ;; mu4e-html2text-command
       ;; "/usr/bin/html2markdown | fgrep -v '&nbsp_place_holder;'"
       ;; check for new messages ever 5 minutes
-      mu4e-update-interval 450)
+      mu4e-update-interval 300)
 
  ;; Multi-account support
 (defun kdl-mu4e-current-account (&optional msg ignore-message-at-point)
   "Figure out what the current account is based on the message being
-  composed, the message under the point, or (optionally)the message
-  passed in. Also supports ignoring the msg at the point."
+composed, the message under the point, or (optionally) the message
+passed in. Also supports ignoring the msg at the point."
   (let ((cur-msg (or msg
                      mu4e-compose-parent-message
                      (and (not ignore-message-at-point)
-                          (mu4e-message-at-point)))))
+                          (mu4e-message-at-point t)))))
     (when cur-msg
       (let ((maildir (mu4e-msg-field cur-msg :maildir)))
         (string-match "/\\(.*?\\)/" maildir)
@@ -311,4 +311,4 @@
   (kdl-mu4e-notify))
 
 (add-to-list 'mu4e-view-actions
-  '("ViewInBrowser" . mu4e-action-view-in-browser) t)
+             '("ViewInBrowser" . mu4e-action-view-in-browser) t)

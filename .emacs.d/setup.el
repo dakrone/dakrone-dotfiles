@@ -66,8 +66,8 @@
     ;; common utility
     quickrun
 
-    ;;;; markup language
-    haml-mode sass-mode htmlize
+    ;; markup language
+    haml-mode sass-mode htmlize adoc-mode
     markdown-mode markdown-mode+
     scss-mode yaml-mode zencoding-mode
 

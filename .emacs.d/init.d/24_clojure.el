@@ -3,6 +3,8 @@
 (add-to-list 'auto-mode-alist '("\\.cljs$" . clojure-mode))
 (add-to-list 'auto-mode-alist '("\\.markdown$" . markdown-mode))
 (add-to-list 'auto-mode-alist '("\\.md$" . markdown-mode))
+(add-to-list 'auto-mode-alist '("\\.asciidoc$" . adoc-mode))
+(add-to-list 'auto-mode-alist '("\\.adoc$" . adoc-mode))
 
 (defun lisp-enable-paredit-hook () (paredit-mode 1))
 (add-hook 'lisp-mode-hook 'lisp-enable-paredit-hook)

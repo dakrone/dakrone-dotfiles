@@ -27,6 +27,7 @@
   headless = !sh -c 'git symbolic-ref HEAD refs/heads/$0 && rm .git/index && git clean -fdx'
   vtags = !sh -c 'git tag -l | xargs git tag -v'
   ver = "!git log --pretty=format:'%ai %h' -1 | perl -pe 's,(\\d\\d\\d\\d)-(\\d\\d)-(\\d\\d) (\\d\\d):(\\d\\d):(\\d\\d) [^ ]+ ([a-z0-9]+),\\1\\2\\3+\\7,'"
+  pr = "!f() { git fetch origin pull/$1/head:pr/$1; }; f"
 
 [github]
   user = dakrone

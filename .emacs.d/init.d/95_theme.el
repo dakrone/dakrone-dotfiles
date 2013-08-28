@@ -354,5 +354,6 @@ widget, custom, latex, ediff."
 
 ;; Currently using light-colored theme
 (dakrone-dark)
+;;(load-theme 'ir-black t)
 ;;(dakrone-light)
 (enable-show-paren-mode)

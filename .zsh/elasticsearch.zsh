@@ -1,8 +1,13 @@
 # shell aliases used for ES querying
 
 alias -g cs='curl -s'
-
 alias -g csu='curl -s -u'
+
+# HTTP verbs
+alias get='curl -s -XGET'
+alias post='curl -s -XPOST'
+alias put='curl -s -XPUT'
+alias delete='curl -s -XDELETE'
 
 function dpaste () {
     zsh <(curl -s p.draines.com/sh) $1
@@ -13,27 +18,23 @@ function draines () {
 }
 
 function indices () {
-    curl -s p.draines.com/indices.sh | zsh
-}
-
-function indices15 () {
-    curl -s p.draines.com/indices.sh | zsh -s 15
+    curl -s localhost:9200/_cat/indices
 }
 
 function shards () {
-    curl -s p.draines.com/shards.sh | zsh
+    curl -s localhost:9200/_cat/shards
 }
 
-function cluster () {
-    curl -s p.draines.com/cluster.sh | zsh
+function nodes () {
+    curl -s localhost:9200/_cat/nodes
+}
+
+function master () {
+    curl -s localhost:9200/_cat/master
 }
 
 function health () {
     curl -s p.draines.com/1336417317985b7d30212.txt | zsh
-}
-
-function health-nocolor () {
-    curl -s p.draines.com/health.sh | zsh
 }
 
 function jstk () {
@@ -47,12 +48,3 @@ function red () {
 function disk () {
     curl -s p.draines.com/disk.sh | zsh
 }
-
-function make-clean-shards () {
-    curl -s p.draines.com/clean-shards.sh | zsh
-}
-
-function escolor () {
-    es indices > >(fgrep red | wc -l | awk '{ print "red: " $0 }') > >(fgrep yellow | wc -l | awk '{ print "yellow: " $0 }') > >(fgrep green | wc -l | awk '{ print "green: " $0 }')
-}
-

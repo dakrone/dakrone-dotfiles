@@ -76,7 +76,8 @@
       mu4e-use-fancy-chars nil
       ;; use the python html2text shell command to strip html
       ;; brew/apt-get install html2text
-      mu4e-html2text-command "/usr/local/bin/html2text -nobs"
+      mu4e-html2text-command "/usr/local/bin/elinks -dump"
+      ;; mu4e-html2text-command "/usr/local/bin/html2text -nobs"
       ;; mu4e-html2text-command
       ;; "/usr/bin/html2markdown | fgrep -v '&nbsp_place_holder;'"
       ;; check for new messages ever 5 minutes
@@ -97,12 +98,12 @@ passed in. Also supports ignoring the msg at the point."
         (match-string 1 maildir)))))
 
 (defun is-gmail-account? (acct)
-  (if (or (equal "sonian" acct) (equal "gmail" acct))
+  (if (or (equal "elasticsearch" acct) (equal "gmail" acct))
       t nil))
 
 ;; my elisp is bad and I should feel bad
 (defun mlh-folder-for (acct g-folder-name other-folder-name)
-  (if (or (equal "sonian" acct) (equal "gmail" acct))
+  (if (or (equal "elasticsearch" acct) (equal "gmail" acct))
       (format "/%s/[Gmail].%s" acct g-folder-name)
     (format "/%s/INBOX.%s" acct other-folder-name)))
 
@@ -126,9 +127,9 @@ passed in. Also supports ignoring the msg at the point."
          (user-mail-address   "matthew.hinman@gmail.com")
          (msmtp-account       "gmail")
          (mu4e-sent-messages-behavior delete))
-        ("sonian"
-         (user-mail-address   "lee.hinman@sonian.net")
-         (msmtp-account       "sonian")
+        ("elasticsearch"
+         (user-mail-address   "lee.hinman@elasticsearch.com")
+         (msmtp-account       "elasticsearch")
          (mu4e-sent-messages-behavior delete))
         ("writequit"
          (user-mail-address   "lee@writequit.org")
@@ -283,9 +284,9 @@ passed in. Also supports ignoring the msg at the point."
         ("date:today..now"             "Today's messages"     ?t)
         ("date:7d..now"                "Last 7 days"          ?W)
         ("maildir:/writequit/INBOX"    "Writequit"            ?w)
-        ("maildir:/sonian/INBOX"       "Sonian"               ?s)
+        ("maildir:/elasticsearch/INBOX" "Elasticsearch"       ?s)
         ("maildir:/gmail/INBOX"        "Gmail"                ?g)
-        ("maildir:/writequit/INBOX OR maildir:/sonian/INBOX OR maildir:/gmail/INBOX"
+        ("maildir:/writequit/INBOX OR maildir:/elasticsearch/INBOX OR maildir:/gmail/INBOX"
          "All Mail" ?a)
         ("mime:image/*"                "Messages with images" ?p)))
 
@@ -312,3 +313,10 @@ passed in. Also supports ignoring the msg at the point."
 
 (add-to-list 'mu4e-view-actions
              '("ViewInBrowser" . mu4e-action-view-in-browser) t)
+
+(define-key mu4e-view-mode-map (kbd "j") 'next-line)
+(define-key mu4e-view-mode-map (kbd "k") 'previous-line)
+
+(define-key mu4e-headers-mode-map (kbd "J") 'mu4e~headers-jump-to-maildir)
+(define-key mu4e-headers-mode-map (kbd "j") 'next-line)
+(define-key mu4e-headers-mode-map (kbd "k") 'previous-line)

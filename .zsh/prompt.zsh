@@ -84,7 +84,7 @@ load () {
 # and http://eseth.org/2010/git-in-zsh.html
 
 # Define some random pets to wander around
-PROMPT_PETS=("λ" "✝" "ƒ" "π" "♮" "§" "☊" "☋" "♿" "♈" "♉" "☩")
+PROMPT_PETS=("λ" "✝" "ƒ" "π" "♮" "§" "☊" "☋" "☩")
 # Randomly choose one for the session
 export PROMPT_PET=$PROMPT_PETS[$RANDOM%$#PROMPT_PETS+1]
 

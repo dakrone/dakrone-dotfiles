@@ -44,6 +44,8 @@ alias kat='pygmentize -f terminal -g'
 # cd helpers
 alias cd..='cd ..'
 alias ..='cd ..'
+alias bd='. bd -s'
+alias dc='. bd -s'
 # jump to nsm-console
 alias nsmc='cd ~/src/ruby/nsm-console && ./nsm'
 # look up a service port

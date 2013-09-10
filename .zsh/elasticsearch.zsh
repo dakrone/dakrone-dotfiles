@@ -33,6 +33,10 @@ function master () {
     curl -s localhost:9200/_cat/master
 }
 
+function mapping() {
+    curl -s localhost:9200/$1/_mapping | python -mjson.tool
+}
+
 function health () {
     curl -s p.draines.com/1336417317985b7d30212.txt | zsh
 }

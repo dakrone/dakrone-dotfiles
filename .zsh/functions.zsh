@@ -250,7 +250,7 @@ function define(){
 # Notifications to SQS as a shell fn
 function notify-fn() {
     if [[ $QUEUENAME = '' ]]; then
-        export QUEUENAME=`aws sqs list-queues | fgrep notifications | tr -d ' ' | tr -d "\""`
+        export QUEUENAME=`aws sqs list-queues | fgrep norad | tr -d ' ' | tr -d "\""`
     fi
     # echo "Notifying to $QUEUENAME"
     aws sqs send-message --queue-url $QUEUENAME --message-body \

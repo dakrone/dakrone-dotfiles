@@ -11,7 +11,10 @@
                  (file-writable-p (buffer-file-name)))
         (save-buffer)))))
 
-(run-with-idle-timer 10 t 'my/auto-save-buffers)
+;; function to enable auto-save every 10 seconds if desired
+(defun enable-auto-save ()
+  (interactive)
+  (run-with-idle-timer 10 t 'my/auto-save-buffers))
 
 ;; winner-mode
 (require 'winner)

@@ -325,6 +325,7 @@ widget, custom, latex, ediff."
   (load-theme 'tsdh-light)
   (setq frame-background-mode 'light)
   (set-background-color "#fcf4dc")
+  (set-face-background 'default "#fcf4dc")
   (set-cursor-color "#52676f")
   (set-foreground-color "#52676f")
   (set-face-foreground 'paren-face "DimGrey")

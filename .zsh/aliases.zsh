@@ -129,6 +129,7 @@ alias -g kex='knife sq exec'
 
 # global json prettification
 alias -g pj='python -mjson.tool'
+alias -g Pj='python -mjson.tool'
 
 # get source deps
 alias getsource='lein pom && maven dependency:sources'
@@ -136,3 +137,7 @@ alias getsource='lein pom && maven dependency:sources'
 alias -g nn='notify'
 # start a master tmux
 alias tm='tmux -2 -u -S /tmp/mastermux -f .tmux.master'
+
+# datetime aliases
+alias dt='date "+%Y-%m-%dT%H:%M:%S%zZ"'
+alias epoch='date +%s'

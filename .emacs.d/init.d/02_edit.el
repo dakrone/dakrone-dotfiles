@@ -210,3 +210,7 @@ point reaches the beginning or end of the buffer, stop there."
 ;; remap C-a to `smarter-move-beginning-of-line'
 ;; (global-set-key [remap move-beginning-of-line]
 ;;                 'smarter-move-beginning-of-line)
+
+(require 'smart-tab)
+(global-smart-tab-mode 1)
+(add-to-list 'smart-tab-disabled-major-modes 'mu4e-compose-mode)

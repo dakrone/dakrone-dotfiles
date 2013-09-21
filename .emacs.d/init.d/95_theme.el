@@ -102,6 +102,7 @@ widget, custom, latex, ediff."
      (font-lock-variable-name-face ((t (:foreground "cyan1"))))
      ;;(font-lock-type-face ((t (:foreground "yellow1"))))
      (font-lock-type-face ((t (:foreground "#edd400"))))
+     (idle-highlight ((t (:background "#444444"))))
      (font-lock-constant-face ((t (:foreground "salmon"))))
      (font-lock-warning-face ((t (:foreground "gold" :bold t))))
      (blank-space-face ((t (:background "#1e2426"))))

@@ -86,12 +86,12 @@ disableConfiguration = true
 # Uncomment this if you want to contact IPv4 hosts only (and make DNS
 # queries somewhat faster):
 #
-# dnsQueryIPv6 = no
+dnsQueryIPv6 = no
 
 # Uncomment this if you want Polipo to prefer IPv4 to IPv6 for
 # double-stack hosts:
 #
-# dnsQueryIPv6 = reluctantly
+dnsQueryIPv6 = reluctantly
 
 # Uncomment this to disable Polipo's DNS resolver and use the system's
 # default resolver instead.  If you do that, Polipo will freeze during
@@ -107,7 +107,7 @@ disableConfiguration = true
 # This will cause your hostname (or whatever you put into proxyName
 # above) to be included in every request:
 
-disableVia = true
+# disableVia = true
 
 # Uncomment this if you want to slightly reduce the amount of
 # information that you leak about yourself:
@@ -162,4 +162,4 @@ tunnelAllowedPorts = 1-65535
 
 
 logFile = "/Users/hinmanm/.polipo.log"
-logLevel = 0xff
+logLevel = 0x4

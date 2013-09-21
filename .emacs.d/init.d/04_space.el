@@ -1,6 +1,5 @@
 ;; use space not use tab
-(when window-system
-  (setq-default indent-tabs-mode nil))
+(setq-default indent-tabs-mode nil)
 
 ;; delete trailling space and blank line tail of file
 (defun my/cleanup-for-spaces ()

@@ -1,9 +1,6 @@
 ;;;; yasnippet
-(require 'yasnippet)
-(add-to-list 'yas/snippet-dirs (concat user-emacs-directory "my_snippets"))
 
-(require 'clojure-snippets)
-(clojure-snippets-initialize)
+(autoload 'yas-minor-mode-on "yasnippet" nil t)
 
 ;; enable yasnippet mode
 (dolist (hook '(c-mode-hook
@@ -17,7 +14,16 @@
                 ruby-mode-hook
                 sh-mode-hook
                 wl-draft-mode-hook))
-  (add-hook hook 'yas/minor-mode-on))
+  (add-hook hook 'yas-minor-mode-on))
+
+(eval-after-load "yasnippet"
+  '(progn
+     (add-to-list 'yas/snippet-dirs (concat user-emacs-directory "my_snippets"))
+     (require 'clojure-snippets)
+     (clojure-snippets-initialize)
+     ;; snippet-mode for *.yasnippet files
+     (add-to-list 'auto-mode-alist '("\\.yasnippet$" . snippet-mode))
+     (yas-reload-all)))
 
 ;; helm interface
 (eval-after-load "helm-config"
@@ -40,8 +46,6 @@
      (custom-set-variables '(yas/prompt-functions '(my-yas/prompt)))
      (global-set-key (kbd "M-=") 'yas/insert-snippet)))
 
-;; snippet-mode for *.yasnippet files
-(add-to-list 'auto-mode-alist '("\\.yasnippet$" . snippet-mode))
 
 ;; utility functions
 (defun yas/perl-package-name ()

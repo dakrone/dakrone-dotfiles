@@ -7,9 +7,6 @@
                 ruby-mode-hook))
   (add-hook hook 'flycheck-mode))
 
-;;(add-hook 'prog-mode-hook 'flycheck-mode)
-;;(add-hook 'text-mode-hook 'flycheck-mode)
-
 ;; Show error message under current line
 (defun flymake-display-err-menu-for-current-line ()
   (interactive)

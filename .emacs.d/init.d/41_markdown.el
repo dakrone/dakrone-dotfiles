@@ -1,13 +1,21 @@
 ;; setting markdown-mode
 (add-to-list 'auto-mode-alist '("\\.\\(md\\|mdt\\|mdwn\\)$" . markdown-mode))
-(autoload 'markdown-mode "markdown-mode" nil t)
 
 (eval-after-load "markdown-mode"
   '(progn
      (setq markdown-command "Markdown.pl")
      (add-hook 'markdown-mode-hook 'my/markdown-mode-hook)
+
+     ;; key bindings
      (define-key markdown-mode-map (kbd "C-M-f") 'forward-symbol)
-     (define-key markdown-mode-map (kbd "C-M-b") 'backward-symbol)))
+     (define-key markdown-mode-map (kbd "C-M-b") 'backward-symbol)
+     (define-key markdown-mode-map (kbd "C-M-u") 'my/backward-up-list)
+
+     (define-key markdown-mode-map (kbd "C-c C-n") 'outline-next-visible-heading)
+     (define-key markdown-mode-map (kbd "C-c C-p") 'outline-previous-visible-heading)
+     (define-key markdown-mode-map (kbd "C-c C-f") 'outline-forward-same-level)
+     (define-key markdown-mode-map (kbd "C-c C-b") 'outline-backward-same-level)
+     (define-key markdown-mode-map (kbd "C-c C-u") 'outline-up-heading)))
 
 (defvar markdown-imenu-generic-expression
   '(("title"  "^\\(.+?\\)[\n]=+$" 1)

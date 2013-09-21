@@ -1,7 +1,6 @@
 ;; setting of auto-complete
 (require 'popup)
 (require 'fuzzy)
-(require 'pos-tip)
 (require 'auto-complete-config)
 (add-to-list 'ac-dictionary-directories
              (concat user-emacs-directory "ac-dict"))

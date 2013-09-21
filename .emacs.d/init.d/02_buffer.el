@@ -16,10 +16,6 @@
   (interactive)
   (run-with-idle-timer 10 t 'my/auto-save-buffers))
 
-;; winner-mode
-(require 'winner)
-(winner-mode t)
-
 ;; move other window
 (setq windmove-wrap-around t)
 (windmove-default-keybindings)
@@ -32,7 +28,6 @@
 (defalias 'list-buffers 'ibuffer)
 
 ;; mark 'D'(delete) for matching buffer
-(require 'ibuffer)
 (defun ibuffer-menu-grep-delete (str)
   (interactive
    (list (read-string "Delete Mark Regexp: ")))
@@ -44,7 +39,9 @@
         (ibuffer-mark-for-delete nil))
       (end-of-line))))
 
-(define-key ibuffer-mode-map "R" 'ibuffer-menu-grep-delete)
+(eval-after-load "ibuffer"
+  '(progn
+     (define-key ibuffer-mode-map "R" 'ibuffer-menu-grep-delete)))
 
 (global-set-key (kbd "M-9") 'bs-cycle-next)
 (global-set-key (kbd "M-0") 'bs-cycle-previous)

@@ -1,35 +1,29 @@
 ;; org-mode
-(when (require 'org-install nil t)
-  (define-key global-map (kbd "C-c l") 'org-store-link)
-  (setq org-startup-truncated nil
-        org-return-follows-link t
-        org-directory user-emacs-directory
-        org-use-fast-todo-selection t
-        org-src-fontify-natively t
-        org-todo-keywords
-        '((sequence "TODO(t)" "STARTED(s)" "WAITING(w)"
-                    "|" "DONE(x)" "CANCEL(c)")
-          (sequence "WAITING(f)" "|" "DONE(x)" "CANCEL(c)"))
-        org-todo-keyword-faces
-        '(;;("TODO"      . org-warning)
-          ("STARTED"   . (:foreground "deep sky blue" :weight bold))
-          ("DONE"      . (:foreground "SpringGreen1" :weight bold))
-          ("WAITING"   . (:foreground "orange" :weight bold))))
-  (add-to-list 'auto-mode-alist '("\\.org$" . org-mode)))
+(add-to-list 'auto-mode-alist '("\\.org$" . org-mode))
 
 (eval-after-load "org"
   '(progn
+     (when (require 'org-install nil t)
+       (define-key global-map (kbd "C-c l") 'org-store-link)
+       (setq org-startup-truncated nil
+             org-return-follows-link t
+             org-directory user-emacs-directory
+             org-use-fast-todo-selection t
+             org-src-fontify-natively t
+             org-todo-keywords
+             '((sequence "TODO(t)" "STARTED(s)" "WAITING(w)"
+                         "|" "DONE(x)" "CANCEL(c)")
+               (sequence "WAITING(f)" "|" "DONE(x)" "CANCEL(c)"))
+             org-todo-keyword-faces
+             '(;;("TODO"      . org-warning)
+               ("STARTED"   . (:foreground "deep sky blue" :weight bold))
+               ("DONE"      . (:foreground "SpringGreen1" :weight bold))
+               ("WAITING"   . (:foreground "orange" :weight bold)))))
      (define-key org-mode-map (kbd "C-c t") 'org-mark-ring-goto)
      (define-key org-mode-map (kbd "C-M-<return>") 'org-insert-todo-heading)
      (define-key org-mode-map (kbd "C-M-<tab>") 'show-all)
      (local-unset-key (kbd "M-S-<return>"))
 
-     (smartrep-define-key
-         org-mode-map "C-c" '(("f" . 'org-shiftright)
-                              ("b" . 'org-shiftleft)))
-     (smartrep-define-key
-         org-mode-map "C-c" '(("C-n" . (outline-next-visible-heading 1))
-                              ("C-p" . (outline-previous-visible-heading 1))))
      (setq org-clock-persist 'history)
      (org-clock-persistence-insinuate)
      (define-prefix-command 'org-todo-state-map)

@@ -97,7 +97,7 @@ widget, custom, latex, ediff."
      (font-lock-string-face ((t (:foreground "#8AE234"))))
      (font-lock-keyword-face ((t (:foreground "cyan1"))))
      (font-lock-builtin-face ((t (:foreground "LightSteelBlue"))))
-     (font-lock-function-name-face ((t (:foreground "gold"))))
+     (font-lock-function-name-face ((t (:foreground "#729FCF"))))
      (font-lock-variable-name-face ((t (:foreground "light salmon"))))
      (font-lock-type-face ((t (:foreground "yellow1"))))
      (font-lock-constant-face ((t (:foreground "salmon"))))
@@ -354,7 +354,7 @@ widget, custom, latex, ediff."
 (add-hook 'clojure-mode-hook 'tweak-clojure-syntax)
 
 ;; Currently using light-colored theme
-;;(dakrone-dark)
+(dakrone-dark)
 ;;(load-theme 'ir-black t)
-(dakrone-light)
+;;(dakrone-light)
 (enable-show-paren-mode)

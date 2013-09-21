@@ -13,22 +13,22 @@
     color-theme rainbow-mode rainbow-delimiters maxframe fold-dwim-org
 
     ;;;; misc
-    diminish dired+ erc-hl-nicks ercn erc-tweet todochiku twittering-mode yagist
+    diminish erc-hl-nicks ercn erc-tweet todochiku twittering-mode yagist
 
     ;;;; for auto-complete
-    auto-complete fuzzy popup ac-slime pos-tip ac-nrepl
+    auto-complete fuzzy popup ac-slime ac-nrepl
 
     ;;;; highlight
     ace-jump-mode vline col-highlight
 
     ;;;; editing utilities
     expand-region wrap-region smex windresize autopair ido-hacks ag
-    undo-tree mark-multiple smartrep iedit ido-ubiquitous ido-vertical-mode
+    undo-tree mark-multiple iedit ido-ubiquitous ido-vertical-mode
     yasnippet goto-chg find-file-in-project idle-highlight-mode org org-magit
-    smart-tab
+    smart-tab anzu
 
     ;;;; buffer utils
-    popwin elscreen yascroll
+    popwin
 
     ;;;; programming
     ;; haskell
@@ -44,9 +44,6 @@
     clojure-mode nrepl paredit parenface kibit-mode clojure-test-mode
     clojure-snippets nrepl-ritz slamhound
 
-    ;; coffee-script
-    coffee-mode
-
     ;; perl
     cperl-mode
 
@@ -59,7 +56,7 @@
     yari ruby-electric rsense
 
     ;; emacs-lisp
-    elisp-slime-nav thingopt
+    elisp-slime-nav
 
     ;; Common Lisp
     slime paredit
@@ -68,9 +65,8 @@
     quickrun
 
     ;; markup language
-    haml-mode sass-mode htmlize adoc-mode
-    markdown-mode markdown-mode+
-    scss-mode yaml-mode zencoding-mode
+    haml-mode htmlize adoc-mode markdown-mode markdown-mode+ yaml-mode
+    zencoding-mode
 
     ;; helm
     helm helm-gtags helm-descbinds helm-themes helm-ag

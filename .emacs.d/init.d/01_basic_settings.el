@@ -70,10 +70,10 @@
 (setq line-move-visual t)
 
 ;; which-func
-(require 'which-func)
-(set-face-foreground 'which-func "chocolate4")
-(set-face-bold-p 'which-func t)
-(which-function-mode t)
+;; (require 'which-func)
+;; (set-face-foreground 'which-func "chocolate4")
+;; (set-face-bold-p 'which-func t)
+;; (which-function-mode t)
 
 ;; invisible mouse cursor when editing text
 (setq make-pointer-invisible t)
@@ -104,23 +104,13 @@
     ad-do-it
     (move-to-window-line orig-line)))
 
-;; smart repetition
-(require 'smartrep)
-(setq smartrep-mode-line-string-activated "<<< SmartRep >>>")
-
 ;; expand symbolic link
 (setq-default find-file-visit-truename t)
-
-;; for popular file type
-(require 'generic-x)
 
 ;; dim parens
 (require 'parenface)
 
-;; gpg stuff
-(require 'epa-file)
-(epa-file-enable)
-
 ;; Maximize
-(require 'maxframe)
-(add-hook 'window-setup-hook 'maximize-frame t)
+(when window-system
+  (require 'maxframe)
+  (add-hook 'window-setup-hook 'maximize-frame t))

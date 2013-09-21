@@ -40,8 +40,6 @@
              :margin t))
 
 ;; Auto completion for NREPL
-(require 'ac-nrepl)
-(eval-after-load "auto-complete" '(add-to-list 'ac-modes 'nrepl-mode))
 
 ;; nrepl auto-complete
 (defun set-auto-complete-as-completion-at-point-function ()
@@ -50,10 +48,13 @@
 (add-hook 'auto-complete-mode-hook
           'set-auto-complete-as-completion-at-point-function)
 
+(eval-after-load "auto-complete" '(add-to-list 'ac-modes 'nrepl-mode))
+
 ;; Clojure-mode hooks
 (add-hook
  'clojure-mode-hook
  (lambda ()
+   (require 'ac-nrepl)
    ;; Better indention (from Kevin)
    (setq clojure-mode-use-backtracking-indent t)
    ;; enable eldoc
@@ -71,8 +72,7 @@
    (fold-dwim-org/minor-mode t)
    (local-set-key (kbd "C-c TAB") 'fold-dwim-org/minor-mode)
    (local-set-key (kbd "C-c C-u") 'fold-dwim-hide-all)
-   (local-set-key (kbd "C-c C-o") 'fold-dwim-show-all)
-   (local-set-key (kbd "C-u") 'fold-dwim-toggle)))
+   (local-set-key (kbd "C-c C-o") 'fold-dwim-show-all)))
 
 ;; Nrepl-mode hooks
 (add-hook 'nrepl-mode-hook

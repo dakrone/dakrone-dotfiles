@@ -5,10 +5,6 @@
 (global-set-key (kbd "C-r") 'isearch-backward-regexp)
 (global-set-key (kbd "M-%") 'query-replace-regexp)
 
-;; thingopt
-(require 'thingopt)
-(define-thing-commands)
-
 ;; copy sexp
 (defun my/copy-sexp ()
   (interactive)
@@ -124,9 +120,6 @@
 (global-set-key (kbd "C-M-u") 'my/backward-up-list)
 (global-set-key (kbd "C-M-d") 'my/down-list)
 
-;; goto-chg
-(require 'goto-chg)
-
 ;; like Vim 'f'
 (defun my/move-specified-char (arg)
   (interactive "p")
@@ -211,6 +204,8 @@ point reaches the beginning or end of the buffer, stop there."
 ;; (global-set-key [remap move-beginning-of-line]
 ;;                 'smarter-move-beginning-of-line)
 
-(require 'smart-tab)
-(global-smart-tab-mode 1)
-(add-to-list 'smart-tab-disabled-major-modes 'mu4e-compose-mode)
+(add-hook 'prog-mode-hook
+          (lambda ()
+            (require 'smart-tab)
+            (global-smart-tab-mode 1)
+            (add-to-list 'smart-tab-disabled-major-modes 'mu4e-compose-mode)))

@@ -82,6 +82,7 @@ Loosely based on:
 - https://wiki.archlinux.org/index.php/Pdnsd
 - http://nakkaya.com/2009/05/07/speeding-up-your-net-browsing-with-pdnsd-domain-name-caching-on-mac-os-x/
 
+Steps:
 - install polipo
 - install pdnsd
 - copy polipo.conf where it's needed, change the data directory and

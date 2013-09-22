@@ -79,8 +79,8 @@ You also need to change which mode-line is being set up, in
 # Polipo + pdnsd caching proxy
 
 Loosely based on:
-https://wiki.archlinux.org/index.php/Pdnsd
-http://nakkaya.com/2009/05/07/speeding-up-your-net-browsing-with-pdnsd-domain-name-caching-on-mac-os-x/
+- https://wiki.archlinux.org/index.php/Pdnsd
+- http://nakkaya.com/2009/05/07/speeding-up-your-net-browsing-with-pdnsd-domain-name-caching-on-mac-os-x/
 
 - install polipo
 - install pdnsd

@@ -75,3 +75,15 @@ You also need to change which mode-line is being set up, in
 ```
 
 (you can call these functions interactively also)
+
+# Polipo + pdnsd caching proky
+
+- install polipo
+- install pdnsd
+- copy polipo.conf where it's needed, change the data directory and
+  log file location
+- copy pdnsd.conf where it's needed, create the directories needed
+  (running pdnsd will complain about where they are if they don't
+  already exist)
+- set DNS to 127.0.0.1
+- set HTTP proxy to 127.0.0.1, port 8118

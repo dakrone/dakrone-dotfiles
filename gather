@@ -25,7 +25,9 @@ cp -f -v ~/.conkerorrc .
 mkdir -p .elinks
 cp -f -v ~/.elinks/elinks.conf .elinks
 cp -f -v ~/.gitconfig .
-cp -f -v ~/.polipo .
+cp -f -v /usr/local/etc/polipo.conf .
+cp -f -v /usr/local/etc/pdnsd.conf .
+cp -f -v /Library/LaunchDaemons/pdnsd.plist .
 
 mkdir -p .irssi
 cp -f -v ~/.irssi/config .irssi/

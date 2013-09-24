@@ -20,13 +20,6 @@
 
 (remove-hook 'kill-emacs-hook 'helm-adaptive-save-history)
 
-;; helm faces
-(require 'helm-files)
-(set-face-attribute 'helm-ff-file nil
-                    :foreground "white" :background nil)
-(set-face-attribute 'helm-ff-directory nil
-                    :foreground "white" :background nil :underline t)
-
 (defvar helm-httpstatus-source
   '((name . "HTTP STATUS")
     (candidates . (("100 Continue") ("101 Switching Protocols")

@@ -85,8 +85,8 @@
         ;; mu4e-html2text-command "/usr/local/bin/html2text -nobs"
         ;; mu4e-html2text-command
         ;; "/usr/bin/html2markdown | fgrep -v '&nbsp_place_holder;'"
-        ;; check for new messages ever 5 minutes
-        mu4e-update-interval 300)
+        ;; check for new messages ever 150 seconds (2.5 min)
+        mu4e-update-interval 150)
 
    ;; Multi-account support
   (defun kdl-mu4e-current-account (&optional msg ignore-message-at-point)

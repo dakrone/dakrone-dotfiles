@@ -38,3 +38,6 @@ EOM
 
 " Disable beep. Drives me crazy because I still use Apple+# to switch tabs sometimes
 javascript liberator.beep = function() { return false; }
+
+:cd ~
+cd ~

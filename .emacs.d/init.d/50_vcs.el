@@ -7,9 +7,18 @@
 (setq vc-handled-backends '())
 
 ;; git-gutter
-(global-git-gutter-mode t)
-(global-set-key (kbd "C-x C-a") 'git-gutter:toggle)
-(global-set-key (kbd "C-x =") 'git-gutter:popup-hunk)
+(add-hook 'prog-mode-hook
+          (lambda ()
+            (require 'git-gutter)
+            (git-gutter-mode t)
+            (global-set-key (kbd "C-x C-a") 'git-gutter:toggle)
+            (global-set-key (kbd "C-x =") 'git-gutter:popup-hunk)
+            (global-set-key (kbd "C-c P") 'git-gutter:previous-hunk)
+            (global-set-key (kbd "C-c N") 'git-gutter:next-hunk)
+            (global-set-key (kbd "C-x p") 'git-gutter:previous-hunk)
+            (global-set-key (kbd "C-x n") 'git-gutter:next-hunk)
+            (global-set-key (kbd "C-c G") 'git-gutter:popup-hunk)
+            (diminish 'git-gutter-mode "gg")))
 
 ;; (eval-after-load "git-gutter"
 ;;   '(progn
@@ -17,13 +26,6 @@
 ;;      (setq git-gutter:deleted-sign-sign " ")
 ;;      (set-face-background 'git-gutter:deleted  "red")
 ;;      (set-face-background 'git-gutter:modified "purple")))
-
-;; Jump to next/previous hunk
-(global-set-key (kbd "C-c P") 'git-gutter:previous-hunk)
-(global-set-key (kbd "C-c N") 'git-gutter:next-hunk)
-(global-set-key (kbd "C-x p") 'git-gutter:previous-hunk)
-(global-set-key (kbd "C-x n") 'git-gutter:next-hunk)
-(global-set-key (kbd "C-c G") 'git-gutter:popup-hunk)
 
 
 ;; magit

@@ -78,9 +78,14 @@
 ;; invisible mouse cursor when editing text
 (setq make-pointer-invisible t)
 
+;; Diminish things
+;; "I will diminish, and go into the West..."
+(require 'diminish)
+
 ;; undo-tree
 (require 'undo-tree)
 (global-undo-tree-mode)
+(diminish 'undo-tree-mode)
 
 (define-key undo-tree-map (kbd "C-x u") 'undo-tree-visualize)
 (define-key undo-tree-map (kbd "C-/") 'undo-tree-undo)
@@ -108,9 +113,10 @@
 (setq-default find-file-visit-truename t)
 
 ;; dim parens
-(require 'parenface)
+(add-hook 'prog-mode-hook (lambda () (require 'parenface)))
 
 ;; Maximize
 (when window-system
   (require 'maxframe)
   (add-hook 'window-setup-hook 'maximize-frame t))
+

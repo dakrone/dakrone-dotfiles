@@ -19,6 +19,8 @@
 (global-set-key (kbd "M-g M-i") 'import-popwin)
 (global-set-key (kbd "M-g M-f") 'ffap)
 
+(global-set-key (kbd "C-x C-l") 'toggle-truncate-lines)
+
 ;; ace-jump
 (global-set-key (kbd "C-c SPC") 'ace-jump-mode)
 

@@ -261,3 +261,8 @@ function notify-fn() {
 function ydl() {
     curl -s localhost:8080/metube -d"$1"
 }
+
+# visual ping!
+function vping() {
+    ping -c 8 $1 | grep "bytes from" | cut -d " " -f 8 | cut -d "=" -f 2 | spark
+}

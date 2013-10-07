@@ -18,3 +18,4 @@
 ;; keep customize settings in their own file
 (setq custom-file "~/.emacs.d/custom.el")
 (load custom-file)
+(put 'upcase-region 'disabled nil)

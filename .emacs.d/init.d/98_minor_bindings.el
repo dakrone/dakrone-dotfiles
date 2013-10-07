@@ -12,13 +12,13 @@
                  (js-mode "{" "}" "/[*/]" nil)
                  (javascript-mode  "{" "}" "/[*/]" nil))))))
 
-(add-hook 'js-mode
+(add-hook 'js-mode-hook
           '(lambda ()
              (require 'hideshow)
              (hs-minor-mode t)
              (define-key hs-minor-mode-map (kbd "C-c TAB") 'hs-toggle-hiding)))
 
-(add-hook 'javascript-mode
+(add-hook 'javascript-mode-hook
           '(lambda ()
              (require 'hideshow)
              (hs-minor-mode t)

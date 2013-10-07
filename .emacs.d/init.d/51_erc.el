@@ -14,26 +14,33 @@
   (interactive)
   (pause-ercn 6)
   (erc-tls :server "freenode" :port 31425
-           :nick "freenode" :password freenode-pass)
-  (erc-tls :server "subrosa" :port 31425
-           :nick "subrosa" :password subrosa-pass))
-
-;; (grr-notify (concat (buffer-name) " - " (concat nickname ": " message))
-;;             (concat (buffer-name) " - " (concat nickname ": " message))
-;;             nil)
-;; (grr-notify (buffer-name) (concat nickname ": " message) nil)
-;; (notifications-notify :title (buffer-name)
-;;                       :body (concat nickname ": " message))
+           :nick "dakrone" :password freenode-pass))
 
 (when window-system
   (require 'ercn)
   (require 'todochiku)
 
+  ;;----------------------------------------------------------------------------
+  ;; Use terminal-notifier in OS X Mountain Lion
+  ;; https://github.com/alloy/terminal-notifier (Install in /Applications)
+  ;;----------------------------------------------------------------------------
+  (setq terminal-notifier-path
+        "/Users/hinmanm/.rvm/gems/ruby-1.9.3-p448/bin/terminal-notifier")
+
+  (defadvice todochiku-get-arguments (around todochiku-nc)
+    (setq ad-return-value
+          (list "-title" title "-message" message "-activate" "org.gnu.Emacs")))
+
+  (when (file-executable-p terminal-notifier-path)
+    (setq todochiku-command terminal-notifier-path)
+    (ad-activate 'todochiku-get-arguments))
+
+
   ;; load private ercn notify rules if the file exists
   (if (file-exists-p "~/.ercrules")
       (load-file "~/.ercrules")
     (setq ercn-notify-rules
-          '((message . ("#search" "#devs" "#safe" "#denofclojure"))
+          '((message . ("#denofclojure" "#elasticsearch"))
             (current-nick . all)
             (keyword . all)
             ;;(pal . all)
@@ -88,7 +95,7 @@
                           "cheshire" "Cheshire" "clojure-opennlp" "itsy"
                           "opennlp" "elasticsearch-zookeeper"
                           "elasticsearch-jetty" "elasticsearch-equilibrium")
-           erc-ignore-list '("sonian-chef")
+           erc-ignore-list '()
            erc-track-exclude-types '("JOIN" "NICK" "PART" "QUIT" "MODE"
                                      "324" "329" "332" "333" "353" "477")
            erc-button-url-regexp
@@ -111,9 +118,7 @@
                                           'rear-nonsticky t
                                           'front-nonsticky t))))
      (require 'erc-services)
-     ;;(require 'erc-tweet)
      (require 'erc-hl-nicks)
-     ;;(add-to-list 'erc-modules 'tweet)
      (add-to-list 'erc-modules 'hl-nicks)
      (add-to-list 'erc-modules 'spelling)
      (erc-services-mode 1)

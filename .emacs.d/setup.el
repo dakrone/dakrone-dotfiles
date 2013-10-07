@@ -55,6 +55,9 @@
     ruby-mode ruby-test-mode ruby-tools inf-ruby
     yari ruby-electric rsense
 
+    ;; rust
+    rust-mode
+
     ;; emacs-lisp
     elisp-slime-nav
 

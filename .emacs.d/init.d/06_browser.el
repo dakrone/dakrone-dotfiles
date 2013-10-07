@@ -16,6 +16,6 @@
             "\\|"
             "\\(ftp\\|https?\\|telnet\\|gopher\\|www\\|wais\\)://"
             "\\).")))
-      (ffap-next-url t t))))
+      (ffap-next t t))))
 
 (global-set-key (kbd "C-c u") 'browse-last-url-in-brower)

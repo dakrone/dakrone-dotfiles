@@ -51,7 +51,7 @@ user-agent                  "newsbeuter"
 bind-key j down
 bind-key k up
 
-bind-key "SPACE"    open
+#bind-key "SPACE"    open
 bind-key "B"        bookmark
 
 # colors

@@ -160,7 +160,7 @@
 (define-key ctl-x-map (kbd "%") 'goto-match-paren)
 
 ;; grep
-(setq grep-command "ag --nocolor --nogroup ")
+(setq grep-command "ag -i --nocolor --nogroup ")
 
 ;; random electric modes
 ;;(electric-pair-mode t)

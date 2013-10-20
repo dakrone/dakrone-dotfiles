@@ -266,3 +266,7 @@ function ydl() {
 function vping() {
     ping -c 8 $1 | grep "bytes from" | cut -d " " -f 8 | cut -d "=" -f 2 | spark
 }
+
+function chk-url() {
+    curl -sL -w "%{http_code} %{url_effective}\\n" "$1" -o /dev/null
+}

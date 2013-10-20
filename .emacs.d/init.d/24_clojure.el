@@ -89,6 +89,20 @@
             (ac-nrepl-setup)
             (set-auto-complete-as-completion-at-point-function)))
 
+(add-hook 'nrepl-repl-mode-hook
+          (lambda ()
+            (define-key nrepl-interaction-mode-map
+              (kbd "C-c C-d")
+              'nrepl-popup-tip-symbol-at-point)
+            (paredit-mode t)
+            (subword-mode t)
+            (eldoc-mode t)
+            (setq nrepl-history-file "~/.nrepl-history")
+            (setq nrepl-hide-special-buffers t)
+            (setq nrepl-popup-stacktraces-in-repl t)
+            (ac-nrepl-setup)
+            (set-auto-complete-as-completion-at-point-function)))
+
 ;; Nrepl-interaction-mode hooks
 (add-hook 'nrepl-interaction-mode-hook
           (lambda ()

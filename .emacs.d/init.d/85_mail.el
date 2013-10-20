@@ -326,4 +326,4 @@ passed in. Also supports ignoring the msg at the point."
   (define-key mu4e-headers-mode-map (kbd "j") 'next-line)
   (define-key mu4e-headers-mode-map (kbd "k") 'previous-line)
 
-  (set-face-background 'mu4e-header-highlight-face "#444444"))
+  (set-face-background 'mu4e-header-highlight-face "#e0e0e0"))

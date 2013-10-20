@@ -331,9 +331,11 @@ widget, custom, latex, ediff."
   (setq frame-background-mode 'light)
   (set-background-color "#fcf4dc")
   (set-face-background 'default "#fcf4dc")
+  (set-background-color "#000000")
+  (set-face-background 'default "#ffffff")
   (set-cursor-color "#52676f")
   (set-foreground-color "#52676f")
-  (set-face-foreground 'paren-face "DimGrey")
+  ;;(set-face-foreground 'paren-face "DimGrey")
   (add-hook 'show-paren-mode-hook 'set-show-paren-face-background-light)
   (defclojureface clojure-parens       "#696969"   "Clojure parens")
   (defclojureface clojure-braces       "#696969"   "Clojure braces")
@@ -359,7 +361,7 @@ widget, custom, latex, ediff."
 (add-hook 'clojure-mode-hook 'tweak-clojure-syntax)
 
 ;; Currently using light-colored theme
-(dakrone-dark)
+;;(dakrone-dark)
 ;;(load-theme 'ir-black t)
-;;(dakrone-light)
+(dakrone-light)
 (enable-show-paren-mode)

@@ -1,4 +1,6 @@
 ;; python-setting
+(add-to-list 'auto-mode-alist '("fabfile$" . python-mode))
+
 (defadvice run-python (around run-python-no-sit activate)
   "Suppress absurd sit-for in run-python of python.el"
   (let ((process-launched (or (ad-get-arg 2) ; corresponds to `new`

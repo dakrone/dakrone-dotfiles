@@ -44,6 +44,11 @@
 (setq backup-inhibited t
       delete-auto-save-files t)
 
+(setq backup-directory-alist
+      `((".*" . ,temporary-file-directory)))
+(setq auto-save-file-name-transforms
+      `((".*" ,temporary-file-directory t)))
+
 ;; Disable menu bar
 (menu-bar-mode -1)
 
@@ -119,4 +124,3 @@
 (when window-system
   (require 'maxframe)
   (add-hook 'window-setup-hook 'maximize-frame t))
-

@@ -15,6 +15,7 @@
 
 ;; M-g mapping
 (global-set-key (kbd "M-g .") 'helm-ag)
+(global-set-key (kbd "M-g >") 'helm-ag-this-file)
 (global-set-key (kbd "M-g ,") 'helm-ag-pop-stack)
 (global-set-key (kbd "M-g M-i") 'import-popwin)
 (global-set-key (kbd "M-g M-f") 'ffap)

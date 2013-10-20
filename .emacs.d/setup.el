@@ -9,6 +9,9 @@
 
 (defvar my/install-packages
   '(
+    ;;;; init-loader
+    init-loader
+
     ;;;; themeing
     color-theme rainbow-mode rainbow-delimiters maxframe fold-dwim-org
 
@@ -41,8 +44,10 @@
     flycheck flymake-jslint
 
     ;; clojure
-    clojure-mode nrepl paredit parenface kibit-mode clojure-test-mode
-    clojure-snippets nrepl-ritz slamhound
+    clojure-mode cider paredit parenface kibit-mode clojure-test-mode
+    clojure-snippets
+    ;;slamhound - doesn't work since nrepl -> cider change
+    javap-mode cider-decompile
 
     ;; perl
     cperl-mode

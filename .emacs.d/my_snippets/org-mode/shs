@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+#name : shs
+# --
+#+BEGIN_SRC sh :results value code :exports both :tangle `(file-name-sans-extension (buffer-name))`.zsh
+$0
+#+END_SRC

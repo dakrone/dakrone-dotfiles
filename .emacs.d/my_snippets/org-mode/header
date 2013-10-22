@@ -1,0 +1,11 @@
+# -*- mode: snippet -*-
+#name : header
+# --
+#+STARTUP:    align fold nodlcheck oddeven lognotestate
+#+TITLE:      ${1:Title}
+#+AUTHOR:     Lee
+#+LANGUAGE:   en
+#+CATEGORY:   things
+#+OPTIONS:    H:4 num:nil toc:nil \n:nil @:t ::t |:t ^:t -:t f:t *:t TeX:t LaTeX:t skip:nil d:(HIDE) tags:not-in-toc
+#+INFOJS_OPT: view:showall toc:t buttons:t mouse:#cccccc sdepth:3 ltoc:t
+$0

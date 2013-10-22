@@ -39,7 +39,34 @@
      (define-key org-todo-state-map "s"
        #'(lambda nil (interactive) (org-todo "STARTED")))
      (define-key org-todo-state-map "w"
-       #'(lambda nil (interactive) (org-todo "WAITING")))))
+       #'(lambda nil (interactive) (org-todo "WAITING")))
+
+     ;; Babel stuff
+     (require 'ob-clojure)
+     (org-babel-do-load-languages
+      'org-babel-load-languages
+      '((emacs-lisp . t)
+        (clojure . t)
+        (sh . t)
+        (ruby . t)
+        (python . t)))
+
+     ;; don't run stuff automatically on export
+     (setq org-export-babel-evaluate nil)
+
+     ;; ensure this variable is defined defined
+     (unless (boundp 'org-babel-default-header-args:sh)
+       (setq org-babel-default-header-args:sh '()))
+
+     ;; add a default shebang header argument
+     (add-to-list 'org-babel-default-header-args:sh
+                  '(:shebang . "#!/usr/bin/env zsh"))
+
+     ;; I don't want to be prompted on every code block evaluation
+     (setq org-confirm-babel-evaluate nil)
+
+     (define-key org-mode-map (kbd "C-c M-c") 'org-babel-execute-buffer)
+     ))
 
 (add-to-list 'auto-mode-alist '("\\.\\(org\\|org_archive\\|txt\\)$" . org-mode))
 

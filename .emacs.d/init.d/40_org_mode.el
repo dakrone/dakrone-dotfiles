@@ -66,6 +66,7 @@
      (setq org-confirm-babel-evaluate nil)
 
      (define-key org-mode-map (kbd "C-c M-c") 'org-babel-execute-buffer)
+     (define-key org-mode-map (kbd "C-c M-t") 'org-babel-tangle)
      ))
 
 (add-to-list 'auto-mode-alist '("\\.\\(org\\|org_archive\\|txt\\)$" . org-mode))

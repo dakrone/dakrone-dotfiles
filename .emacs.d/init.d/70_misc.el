@@ -43,14 +43,14 @@
 
 ;; always turn whitespace mode on
 (whitespace-mode t)
-(add-hook 'clojure-mode-hook (lambda ()
-                               (whitespace-mode t)
-                               (subword-mode t)))
 (add-hook 'prog-mode-hook (lambda ()
                             (whitespace-mode t)
                             (subword-mode t)
                             (idle-highlight-mode t)))
-
+;; Except turn it off for shell scripts, because yea, not much you can do with
+;; long data
+(add-hook 'sh-mode-hook (lambda ()
+                          (setq whitespace-line-column 180)))
 
 
 ;; ==== Fix ssh-agent ====

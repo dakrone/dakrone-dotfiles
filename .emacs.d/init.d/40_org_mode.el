@@ -1,5 +1,6 @@
 ;; org-mode
 (add-to-list 'auto-mode-alist '("\\.org$" . org-mode))
+(add-to-list 'auto-mode-alist '("\\.\\(org\\|org_archive\\|txt\\)$" . org-mode))
 
 (eval-after-load "org"
   '(progn
@@ -68,8 +69,6 @@
      (define-key org-mode-map (kbd "C-c M-c") 'org-babel-execute-buffer)
      (define-key org-mode-map (kbd "C-c M-t") 'org-babel-tangle)
      ))
-
-(add-to-list 'auto-mode-alist '("\\.\\(org\\|org_archive\\|txt\\)$" . org-mode))
 
 (add-hook 'org-mode-hook '(lambda ()
                             (define-key org-mode-map [C-tab] 'other-window)

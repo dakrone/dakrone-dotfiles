@@ -28,7 +28,8 @@ in your backwards search history.
 emacs -q -batch -l ~/.emacs.d/setup.el -kill
 ```
 
-Much package installing will commence.
+Much package installing will commence. If there are errors, just keep
+running it until all the packages are installed.
 
 3. Run `emacs`
 
@@ -45,10 +46,10 @@ possible, so if you use this and have loading errors other than mail
 stuff, which is purposefully non-portable (unless you're trying to
 send email as me?!), let me know and I'll try to fix it.
 
-I recommend you install [ack](http://betterthangrep.com/) and
-[ag](https://github.com/ggreer/the_silver_searcher) for searching
-also and [gpg](http://www.gnupg.org/) for crypto stuff to get the
-full benefit.
+I recommend you install
+[ag](https://github.com/ggreer/the_silver_searcher) for searching also
+and [gpg](http://www.gnupg.org/) for crypto stuff to get the full
+benefit.
 
 ### Emacs themes
 

@@ -1,0 +1,35 @@
+#!/usr/bin/env zsh
+# -*- mode: shell-script -*-
+#
+# Tangle .org files with org-mode
+# Example usage:
+#    ∴ tangle nested-in-all.org
+#    Files:  "nested-in-all.org", Dir: /Users/hinmanm/es-scripts
+#    Tangled 6 code blocks from nested-in-all.org
+
+# Set this to the location of your emacs executable (since I don't use the
+# 'emacs' binary in the path on OSX
+EMACSCMD="/Applications/Emacs.app/Contents/MacOS/Emacs"
+
+# wrap each argument in the code required to call tangle on it
+DIR=`pwd`
+FILES=""
+for i in $@; do
+    FILES="$FILES \"$i\""
+done
+
+# Echo what files are going to be tangled
+echo "Files: $FILES, Dir: $DIR"
+
+# The "-u `whoami`" loads your emacs config in case you have user-specific
+# org-babel configuration (as I do).
+$EMACSCMD -nw -u `whoami` --batch --eval "
+(progn
+  (require 'org-install)
+  (mapc
+    (lambda (file)
+      (find-file (expand-file-name file \"$DIR\"))
+      (org-babel-tangle)
+      (kill-buffer))
+    '($FILES))
+)" 2>&1 | grep "Tangled"

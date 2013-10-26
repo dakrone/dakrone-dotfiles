@@ -25,6 +25,10 @@ function shards () {
     curl -s localhost:9200/_cat/shards
 }
 
+function recovery () {
+    curl -s localhost:9200/_cat/recovery
+}
+
 function nodes () {
     curl -s localhost:9200/_cat/nodes
 }

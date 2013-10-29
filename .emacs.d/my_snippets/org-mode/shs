@@ -1,6 +1,6 @@
 # -*- mode: snippet -*-
 #name : shs
 # --
-#+BEGIN_SRC sh :results code :exports both :noweb yes :tangle `(file-name-sans-extension (buffer-name))`.zsh
+#+BEGIN_SRC sh :tangle `(file-name-sans-extension (buffer-name))`.zsh
 $0
 #+END_SRC

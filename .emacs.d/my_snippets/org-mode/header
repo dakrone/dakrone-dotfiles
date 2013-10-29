@@ -1,12 +1,12 @@
 # -*- mode: snippet -*-
 #name : header
 # --
-#+TITLE:      ${1:<title>}
-#+AUTHOR:     Lee
-#+CATEGORY:   ${2:<category>}
-#+STARTUP:    align fold nodlcheck oddeven lognotestate
-#+OPTIONS:    H:4 num:nil toc:nil \n:nil @:t ::t |:t ^:{} -:t f:t *:t
-#+OPTIONS:    skip:nil d:(HIDE) tags:not-in-toc
-#+LANGUAGE:   en
+#+TITLE:    ${1:<title>}
+#+AUTHOR:   Lee Hinman
+#+STARTUP:  align fold nodlcheck oddeven lognotestate
+#+OPTIONS:  H:4 num:nil toc:t \n:nil @:t ::t |:t ^:{} -:t f:t *:t
+#+OPTIONS:  skip:nil d:(HIDE) tags:not-in-toc
+#+PROPERTY: header-args :results code :exports both :noweb yes
+#+LANGUAGE: en
 
-$0
+* $0

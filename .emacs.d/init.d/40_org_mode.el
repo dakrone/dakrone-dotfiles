@@ -80,7 +80,24 @@
 
      (define-key org-mode-map (kbd "C-c M-c") 'org-babel-execute-buffer)
      (define-key org-mode-map (kbd "C-c M-t") 'org-babel-tangle)
-     ))
+
+     (defvar org-babel-default-header-args:clojure
+       '((:results . "silent")))))
+
+;; (defun org-babel-execute:clojure (body params)
+;;   "Execute a block of Clojure code with Babel."
+;;   (nrepl-interactive-eval body))
+
+(defun org-babel-execute:clojure (body params)
+  "Execute a block of Clojure code with Babel."
+  (let ((result-plist
+         (nrepl-send-string-sync
+          (org-babel-expand-body:clojure body params) nrepl-buffer-ns))
+        (result-type  (cdr (assoc :result-type params))))
+    (org-babel-script-escape
+     (cond ((eq result-type 'value)  (plist-get result-plist :value))
+           ((eq result-type 'output) (plist-get result-plist :value))
+           (t                        (message "Unknown :results type!"))))))
 
 (add-hook 'org-mode-hook '(lambda ()
                             (define-key org-mode-map [C-tab] 'other-window)

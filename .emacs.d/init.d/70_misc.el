@@ -1,19 +1,19 @@
 ;; Miscellaneous things that don't fit elsewhere
 (defadvice package-compute-transaction
-  (before
-   package-compute-transaction-reverse (package-list requirements)
-   activate compile)
+    (before
+     package-compute-transaction-reverse (package-list requirements)
+     activate compile)
   "reverse the requirements"
   (setq requirements (reverse requirements))
   (print requirements))
 
 (defadvice package-download-tar
-  (after package-download-tar-initialize activate compile)
+    (after package-download-tar-initialize activate compile)
   "initialize the package after compilation"
   (package-initialize))
 
 (defadvice package-download-single
-  (after package-download-single-initialize activate compile)
+    (after package-download-single-initialize activate compile)
   "initialize the package after compilation"
   (package-initialize))
 
@@ -51,6 +51,8 @@
 ;; long data
 (add-hook 'sh-mode-hook (lambda ()
                           (setq whitespace-line-column 180)))
+(add-hook 'java-mode-hook (lambda ()
+                            (setq whitespace-line-column 180)))
 
 
 ;; ==== Fix ssh-agent ====

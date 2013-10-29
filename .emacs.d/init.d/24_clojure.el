@@ -48,13 +48,15 @@
 (add-hook 'auto-complete-mode-hook
           'set-auto-complete-as-completion-at-point-function)
 
-(eval-after-load "auto-complete" '(add-to-list 'ac-modes 'nrepl-mode))
+(eval-after-load "auto-complete" '(add-to-list 'ac-modes 'cider-repl-mode))
 
 ;; Clojure-mode hooks
 (add-hook
  'clojure-mode-hook
  (lambda ()
    (require 'ac-nrepl)
+   (add-hook 'cider-repl-mode-hook 'ac-nrepl-setup)
+   (add-hook 'cider-mode-hook 'ac-nrepl-setup)
    ;; Better indention (from Kevin)
    (setq clojure-mode-use-backtracking-indent t)
    ;; enable eldoc
@@ -75,11 +77,10 @@
    (local-set-key (kbd "C-c C-o") 'fold-dwim-show-all)))
 
 ;; Nrepl-mode hooks
-(add-hook 'nrepl-mode-hook
+(add-hook 'cider-mode-hook
           (lambda ()
-            (define-key nrepl-interaction-mode-map
-              (kbd "C-c C-d")
-              'nrepl-popup-tip-symbol-at-point)
+            (define-key cider-mode-map (kbd "C-c C-d")
+              'ac-nrepl-popup-doc)
             (paredit-mode t)
             (subword-mode t)
             (eldoc-mode t)
@@ -87,13 +88,13 @@
             (setq nrepl-hide-special-buffers t)
             (setq nrepl-popup-stacktraces-in-repl t)
             (ac-nrepl-setup)
-            (set-auto-complete-as-completion-at-point-function)))
+            ;(set-auto-complete-as-completion-at-point-function)
+            ))
 
-(add-hook 'nrepl-repl-mode-hook
+(add-hook 'cider-repl-mode-hook
           (lambda ()
-            (define-key nrepl-interaction-mode-map
-              (kbd "C-c C-d")
-              'nrepl-popup-tip-symbol-at-point)
+            (define-key cider-mode-map (kbd "C-c C-d")
+              'ac-nrepl-popup-doc)
             (paredit-mode t)
             (subword-mode t)
             (eldoc-mode t)

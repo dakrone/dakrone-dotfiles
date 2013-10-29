@@ -5,6 +5,7 @@
 (eval-after-load "org"
   '(progn
      (when (require 'org-install nil t)
+       (add-to-list 'org-modules 'org-velocity)
        (define-key global-map (kbd "C-c l") 'org-store-link)
        (setq org-startup-truncated nil
              org-return-follows-link t
@@ -54,6 +55,17 @@
 
      ;; don't run stuff automatically on export
      (setq org-export-babel-evaluate nil)
+
+     ;; always enable noweb, results as code and exporting both
+     (setq org-babel-default-header-args
+           (cons '(:noweb . "yes")
+                 (assq-delete-all :noweb org-babel-default-header-args)))
+     (setq org-babel-default-header-args
+           (cons '(:results . "code")
+                 (assq-delete-all :noweb org-babel-default-header-args)))
+     (setq org-babel-default-header-args
+           (cons '(:exports . "both")
+                 (assq-delete-all :noweb org-babel-default-header-args)))
 
      ;; ensure this variable is defined defined
      (unless (boundp 'org-babel-default-header-args:sh)

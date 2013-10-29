@@ -28,6 +28,7 @@ cp -f -v ~/.gitconfig .
 cp -f -v /usr/local/etc/polipo.conf .
 cp -f -v /usr/local/etc/pdnsd.conf .
 cp -f -v /Library/LaunchDaemons/pdnsd.plist .
+cp -f -v ~/.pythonstartup .
 
 mkdir -p .irssi
 cp -f -v ~/.irssi/config .irssi/

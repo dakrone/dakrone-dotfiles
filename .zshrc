@@ -19,6 +19,7 @@ export PATH=$PATH:$GOROOT/bin
 
 # crazy pip/homebrew things
 export PATH=$PATH:/usr/local/share/python
+export PYTHONSTARTUP=~/.pythonstartup
 
 # haskell
 export PATH=$PATH:~/Library/Haskell/bin

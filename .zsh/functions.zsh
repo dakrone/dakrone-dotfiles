@@ -270,3 +270,7 @@ function vping() {
 function chk-url() {
     curl -sL -w "%{http_code} %{url_effective}\\n" "$1" -o /dev/null
 }
+
+function pub() {
+    scp $1 writequit:public_html/wq/pub/
+}

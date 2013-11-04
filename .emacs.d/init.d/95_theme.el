@@ -294,7 +294,9 @@ widget, custom, latex, ediff."
 
 (defun enable-show-paren-mode ()
   (interactive)
-  (show-paren-mode t))
+  (show-paren-mode t)
+  (setq show-paren-delay 0
+        show-paren-style 'expression))
 
 (defun set-show-paren-face-background-dark ()
   (set-face-background 'show-paren-match-face "#232323"))

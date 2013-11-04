@@ -28,9 +28,6 @@
 ;; Save a list of recent files visited.
 (recentf-mode 1)
 
-;; Highlight matching parentheses when the point is on them.
-(show-paren-mode 1)
-
 ;; ido-mode is like magic pixie dust!
 (when (functionp 'ido-mode)
   (ido-mode t)

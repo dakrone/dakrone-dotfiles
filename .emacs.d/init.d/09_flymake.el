@@ -76,10 +76,10 @@
                          )
      ))
 
-(flycheck-declare-checker yaml
-  "A YAML syntax checker using kwalify
+;; (flycheck-declare-checker yaml
+;;   "A YAML syntax checker using kwalify
 
-See URL `http://www.kuwata-lab.com/kwalify/'."
-  :command '("kwalify" "-E" "-P" "-m" source)
-  :error-patterns '(("^.+:\\(?2:[0-9+]\\):\\(?3:[0-9+]\\) \\(?4:.+\\)$" error))
-  :modes 'yaml-mode)
+;; See URL `http://www.kuwata-lab.com/kwalify/'."
+;;   :command '("kwalify" "-E" "-P" "-m" source)
+;;   :error-patterns '(("^.+:\\(?2:[0-9+]\\):\\(?3:[0-9+]\\) \\(?4:.+\\)$" error))
+;;   :modes 'yaml-mode)

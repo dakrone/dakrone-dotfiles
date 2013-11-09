@@ -64,10 +64,7 @@
     rust-mode
 
     ;; emacs-lisp
-    elisp-slime-nav
-
-    ;; Common Lisp
-    slime paredit
+    elisp-slime-nav paredit
 
     ;; common utility
     quickrun

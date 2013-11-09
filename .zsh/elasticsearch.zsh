@@ -18,23 +18,23 @@ function draines () {
 }
 
 function indices () {
-    curl -s localhost:9200/_cat/indices
+    curl -s localhost:9200/_cat/indices\?v
 }
 
 function shards () {
-    curl -s localhost:9200/_cat/shards
+    curl -s localhost:9200/_cat/shards\?v
 }
 
 function recovery () {
-    curl -s localhost:9200/_cat/recovery
+    curl -s localhost:9200/_cat/recovery\?v
 }
 
 function nodes () {
-    curl -s localhost:9200/_cat/nodes
+    curl -s localhost:9200/_cat/nodes\?v
 }
 
 function master () {
-    curl -s localhost:9200/_cat/master
+    curl -s localhost:9200/_cat/master\?v
 }
 
 function mapping() {

@@ -176,8 +176,8 @@
 
 (modeline-setup)
 ;; Set color preference here
-(modeline-setup-face-light)
-;;(modeline-setup-face-dark)
+;;(modeline-setup-face-light)
+(modeline-setup-face-dark)
 ;; Display the battery level in the bottom bar
 (if (eq nil window-system)
     (display-battery-mode t))

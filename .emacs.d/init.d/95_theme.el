@@ -363,7 +363,7 @@ widget, custom, latex, ediff."
 (add-hook 'clojure-mode-hook 'tweak-clojure-syntax)
 
 ;; Currently using light-colored theme
-;;(dakrone-dark)
+(dakrone-dark)
 ;;(load-theme 'ir-black t)
-(dakrone-light)
+;;(dakrone-light)
 (enable-show-paren-mode)

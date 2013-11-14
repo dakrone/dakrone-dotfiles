@@ -32,11 +32,14 @@
      (define-key python-mode-map (kbd "<backtab>") 'python-back-indent)))
 
 (defun my/python-mode-hook ()
-  (jedi:ac-setup)
 
   ;; autopair
   (setq autopair-handle-action-fns
-        '(autopair-default-handle-action autopair-python-triple-quote-action)))
+        '(autopair-default-handle-action autopair-python-triple-quote-action))
+  (jedi:setup)
+  (jedi:ac-setup)
+  (setq jedi:setup-keys t)
+  (setq jedi:complete-on-dot t))
 
 (add-hook 'python-mode-hook 'my/python-mode-hook)
 
@@ -71,8 +74,8 @@
   (interactive)
   (let ((current-pos (point))
         (regexp-str (format " +\\{%d\\}" python-indent)))
-   (save-excursion
-     (beginning-of-line)
-     (when (re-search-forward regexp-str current-pos t)
-       (beginning-of-line)
-       (delete-char python-indent)))))
+    (save-excursion
+      (beginning-of-line)
+      (when (re-search-forward regexp-str current-pos t)
+        (beginning-of-line)
+        (delete-char python-indent)))))

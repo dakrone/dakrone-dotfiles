@@ -29,9 +29,6 @@
 ;; Treat clipboard input as UTF-8 string first; compound text next, etc.
 (setq x-select-request-type '(UTF8_STRING COMPOUND_TEXT TEXT STRING))
 
-;; Put the column in the status bar
-(column-number-mode)
-
 ;; Transparency
 (when (eq window-system 'ns)
   (set-frame-parameter (selected-frame) 'alpha '(100 100))

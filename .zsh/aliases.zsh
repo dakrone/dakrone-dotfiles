@@ -139,5 +139,7 @@ alias -g nn='notify'
 alias tm='tmux -2 -u -S /tmp/mastermux -f .tmux.master'
 
 # datetime aliases
-alias dt='date "+%Y-%m-%dT%H:%M:%S%zZ"'
+alias dt='gdate "+%Y-%m-%dT%H:%M:%S.%3N%zZ"'
+# Elasticsearch's basic_date_time
+alias bdt='gdate "+%Y%m%dT%H%M%S.%3N%z"'
 alias epoch='date +%s'

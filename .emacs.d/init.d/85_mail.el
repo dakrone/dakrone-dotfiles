@@ -7,7 +7,7 @@
   (require 'epa-file)
   (epa-file-enable)
 
-  (add-to-list 'load-path "~/src/elisp/mu4e")
+  (add-to-list 'load-path "~/src/mu-0.9.9.5/mu4e")
   (require 'mu4e)
 
   (setq mu4e-mu-binary "/usr/local/bin/mu")
@@ -222,7 +222,7 @@ passed in. Also supports ignoring the msg at the point."
   ;; I put a lot of effort (probably too much) into getting the
   ;; 'new mail' icon to go away by showing or hiding it:
   ;; - periodically (this runs even when mu4e isn't running)
-  (setq kdl-mu4e-notify-timer (run-with-timer 0 300 'kdl-notmuch-notify))
+  (setq kdl-mu4e-notify-timer (run-with-timer 0 300 'kdl-mu4e-notify))
   ;; - when the index is updated (this runs when mu4e is running)
   (add-hook 'mu4e-index-updated-hook 'kdl-mu4e-notify)
   ;; - after mail is processed (try to make the icon go away)

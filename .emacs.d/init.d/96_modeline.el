@@ -174,10 +174,22 @@
                       :family "Bitstream Vera Sans Mono" :height 95
                       :foreground "black" :background "#eab700"))
 
-(modeline-setup)
-;; Set color preference here
-;;(modeline-setup-face-light)
-(modeline-setup-face-dark)
+;; (modeline-setup)
+
+;; (if (eq background 'dark)
+;;     (modeline-setup-face-dark)
+;;   (modeline-setup-face-light))
+
+(if (eq background 'dark)
+    (setq sml/theme 'dark)
+  (setq sml/theme 'light))
+
+(sml/setup)
+(setq sml/name-width 40)
+(setq sml/mode-width 'full)
+(add-to-list 'sml/replacer-regexp-list '("^:DB:org" ":org:"))
+(add-to-list 'sml/replacer-regexp-list '("^~/Dropbox/" ":DB:"))
+
 ;; Display the battery level in the bottom bar
 (if (eq nil window-system)
     (display-battery-mode t))

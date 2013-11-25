@@ -9,45 +9,42 @@
 
 (defvar my/install-packages
   '(
-    ;;;; init-loader
+    ;; init-loader
     init-loader
 
-    ;;;; themeing
-    color-theme rainbow-mode rainbow-delimiters maxframe fold-dwim-org
+    ;; themeing
+    color-theme rainbow-mode rainbow-delimiters maxframe leuven-theme
+    smart-mode-line
 
-    ;;;; misc
+    ;; misc
     diminish erc-hl-nicks ercn erc-tweet todochiku twittering-mode yagist
 
-    ;;;; for auto-complete
+    ;; for auto-complete
     auto-complete fuzzy popup ac-slime ac-nrepl
 
-    ;;;; highlight
+    ;; highlight
     ace-jump-mode vline col-highlight
 
-    ;;;; editing utilities
+    ;; editing utilities
     expand-region wrap-region smex windresize autopair ido-hacks ag
     undo-tree mark-multiple iedit ido-ubiquitous ido-vertical-mode
-    yasnippet goto-chg find-file-in-project idle-highlight-mode org org-magit
-    smart-tab anzu
+    yasnippet goto-chg idle-highlight-mode org org-magit smart-tab anzu
 
-    ;;;; buffer utils
+    ;; buffer utils
     popwin
 
-    ;;;; programming
     ;; haskell
     haskell-mode ghc ghci-completion
 
     ;; config
     ssh-config-mode
 
-    ;; flymake
-    flycheck flymake-jslint
+    ;; flycheck
+    flycheck flycheck-tip
 
     ;; clojure
     clojure-mode cider paredit parenface kibit-mode clojure-test-mode
-    clojure-snippets
-    ;;slamhound - doesn't work since nrepl -> cider change
-    javap-mode cider-decompile
+    clojure-snippets cider-tracing cider-decompile javap-mode
 
     ;; perl
     cperl-mode
@@ -56,9 +53,7 @@
     jedi
 
     ;; ruby
-    ruby-block ruby-compilation ruby-end ruby-interpolation
-    ruby-mode ruby-test-mode ruby-tools inf-ruby
-    yari ruby-electric rsense
+    ruby-mode ruby-test-mode inf-ruby yari rsense
 
     ;; rust
     rust-mode
@@ -74,13 +69,11 @@
     zencoding-mode
 
     ;; helm
-    helm helm-gtags helm-descbinds helm-themes helm-ag
+    helm helm-gtags helm-descbinds helm-themes helm-ag helm-cmd-t
 
     ;; git
     magit git-gutter
-
-    init-loader
-))
+    ))
 
 (dolist (pack my/install-packages)
   (unless (package-installed-p pack)

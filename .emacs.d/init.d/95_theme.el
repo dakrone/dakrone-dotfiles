@@ -125,8 +125,8 @@ widget, custom, latex, ediff."
 
      ;; Org
      ;; (org-hide ((t (:foreground "#2e3436"))))
-     (org-level-1 ((t (:bold t :foreground "#edd400" :height 1.5))))
-     (org-level-2 ((t (:bold t :foreground "#729FCF" :height 1.2))))
+     (org-level-1 ((t (:bold t :foreground "#edd400" :height 1.2))))
+     (org-level-2 ((t (:bold t :foreground "#729FCF" :height 1.1))))
      (org-level-3 ((t (:bold t :foreground "cyan1" :height 1.0))))
      ;; (org-level-2 ((t (:bold nil :foreground "#edd400" :height 1.2))))
      ;; (org-level-3 ((t (:bold t :foreground "#6ac214" :height 1.0))))
@@ -314,6 +314,8 @@ widget, custom, latex, ediff."
   (interactive)
   (if (eq window-system 'ns)
       (set-face-background 'default "gray10"))
+  (if (eq window-system 'mac)
+      (set-face-background 'default "gray10"))
   (color-theme-dakrone)
   (set-face-foreground 'paren-face "DimGrey")
   (add-hook 'show-paren-mode-hook 'set-show-paren-face-background-dark)
@@ -329,7 +331,8 @@ widget, custom, latex, ediff."
 
 (defun dakrone-light ()
   (interactive)
-  (load-theme 'tsdh-light)
+  ;;(load-theme 'tsdh-light t)
+  (load-theme 'leuven t)
   (setq frame-background-mode 'light)
   (set-background-color "#fcf4dc")
   (set-face-background 'default "#fcf4dc")
@@ -362,8 +365,10 @@ widget, custom, latex, ediff."
 
 (add-hook 'clojure-mode-hook 'tweak-clojure-syntax)
 
-;; Currently using light-colored theme
-(dakrone-dark)
 ;;(load-theme 'ir-black t)
-;;(dakrone-light)
+
+(if (eq background 'dark)
+    (dakrone-dark)
+  (dakrone-light))
+
 (enable-show-paren-mode)

@@ -28,8 +28,8 @@
 (transient-mark-mode t)
 
 ;; indicate last line
-(setq-default indicate-empty-lines t)
-(setq-default indicate-buffer-boundaries 'right)
+(setq-default indicate-empty-lines nil)
+(setq-default indicate-buffer-boundaries nil)
 
 ;; Disable default scroll bar and tool bar
 (when window-system
@@ -114,13 +114,8 @@
     ad-do-it
     (move-to-window-line orig-line)))
 
-;; expand symbolic link
-(setq-default find-file-visit-truename t)
+;; don't expand symbolic link
+(setq-default find-file-visit-truename nil)
 
 ;; dim parens
 (add-hook 'prog-mode-hook (lambda () (require 'parenface)))
-
-;; Maximize
-(when window-system
-  (require 'maxframe)
-  (add-hook 'window-setup-hook 'maximize-frame t))

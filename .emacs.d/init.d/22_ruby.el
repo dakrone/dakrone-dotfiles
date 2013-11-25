@@ -26,13 +26,7 @@
 (defun my/ruby-mode-hook ()
   ;; auto-complete rsense
   (add-to-list 'ac-sources ac-source-rsense-method)
-  (add-to-list 'ac-sources ac-source-rsense-constant)
-
-  ;; auto insert `end'
-  (ruby-end-mode 1)
-
-  ;; autopair
-  (ruby-electric-mode 1))
+  (add-to-list 'ac-sources ac-source-rsense-constant))
 
 (defvar yari-helm-source-ri-pages
   '((name . "RI documentation")

@@ -11,3 +11,22 @@
 ;; I use notifications on linux
 (when (linux-p)
   (require 'notifications))
+
+;; A little something for https://github.com/railwaycat/emacs-mac-port
+(when (eq window-system 'mac)
+  (setq mac-option-modifier 'meta)
+  (setq mac-command-modifier 'hyper)
+  (global-set-key [(hyper a)] 'mark-whole-buffer)
+  (global-set-key [(hyper v)] 'yank)
+  (global-set-key [(hyper c)] 'kill-ring-save)
+  (global-set-key [(hyper s)] 'save-buffer)
+  (global-set-key [(hyper l)] 'goto-line)
+  (global-set-key [(hyper w)]
+                  (lambda () (interactive) (delete-window)))
+  (global-set-key [(hyper z)] 'undo))
+
+;; Set (dark|light) background, theming will check this in choose the
+;; appropriate theme.
+(defvar background 'light)
+;;(defvar background 'dark)
+

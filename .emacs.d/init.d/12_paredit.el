@@ -21,3 +21,4 @@
 (eval-after-load 'paredit
   '(define-key paredit-mode-map (kbd ")") 'paredit-close-parenthesis))
 
+(global-set-key (kbd "C-x M-p") 'my/enable-paredit-mode)

@@ -3,6 +3,7 @@
 
 (add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/"))
 (package-initialize)
+(setq package-enable-at-startup nil)
 
 ;; load environment value
 (let ((shellenv (concat user-emacs-directory "shellenv.el")))

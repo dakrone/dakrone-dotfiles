@@ -3,6 +3,10 @@
   (set-fontset-font "fontset-default" 'symbol "Monaco")
   (set-default-font "Anonymous Pro")
   (set-face-attribute 'default nil :height 115))
+(when (eq window-system 'mac)
+  (set-fontset-font "fontset-default" 'symbol "Monaco")
+  (set-default-font "Anonymous Pro")
+  (set-face-attribute 'default nil :height 125))
 (when (eq window-system 'x)
   ;; Font family
   (set-fontset-font "fontset-default" 'symbol "Bitstream Vera Sans Mono")

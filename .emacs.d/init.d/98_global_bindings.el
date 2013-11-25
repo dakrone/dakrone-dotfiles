@@ -4,6 +4,7 @@
 (global-set-key (kbd "C-M-z")   'helm-resume)
 (global-set-key (kbd "C-x C-r") 'helm-recentf)
 (global-set-key (kbd "C-x M-o") 'helm-occur)
+(global-set-key (kbd "C-x C-o") 'helm-occur)
 ;;(global-set-key (kbd "C-x C-c") 'helm-M-x)
 (global-set-key (kbd "M-y")     'helm-show-kill-ring)
 (global-set-key (kbd "C-h a")   'helm-apropos)
@@ -11,6 +12,11 @@
 (global-set-key (kbd "C-h e")   'popwin:messages)
 (global-set-key (kbd "C-h C-p") 'popwin:special-display-config)
 (global-set-key (kbd "C-x C-i") 'helm-imenu)
+(global-set-key (kbd "C-c h") 'helm-mini)
+(global-set-key (kbd "C-c M-x") 'helm-M-x)
+(global-set-key (kbd "C-x C-b") 'helm-buffers-list)
+(global-set-key (kbd "C-x f") 'helm-recentf)
+(global-set-key (kbd "C-x C-g") 'helm-cmd-t)
 ;;(global-set-key (kbd "C-x b")   'helm-buffers-list)
 
 ;; M-g mapping
@@ -155,6 +161,7 @@
 
 ;; ==== Window switching ====
 (global-set-key (kbd "M-'") 'other-window)
+(global-set-key (kbd "H-'") 'other-window)
 (global-set-key [C-tab] 'other-window)
 (global-set-key [C-S-tab]
                 (lambda ()
@@ -215,3 +222,40 @@
 (global-set-key (kbd "M-X") 'smex-major-mode-commands)
 ;; This is your old M-x.
 (global-set-key (kbd "C-c C-c M-x") 'execute-extended-command)
+
+;;;; minor key setting
+(autoload 'hs-minor-mode "hideshow" nil t)
+(eval-after-load "hideshow"
+  '(progn
+     (define-key hs-minor-mode-map (kbd "C-c TAB") 'hs-toggle-hiding)
+     (defvar hs-special-modes-alist
+       (mapcar 'purecopy
+               '((c-mode "{" "}" "/[*/]" nil nil)
+                 (c++-mode "{" "}" "/[*/]" nil nil)
+                 (bibtex-mode ("@\\S(*\\(\\s(\\)" 1))
+                 (java-mode "{" "}" "/[*/]" nil nil)
+                 (js-mode "{" "}" "/[*/]" nil)
+                 (javascript-mode  "{" "}" "/[*/]" nil))))))
+
+(add-hook 'js-mode-hook
+          '(lambda ()
+             (require 'hideshow)
+             (hs-minor-mode t)
+             (define-key hs-minor-mode-map (kbd "C-c TAB") 'hs-toggle-hiding)))
+
+(add-hook 'javascript-mode-hook
+          '(lambda ()
+             (require 'hideshow)
+             (hs-minor-mode t)
+             (define-key hs-minor-mode-map (kbd "C-c TAB") 'hs-toggle-hiding)))
+
+;; (makunbound 'overriding-minor-mode-map)
+(define-minor-mode overriding-minor-mode
+  "Most superior minir mode"
+  t  ;; default is enable
+  "" ;; Not display mode-line
+  `((,(kbd "M-a") . backward-paragraph)
+    (,(kbd "M-e") . forward-paragraph)
+    (,(kbd "C-M-j") . dabbrev-expand)
+    (,(kbd "C-M-i") . my/auto-complete)
+    (,(kbd "M-C-o") . other-window)))

@@ -69,12 +69,14 @@
    (global-set-key (kbd "C-c t") 'clojure-jump-between-tests-and-code)
    (lisp-enable-paredit-hook)
    ;; folding ala jcrossley3
-   (require 'fold-dwim-org)
-   (hs-minor-mode t)
-   (fold-dwim-org/minor-mode t)
-   (local-set-key (kbd "C-c TAB") 'fold-dwim-org/minor-mode)
-   (local-set-key (kbd "C-c C-u") 'fold-dwim-hide-all)
-   (local-set-key (kbd "C-c C-o") 'fold-dwim-show-all)))
+   ;; not working right now
+   ;;(require 'fold-dwim-org)
+   ;;(hs-minor-mode t)
+   ;; (fold-dwim-org/minor-mode t)
+   ;; (local-set-key (kbd "C-c TAB") 'fold-dwim-org/minor-mode)
+   ;; (local-set-key (kbd "C-c C-u") 'fold-dwim-hide-all)
+   ;; (local-set-key (kbd "C-c C-o") 'fold-dwim-show-all)
+   ))
 
 ;; Nrepl-mode hooks
 (add-hook 'cider-mode-hook
@@ -107,6 +109,5 @@
 ;; Nrepl-interaction-mode hooks
 (add-hook 'nrepl-interaction-mode-hook
           (lambda ()
-            (require 'nrepl-ritz)
             (set-auto-complete-as-completion-at-point-function)
             (nrepl-turn-on-eldoc-mode)))

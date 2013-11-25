@@ -162,11 +162,6 @@
 ;; grep
 (setq grep-command "ag -i --nocolor --nogroup ")
 
-;; random electric modes
-;;(electric-pair-mode t)
-;;(electric-layout-mode t)
-;;(electric-indent-mode t)
-
 ;; highlight specified words
 (defun my/add-watchwords ()
   (font-lock-add-keywords
@@ -208,5 +203,7 @@ point reaches the beginning or end of the buffer, stop there."
           (lambda ()
             (require 'smart-tab)
             (global-smart-tab-mode 1)
+            (diminish 'smart-tab-mode "st")
             (add-to-list 'smart-tab-disabled-major-modes 'mu4e-compose-mode)
+            (add-to-list 'smart-tab-disabled-major-modes 'erc-mode)
             (add-to-list 'smart-tab-disabled-major-modes 'shell-mode)))

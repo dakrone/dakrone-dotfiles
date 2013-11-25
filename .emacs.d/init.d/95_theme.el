@@ -1,4 +1,5 @@
 ;;; color-theme-dakrone.el --- My dark theme
+;;; Commentary:
 
 ;; Version: 0.0.1
 ;; Keywords: themes
@@ -6,43 +7,10 @@
 ;; Maintainer: Lee Hinman <lee@writequit.org>
 ;; This file is not part of GNU Emacs.
 
-;; color definitions stolen from zenburn
-;; colors with +x are lighter, colors with -x are darker
-(defvar zenburn-fg "#dcdccc")
-(defvar zenburn-bg-1 "#2b2b2b")
-(defvar zenburn-bg "#3f3f3f")
-(defvar zenburn-bg+1 "#4f4f4f")
-(defvar zenburn-bg+2 "#5f5f5f")
-(defvar zenburn-red+1 "#dca3a3")
-(defvar zenburn-red "#cc9393")
-(defvar zenburn-red-1 "#bc8383")
-(defvar zenburn-red-2 "#ac7373")
-(defvar zenburn-red-3 "#9c6363")
-(defvar zenburn-red-4 "#8c5353")
-(defvar zenburn-orange "#dfaf8f")
-(defvar zenburn-yellow "#f0dfaf")
-(defvar zenburn-yellow-1 "#e0cf9f")
-(defvar zenburn-yellow-2 "#d0bf8f")
-(defvar zenburn-green-1 "#5f7f5f")
-(defvar zenburn-green "#7f9f7f")
-(defvar zenburn-green+1 "#8fb28f")
-(defvar zenburn-green+2 "#9fc59f")
-(defvar zenburn-green+3 "#afd8af")
-(defvar zenburn-green+4 "#bfebbf")
-(defvar zenburn-cyan "#93e0e3")
-(defvar zenburn-blue+1 "#94bff3")
-(defvar zenburn-blue "#8cd0d3")
-(defvar zenburn-blue-1 "#7cb8bb")
-(defvar zenburn-blue-2 "#6ca0a3")
-(defvar zenburn-blue-3 "#5c888b")
-(defvar zenburn-blue-4 "#4c7073")
-(defvar zenburn-blue-5 "#366060")
-(defvar zenburn-magenta "#dc8cc3")
+;;; Code:
 
 (defun color-theme-dakrone ()
-  "Cornsilk on black.
-Includes info, diary, font-lock, eshell, sgml, message, gnus,
-widget, custom, latex, ediff."
+  "My custom color theme.  A little bit of everything."
   (interactive)
   (color-theme-install
    '(color-theme-dakrone
@@ -52,25 +20,11 @@ widget, custom, latex, ediff."
       (cursor-color . "white")
       (border-color . "black")
       (background-mode . dark))
-     ;;(default ((t (nil))))
      (default ((t (:background "gray10"))))
-     ;; (modeline ((t (:foreground "black" :background "wheat"))))
-     ;; (mode-line ((t (:foreground "white" :background "darkblack"))))
-     ;; (mode-line-inactive ((t (:foreground "gray20" :background "darkblack"))))
-     ;; (mode-line-buffer-id ((t (:foreground "white" :background "gray20"))))
-     ;; (modeline-mousable ((t (:foreground "black" :background "wheat"))))
-     ;; (modeline-mousable-minor-mode ((t (:foreground "black"
-     ;; :background "wheat"))))
-
-     ;; copy zenburn's modeline stuff
-     (zenburn-strong-1-face ((t (:foreground "#f0dfaf" :weight bold))))
-     (zenburn-strong-2-face ((t (:foreground "#dfaf8f" :weight bold))))
-     (zenburn-warning-face ((t (:foreground "#e0cf9f" :weight bold :underline t))))
-     (zenburn-error-face ((t (:foreground "#bc8383" :weight bold :underline t))))
 
      (mode-line
       ((t (:foreground "#bfebbf" :background "#2b2b2b"))))
-     (mode-line-buffer-id ((t (:inherit zenburn-strong-1-face))))
+     ;; (mode-line-buffer-id ((t (:inherit zenburn-strong-1-face))))
      (mode-line-inactive
       ((t (:foreground "#5f7f5f"  :background "#2b2b2b"))))
 
@@ -167,43 +121,6 @@ widget, custom, latex, ediff."
      (message-separator-face ((t (:foreground "sandy brown"))))
      (message-cited-text-face ((t (:foreground "plum1"))))
      (message-mml-face ((t (:foreground "ForestGreen"))))
-     (gnus-group-news-1-face ((t (:foreground "white" :bold t))))
-     (gnus-group-news-1-empty-face ((t (:foreground "white"))))
-     (gnus-group-news-2-face ((t (:foreground "lightcyan" :bold t))))
-     (gnus-group-news-2-empty-face ((t (:foreground "lightcyan"))))
-     (gnus-group-news-3-face ((t (:foreground "tan" :bold t))))
-     (gnus-group-news-3-empty-face ((t (:foreground "tan"))))
-     (gnus-group-news-4-face ((t (:foreground "white" :bold t))))
-     (gnus-group-news-4-empty-face ((t (:foreground "white"))))
-     (gnus-group-news-5-face ((t (:foreground "wheat" :bold t))))
-     (gnus-group-news-5-empty-face ((t (:foreground "wheat"))))
-     (gnus-group-news-6-face ((t (:foreground "tan" :bold t))))
-     (gnus-group-news-6-empty-face ((t (:foreground "tan"))))
-     (gnus-group-news-low-face ((t (:foreground "DarkTurquoise" :bold t))))
-     (gnus-group-news-low-empty-face ((t (:foreground "DarkTurquoise"))))
-     (gnus-group-mail-1-face ((t (:foreground "white" :bold t))))
-     (gnus-group-mail-1-empty-face ((t (:foreground "gray80"))))
-     (gnus-group-mail-2-face ((t (:foreground "lightcyan" :bold t))))
-     (gnus-group-mail-2-empty-face ((t (:foreground "lightcyan"))))
-     (gnus-group-mail-3-face ((t (:foreground "tan" :bold t))))
-     (gnus-group-mail-3-empty-face ((t (:foreground "tan"))))
-     (gnus-group-mail-low-face ((t (:foreground "aquamarine4" :bold t))))
-     (gnus-group-mail-low-empty-face ((t (:foreground "aquamarine4"))))
-     (gnus-summary-selected-face ((t (:background "deepskyblue4" :underline t))))
-     (gnus-summary-cancelled-face ((t (:foreground "black" :background "gray"))))
-     (gnus-summary-high-ticked-face ((t (:foreground "gray70" :bold t))))
-     (gnus-summary-low-ticked-face ((t (:foreground "gray70" :bold t))))
-     (gnus-summary-normal-ticked-face ((t (:foreground "gray70" :bold t))))
-     (gnus-summary-high-ancient-face ((t (:foreground "SkyBlue" :bold t))))
-     (gnus-summary-low-ancient-face ((t (:foreground "SkyBlue" :italic t))))
-     (gnus-summary-normal-ancient-face ((t (:foreground "SkyBlue"))))
-     (gnus-summary-high-unread-face ((t (:bold t))))
-     (gnus-summary-low-unread-face ((t (:italic t))))
-     (gnus-summary-normal-unread-face ((t (nil))))
-     (gnus-summary-high-read-face ((t (:foreground "PaleGreen" :bold t))))
-     (gnus-summary-low-read-face ((t (:foreground "PaleGreen" :italic t))))
-     (gnus-summary-normal-read-face ((t (:foreground "PaleGreen"))))
-     (gnus-splash-face ((t (:foreground "gold"))))
      (font-latex-bold-face ((t (nil))))
      (font-latex-italic-face ((t (nil))))
      (font-latex-math-face ((t (nil))))
@@ -244,35 +161,7 @@ widget, custom, latex, ediff."
      (ediff-odd-diff-face-A ((t (:foreground "White" :background "Grey"))))
      (ediff-odd-diff-face-B ((t (:foreground "Black" :background "light grey"))))
      (ediff-odd-diff-face-C ((t (:foreground "White" :background "Grey"))))
-     (ediff-odd-diff-face-Ancestor ((t (:foreground "Black" :background "light grey"))))
-     (gnus-emphasis-bold ((t (:bold t))))
-     (gnus-emphasis-italic ((t (:italic t))))
-     (gnus-emphasis-underline ((t (:foreground "white" :background "goldenrod4"))))
-     (gnus-emphasis-underline-bold ((t (:foreground "black" :background "yellow" :bold t :underline t))))
-     (gnus-emphasis-underline-italic ((t (:foreground "black" :background "yellow" :italic t :underline t))))
-     (gnus-emphasis-bold-italic ((t (:bold t :italic t))))
-     (gnus-emphasis-underline-bold-italic ((t (:foreground "black" :background "yellow" :bold t :italic t :underline t))))
-     (gnus-emphasis-highlight-words ((t (:foreground "yellow" :background "black"))))
-     (gnus-signature-face ((t (:italic t))))
-     (gnus-header-from-face ((t (:foreground "wheat"))))
-     (gnus-header-subject-face ((t (:foreground "wheat" :bold t))))
-     (gnus-header-newsgroups-face ((t (:foreground "wheat" :italic t))))
-     (gnus-header-name-face ((t (:foreground "white"))))
-     (gnus-header-content-face ((t (:foreground "tan" :italic t))))
-     (gnus-filterhist-face-1 ((t (nil))))
-     (gnus-splash ((t (:foreground "Brown"))))
-     (gnus-cite-attribution-face ((t (:italic t))))
-     (gnus-cite-face-1 ((t (:foreground "light blue"))))
-     (gnus-cite-face-2 ((t (:foreground "light cyan"))))
-     (gnus-cite-face-3 ((t (:foreground "light yellow"))))
-     (gnus-cite-face-4 ((t (:foreground "light pink"))))
-     (gnus-cite-face-5 ((t (:foreground "pale green"))))
-     (gnus-cite-face-6 ((t (:foreground "beige"))))
-     (gnus-cite-face-7 ((t (:foreground "orange"))))
-     (gnus-cite-face-8 ((t (:foreground "magenta"))))
-     (gnus-cite-face-9 ((t (:foreground "violet"))))
-     (gnus-cite-face-10 ((t (:foreground "medium purple"))))
-     (gnus-cite-face-11 ((t (:foreground "turquoise"))))))
+     (ediff-odd-diff-face-Ancestor ((t (:foreground "Black" :background "light grey"))))))
   (eval-after-load 'diff-mode
     '(progn
        (set-face-foreground 'diff-added "green4")
@@ -290,9 +179,7 @@ widget, custom, latex, ediff."
        (set-face-background 'magit-diff-hunk-header "gray10"))))
 
 ;; Show Paren Mode
-(setq show-paren-style 'expression)
-
-(defun enable-show-paren-mode ()
+(defun enable-show-paren-mode () "Enable show-paren mode."
   (interactive)
   (show-paren-mode t)
   (setq show-paren-delay 0
@@ -365,10 +252,10 @@ widget, custom, latex, ediff."
 
 (add-hook 'clojure-mode-hook 'tweak-clojure-syntax)
 
-;;(load-theme 'ir-black t)
-
 (if (eq background 'dark)
     (dakrone-dark)
   (dakrone-light))
 
 (enable-show-paren-mode)
+
+;;; 95_theme.el ends here

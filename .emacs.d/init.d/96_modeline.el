@@ -68,19 +68,23 @@
      )))
 
 (defun modeline-setup-face-light ()
-  ;; (set-face-attribute 'mode-line
-  ;;                     :inherit 'mode-line-face
-  ;;                     ;; :foreground "gray60" :background "gray20"
-  ;;                     ;; :inverse-video nil
-  ;;                     ;; :family "Bitstream Vera Sans Mono"
-  ;;                     :height 85
-  ;;                     ;;:box '(:line-width 3 :color "gray20" :style nil)
-  ;;                     )
-  ;; (set-face-attribute 'mode-line-inactive nil
-  ;;                     :foreground "gray40" :background "gray15"
-  ;;                     :inverse-video nil
-  ;;                     :family "Bitstream Vera Sans Mono" :height 85
-  ;;                     :box '(:line-width 3 :color "gray15" :style nil))
+  (set-face-attribute 'mode-line nil
+                      :inherit 'mode-line-face
+                      :foreground "gray10"
+                      :background "#81b0ed"
+                      ;; :inverse-video nil
+                      ;; :family "Bitstream Vera Sans Mono"
+                      :height 140
+                      ;;:box '(:line-width 3 :color "gray20" :style nil)
+                      )
+  (set-face-attribute 'mode-line-inactive nil
+                      ;; :foreground "gray40"
+                      ;; :background "gray15"
+                      ;; :inverse-video nil
+                      ;; :family "Bitstream Vera Sans Mono"
+                      :height 140
+                      ;; :box '(:line-width 3 :color "gray15" :style nil)
+                      )
   (set-face-attribute 'mode-line-read-only-face nil
                       :inherit 'mode-line-face
                       :foreground "#4271ae"
@@ -174,21 +178,11 @@
                       :family "Bitstream Vera Sans Mono" :height 95
                       :foreground "black" :background "#eab700"))
 
-;; (modeline-setup)
-
-;; (if (eq background 'dark)
-;;     (modeline-setup-face-dark)
-;;   (modeline-setup-face-light))
+(modeline-setup)
 
 (if (eq background 'dark)
-    (setq sml/theme 'dark)
-  (setq sml/theme 'light))
-
-(sml/setup)
-(setq sml/name-width 40)
-(setq sml/mode-width 'full)
-(add-to-list 'sml/replacer-regexp-list '("^:DB:org" ":org:"))
-(add-to-list 'sml/replacer-regexp-list '("^~/Dropbox/" ":DB:"))
+    (modeline-setup-face-dark)
+  (modeline-setup-face-light))
 
 ;; Display the battery level in the bottom bar
 (if (eq nil window-system)

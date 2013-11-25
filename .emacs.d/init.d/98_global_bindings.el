@@ -5,7 +5,6 @@
 (global-set-key (kbd "C-x C-r") 'helm-recentf)
 (global-set-key (kbd "C-x M-o") 'helm-occur)
 (global-set-key (kbd "C-x C-o") 'helm-occur)
-;;(global-set-key (kbd "C-x C-c") 'helm-M-x)
 (global-set-key (kbd "M-y")     'helm-show-kill-ring)
 (global-set-key (kbd "C-h a")   'helm-apropos)
 (global-set-key (kbd "C-h m")   'helm-man-woman)
@@ -17,13 +16,12 @@
 (global-set-key (kbd "C-x C-b") 'helm-buffers-list)
 (global-set-key (kbd "C-x f") 'helm-recentf)
 (global-set-key (kbd "C-x C-g") 'helm-cmd-t)
-;;(global-set-key (kbd "C-x b")   'helm-buffers-list)
+(global-set-key (kbd "C-c C-a") 'helm-ag)
 
 ;; M-g mapping
 (global-set-key (kbd "M-g .") 'helm-ag)
 (global-set-key (kbd "M-g >") 'helm-ag-this-file)
 (global-set-key (kbd "M-g ,") 'helm-ag-pop-stack)
-(global-set-key (kbd "M-g M-i") 'import-popwin)
 (global-set-key (kbd "M-g M-f") 'ffap)
 
 (global-set-key (kbd "C-x C-l") 'toggle-truncate-lines)
@@ -115,11 +113,6 @@
 (global-set-key (kbd "C-c y") 'bury-buffer)
 (global-set-key (kbd "C-c r") 'revert-buffer)
 
-;; Window switching. (C-x o goes to the next window)
-(windmove-default-keybindings) ;; Shift+direction
-(global-set-key (kbd "C-x O") (lambda () (interactive) (other-window -1)))
-(global-set-key (kbd "C-x C-o") (lambda () (interactive) (other-window 2)))
-
 ;; Start eshell or switch to it if it's active.
 (global-set-key (kbd "C-x m") 'eshell)
 
@@ -152,12 +145,6 @@
   (lambda () (interactive)
     (let ((case-fold-search isearch-case-fold-search))
       (occur (if isearch-regexp isearch-string (regexp-quote isearch-string))))))
-
-;; Fullscreen (start fullscreen)
-;; (when (eq window-system 'ns)
-;;   (defun toggle-fullscreen () (interactive) (ns-toggle-fullscreen))
-;;   (ns-toggle-fullscreen)
-;;   (global-set-key [f11] 'toggle-fullscreen))
 
 ;; ==== Window switching ====
 (global-set-key (kbd "M-'") 'other-window)

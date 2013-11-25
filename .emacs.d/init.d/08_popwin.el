@@ -49,3 +49,5 @@
 ;; direx
 (push '(direx:direx-mode :position left :width 40 :dedicated t)
       popwin:special-display-config)
+
+(push '("*Occur*" :stick t) popwin:special-display-config)

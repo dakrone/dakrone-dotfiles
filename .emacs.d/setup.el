@@ -28,6 +28,7 @@
     expand-region wrap-region smex windresize autopair ido-hacks ag
     undo-tree mark-multiple iedit ido-ubiquitous ido-vertical-mode
     yasnippet goto-chg idle-highlight-mode org org-magit smart-tab anzu
+    smartparens
 
     ;; buffer utils
     popwin

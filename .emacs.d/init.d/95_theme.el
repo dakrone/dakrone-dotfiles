@@ -256,6 +256,6 @@
     (dakrone-dark)
   (dakrone-light))
 
-(enable-show-paren-mode)
+;; (enable-show-paren-mode)
 
 ;;; 95_theme.el ends here

@@ -14,8 +14,8 @@
 (global-set-key (kbd "C-c h") 'helm-mini)
 (global-set-key (kbd "C-c M-x") 'helm-M-x)
 (global-set-key (kbd "C-x C-b") 'helm-buffers-list)
-(global-set-key (kbd "C-x f") 'helm-recentf)
-(global-set-key (kbd "C-x C-g") 'helm-cmd-t)
+(global-set-key (kbd "C-x C-r") 'helm-recentf)
+(global-set-key (kbd "C-x f") 'helm-cmd-t)
 (global-set-key (kbd "C-c C-a") 'helm-ag)
 
 ;; M-g mapping

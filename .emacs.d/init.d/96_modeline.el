@@ -102,7 +102,7 @@
   (set-face-attribute 'mode-line-filename-face nil
                       :inherit 'mode-line-face
                       :foreground "#30609d"
-                      :height 95
+                      :height 105
                       :weight 'bold)
   (set-face-attribute 'mode-line-position-face nil
                       :inherit 'mode-line-face

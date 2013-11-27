@@ -16,3 +16,7 @@
 .emacs.d/init.d/disabled/*
 .emacs.d/woman_cache.el
 .emacs.d/org-clock-save.el
+.emacs.d/flycheck*
+.emacs.d/semanticdb
+.emacs.d/ede-projects.el
+.emacs.d/srecode-map.el

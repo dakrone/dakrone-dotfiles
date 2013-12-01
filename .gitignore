@@ -20,3 +20,5 @@
 .emacs.d/semanticdb
 .emacs.d/ede-projects.el
 .emacs.d/srecode-map.el
+.emacs.d/projectile-bookmarks*
+.emacs.d/projectile.cache

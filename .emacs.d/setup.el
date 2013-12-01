@@ -28,7 +28,7 @@
     expand-region wrap-region smex windresize autopair ido-hacks ag
     undo-tree mark-multiple iedit ido-ubiquitous ido-vertical-mode
     yasnippet goto-chg idle-highlight-mode org org-magit smart-tab anzu
-    smartparens
+    smartparens flx-ido projectile
 
     ;; buffer utils
     popwin
@@ -69,7 +69,7 @@
     zencoding-mode
 
     ;; helm
-    helm helm-gtags helm-descbinds helm-themes helm-ag helm-cmd-t
+    helm helm-gtags helm-descbinds helm-themes helm-ag helm-projectile
 
     ;; git
     magit git-gutter

@@ -1,6 +1,10 @@
 ;; ==== Ido stuff ====
-(ido-mode t)
-(setq ido-enable-flex-matching t)   ; enable fuzzy matching
+(require 'flx-ido)
+(ido-mode 1)
+(flx-ido-mode 1)
+;; disable ido faces to see flx highlights.
+(setq ido-use-faces nil)
+;;(setq ido-enable-flex-matching t)   ; enable fuzzy matching
 (setq ido-execute-command-cache nil)
 (defun ido-execute-command ()
   (interactive)

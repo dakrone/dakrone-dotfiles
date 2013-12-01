@@ -30,3 +30,7 @@
 (defvar background 'light)
 ;;(defvar background 'dark)
 
+;; brew install coreutils
+(when (macosx-p)
+  (setq insert-directory-program "gls")
+  (setq dired-listing-switches "-aBhl --group-directories-first"))

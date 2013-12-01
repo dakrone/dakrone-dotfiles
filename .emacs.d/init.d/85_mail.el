@@ -85,8 +85,8 @@
         ;; mu4e-html2text-command "/usr/local/bin/html2text -nobs"
         ;; mu4e-html2text-command
         ;; "/usr/bin/html2markdown | fgrep -v '&nbsp_place_holder;'"
-        ;; check for new messages ever 150 seconds (2.5 min)
-        mu4e-update-interval 150)
+        ;; check for new messages ever 600 seconds (10 min)
+        mu4e-update-interval 600)
 
    ;; Multi-account support
   (defun kdl-mu4e-current-account (&optional msg ignore-message-at-point)
@@ -222,7 +222,7 @@ passed in. Also supports ignoring the msg at the point."
   ;; I put a lot of effort (probably too much) into getting the
   ;; 'new mail' icon to go away by showing or hiding it:
   ;; - periodically (this runs even when mu4e isn't running)
-  (setq kdl-mu4e-notify-timer (run-with-timer 0 300 'kdl-mu4e-notify))
+  (setq kdl-mu4e-notify-timer (run-with-timer 0 500 'kdl-mu4e-notify))
   ;; - when the index is updated (this runs when mu4e is running)
   (add-hook 'mu4e-index-updated-hook 'kdl-mu4e-notify)
   ;; - after mail is processed (try to make the icon go away)

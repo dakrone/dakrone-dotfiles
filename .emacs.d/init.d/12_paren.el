@@ -22,18 +22,21 @@
                 slime-repl-mode-hook))
   (add-hook hook 'my/enable-paredit-mode))
 
-(global-set-key (kbd "C-x M-p") 'my/enable-paredit-mode)
-
-;; Smartparens
-(require 'smartparens-config)
-(smartparens-global-strict-mode t)
+;; Smartparens - not smart enough!
+;; (require 'smartparens-config)
+(smartparens-global-mode t)
+;; (smartparens-global-strict-mode t)
+(show-smartparens-global-mode t)
 
 (add-hook 'smartparens-mode-hook
           (lambda ()
-            (show-smartparens-mode t)
-            (sp-local-pair 'sh-mode "\\\"" nil :actions nil)
-            ;(sp-local-pair 'sh-mode "\"" nil :actions :rem)
-            (sp-local-pair 'sh-mode "\"" "\"")))
+            (show-smartparens-mode t)))
+
+(add-hook 'sh-mode-hook
+          (lambda ()
+            ;; Remove when https://github.com/Fuco1/smartparens/issues/257
+            ;; is fixed
+            (setq sp-autoescape-string-quote nil)))
 
 (sp-use-paredit-bindings)
 

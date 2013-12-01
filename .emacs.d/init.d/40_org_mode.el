@@ -71,9 +71,13 @@
      (unless (boundp 'org-babel-default-header-args:sh)
        (setq org-babel-default-header-args:sh '()))
 
-     ;; add a default shebang header argument
+     ;; add a default shebang header argument shell scripts
      (add-to-list 'org-babel-default-header-args:sh
                   '(:shebang . "#!/usr/bin/env zsh"))
+
+     ;; add a default shebang header argument for python
+     (add-to-list 'org-babel-default-header-args:python
+                  '(:shebang . "#!/usr/bin/env python"))
 
      ;; I don't want to be prompted on every code block evaluation
      (setq org-confirm-babel-evaluate nil)

@@ -2,42 +2,42 @@
 
 echo "Gathering dotfiles..."
 
-cp -f -v ~/.vimrc .
-cp -f -v ~/.zshrc .
+cp -f ~/.vimrc .
+cp -f ~/.zshrc .
 mkdir -p .zsh
-cp -f -rv ~/.zsh .
-cp -f -v ~/.important_commands .
-cp -f -v ~/.screenrc .
+cp -f -r ~/.zsh .
+cp -f ~/.important_commands .
+cp -f ~/.screenrc .
 mkdir -p .vim
-cp -f -rv ~/.vim .
-cp -f -v ~/.nsmcrc .
-cp -f -v ~/.vimperatorrc .
-cp -f -v ~/.vromerc .
+cp -f -r ~/.vim .
+cp -f ~/.nsmcrc .
+cp -f ~/.vimperatorrc .
+cp -f ~/.vromerc .
 mkdir -p .vimperator
-cp -f -rv ~/.vimperator .
+cp -f -r ~/.vimperator .
 mkdir -p .config/irb
-cp -f -rv ~/.config/irb .config/
-cp -f -v ~/.irbrc .
-cp -f -v ~/.autotest .
+cp -f -r ~/.config/irb .config/
+cp -f ~/.irbrc .
+cp -f ~/.autotest .
 mkdir -p .newsbeuter
-cp -f -v ~/.newsbeuter/config .newsbeuter/config
-cp -f -v ~/.conkerorrc .
+cp -f ~/.newsbeuter/config .newsbeuter/config
+cp -f ~/.conkerorrc .
 mkdir -p .elinks
-cp -f -v ~/.elinks/elinks.conf .elinks
-cp -f -v ~/.gitconfig .
-cp -f -v /usr/local/etc/polipo.conf .
-cp -f -v /usr/local/etc/pdnsd.conf .
-cp -f -v /Library/LaunchDaemons/pdnsd.plist .
-cp -f -v ~/.pythonstartup .
+cp -f ~/.elinks/elinks.conf .elinks
+cp -f ~/.gitconfig .
+cp -f /usr/local/etc/polipo.conf .
+cp -f /usr/local/etc/pdnsd.conf .
+cp -f /Library/LaunchDaemons/pdnsd.plist .
+cp -f ~/.pythonstartup .
 
 mkdir -p .irssi
-cp -f -v ~/.irssi/config .irssi/
-cp -f -v ~/.irssi/default.theme .irssi/
-cp -f -v ~/.irssi/tzu.theme .irssi/
-cp -f -v ~/.tmux.* .
+cp -f ~/.irssi/config .irssi/
+cp -f ~/.irssi/default.theme .irssi/
+cp -f ~/.irssi/tzu.theme .irssi/
+cp -f ~/.tmux.* .
 
 mkdir -p .emacs.d
-cp -f -rv ~/.emacs.d .
+cp -f -r ~/.emacs.d .
 rm -rf .emacs.d/elpa
 rm -f .emacs.d/history
 # Remove elc files

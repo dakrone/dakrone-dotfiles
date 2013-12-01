@@ -9,7 +9,7 @@
   (setq temporary-file-directory "/mnt/ramdisk/"))
 
 ;; for GC
-(setq gc-cons-threshold (* gc-cons-threshold 10))
+(setq gc-cons-threshold 20000000)
 
 ;; echo stroke
 (setq echo-keystrokes 0.1)

@@ -1,8 +1,9 @@
-;; mail-related things
+;; mail-related (mu4e) things
 
 ;; ==== Mail stuff ====
 ;; mu4e stuff
-(when window-system
+(defun mail ()
+  (interactive)
   ;; gpg stuff
   (require 'epa-file)
   (epa-file-enable)

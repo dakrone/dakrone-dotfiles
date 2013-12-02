@@ -1,0 +1,37 @@
+#!/usr/bin/env python
+
+"""
+Command-line tool to validate and pretty-print JSON.
+
+Based on `python -mjson.tool`.
+
+Usage::
+
+    $ echo '{"json":"obj"}' | pj
+    {
+        "json": "obj"
+    }
+
+Author: Lee Hinman <lee@writequit.org>, 2013
+"""
+
+import json
+import sys
+
+from StringIO import StringIO
+
+
+def format_json_code(code):
+    """
+    Parses json code and formats it
+    """
+    obj = json.loads(code)
+    output = StringIO()
+
+    json.dump(obj, output, sort_keys=True, indent=2)
+
+    return output.getvalue()
+
+
+if __name__ == '__main__':
+    print(format_json_code(sys.stdin.read()))

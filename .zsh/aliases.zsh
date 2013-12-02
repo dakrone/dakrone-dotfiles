@@ -127,10 +127,6 @@ alias -g kps='knife sq ps'
 alias -g kst='knife sq status'
 alias -g kex='knife sq exec'
 
-# global json prettification
-alias -g pj='python -mjson.tool'
-alias -g Pj='python -mjson.tool'
-
 # get source deps
 alias getsource='lein pom && maven dependency:sources'
 

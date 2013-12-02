@@ -1,0 +1,5 @@
+#!/bin/sh
+
+# Display health of Elasticsearch cluster
+
+curl -s localhost:9200/_cat/health\?v

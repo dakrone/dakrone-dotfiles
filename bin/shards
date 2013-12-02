@@ -1,0 +1,5 @@
+#!/bin/sh
+
+# Display Shards of Elasticsearch cluster
+
+curl -s localhost:9200/_cat/shards/$1\?v

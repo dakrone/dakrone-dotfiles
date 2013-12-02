@@ -1,0 +1,5 @@
+#!/bin/sh
+
+# Display Recovery of Elasticsearch cluster
+
+curl -s localhost:9200/_cat/recovery/$1\?v

@@ -17,30 +17,6 @@ function draines () {
     curl -s p.draines.com/$1 | zsh
 }
 
-function indices () {
-    curl -s localhost:9200/_cat/indices\?v
-}
-
-function shards () {
-    curl -s localhost:9200/_cat/shards\?v
-}
-
-function recovery () {
-    curl -s localhost:9200/_cat/recovery\?v
-}
-
-function nodes () {
-    curl -s localhost:9200/_cat/nodes\?v
-}
-
-function master () {
-    curl -s localhost:9200/_cat/master\?v
-}
-
-function mapping() {
-    curl -s localhost:9200/$1/_mapping | python -mjson.tool
-}
-
 function health () {
     curl -s p.draines.com/1336417317985b7d30212.txt | zsh
 }

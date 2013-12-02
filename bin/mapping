@@ -1,0 +1,5 @@
+#!/bin/sh
+
+# Display Indices of Elasticsearch cluster
+
+curl -s localhost:9200/$1/_mapping | python -mjson.tool

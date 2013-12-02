@@ -1,0 +1,5 @@
+#!/bin/sh
+
+# Display Indices of Elasticsearch cluster
+
+curl -s localhost:9200/_cat/indices/$1\?v

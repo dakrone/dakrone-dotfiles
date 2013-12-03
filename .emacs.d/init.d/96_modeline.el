@@ -185,5 +185,6 @@
   (modeline-setup-face-light))
 
 ;; Display the battery level in the bottom bar
-(if (eq nil window-system)
-    (display-battery-mode t))
+;; (if (eq nil window-system)
+;;     (display-battery-mode 1)
+;;     )

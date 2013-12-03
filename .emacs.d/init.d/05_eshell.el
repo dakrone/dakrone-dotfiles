@@ -3,7 +3,8 @@
 (add-hook
  'eshell-mode-hook
  (lambda ()
-   (defalias 'emacs 'find-file)))
+   (defalias 'emacs 'find-file)
+   (setenv "TERM" "xterm-256color")))
 
 (defun eshell/emacs (file)
   (find-file file))
@@ -20,3 +21,20 @@
       (tyler-eshell-view-file (pop args)))))
 
 (defalias 'eshell/more 'eshell/less)
+
+(eval-after-load 'esh-opt
+  '(progn
+     (require 'em-cmpl)
+     (require 'em-prompt)
+     (require 'em-term)
+     ;; TODO: for some reason requiring this here breaks it, but
+     ;; requiring it after an eshell session is started works fine.
+     ;; (require 'eshell-vc)
+     (setenv "PAGER" "cat")
+     ; (set-face-attribute 'eshell-prompt nil :foreground "turquoise1")
+     (add-to-list 'eshell-visual-commands "ssh")
+     (add-to-list 'eshell-visual-commands "tail")
+     (add-to-list 'eshell-command-completions-alist
+                  '("gunzip" "gz\\'"))
+     (add-to-list 'eshell-command-completions-alist
+                  '("tar" "\\(\\.tar|\\.tgz\\|\\.tar\\.gz\\)\\'"))))

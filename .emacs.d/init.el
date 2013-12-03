@@ -20,3 +20,4 @@
 (setq custom-file "~/.emacs.d/custom.el")
 (load custom-file)
 (put 'upcase-region 'disabled nil)
+(put 'narrow-to-region 'disabled nil)

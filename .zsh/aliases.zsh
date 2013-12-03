@@ -20,11 +20,6 @@ alias ll='ls -lh'
 alias l='ls -lh'
 alias la='ls -alh'
 alias lr='ls -lR'
-# for sl: http://practicalthought.com/sl/
-alias ss='sl'
-# if you have ls++, uncomment this
-# alias ll='ls++'
-# alias la='ls++ -a'
 # quickjump to directories
 alias j='z'
 # various jump options
@@ -114,7 +109,6 @@ alias uc='ledger -U reg'
 # show budgets starting in march (march is the first month I had complete
 # transactions for the whole month
 alias budget='ledger --budget -b Mar -M reg expenses'
-alias ytdbug='ledger -M -b Mar budget'
 # classpath reading! (wheeeeeee...)
 alias rcp="tr ':' '\n'"
 # lein aliases

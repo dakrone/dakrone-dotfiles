@@ -13,7 +13,7 @@
     init-loader
 
     ;; themeing
-    color-theme rainbow-mode rainbow-delimiters maxframe leuven-theme
+    color-theme rainbow-mode rainbow-delimiters maxframe leuven-theme powerline
 
     ;; misc
     diminish erc-hl-nicks ercn erc-tweet todochiku twittering-mode yagist

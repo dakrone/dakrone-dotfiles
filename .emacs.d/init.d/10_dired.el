@@ -1,5 +1,6 @@
 ;;;; dired
 (require 'dired)
+(require 'dired-x)
 ;; Not create new buffer, if you chenge directory in dired
 (put 'dired-find-alternate-file 'disabled nil)
 (define-key dired-mode-map (kbd "RET") 'dired-find-alternate-file)

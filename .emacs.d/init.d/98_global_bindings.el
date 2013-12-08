@@ -26,6 +26,17 @@
 
 (global-set-key (kbd "C-x C-l") 'toggle-truncate-lines)
 
+;; join on killing lines
+(defun kill-and-join-forward (&optional arg)
+  "If at end of line, join with following; otherwise kill line.
+Deletes whitespace at join."
+  (interactive "P")
+  (if (and (eolp) (not (bolp)))
+      (delete-indentation t)
+    (kill-line arg)))
+
+(global-set-key (kbd "C-k") 'kill-and-join-forward)
+
 ;; ace-jump
 (global-set-key (kbd "C-c SPC") 'ace-jump-mode)
 

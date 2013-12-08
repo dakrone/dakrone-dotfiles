@@ -119,3 +119,6 @@
 
 ;; dim parens
 (add-hook 'prog-mode-hook (lambda () (require 'parenface)))
+
+;; tab-width of 2
+(setq default-tab-width 2)

@@ -1,7 +1,5 @@
 ;; Java things
 
-(setq default-tab-width 4)
-
 (add-hook
  'java-mode-hook
  (lambda ()

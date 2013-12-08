@@ -40,6 +40,7 @@
 
 ;; always turn whitespace mode on
 (whitespace-mode t)
+(diminish 'whitespace-mode)
 (add-hook 'prog-mode-hook (lambda ()
                             (whitespace-mode t)
                             (subword-mode t)

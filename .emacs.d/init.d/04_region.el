@@ -20,6 +20,7 @@
 
 ;; wrap-region
 (wrap-region-global-mode t)
+(diminish 'wrap-region-mode)
 
 (wrap-region-add-wrapper "*" "*" nil 'org-mode)
 (wrap-region-add-wrapper "_" "_" nil 'org-mode)

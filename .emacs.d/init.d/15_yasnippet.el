@@ -23,7 +23,8 @@
      (clojure-snippets-initialize)
      ;; snippet-mode for *.yasnippet files
      (add-to-list 'auto-mode-alist '("\\.yasnippet$" . snippet-mode))
-     (yas-reload-all)))
+     (yas-reload-all)
+     (diminish 'yas-minor-mode)))
 
 ;; helm interface
 (eval-after-load "helm-config"

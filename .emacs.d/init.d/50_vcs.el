@@ -18,7 +18,7 @@
             (global-set-key (kbd "C-x p") 'git-gutter:previous-hunk)
             (global-set-key (kbd "C-x n") 'git-gutter:next-hunk)
             (global-set-key (kbd "C-c G") 'git-gutter:popup-hunk)
-            (diminish 'git-gutter-mode "gg")))
+            (diminish 'git-gutter-mode)))
 
 ;; (eval-after-load "git-gutter"
 ;;   '(progn

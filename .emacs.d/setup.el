@@ -58,6 +58,9 @@
     ;; rust
     rust-mode
 
+    ;; go
+    go-mode
+
     ;; emacs-lisp
     elisp-slime-nav paredit
 

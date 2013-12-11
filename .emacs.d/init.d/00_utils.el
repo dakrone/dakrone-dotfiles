@@ -27,8 +27,8 @@
 
 ;; Set (dark|light) background, theming will check this in choose the
 ;; appropriate theme.
-(defvar background 'light)
-;;(defvar background 'dark)
+;;(defvar background 'light)
+(defvar background 'dark)
 
 ;; brew install coreutils
 (when (macosx-p)

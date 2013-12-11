@@ -69,7 +69,7 @@
       (":body-encoding - encoding type for body string")
       (":client-params - apache http client params")
       (":coerce - when to coerce response body: :always, :unexceptional, :exceptional")
-      (":conn-timetou - timeout for connection")
+      (":conn-timeout - timeout for connection")
       (":connection-manager - connection pooling manager")
       (":content-type - content-type for request")
       (":cookie-store - CookieStore object to store/retrieve cookies")

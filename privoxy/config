@@ -1,0 +1,71 @@
+confdir /usr/local/etc/privoxy
+logdir /usr/local/var/log/privoxy
+logfile privoxy.log
+#hostname hostname.example.org
+listen-address  127.0.0.1:8228
+toggle  1
+enable-remote-toggle  0
+enable-remote-http-toggle  0
+enable-edit-actions 1
+enforce-blocks 0
+buffer-limit 4096
+enable-proxy-authentication-forwarding 0
+forwarded-connect-retries  0
+accept-intercepted-requests 0
+allow-cgi-request-crunching 0
+split-large-forms 0
+keep-alive-timeout 15
+tolerate-pipelining 1
+#default-server-timeout 60
+#connection-sharing 1
+socket-timeout 300
+max-client-connections 256
+
+# To chain Privoxy and Tor, both running on the same system:
+# forward-socks5   /               127.0.0.1:9050 .
+
+#
+#  2.4. actionsfile
+#  =================
+#
+actionsfile match-all.action # Actions that are applied to all sites and maybe overruled later on.
+actionsfile default.action   # Main actions file
+actionsfile user.action      # User customizations
+actionsfile block-trackers.action # Block all trackers. This is the core script.
+actionsfile block-facebook.action # Block Facebook. Remove this if you find it too restrictive.
+
+#
+#  2.5. filterfile
+#  ================
+#
+filterfile default.filter
+filterfile user.filter      # User customizations
+filterfile plus-one.filter # Block Google's plus one script.
+#
+#  3.1. debug
+#  ===========
+#
+#      The available debug levels are:
+#
+#        debug     1 # Log the destination for each request Privoxy let through. See also debug 1024.
+#        debug     2 # show each connection status
+#        debug     4 # show I/O status
+#        debug     8 # show header parsing
+#        debug    16 # log all data written to the network
+#        debug    32 # debug force feature
+#        debug    64 # debug regular expression filters
+#        debug   128 # debug redirects
+#        debug   256 # debug GIF de-animation
+#        debug   512 # Common Log Format
+#        debug  1024 # Log the destination for requests Privoxy didn't let through, and the reason why.
+#        debug  2048 # CGI user interface
+#        debug  4096 # Startup banner and warnings.
+#        debug  8192 # Non-fatal errors
+#        debug 32768 # log all data read from the network
+#        debug 65536 # Log the applying actions
+#
+#debug     1 # Log the destination for each request Privoxy let through. See also debug 1024.
+#debug  1024 # Actions that are applied to all sites and maybe overruled later on.
+#debug  4096 # Startup banner and warnings
+#debug  8192 # Non-fatal errors
+

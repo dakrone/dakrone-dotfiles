@@ -1,0 +1,4 @@
+# Filter Google's plus one Javascript bug.
+FILTER: plusone
+s@https://apis.google.com/js/plusone.js@http://127.0.0.1/plusone-blocked@g
+

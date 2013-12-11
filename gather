@@ -27,6 +27,7 @@ cp -f ~/.elinks/elinks.conf .elinks
 cp -f ~/.gitconfig .
 cp -f /usr/local/etc/polipo.conf .
 cp -f /usr/local/etc/pdnsd.conf .
+cp -f -r /usr/local/etc/privoxy .
 cp -f /Library/LaunchDaemons/pdnsd.plist .
 cp -f ~/.pythonstartup .
 

@@ -30,6 +30,7 @@
 
      ;; back to mine
      (highlight ((t (:foreground "wheat" :background "darkslategray"))))
+     (linum ((t (:foreground "gray20"))))
      (minibuffer-prompt ((t (:foreground "cyan"))))
      (bold ((t (:bold t))))
      (italic ((t (:italic t))))

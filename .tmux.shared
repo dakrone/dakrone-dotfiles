@@ -29,6 +29,9 @@ bind M setw monitor-activity on
 
 ############
 
+# use M-' to switch panes
+bind-key -n C-M-"'" select-pane -t :.+
+
 # screen ^C c
 unbind-key ^C
 bind-key ^C new-window

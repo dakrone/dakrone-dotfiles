@@ -207,3 +207,6 @@ point reaches the beginning or end of the buffer, stop there."
             (add-to-list 'smart-tab-disabled-major-modes 'mu4e-compose-mode)
             (add-to-list 'smart-tab-disabled-major-modes 'erc-mode)
             (add-to-list 'smart-tab-disabled-major-modes 'shell-mode)))
+
+(setq smooth-scroll-margin 4)
+(global-yascroll-bar-mode 1)

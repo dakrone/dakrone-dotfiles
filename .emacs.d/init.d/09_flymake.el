@@ -24,6 +24,7 @@
           (lambda ()
             (require 'flycheck-tip)
             (global-set-key (kbd "C-c C-n") 'flycheck-tip-cycle)
+            (global-set-key (kbd "C-c C-p") 'flycheck-tip-cycle-reverse)
             (diminish 'flycheck-mode "fc")
             ;; Require google-this
             (require 'google-this)

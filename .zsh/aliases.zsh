@@ -34,6 +34,7 @@ alias egrep='egrep --color=auto'
 alias fgrep='fgrep --color=auto'
 alias g='fgrep -i --color=auto'
 alias gn='fgrep -i -n --color=auto'
+alias ag='ag --pager "less -FRX"'
 alias kat='pygmentize -f terminal -g'
 
 # cd helpers

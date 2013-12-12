@@ -26,7 +26,7 @@
     ace-jump-mode vline col-highlight
 
     ;; editing utilities
-    expand-region wrap-region smex windresize autopair ido-hacks ag
+    expand-region wrap-region smex windresize ido-hacks ag
     undo-tree mark-multiple iedit ido-ubiquitous ido-vertical-mode
     yasnippet goto-chg idle-highlight-mode org org-magit smart-tab anzu
     smartparens flx-ido projectile smooth-scrolling yascroll

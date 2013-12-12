@@ -208,5 +208,12 @@ point reaches the beginning or end of the buffer, stop there."
             (add-to-list 'smart-tab-disabled-major-modes 'erc-mode)
             (add-to-list 'smart-tab-disabled-major-modes 'shell-mode)))
 
+;; keep a margin of 4 rows when smooth scrolling
 (setq smooth-scroll-margin 4)
+;; show a pretty scroll bar while scrolling
 (global-yascroll-bar-mode 1)
+;; single-space still ends a sentence
+(setq sentence-end-double-space nil)
+;; track key frequencies
+(keyfreq-mode 1)
+(keyfreq-autosave-mode 1)

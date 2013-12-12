@@ -62,6 +62,9 @@
     ;; go
     go-mode
 
+    ;; java
+    emacs-eclim
+
     ;; emacs-lisp
     elisp-slime-nav paredit
 

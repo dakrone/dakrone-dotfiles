@@ -21,3 +21,13 @@
 ;;           (lambda ()
 ;;             (add-hook 'after-save-hook 'malabar-compile-file-silently
 ;;                       nil t)))
+
+;; Eclim things
+
+(add-hook
+ 'java-mode-hook
+ (lambda ()
+   (require 'eclim)
+   (global-eclim-mode)
+   (require 'ac-emacs-eclim-source)
+   (ac-emacs-eclim-config)))

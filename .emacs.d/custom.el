@@ -12,6 +12,7 @@
  '(face-background "#fcf4dc")
  '(org-export-backends (quote (ascii html icalendar latex md)))
  '(org-modules (quote (org-bbdb org-bibtex org-docview org-gnus org-info org-irc org-mhe org-rmail org-w3m org-velocity)))
+ '(sp-cancel-autoskip-on-backward-movement nil)
  '(yas-prompt-functions (quote (my-yas/prompt)))
  '(yas/prompt-functions (quote (my-yas/prompt))))
 (custom-set-faces

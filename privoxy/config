@@ -33,6 +33,7 @@ actionsfile default.action   # Main actions file
 actionsfile user.action      # User customizations
 actionsfile block-trackers.action # Block all trackers. This is the core script.
 actionsfile block-facebook.action # Block Facebook. Remove this if you find it too restrictive.
+actionsfile adblock.action # converted from adblock
 
 #
 #  2.5. filterfile
@@ -41,6 +42,7 @@ actionsfile block-facebook.action # Block Facebook. Remove this if you find it t
 filterfile default.filter
 filterfile user.filter      # User customizations
 filterfile plus-one.filter # Block Google's plus one script.
+filterfile adblock.filter # converted from adblock
 #
 #  3.1. debug
 #  ===========
@@ -65,6 +67,8 @@ filterfile plus-one.filter # Block Google's plus one script.
 #        debug 65536 # Log the applying actions
 #
 #debug     1 # Log the destination for each request Privoxy let through. See also debug 1024.
+debug 1024
+debug 4096
 #debug  1024 # Actions that are applied to all sites and maybe overruled later on.
 #debug  4096 # Startup banner and warnings
 #debug  8192 # Non-fatal errors

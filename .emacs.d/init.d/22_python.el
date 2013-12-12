@@ -32,10 +32,6 @@
      (define-key python-mode-map (kbd "<backtab>") 'python-back-indent)))
 
 (defun my/python-mode-hook ()
-
-  ;; autopair
-  (setq autopair-handle-action-fns
-        '(autopair-default-handle-action autopair-python-triple-quote-action))
   (jedi:setup)
   (jedi:ac-setup)
   (setq jedi:setup-keys t)

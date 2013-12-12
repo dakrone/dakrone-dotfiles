@@ -1,5 +1,5 @@
 ;; use cl functions and macros in my config files.
-(require 'cl)
+;;(require 'cl)
 
 ;; decide system is MacOSX
 (defun macosx-p ()
@@ -13,7 +13,7 @@
   (require 'notifications))
 
 ;; A little something for https://github.com/railwaycat/emacs-mac-port
-(when (eq window-system 'mac)
+(when (eq (window-system) 'mac)
   (setq mac-option-modifier 'meta)
   (setq mac-command-modifier 'hyper)
   (global-set-key [(hyper a)] 'mark-whole-buffer)
@@ -28,7 +28,7 @@
 ;; Set (dark|light) background, theming will check this in choose the
 ;; appropriate theme.
 ;;(defvar background 'light)
-(defvar background 'dark)
+(defvar my/background 'dark)
 
 ;; brew install coreutils
 (when (macosx-p)

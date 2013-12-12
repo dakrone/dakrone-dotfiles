@@ -36,3 +36,7 @@
 
 (my/set-elisp-map emacs-lisp-mode-map)
 (my/set-elisp-map lisp-interaction-mode-map)
+
+;; Debugging!
+;; (setq edebug-trace t)
+;; (setq debug-on-quit t)

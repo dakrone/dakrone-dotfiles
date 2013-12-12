@@ -135,3 +135,9 @@
 (ido-vertical-mode t)
 ;; Require a newline at the end
 (setq require-final-newline t)
+
+;; Run me to make startup faster!
+(defun byte-recompile-init-files ()
+  "Recompile all of the init.d files"
+  (interactive)
+  (byte-recompile-directory "~/.emacs.d/init.d" 0))

@@ -14,6 +14,7 @@
 
     ;; themeing
     color-theme rainbow-mode rainbow-delimiters maxframe leuven-theme powerline
+    dakrone-theme
 
     ;; misc
     diminish erc-hl-nicks ercn erc-tweet todochiku twittering-mode yagist

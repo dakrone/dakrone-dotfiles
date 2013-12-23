@@ -1291,7 +1291,6 @@
                    (org-tags-match-list-sublevels nil))))))
    #+END_SRC
 
-
 ** ERC Configuration
    ERC (IRC) configuration, requires the ERC package
 
@@ -2683,4 +2682,15 @@
       (goto-char start))
 
     (global-set-key (kbd "C-x r N") 'number-rectangle)
+    #+END_SRC
+*** Insert look of disapproval
+    Used more often than you'd think...
+
+    #+BEGIN_SRC emacs-lisp
+    (defun my/insert-lod ()
+      "Well. This is disappointing."
+      (interactive)
+      (insert "ಠ_ಠ"))
+
+    (global-set-key (kbd "C-c M-d") 'My/insert-lod)
     #+END_SRC

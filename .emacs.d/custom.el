@@ -11,7 +11,7 @@
  '(delete-selection-mode t)
  '(face-background "#fcf4dc")
  '(org-export-backends (quote (ascii html icalendar latex md)))
- '(org-modules (quote (org-bbdb org-bibtex org-docview org-gnus org-info org-irc org-mhe org-rmail org-w3m)))
+ '(org-modules (quote (org-bbdb org-bibtex org-docview org-gnus org-habit org-info org-irc org-mhe org-rmail org-w3m)))
  '(sp-cancel-autoskip-on-backward-movement nil)
  '(yas-prompt-functions (quote (my-yas/prompt)))
  '(yas/prompt-functions (quote (my-yas/prompt))))

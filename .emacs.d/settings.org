@@ -10,1794 +10,2154 @@
 #+LANGUAGE: en
 
 * Configuration
-  This file is used by org-mode to load my personal emacs
-  configuration file.
+This file is used by org-mode to load my personal emacs
+configuration file.
 
-  It can be loaded by putting the following in your .emacs.d/init.el:
+It can be loaded by putting the following in your .emacs.d/init.el:
 
-  =(org-babel-load-file "~/.emacs.d/settings.org")=
+=(org-babel-load-file "~/.emacs.d/settings.org")=
 
-  (or whatever the path is)
+(or whatever the path is)
 
-  This is what my current loading (=init.el=) config looks like, the rest of the
-  startup exists in this org-mode file:
+This is what my current loading (=init.el=) config looks like, the rest of the
+startup exists in this org-mode file:
 
-  #+BEGIN_SRC
-  ;; initalize all ELPA packages
-  (require 'package)
+#+BEGIN_SRC
+;; initalize all ELPA packages
+(require 'package)
 
-  (add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/"))
-  (package-initialize)
-  (setq package-enable-at-startup nil)
+(add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/"))
+(package-initialize)
+(setq package-enable-at-startup nil)
 
-  ;; Keep track of loading time
-  (defconst emacs-start-time (current-time))
-  ;; Load settings.org file
-  (org-babel-load-file "~/.emacs.d/settings.org")
+;; Keep track of loading time
+(defconst emacs-start-time (current-time))
+;; Load settings.org file
+(org-babel-load-file "~/.emacs.d/settings.org")
 
-  ;; keep customize settings in their own file
-  (setq custom-file "~/.emacs.d/custom.el")
-  (when (file-exists-p custom-file)
-    (load custom-file))
+;; keep customize settings in their own file
+(setq custom-file "~/.emacs.d/custom.el")
+(when (file-exists-p custom-file)
+  (load custom-file))
 
-  ;; Message how long it took to load everything (minus packages)
-  (let ((elapsed (float-time (time-subtract (current-time)
-                                            emacs-start-time))))
-    (message "Loading settings...done (%.3fs)" elapsed))
-  #+END_SRC
+;; Message how long it took to load everything (minus packages)
+(let ((elapsed (float-time (time-subtract (current-time)
+                                          emacs-start-time))))
+  (message "Loading settings...done (%.3fs)" elapsed))
+#+END_SRC
 
 ** Basics and settings used everywhere
 
 *** General settings
-    First, let's determine whether I'm going to be using a dark theme,
-    or a light theme. I set a var to either '=light= or '=dark=
-    depending on whatever I'm in the mood for.
+First, let's determine whether I'm going to be using a dark theme,
+or a light theme. I set a var to either '=light= or '=dark=
+depending on whatever I'm in the mood for.
 
-    #+BEGIN_SRC emacs-lisp
-    ;;(defvar background 'light)
-    (defvar my/background 'dark)
-    #+END_SRC
+#+BEGIN_SRC emacs-lisp
+;;(defvar background 'light)
+(defvar my/background 'dark)
+#+END_SRC
 
-    Always, *always*, prefer UTF-8, anything else is insanity
+Always, *always*, prefer UTF-8, anything else is insanity
 
-    #+BEGIN_SRC emacs-lisp
-    (prefer-coding-system 'utf-8-unix)
-    #+END_SRC
+#+BEGIN_SRC emacs-lisp
+(prefer-coding-system 'utf-8-unix)
+#+END_SRC
 
-    I need =use-package= to do package-specific stuff:
+I need =use-package= to do package-specific stuff:
 
-    #+BEGIN_SRC emacs-lisp
-    (require 'use-package)
-    #+END_SRC
+#+BEGIN_SRC emacs-lisp
+(require 'use-package)
+#+END_SRC
 
-    Turn on syntax highlighting for all buffers:
+Turn on syntax highlighting for all buffers:
 
-    #+BEGIN_SRC emacs-lisp
-    (global-font-lock-mode t)
-    #+END_SRC
+#+BEGIN_SRC emacs-lisp
+(global-font-lock-mode t)
+#+END_SRC
 
-    We don't really need to garbage collect as frequently as Emacs
-    would like to by default, so set the threshold up higher:
+We don't really need to garbage collect as frequently as Emacs
+would like to by default, so set the threshold up higher:
 
-    #+BEGIN_SRC emacs-lisp
-    (setq gc-cons-threshold 20000000)
-    #+END_SRC
+#+BEGIN_SRC emacs-lisp
+(setq gc-cons-threshold 20000000)
+#+END_SRC
 
-    Echo commands I haven't finished quicker than the default of 1 second:
+Echo commands I haven't finished quicker than the default of 1 second:
 
-    #+BEGIN_SRC emacs-lisp
-    (setq echo-keystrokes 0.1)
-    #+END_SRC
+#+BEGIN_SRC emacs-lisp
+(setq echo-keystrokes 0.1)
+#+END_SRC
 
-    Don't warn me about large files unless they're at least 25mb:
+Don't warn me about large files unless they're at least 25mb:
 
-    #+BEGIN_SRC emacs-lisp
-    (setq large-file-warning-threshold (* 25 1024 1024))
-    #+END_SRC
+#+BEGIN_SRC emacs-lisp
+(setq large-file-warning-threshold (* 25 1024 1024))
+#+END_SRC
 
-    If you change buffer, or focus, disable the current buffer's mark:
+If you change buffer, or focus, disable the current buffer's mark:
 
-    #+BEGIN_SRC emacs-lisp
-    (transient-mark-mode t)
-    #+END_SRC
+#+BEGIN_SRC emacs-lisp
+(transient-mark-mode t)
+#+END_SRC
 
-    Don't indicate empty lines or the end of a buffer with visual
-    marks (the lines are cleaned up automatically anyway)
+Don't indicate empty lines or the end of a buffer with visual
+marks (the lines are cleaned up automatically anyway)
 
-    #+BEGIN_SRC emacs-lisp
-    (setq-default indicate-empty-lines nil)
-    (setq-default indicate-buffer-boundaries nil)
-    #+END_SRC
+#+BEGIN_SRC emacs-lisp
+(setq-default indicate-empty-lines nil)
+(setq-default indicate-buffer-boundaries nil)
+#+END_SRC
 
-    Turn off all kinds of modes, I don't need the menu bar, or the tool bar:
+Turn off all kinds of modes, I don't need the menu bar, or the tool bar:
 
-    #+BEGIN_SRC emacs-lisp
-    (menu-bar-mode -1)
-    (when (window-system)
-      (set-scroll-bar-mode 'nil)
-      (mouse-wheel-mode t))
-    (tool-bar-mode -1)
-    (tooltip-mode -1)
-    (blink-cursor-mode -1)
-    #+END_SRC
+#+BEGIN_SRC emacs-lisp
+(menu-bar-mode -1)
+(when (window-system)
+  (set-scroll-bar-mode 'nil)
+  (mouse-wheel-mode t))
+(tool-bar-mode -1)
+(tooltip-mode -1)
+(blink-cursor-mode -1)
+#+END_SRC
 
-    Don't beep. Just don't. Also, don't show the startup message, I
-    know Emacs is starting.
+Don't beep. Just don't. Also, don't show the startup message, I
+know Emacs is starting.
 
-    #+BEGIN_SRC emacs-lisp
-    (setq ring-bell-function (lambda()))
-    (setq inhibit-startup-message t)
-    #+END_SRC
+#+BEGIN_SRC emacs-lisp
+(setq ring-bell-function (lambda()))
+(setq inhibit-startup-message t)
+#+END_SRC
 
-    Why would you not want to know lines/columns in your mode-line?
+Why would you not want to know lines/columns in your mode-line?
 
-    #+BEGIN_SRC emacs-lisp
-    (line-number-mode 1)
-    (column-number-mode 1)
-    #+END_SRC
+#+BEGIN_SRC emacs-lisp
+(line-number-mode 1)
+(column-number-mode 1)
+#+END_SRC
 
-    Ignore case when using completion for file names:
+Ignore case when using completion for file names:
 
-    #+BEGIN_SRC emacs-lisp
-    (setq read-file-name-completion-ignore-case t)
-    #+END_SRC
+#+BEGIN_SRC emacs-lisp
+(setq read-file-name-completion-ignore-case t)
+#+END_SRC
 
-    Nobody likes to have to type "yes" to questions, so change it to
-    just hitting the =y= key to confirm:
+Nobody likes to have to type "yes" to questions, so change it to
+just hitting the =y= key to confirm:
 
-    #+BEGIN_SRC emacs-lisp
-    (defalias 'yes-or-no-p 'y-or-n-p)
-    #+END_SRC
+#+BEGIN_SRC emacs-lisp
+(defalias 'yes-or-no-p 'y-or-n-p)
+#+END_SRC
 
-    It's much easier to move around lines based on how they are
-    displayed, rather than the actual line. This helps a ton with long
-    log file lines that may be wrapped:
-
-    #+BEGIN_SRC emacs-lisp
-    (setq line-move-visual t)
-    #+END_SRC
-
-    Hide the mouse while typing:
-
-    #+BEGIN_SRC emacs-lisp
-    (setq make-pointer-invisible t)
-    #+END_SRC
-
-    Set up the fill-column to 80 characters and set tab width to 2
-
-    #+BEGIN_SRC emacs-lisp
-    (setq-default fill-column 80)
-    (setq-default default-tab-width 2)
-    (setq-default indent-tabs-mode nil)
-    #+END_SRC
-
-    It's okay to refer to a file by a symlink:
-
-    #+BEGIN_SRC emacs-lisp
-    (setq-default find-file-visit-truename nil)
-    #+END_SRC
-
-    Require a newline at the end of files:
-
-    #+BEGIN_SRC emacs-lisp
-    (setq require-final-newline t)
-    #+END_SRC
-
-
-    This is some code to auto-save files, but I turn it off by default
-    because it's annoying in org-mode buffers when
-    auto-whitespace-cleanup happens, so there's a function to enable it:
-
-    #+BEGIN_SRC emacs-lisp
-    (defun my/auto-save-buffers ()
-      (save-excursion
-        (dolist (buffer (buffer-list))
-          (set-buffer buffer)
-          (when (and (buffer-file-name)
-                     (buffer-modified-p)
-                     (not buffer-read-only)
-                     (file-writable-p (buffer-file-name)))
-            (save-buffer)))))
-
-    ;; interactive function to enable auto-save every 10 seconds if desired
-    (defun my/enable-auto-save ()
-      (interactive)
-      (run-with-idle-timer 10 t 'my/auto-save-buffers))
-    #+END_SRC
-
-    Uniquify buffers, using angle brackets, so you get =foo= and
-    =foo<2>=:
+It's much easier to move around lines based on how they are
+displayed, rather than the actual line. This helps a ton with long
+log file lines that may be wrapped:
+
+#+BEGIN_SRC emacs-lisp
+(setq line-move-visual t)
+#+END_SRC
+
+Hide the mouse while typing:
+
+#+BEGIN_SRC emacs-lisp
+(setq make-pointer-invisible t)
+#+END_SRC
+
+Set up the fill-column to 80 characters and set tab width to 2
+
+#+BEGIN_SRC emacs-lisp
+(setq-default fill-column 80)
+(setq-default default-tab-width 2)
+(setq-default indent-tabs-mode nil)
+#+END_SRC
+
+It's okay to refer to a file by a symlink:
+
+#+BEGIN_SRC emacs-lisp
+(setq-default find-file-visit-truename nil)
+#+END_SRC
+
+Require a newline at the end of files:
+
+#+BEGIN_SRC emacs-lisp
+(setq require-final-newline t)
+#+END_SRC
+
+
+This is some code to auto-save files, but I turn it off by default
+because it's annoying in org-mode buffers when
+auto-whitespace-cleanup happens, so there's a function to enable it:
+
+#+BEGIN_SRC emacs-lisp
+(defun my/auto-save-buffers ()
+  (save-excursion
+    (dolist (buffer (buffer-list))
+      (set-buffer buffer)
+      (when (and (buffer-file-name)
+                 (buffer-modified-p)
+                 (not buffer-read-only)
+                 (file-writable-p (buffer-file-name)))
+        (save-buffer)))))
+
+;; interactive function to enable auto-save every 10 seconds if desired
+(defun my/enable-auto-save ()
+  (interactive)
+  (run-with-idle-timer 10 t 'my/auto-save-buffers))
+#+END_SRC
+
+Uniquify buffers, using angle brackets, so you get =foo= and
+=foo<2>=:
 
-    #+BEGIN_SRC emacs-lisp
-    (use-package uniquify
-      :config (setq uniquify-buffer-name-style 'post-forward-angle-brackets))
-    #+END_SRC
+#+BEGIN_SRC emacs-lisp
+(use-package uniquify
+  :config (setq uniquify-buffer-name-style 'post-forward-angle-brackets))
+#+END_SRC
 
-    Search (and search/replace) using regex by default, since that's
-    usually what I want to do:
+Search (and search/replace) using regex by default, since that's
+usually what I want to do:
 
-    #+BEGIN_SRC emacs-lisp
-    (global-set-key (kbd "C-s") 'isearch-forward-regexp)
-    (global-set-key (kbd "C-r") 'isearch-backward-regexp)
-    (global-set-key (kbd "M-%") 'query-replace-regexp)
-    #+END_SRC
+#+BEGIN_SRC emacs-lisp
+(global-set-key (kbd "C-s") 'isearch-forward-regexp)
+(global-set-key (kbd "C-r") 'isearch-backward-regexp)
+(global-set-key (kbd "M-%") 'query-replace-regexp)
+#+END_SRC
 
-    Vim has a really nice 'f' command (just to the next occurance of a
-    character in the line), so mimic it with =C-M-r=:
+Vim has a really nice 'f' command (just to the next occurance of a
+character in the line), so mimic it with =C-M-r=:
 
-    #+BEGIN_SRC emacs-lisp
-    (defun my/move-specified-char (arg)
-      (interactive "p")
-      (let ((regexp (char-to-string (read-char))))
-        (cond ((and current-prefix-arg (listp current-prefix-arg))
-               (re-search-backward regexp nil t))
-              (t
-               (forward-char 1)
-               (re-search-forward regexp nil t arg)
-               (backward-char 1)))))
+#+BEGIN_SRC emacs-lisp
+(defun my/move-specified-char (arg)
+  (interactive "p")
+  (let ((regexp (char-to-string (read-char))))
+    (cond ((and current-prefix-arg (listp current-prefix-arg))
+           (re-search-backward regexp nil t))
+          (t
+           (forward-char 1)
+           (re-search-forward regexp nil t arg)
+           (backward-char 1)))))
 
-    (global-set-key (kbd "C-M-r") 'my/move-specified-char)
-    #+END_SRC
+(global-set-key (kbd "C-M-r") 'my/move-specified-char)
+#+END_SRC
 
-    In programming modes, make sure things like FIXME and TODO are
-    highlighted so they stand out:
+In programming modes, make sure things like FIXME and TODO are
+highlighted so they stand out:
 
-    #+BEGIN_SRC emacs-lisp
-    (defun my/add-watchwords ()
-      (font-lock-add-keywords
-       nil '(("\\<\\(FIXME\\|TODO\\|XXX\\|NOCOMMIT\\|@@@\\)\\>"
-              1 '((:foreground "pink") (:weight bold)) t))))
+#+BEGIN_SRC emacs-lisp
+(defun my/add-watchwords ()
+  (font-lock-add-keywords
+   nil '(("\\<\\(FIXME\\|TODO\\|XXX\\|NOCOMMIT\\|@@@\\)\\>"
+          1 '((:foreground "pink") (:weight bold)) t))))
 
-    (add-hook 'prog-mode-hook 'my/add-watchwords)
-    #+END_SRC
+(add-hook 'prog-mode-hook 'my/add-watchwords)
+#+END_SRC
 
-    Single space still ends a sentence:
+Single space still ends a sentence:
 
-    #+BEGIN_SRC emacs-lisp
-    (setq sentence-end-double-space nil)
-    #+END_SRC
+#+BEGIN_SRC emacs-lisp
+(setq sentence-end-double-space nil)
+#+END_SRC
 
-    Before saving, clean up training whitespace and blank lines at the
-    end of a file:
+Before saving, clean up training whitespace and blank lines at the
+end of a file:
 
-    #+BEGIN_SRC emacs-lisp
-    (defun my/cleanup-for-spaces ()
-      (interactive)
-      (delete-trailing-whitespace)
-      (save-excursion
-        (save-restriction
-          (widen)
-          (goto-char (point-max))
-          (delete-blank-lines))))
+#+BEGIN_SRC emacs-lisp
+(defun my/cleanup-for-spaces ()
+  (interactive)
+  (delete-trailing-whitespace)
+  (save-excursion
+    (save-restriction
+      (widen)
+      (goto-char (point-max))
+      (delete-blank-lines))))
 
-    (add-hook 'before-save-hook 'my/cleanup-for-spaces)
-    #+END_SRC
+(add-hook 'before-save-hook 'my/cleanup-for-spaces)
+#+END_SRC
 
-    Split windows a bit better (don't split horizontally, I have a
-    widescreen :P)
+Split windows a bit better (don't split horizontally, I have a
+widescreen :P)
 
-    #+BEGIN_SRC emacs-lisp
-    (setq split-height-threshold nil)
-    (setq split-width-threshold 180)
-    #+END_SRC
+#+BEGIN_SRC emacs-lisp
+(setq split-height-threshold nil)
+(setq split-width-threshold 180)
+#+END_SRC
 
-    Always turn on whitespace mode
+Always turn on whitespace mode
 
-    #+BEGIN_SRC emacs-lisp
-    (whitespace-mode t)
-    #+END_SRC
+#+BEGIN_SRC emacs-lisp
+(whitespace-mode t)
+#+END_SRC
 
-    Indicate trailing empty lines in the GUI:
+Indicate trailing empty lines in the GUI:
 
-    #+BEGIN_SRC emacs-lisp
-    (set-default 'indicate-empty-lines t)
-    #+END_SRC
+#+BEGIN_SRC emacs-lisp
+(set-default 'indicate-empty-lines t)
+#+END_SRC
 
-    Make sure auto automatically rescan for imenu changes:
+Make sure auto automatically rescan for imenu changes:
 
-    #+BEGIN_SRC emacs-lisp
-    (set-default 'imenu-auto-rescan t)
-    #+END_SRC
+#+BEGIN_SRC emacs-lisp
+(set-default 'imenu-auto-rescan t)
+#+END_SRC
 
-    Seed the random number generator:
+Seed the random number generator:
 
-    #+BEGIN_SRC emacs-lisp
-    (random t)
-    #+END_SRC
+#+BEGIN_SRC emacs-lisp
+(random t)
+#+END_SRC
 
-    Ignore java .class files for grepping:
+Ignore java .class files for grepping:
 
-    #+BEGIN_SRC emacs-lisp
-    (use-package grep
-      :init (add-to-list 'grep-find-ignored-files "*.class"))
-    #+END_SRC
+#+BEGIN_SRC emacs-lisp
+(use-package grep
+  :init (add-to-list 'grep-find-ignored-files "*.class"))
+#+END_SRC
 
-    Switch to unified diffs by default:
+Switch to unified diffs by default:
 
-    #+BEGIN_SRC emacs-lisp
-    (setq diff-switches "-u")
-    #+END_SRC
+#+BEGIN_SRC emacs-lisp
+(setq diff-switches "-u")
+#+END_SRC
 
-    Turn on auto-fill mode in text buffers (like org-mode):
+Turn on auto-fill mode in text buffers (like org-mode):
 
-    #+BEGIN_SRC emacs-lisp
-    (add-hook 'text-mode-hook 'turn-on-auto-fill)
-    #+END_SRC
+#+BEGIN_SRC emacs-lisp
+(add-hook 'text-mode-hook 'turn-on-auto-fill)
+#+END_SRC
 
-    Set the internal calculator not to go to scientific form quite so quickly:
+Set the internal calculator not to go to scientific form quite so quickly:
 
-    #+BEGIN_SRC emacs-lisp
-    (setq calc-display-sci-low -5)
-    #+END_SRC
+#+BEGIN_SRC emacs-lisp
+(setq calc-display-sci-low -5)
+#+END_SRC
 
-    Finally, enable some usually-disabled things:
+Finally, enable some usually-disabled things:
 
-    #+BEGIN_SRC emacs-lisp
-    (put 'upcase-region 'disabled nil)
-    (put 'narrow-to-region 'disabled nil)
-    #+END_SRC
+#+BEGIN_SRC emacs-lisp
+(put 'upcase-region 'disabled nil)
+(put 'narrow-to-region 'disabled nil)
+#+END_SRC
 
 *** OS-specific settings
-    These are settings that are applied depending on what OS I'm
-    currently running on. First, we need a way to tell what kind of
-    system we're on:
+These are settings that are applied depending on what OS I'm
+currently running on. First, we need a way to tell what kind of
+system we're on:
 
-    #+BEGIN_SRC emacs-lisp
-    (defun macosx-p ()
-      (eq system-type 'darwin))
+#+BEGIN_SRC emacs-lisp
+(defun macosx-p ()
+  (eq system-type 'darwin))
 
-    (defun linux-p ()
-      (eq system-type 'gnu/linux))
-    #+END_SRC
+(defun linux-p ()
+  (eq system-type 'gnu/linux))
+#+END_SRC
 
 **** Linux
-     On linux, notifications actually work, so let's load the
-     notifications library:
+On linux, notifications actually work, so let's load the
+notifications library:
 
-     #+BEGIN_SRC emacs-lisp
-     (when (linux-p)
-       (use-package notifications))
-     #+END_SRC
+#+BEGIN_SRC emacs-lisp
+(when (linux-p)
+  (use-package notifications))
+#+END_SRC
 
-     And some stuff to yank to the X clipboard:
+And some stuff to yank to the X clipboard:
 
-     #+BEGIN_SRC emacs-lisp
-     (defun yank-to-x-clipboard ()
-       (interactive)
-       (if (region-active-p)
-           (progn
-             (shell-command-on-region (region-beginning) (region-end) "xsel -i -b")
-             (message "Yanked region to clipboard!")
-             (deactivate-mark))
-         (message "No region active; can't yank to clipboard!")))
+#+BEGIN_SRC emacs-lisp
+(defun yank-to-x-clipboard ()
+  (interactive)
+  (if (region-active-p)
+      (progn
+        (shell-command-on-region (region-beginning) (region-end) "xsel -i -b")
+        (message "Yanked region to clipboard!")
+        (deactivate-mark))
+    (message "No region active; can't yank to clipboard!")))
 
-     (global-set-key (kbd "C-M-w") 'yank-to-x-clipboard)
-     #+END_SRC
+(global-set-key (kbd "C-M-w") 'yank-to-x-clipboard)
+#+END_SRC
 
 **** Mac
-     On OSX, ls doesn't behave properly, so we need to use a different
-     =ls= program, and pass a few different flags in. This fixes
-     warnings about ls when running =dired=
+On OSX, ls doesn't behave properly, so we need to use a different
+=ls= program, and pass a few different flags in. This fixes
+warnings about ls when running =dired=
 
-     Before this works though, you need to run =brew install
-     coreutils=
+Before this works though, you need to run =brew install
+coreutils=
 
-     #+BEGIN_SRC emacs-lisp
-     (when (macosx-p)
-       (setq insert-directory-program "gls")
-       (setq dired-listing-switches "-aBhl --group-directories-first"))
-     #+END_SRC
+#+BEGIN_SRC emacs-lisp
+(when (macosx-p)
+  (setq insert-directory-program "gls")
+  (setq dired-listing-switches "-aBhl --group-directories-first"))
+#+END_SRC
 
 **** Windows
-     Hahahahaha, you must be joking.
+Hahahahaha, you must be joking.
 
 *** Clipboard settings
-    Change the clipboard settings to better integrate into Linux:
+Change the clipboard settings to better integrate into Linux:
 
-    #+BEGIN_SRC emacs-lisp
-    (setq x-select-enable-clipboard t)
-    ;; Treat clipboard input as UTF-8 string first; compound text next, etc.
-    (setq x-select-request-type '(UTF8_STRING COMPOUND_TEXT TEXT STRING))
-    #+END_SRC
+#+BEGIN_SRC emacs-lisp
+(setq x-select-enable-clipboard t)
+;; Treat clipboard input as UTF-8 string first; compound text next, etc.
+(setq x-select-request-type '(UTF8_STRING COMPOUND_TEXT TEXT STRING))
+#+END_SRC
 
-    And some niceties to integrate with OSX:
+And some niceties to integrate with OSX:
 
-    #+BEGIN_SRC emacs-lisp
-    (defun copy-from-osx ()
-      (shell-command-to-string "/usr/bin/pbpaste"))
+#+BEGIN_SRC emacs-lisp
+(defun copy-from-osx ()
+  (shell-command-to-string "/usr/bin/pbpaste"))
 
-    (defun paste-to-osx (text &optional push)
-      (let ((process-connection-type nil))
-        (let ((proc (start-process "pbcopy" "*Messages*" "/usr/bin/pbcopy")))
-          (process-send-string proc text)
-          (process-send-eof proc))))
+(defun paste-to-osx (text &optional push)
+  (let ((process-connection-type nil))
+    (let ((proc (start-process "pbcopy" "*Messages*" "/usr/bin/pbcopy")))
+      (process-send-string proc text)
+      (process-send-eof proc))))
 
-    (when (macosx-p)
-      (setq interprogram-cut-function 'paste-to-osx)
-      (setq interprogram-paste-function 'copy-from-osx))
-    #+END_SRC
+(when (macosx-p)
+  (setq interprogram-cut-function 'paste-to-osx)
+  (setq interprogram-paste-function 'copy-from-osx))
+#+END_SRC
 
 *** Temporary file settings
-    Settings for what to do with temporary files.
+Settings for what to do with temporary files.
 
-    #+BEGIN_SRC emacs-lisp
-    (when (file-exists-p "/mnt/ramdisk")
-      (setq temporary-file-directory "/mnt/ramdisk/"))
-    ;; saveplace
-    (savehist-mode 1)
-    (load "saveplace")
-    (setq-default save-place t)
-    ;; don't create backup file
-    (setq backup-inhibited t
-          delete-auto-save-files t)
+#+BEGIN_SRC emacs-lisp
+(when (file-exists-p "/mnt/ramdisk")
+  (setq temporary-file-directory "/mnt/ramdisk/"))
+;; saveplace
+(savehist-mode 1)
+(load "saveplace")
+(setq-default save-place t)
+;; don't create backup file
+(setq backup-inhibited t
+      delete-auto-save-files t)
 
-    (setq backup-directory-alist
-          `((".*" . ,temporary-file-directory)))
-    (setq auto-save-file-name-transforms
-          `((".*" ,temporary-file-directory t)))
-    #+END_SRC
+(setq backup-directory-alist
+      `((".*" . ,temporary-file-directory)))
+(setq auto-save-file-name-transforms
+      `((".*" ,temporary-file-directory t)))
+#+END_SRC
 
 *** Electric settings
-    #+BEGIN_SRC
-    o/^ Yoooouuu can't touch it..
+#+BEGIN_SRC
+o/^ Yoooouuu can't touch it..
 
-    o/^ It's electric.
+o/^ It's electric.
 
-    o/^ Boogie woogie woogie.
-    #+END_SRC
+o/^ Boogie woogie woogie.
+#+END_SRC
 
-    These are disabled right now because electric-*-mode, while neat
-    in theory, almost always does something stupid instead of what I
-    want.
+These are disabled right now because electric-*-mode, while neat
+in theory, almost always does something stupid instead of what I
+want.
 
-    #+BEGIN_SRC emacs-lisp
-    ;;(electric-indent-mode +1)
-    ;;(electric-layout-mode +1)
-    #+END_SRC
+#+BEGIN_SRC emacs-lisp
+;;(electric-indent-mode +1)
+;;(electric-layout-mode +1)
+#+END_SRC
 
 *** Eshell settings
-    Eshell is great for one-off shell things, but I use ZSH too much
-    for it to be a full replacement. Regardless, it needs some tweaks
-    in order to be fully useful.
+Eshell is great for one-off shell things, but I use ZSH too much
+for it to be a full replacement. Regardless, it needs some tweaks
+in order to be fully useful.
 
-    First, let's set up 256 colors and make sure we don't invoke emacs
-    from within emacs (emacsception!). Also set the pager to cat so
-    paging things don't freak out:
+First, let's set up 256 colors and make sure we don't invoke emacs
+from within emacs (emacsception!). Also set the pager to cat so
+paging things don't freak out:
 
-    #+BEGIN_SRC emacs-lisp
-    (use-package eshell
-      :defer t
-      :init
-      (progn
-        (add-hook
-         'eshell-mode-hook
-         (lambda ()
-           (defalias 'emacs 'find-file)
-           (setenv "TERM" "xterm-256color")
-           (setenv "PAGER" "cat")
-           (define-key eshell-mode-map (kbd "M-r") 'helm-eshell-history)))
-        (defun eshell/emacs (file)
-          (find-file file))))
+#+BEGIN_SRC emacs-lisp
+(use-package eshell
+  :defer t
+  :init
+  (progn
+    (add-hook
+     'eshell-mode-hook
+     (lambda ()
+       (defalias 'emacs 'find-file)
+       (setenv "TERM" "xterm-256color")
+       (setenv "PAGER" "cat")
+       (define-key eshell-mode-map (kbd "M-r") 'helm-eshell-history)))
+    (defun eshell/emacs (file)
+      (find-file file))))
+#+END_SRC
 
-    #+END_SRC
+After eshell has loaded its options, let's load some other
+niceties like completion, prompt and term settings:
 
-    After eshell has loaded its options, let's load some other
-    niceties like completion, prompt and term settings:
-
-    #+BEGIN_SRC emacs-lisp
-    (eval-after-load 'esh-opt
-      '(progn
-         ;; (set-face-attribute 'eshell-prompt nil :foreground "turquoise1")
-         (use-package em-cmpl)
-         (use-package em-prompt)
-         (use-package em-term)))
-    #+END_SRC
+#+BEGIN_SRC emacs-lisp
+(eval-after-load 'esh-opt
+  '(progn
+     ;; (set-face-attribute 'eshell-prompt nil :foreground "turquoise1")
+     (use-package em-cmpl)
+     (use-package em-prompt)
+     (use-package em-term)))
+#+END_SRC
 
 *** Spellcheck and flyspell settings
-    I use aspell for spellcheck, ignoring words under 3 characters and
-    running very quickly. My personal word dictionary is at
-    =~/.flydict=.
+I use aspell for spellcheck, ignoring words under 3 characters and
+running very quickly. My personal word dictionary is at
+=~/.flydict=.
 
-    #+BEGIN_SRC emacs-lisp
-    (setq-default ispell-program-name "aspell")
-    (setq ispell-extra-args '("--sug-mode=ultra" "--ignore=3"))
-    (add-to-list 'ispell-skip-region-alist '("[^\000-\377]+"))
+#+BEGIN_SRC emacs-lisp
+(setq-default ispell-program-name "aspell")
+(setq ispell-extra-args '("--sug-mode=ultra" "--ignore=3"))
+(add-to-list 'ispell-skip-region-alist '("[^\000-\377]+"))
 
-    ;; flyspell
-    (autoload 'flyspell-mode "flyspell" "spell checking at runtime")
-    (eval-after-load "flyspell"
-      '(progn
-         (define-key flyspell-mode-map (kbd "M-n") 'flyspell-goto-next-error)
-         (define-key flyspell-mode-map (kbd "M-.") 'ispell-word)))
+;; flyspell
+(autoload 'flyspell-mode "flyspell" "spell checking at runtime")
+(eval-after-load "flyspell"
+  '(progn
+     (define-key flyspell-mode-map (kbd "M-n") 'flyspell-goto-next-error)
+     (define-key flyspell-mode-map (kbd "M-.") 'ispell-word)))
 
-    (setq ispell-personal-dictionary "~/.flydict")
-    #+END_SRC
+(setq ispell-personal-dictionary "~/.flydict")
+#+END_SRC
 *** View-mode
-    Read-only viewing of files. Keybindings for paging through stuff
-    in a less/vim manner.
+Read-only viewing of files. Keybindings for paging through stuff
+in a less/vim manner.
 
-    When in view-mode, the buffer is read-only:
+When in view-mode, the buffer is read-only:
 
-    #+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp
     (setq view-read-only t)
-    #+END_SRC
+#+END_SRC
 
-    Set up the keybindings to be like better viewers:
+Set up the keybindings to be like better viewers:
 
-    #+BEGIN_SRC emacs-lisp
-    (defun View-goto-line-last (&optional line)
-      "goto last line"
-      (interactive "P")
-      (goto-line (line-number-at-pos (point-max))))
+#+BEGIN_SRC emacs-lisp
+(defun View-goto-line-last (&optional line)
+  "goto last line"
+  (interactive "P")
+  (goto-line (line-number-at-pos (point-max))))
 
-    (eval-after-load "view"
-      '(progn
-         ;; less like
-         (define-key view-mode-map (kbd "N") 'View-search-last-regexp-backward)
-         (define-key view-mode-map (kbd "?") 'View-search-regexp-backward?)
-         (define-key view-mode-map (kbd "g") 'View-goto-line)
-         (define-key view-mode-map (kbd "G") 'View-goto-line-last)
-         (define-key view-mode-map (kbd "b") 'View-scroll-page-backward)
-         (define-key view-mode-map (kbd "f") 'View-scroll-page-forward)
-         ;; vi/w3m like
-         (define-key view-mode-map (kbd "h") 'backward-char)
-         (define-key view-mode-map (kbd "j") 'next-line)
-         (define-key view-mode-map (kbd "k") 'previous-line)
-         (define-key view-mode-map (kbd "l") 'forward-char)
-         (define-key view-mode-map (kbd "[") 'backward-paragraph)
-         (define-key view-mode-map (kbd "]") 'forward-paragraph)
-         (define-key view-mode-map (kbd "J") 'View-scroll-line-forward)
-         (define-key view-mode-map (kbd "K") 'View-scroll-line-backward)))
+(eval-after-load "view"
+  '(progn
+     ;; less like
+     (define-key view-mode-map (kbd "N") 'View-search-last-regexp-backward)
+     (define-key view-mode-map (kbd "?") 'View-search-regexp-backward?)
+     (define-key view-mode-map (kbd "g") 'View-goto-line)
+     (define-key view-mode-map (kbd "G") 'View-goto-line-last)
+     (define-key view-mode-map (kbd "b") 'View-scroll-page-backward)
+     (define-key view-mode-map (kbd "f") 'View-scroll-page-forward)
+     ;; vi/w3m like
+     (define-key view-mode-map (kbd "h") 'backward-char)
+     (define-key view-mode-map (kbd "j") 'next-line)
+     (define-key view-mode-map (kbd "k") 'previous-line)
+     (define-key view-mode-map (kbd "l") 'forward-char)
+     (define-key view-mode-map (kbd "[") 'backward-paragraph)
+     (define-key view-mode-map (kbd "]") 'forward-paragraph)
+     (define-key view-mode-map (kbd "J") 'View-scroll-line-forward)
+     (define-key view-mode-map (kbd "K") 'View-scroll-line-backward)))
 
-    (eval-after-load "doc-view"
-      '(progn
-         (define-key doc-view-mode-map (kbd "j")
-           'doc-view-next-line-or-next-page)
-         (define-key doc-view-mode-map (kbd "k")
-           'doc-view-previous-line-or-previous-page)))
-    #+END_SRC
+(eval-after-load "doc-view"
+  '(progn
+     (define-key doc-view-mode-map (kbd "j")
+       'doc-view-next-line-or-next-page)
+     (define-key doc-view-mode-map (kbd "k")
+       'doc-view-previous-line-or-previous-page)))
+#+END_SRC
 *** Dired
-    Dired is sweet, I require =dired-x= also so I can hit =C-x C-j=
-    and go directly to a dired buffer.
+Dired is sweet, I require =dired-x= also so I can hit =C-x C-j=
+and go directly to a dired buffer.
 
-    Setting =ls-lisp-dirs-first= means directories are always at the
-    top. Always copy and delete recursively. Also enable
-    =hl-line-mode= in dired, since it's easier to see the cursor then:
+Setting =ls-lisp-dirs-first= means directories are always at the
+top. Always copy and delete recursively. Also enable
+=hl-line-mode= in dired, since it's easier to see the cursor then:
 
-    #+BEGIN_SRC emacs-lisp
-    (use-package dired
-      :defer t
-      :config
-      (progn
-        (use-package dired-x)
-        (put 'dired-find-alternate-file 'disabled nil)
-        (define-key dired-mode-map (kbd "RET") 'dired-find-alternate-file)
-        (setq ls-lisp-dirs-first t)
-        (setq dired-recursive-copies 'always)
-        (setq dired-recursive-deletes 'always)
-        (define-key dired-mode-map (kbd "C-M-u") 'dired-up-directory)
-        (add-hook 'dired-mode-hook (lambda () (hl-line-mode)))))
-    #+END_SRC
+#+BEGIN_SRC emacs-lisp
+(use-package dired
+  :defer t
+  :config
+  (progn
+    (use-package dired-x)
+    (put 'dired-find-alternate-file 'disabled nil)
+    (define-key dired-mode-map (kbd "RET") 'dired-find-alternate-file)
+    (setq ls-lisp-dirs-first t)
+    (setq dired-recursive-copies 'always)
+    (setq dired-recursive-deletes 'always)
+    (define-key dired-mode-map (kbd "C-M-u") 'dired-up-directory)
+    (add-hook 'dired-mode-hook (lambda () (hl-line-mode)))))
+#+END_SRC
 
 *** Emacsclient
-    Let's make sure to start up a server!
+Let's make sure to start up a server!
 
-    #+BEGIN_SRC emacs-lisp
-    (use-package server
-      :config
-      (unless (server-running-p)
-        (server-start)))
-    #+END_SRC
+#+BEGIN_SRC emacs-lisp
+(use-package server
+  :config
+  (unless (server-running-p)
+    (server-start)))
+#+END_SRC
 
 *** Ido-mode settings
-    First, turn on ido-mode everywhere:
+First, turn on ido-mode everywhere:
 
-    #+BEGIN_SRC emacs-lisp
-    (ido-mode 1)
-    ;; Don't add recent buffers to the ido-list
-    (setq ido-use-virtual-buffers nil)
-    ;; TODO document
-    (setq ido-enable-prefix nil
-          ido-enable-flex-matching t
-          ido-auto-merge-work-directories-length nil
-          ido-create-new-buffer 'always
-          ido-use-filename-at-point 'guess
-          ido-max-prospects 10)
-    #+END_SRC
+#+BEGIN_SRC emacs-lisp
+(ido-mode 1)
+;; Don't add recent buffers to the ido-list
+(setq ido-use-virtual-buffers nil)
+;; TODO document
+(setq ido-enable-prefix nil
+      ido-enable-flex-matching t
+      ido-auto-merge-work-directories-length nil
+      ido-create-new-buffer 'always
+      ido-use-filename-at-point 'guess
+      ido-max-prospects 10)
+#+END_SRC
 
-    And if flx-ido is installed, enable it everywhere
+And if flx-ido is installed, enable it everywhere
 
-    #+BEGIN_SRC emacs-lisp
-    (use-package flx-ido
-      :init (flx-ido-mode 1)
-      :config
-      (progn
-        ;; disable ido faces to see flx highlights.
-        (setq ido-use-faces nil)))
-    #+END_SRC
+#+BEGIN_SRC emacs-lisp
+(use-package flx-ido
+  :init (flx-ido-mode 1)
+  :config
+  (progn
+    ;; disable ido faces to see flx highlights.
+    (setq ido-use-faces nil)))
+#+END_SRC
 
 *** Recent file editing
-    Set up keeping track of recent files, up to 2000 of them.
+Set up keeping track of recent files, up to 2000 of them.
 
-    If emacs has been idle for 10 minutes, clean up the recent files.
-    Also save the list of recent files every 5 minutes.
+If emacs has been idle for 10 minutes, clean up the recent files.
+Also save the list of recent files every 5 minutes.
 
-    This also only enables recentf-mode if idle, so that emacs starts up faster.
+This also only enables recentf-mode if idle, so that emacs starts up faster.
 
-    #+BEGIN_SRC emacs-lisp
-    (when (window-system)
-      (use-package recentf
-        :idle (recentf-mode 1)
-        :if (not noninteractive)
-        :config
-        (progn
-          (setq recentf-max-saved-items 100)
-          (setq recentf-exclude '("/auto-install/" ".recentf" "/repos/" "/elpa/"
-                                  "\\.mime-example" "\\.ido.last" "COMMIT_EDITMSG"
-                                  ".gz"))
-          (setq recentf-auto-cleanup 600))))
-    #+END_SRC
+#+BEGIN_SRC emacs-lisp
+(when (window-system)
+  (use-package recentf
+    :idle (recentf-mode 1)
+    :if (not noninteractive)
+    :config
+    (progn
+      (setq recentf-max-saved-items 100)
+      (setq recentf-exclude '("/auto-install/" ".recentf" "/repos/" "/elpa/"
+                              "\\.mime-example" "\\.ido.last" "COMMIT_EDITMSG"
+                              ".gz"))
+      (setq recentf-auto-cleanup 600))))
+#+END_SRC
 
 ** Programming language-specific configuration
-   Configuration options for language-specific packages live here. I
-   generally only have configuration for languages I use, but the
-   "order of usage" usually goes =clojure & shell > elisp > python >
-   ruby > java > everything else=.
+Configuration options for language-specific packages live here. I
+generally only have configuration for languages I use, but the
+"order of usage" usually goes =clojure & shell > elisp > python >
+ruby > java > everything else=.
 
 *** General prog-mode hooks
-    Some general settings that should apply to all programming modes, turning
-    on subword mode and idle-highlight-mode:
+Some general settings that should apply to all programming modes, turning
+on subword mode and idle-highlight-mode:
 
-    #+BEGIN_SRC emacs-lisp
-    (add-hook
-     'prog-mode-hook
-     (lambda ()
-       (subword-mode t)))
+#+BEGIN_SRC emacs-lisp
+(add-hook
+ 'prog-mode-hook
+ (lambda ()
+   (subword-mode t)))
 
-    (use-package idle-highlight-mode
-      :init
-      (progn
-        (add-hook 'prog-mode-hook
-                  (lambda ()
-                    (idle-highlight-mode t)))))
-    #+END_SRC
+(use-package idle-highlight-mode
+  :init
+  (progn
+    (add-hook 'prog-mode-hook
+              (lambda ()
+                (idle-highlight-mode t)))))
+#+END_SRC
 
 *** Clojure
-    Some helper functions for jumping between tests, I prefer
-    test/foo.clj instead of foo_test.clj
+Some helper functions for jumping between tests, I prefer
+test/foo.clj instead of foo_test.clj
 
-    #+BEGIN_SRC emacs-lisp
-    ;; custom test locations instead of foo_test.clj, use test/foo.clj
-    (defun my-clojure-test-for (namespace)
-      (let* ((namespace (clojure-underscores-for-hyphens namespace))
-             (segments (split-string namespace "\\."))
-             (before (subseq segments 0 1))
-             (after (subseq segments 1))
-             (test-segments (append before (list "test") after)))
-        (format "%stest/%s.clj"
-                (locate-dominating-file buffer-file-name "src/")
-                (mapconcat 'identity test-segments "/"))))
+#+BEGIN_SRC emacs-lisp
+;; custom test locations instead of foo_test.clj, use test/foo.clj
+(defun my-clojure-test-for (namespace)
+  (let* ((namespace (clojure-underscores-for-hyphens namespace))
+         (segments (split-string namespace "\\."))
+         (before (subseq segments 0 1))
+         (after (subseq segments 1))
+         (test-segments (append before (list "test") after)))
+    (format "%stest/%s.clj"
+            (locate-dominating-file buffer-file-name "src/")
+            (mapconcat 'identity test-segments "/"))))
 
-    (defun my-clojure-test-implementation-for (namespace)
-      (let* ((namespace (clojure-underscores-for-hyphens namespace))
-             (segments (split-string namespace "\\."))
-             (before (subseq segments 0 1))
-             (after (subseq segments 2))
-             (impl-segments (append before after)))
-        (format "%s/src/%s.clj"
-                (locate-dominating-file buffer-file-name "src/")
-                (mapconcat 'identity impl-segments "/"))))
-    #+END_SRC
+(defun my-clojure-test-implementation-for (namespace)
+  (let* ((namespace (clojure-underscores-for-hyphens namespace))
+         (segments (split-string namespace "\\."))
+         (before (subseq segments 0 1))
+         (after (subseq segments 2))
+         (impl-segments (append before after)))
+    (format "%s/src/%s.clj"
+            (locate-dominating-file buffer-file-name "src/")
+            (mapconcat 'identity impl-segments "/"))))
+#+END_SRC
 
-    Also define a function that pops up documentation for the symbol
-    to be used for nrepl buffers:
+Also define a function that pops up documentation for the symbol
+to be used for nrepl buffers:
 
-    #+BEGIN_SRC emacs-lisp
-    (defun nrepl-popup-tip-symbol-at-point ()
-      "show docs for the symbol at point -- AWESOMELY"
-      (interactive)
-      (popup-tip (ac-nrepl-documentation (symbol-at-point))
-                 :point (ac-nrepl-symbol-start-pos)
-                 :around t
-                 :scroll-bar t
-                 :margin t))
-    #+END_SRC
+#+BEGIN_SRC emacs-lisp
+(defun nrepl-popup-tip-symbol-at-point ()
+  "show docs for the symbol at point -- AWESOMELY"
+  (interactive)
+  (popup-tip (ac-nrepl-documentation (symbol-at-point))
+             :point (ac-nrepl-symbol-start-pos)
+             :around t
+             :scroll-bar t
+             :margin t))
+#+END_SRC
 
-    Other Clojure-specific settings:
+Other Clojure-specific settings:
 
-    #+BEGIN_SRC emacs-lisp
-    (use-package clojure-mode
-      :mode ("\\.cljs$" . clojure-mode)
-      :init
-      (progn
-        (add-hook
-         'clojure-mode-hook
-         (lambda ()
-           ;; enable eldoc
-           (eldoc-mode t)
-           (subword-mode t)
-           ;; use my test layout fns
-           (setq clojure-test-for-fn 'my-clojure-test-for)
-           (setq clojure-test-implementation-for-fn 'my-clojure-test-implementation-for)
-           ;; compile faster
-           (setq font-lock-verbose nil)
-           (global-set-key (kbd "C-c t") 'clojure-jump-between-tests-and-code)
-           (paredit-mode 1)))))
-    #+END_SRC
+#+BEGIN_SRC emacs-lisp
+(use-package clojure-mode
+  :mode ("\\.cljs$" . clojure-mode)
+  :init
+  (progn
+    (add-hook
+     'clojure-mode-hook
+     (lambda ()
+       ;; enable eldoc
+       (eldoc-mode t)
+       (subword-mode t)
+       ;; use my test layout fns
+       (setq clojure-test-for-fn 'my-clojure-test-for)
+       (setq clojure-test-implementation-for-fn 'my-clojure-test-implementation-for)
+       ;; compile faster
+       (setq font-lock-verbose nil)
+       (global-set-key (kbd "C-c t") 'clojure-jump-between-tests-and-code)
+       (paredit-mode 1)))))
+#+END_SRC
 
-    Let's define a couple of helper functions for setting up the cider and
-    ac-nrepl packages:
+Let's define a couple of helper functions for setting up the cider and
+ac-nrepl packages:
 
-    #+BEGIN_SRC emacs-lisp
-    (defun set-auto-complete-as-completion-at-point-function ()
-      (setq completion-at-point-functions '(auto-complete)))
+#+BEGIN_SRC emacs-lisp
+(defun set-auto-complete-as-completion-at-point-function ()
+  (setq completion-at-point-functions '(auto-complete)))
 
-    (defun setup-clojure-cider ()
-      (lambda ()
-        (define-key cider-mode-map (kbd "C-c C-d")
-          'ac-nrepl-popup-doc)
-        (setq cider-history-file "~/.nrepl-history")
-        (setq cider-hide-special-buffers t)
-        (setq cider-popup-stacktraces-in-repl t)
-        (set-auto-complete-as-completion-at-point-function)))
-    #+END_SRC
+(defun setup-clojure-cider ()
+  (lambda ()
+    (define-key cider-mode-map (kbd "C-c C-d")
+      'ac-nrepl-popup-doc)
+    (setq cider-history-file "~/.nrepl-history")
+    (setq cider-hide-special-buffers t)
+    (setq cider-popup-stacktraces-in-repl t)
+    (set-auto-complete-as-completion-at-point-function)))
+#+END_SRC
 
-    And then finally use them if cider and ac-nrepl packages are available:
+And then finally use them if cider and ac-nrepl packages are available:
 
-    #+BEGIN_SRC emacs-lisp
-    (use-package cider
+#+BEGIN_SRC emacs-lisp
+(use-package cider
+  :config
+  (progn
+    (add-hook 'cider-mode-hook 'setup-clojure-cider)
+    (add-hook 'cider-repl-mode-hook 'setup-clojure-cider)
+    (use-package ac-nrepl
       :config
       (progn
-        (add-hook 'cider-mode-hook 'setup-clojure-cider)
-        (add-hook 'cider-repl-mode-hook 'setup-clojure-cider)
-        (use-package ac-nrepl
-          :config
-          (progn
-            (add-hook 'cider-mode-hook 'ac-nrepl-setup)
-            (add-hook 'cider-repl-mode-hook 'ac-nrepl-setup)
-            (add-hook 'auto-complete-mode-hook
-                      'set-auto-complete-as-completion-at-point-function)
-            (add-to-list 'ac-modes 'cider-repl-mode)))))
-    #+END_SRC
+        (add-hook 'cider-mode-hook 'ac-nrepl-setup)
+        (add-hook 'cider-repl-mode-hook 'ac-nrepl-setup)
+        (add-hook 'auto-complete-mode-hook
+                  'set-auto-complete-as-completion-at-point-function)
+        (add-to-list 'ac-modes 'cider-repl-mode)))))
+#+END_SRC
 
 *** Shell
-    I write a LOT of shell-scripts, I turn off show-paren-mode (I have
-    show-smartparen-mode anyway) and flycheck (I don't want to run
-    it!) as well as not blinking the matching paren.
+I write a LOT of shell-scripts, I turn off show-paren-mode (I have
+show-smartparen-mode anyway) and flycheck (I don't want to run
+it!) as well as not blinking the matching paren.
 
-    #+BEGIN_SRC emacs-lisp
-    (add-hook 'sh-mode-hook
-              (lambda ()
-                (show-paren-mode -1)
-                (setq whitespace-line-column 180)
-                (flycheck-mode -1)
-                (setq blink-matching-paren nil)))
+#+BEGIN_SRC emacs-lisp
+(add-hook 'sh-mode-hook
+          (lambda ()
+            (show-paren-mode -1)
+            (setq whitespace-line-column 180)
+            (flycheck-mode -1)
+            (setq blink-matching-paren nil)))
 
-    (add-to-list 'auto-mode-alist '("\\.zsh$" . shell-script-mode))
-    #+END_SRC
+(add-to-list 'auto-mode-alist '("\\.zsh$" . shell-script-mode))
+#+END_SRC
 
 *** Elisp
-    This contains the configuration for elisp programming
+This contains the configuration for elisp programming
 
-    First, turn on eldoc everywhere it's useful:
+First, turn on eldoc everywhere it's useful:
 
-    #+BEGIN_SRC emacs-lisp
-    (add-hook 'emacs-lisp-mode-hook 'turn-on-eldoc-mode)
-    (add-hook 'lisp-interaction-mode-hook 'turn-on-eldoc-mode)
-    (add-hook 'ielm-mode-hook 'turn-on-eldoc-mode)
-    #+END_SRC
+#+BEGIN_SRC emacs-lisp
+(add-hook 'emacs-lisp-mode-hook 'turn-on-eldoc-mode)
+(add-hook 'lisp-interaction-mode-hook 'turn-on-eldoc-mode)
+(add-hook 'ielm-mode-hook 'turn-on-eldoc-mode)
+#+END_SRC
 
-    And some various eldoc settings:
+And some various eldoc settings:
 
-    #+BEGIN_SRC emacs-lisp
-    (use-package eldoc
-      :config
-      (progn
-        (setq eldoc-idle-delay 0.2)
-        (set-face-attribute 'eldoc-highlight-function-argument nil
-                            :underline t :foreground "green"
-                            :weight 'bold)))
-    #+END_SRC
+#+BEGIN_SRC emacs-lisp
+(use-package eldoc
+  :config
+  (progn
+    (setq eldoc-idle-delay 0.2)
+    (set-face-attribute 'eldoc-highlight-function-argument nil
+                        :underline t :foreground "green"
+                        :weight 'bold)))
+#+END_SRC
 
-    Change the faces for elisp regex grouping:
+Change the faces for elisp regex grouping:
 
-    #+BEGIN_SRC emacs-lisp
-    (set-face-foreground 'font-lock-regexp-grouping-backslash "#ff1493")
-    (set-face-foreground 'font-lock-regexp-grouping-construct "#ff8c00")
-    #+END_SRC
+#+BEGIN_SRC emacs-lisp
+(set-face-foreground 'font-lock-regexp-grouping-backslash "#ff1493")
+(set-face-foreground 'font-lock-regexp-grouping-construct "#ff8c00")
+#+END_SRC
 
-    Define some niceties for popping up an ielm buffer:
+Define some niceties for popping up an ielm buffer:
 
-    #+BEGIN_SRC emacs-lisp
-    (defun ielm-other-window ()
-      "Run ielm on other window"
-      (interactive)
-      (switch-to-buffer-other-window
-       (get-buffer-create "*ielm*"))
-      (call-interactively 'ielm))
+#+BEGIN_SRC emacs-lisp
+(defun ielm-other-window ()
+  "Run ielm on other window"
+  (interactive)
+  (switch-to-buffer-other-window
+   (get-buffer-create "*ielm*"))
+  (call-interactively 'ielm))
 
-    (define-key emacs-lisp-mode-map (kbd "C-c C-z") 'ielm-other-window)
-    (define-key lisp-interaction-mode-map (kbd "C-c C-z") 'ielm-other-window)
-    #+END_SRC
+(define-key emacs-lisp-mode-map (kbd "C-c C-z") 'ielm-other-window)
+(define-key lisp-interaction-mode-map (kbd "C-c C-z") 'ielm-other-window)
+#+END_SRC
 
-    Turn on elisp-slime-nav if available, so =M-.= works to jump to function
-    definitions:
+Turn on elisp-slime-nav if available, so =M-.= works to jump to function
+definitions:
 
-    #+BEGIN_SRC emacs-lisp
-    (use-package elisp-slime-nav
-      :init
-      (progn
-        (add-hook 'emacs-lisp-mode-hook 'elisp-slime-nav-mode)
-        (add-hook 'lisp-interaction-mode-hook 'elisp-slime-nav-mode)))
-    #+END_SRC
+#+BEGIN_SRC emacs-lisp
+(use-package elisp-slime-nav
+  :init
+  (progn
+    (add-hook 'emacs-lisp-mode-hook 'elisp-slime-nav-mode)
+    (add-hook 'lisp-interaction-mode-hook 'elisp-slime-nav-mode)))
+#+END_SRC
 
-    And make sure paredit is always on in lisp-like modes:
+And make sure paredit is always on in lisp-like modes:
 
-    #+BEGIN_SRC emacs-lisp
-    (use-package lisp-mode
-     :init (add-hook 'lisp-mode (lambda () (paredit-mode 1))))
-    #+END_SRC
+#+BEGIN_SRC emacs-lisp
+(use-package lisp-mode
+ :init (add-hook 'lisp-mode (lambda () (paredit-mode 1))))
+#+END_SRC
 
 *** Python
-    Some various python settings, including loading jedi if needed to set up
-    keys, the custom hook only loads jedi when editing python files:
+Some various python settings, including loading jedi if needed to set up
+keys, the custom hook only loads jedi when editing python files:
 
-    #+BEGIN_SRC emacs-lisp
-    (use-package python
-      :mode ("fabfile$" . python-mode)
-      :init (add-hook 'python-mode-hook 'my/python-mode-hook)
-      :config
-      (progn
-        (define-key python-mode-map (kbd "C-c C-z") 'run-python)
-        (define-key python-mode-map (kbd "<backtab>") 'python-back-indent)))
+#+BEGIN_SRC emacs-lisp
+(use-package python
+  :mode ("fabfile$" . python-mode)
+  :init (add-hook 'python-mode-hook 'my/python-mode-hook)
+  :config
+  (progn
+    (define-key python-mode-map (kbd "C-c C-z") 'run-python)
+    (define-key python-mode-map (kbd "<backtab>") 'python-back-indent)))
 
-    (defun my/python-mode-hook ()
-      (use-package jedi
-        :init
-        (progn
-          (jedi:setup)
-          (jedi:ac-setup)
-          (setq jedi:setup-keys t)
-          (setq jedi:complete-on-dot t))
-        :config
-        (progn
-          (define-key python-mode-map (kbd "C-c C-d") 'jedi:show-doc)
-          (setq jedi:tooltip-method nil)
-          (set-face-attribute 'jedi:highlight-function-argument nil
-                              :foreground "green")
-          (define-key python-mode-map (kbd "C-c C-l") 'jedi:get-in-function-call))))
-
-    #+END_SRC
+(defun my/python-mode-hook ()
+  (use-package jedi
+    :init
+    (progn
+      (jedi:setup)
+      (jedi:ac-setup)
+      (setq jedi:setup-keys t)
+      (setq jedi:complete-on-dot t))
+    :config
+    (progn
+      (define-key python-mode-map (kbd "C-c C-d") 'jedi:show-doc)
+      (setq jedi:tooltip-method nil)
+      (set-face-attribute 'jedi:highlight-function-argument nil
+                          :foreground "green")
+      (define-key python-mode-map (kbd "C-c C-l") 'jedi:get-in-function-call))))
+#+END_SRC
 
 *** Ruby
-    Not much to say about ruby, although I may add to this in the future.
+Not much to say about ruby, although I may add to this in the future.
 
-    #+BEGIN_SRC emacs-lisp
-    (use-package ruby-mode
-      :mode (("\\.\\(rb\\|gemspec\\|ru\\|\\)\\'" . ruby-mode)
-             ("\\(Rakefile\\|Gemfile\\)\\'" . ruby-mode)))
-    #+END_SRC
+#+BEGIN_SRC emacs-lisp
+(use-package ruby-mode
+  :mode (("\\.\\(rb\\|gemspec\\|ru\\|\\)\\'" . ruby-mode)
+         ("\\(Rakefile\\|Gemfile\\)\\'" . ruby-mode)))
+#+END_SRC
 
 *** Java
-    Java uses eclim to make life at least a little bit livable.
+Java uses eclim to make life at least a little bit livable.
 
-    #+BEGIN_SRC emacs-lisp
-    (add-hook
-     'java-mode-hook
-     (lambda ()
-       (use-package eclim
-         :init (global-eclim-mode)
-         :config (use-package ac-emacs-eclim-source
-                   :init (ac-emacs-eclim-config)))
-       (setq tab-width 4)
-       (setq whitespace-line-column 180)))
-    #+END_SRC
+#+BEGIN_SRC emacs-lisp
+(add-hook
+ 'java-mode-hook
+ (lambda ()
+   (use-package eclim
+     :init (global-eclim-mode)
+     :config (use-package ac-emacs-eclim-source
+               :init (ac-emacs-eclim-config)))
+   (setq tab-width 4)
+   (setq whitespace-line-column 180)))
+#+END_SRC
 
 *** Haskell
-    Use GHC for haskell mode, and turn on auto-complete and some doc/indent
-    modes:
+Use GHC for haskell mode, and turn on auto-complete and some doc/indent
+modes:
 
-    #+BEGIN_SRC emacs-lisp
-    (use-package haskell-mode
-      :mode ("\\.\\(hs\\|hi\\|gs\\)\\'" . haskell-mode)
-      :config
-      (progn
-        (turn-on-haskell-doc-mode)
-        (turn-on-haskell-indent)
-        (ghc-init)
-        ;; for auto-complete
-        (add-to-list 'ac-sources 'ac-source-ghc-mod)))
-    #+END_SRC
+#+BEGIN_SRC emacs-lisp
+(use-package haskell-mode
+  :mode ("\\.\\(hs\\|hi\\|gs\\)\\'" . haskell-mode)
+  :config
+  (progn
+    (turn-on-haskell-doc-mode)
+    (turn-on-haskell-indent)
+    (ghc-init)
+    ;; for auto-complete
+    (add-to-list 'ac-sources 'ac-source-ghc-mod)))
+#+END_SRC
 
 *** C
-    Not much to say about C/C++, it's mostly for reading code anyway:
+Not much to say about C/C++, it's mostly for reading code anyway:
 
-    #+BEGIN_SRC emacs-lisp
-    (defun my/c-mode-init ()
-      (c-set-style "k&r")
-      (c-toggle-electric-state -1)
-      (define-key c-mode-map (kbd "C-c o") 'ff-find-other-file)
-      (define-key c++-mode-map (kbd "C-c o") 'ff-find-other-file)
-      (hs-minor-mode 1)
-      (setq c-basic-offset 4))
+#+BEGIN_SRC emacs-lisp
+(defun my/c-mode-init ()
+  (c-set-style "k&r")
+  (c-toggle-electric-state -1)
+  (define-key c-mode-map (kbd "C-c o") 'ff-find-other-file)
+  (define-key c++-mode-map (kbd "C-c o") 'ff-find-other-file)
+  (hs-minor-mode 1)
+  (setq c-basic-offset 4))
 
-    (add-hook 'c-mode-hook #'my/c-mode-init)
-    (add-hook 'c++-mode-hook #'my/c-mode-init)
-    #+END_SRC
+(add-hook 'c-mode-hook #'my/c-mode-init)
+(add-hook 'c++-mode-hook #'my/c-mode-init)
+#+END_SRC
 
 *** Html
-    A nicety to insert a =<br />= when needed:
+A nicety to insert a =<br />= when needed:
 
-    #+BEGIN_SRC emacs-lisp
-    (defun html-mode-insert-br ()
-      (interactive)
-      (insert "<br />"))
+#+BEGIN_SRC emacs-lisp
+(defun html-mode-insert-br ()
+  (interactive)
+  (insert "<br />"))
 
-    (defvar html-mode-map nil "keymap used in html-mode")
-    (unless html-mode-map
-      (setq html-mode-map (make-sparse-keymap))
-      (define-key html-mode-map (kbd "C-c b") 'html-mode-insert-br))
-    #+END_SRC
+(defvar html-mode-map nil "keymap used in html-mode")
+(unless html-mode-map
+  (setq html-mode-map (make-sparse-keymap))
+  (define-key html-mode-map (kbd "C-c b") 'html-mode-insert-br))
+#+END_SRC
 
-    And zencoding/css settings
+And zencoding/css settings
 
-    #+BEGIN_SRC emacs-lisp
-    (use-package zencoding-mode
-      :init (progn (add-hook 'sgml-mode-hook 'zencoding-mode)
-                   (add-hook 'html-mode-hook 'zencoding-mode)))
+#+BEGIN_SRC emacs-lisp
+(use-package zencoding-mode
+  :init (progn (add-hook 'sgml-mode-hook 'zencoding-mode)
+               (add-hook 'html-mode-hook 'zencoding-mode)))
 
-    (use-package css-mode
-      :mode ("\\.css$" . css-mode))
-    #+END_SRC
+(use-package css-mode
+  :mode ("\\.css$" . css-mode))
+#+END_SRC
 
 *** Javascript
-    Bleh javascript.
+Bleh javascript.
 
-    #+BEGIN_SRC emacs-lisp
-    (defalias 'javascript-generic-mode 'js-mode)
-    (add-to-list 'auto-mode-alist '("\\.js$" . js-mode))
-    (setq-default js-auto-indent-flag nil)
-    #+END_SRC
+#+BEGIN_SRC emacs-lisp
+(defalias 'javascript-generic-mode 'js-mode)
+(add-to-list 'auto-mode-alist '("\\.js$" . js-mode))
+(setq-default js-auto-indent-flag nil)
+#+END_SRC
 
 ** VCS Settings
-   These are my settings for version control stuff.
+These are my settings for version control stuff.
 
-   Automatically revert file if it's changed on disk:
+Automatically revert file if it's changed on disk:
 
-   #+BEGIN_SRC emacs-lisp
-   (global-auto-revert-mode 1)
-   #+END_SRC
+#+BEGIN_SRC emacs-lisp
+(global-auto-revert-mode 1)
+#+END_SRC
 
-   Follow symlinks and update VCS info on revert:
+Follow symlinks and update VCS info on revert:
 
-   #+BEGIN_SRC emacs-lisp
-   (setq vc-follow-symlinks t)
-   (setq auto-revert-check-vc-info t)
-   #+END_SRC
+#+BEGIN_SRC emacs-lisp
+(setq vc-follow-symlinks t)
+(setq auto-revert-check-vc-info t)
+#+END_SRC
 
-   Disable Emacs' vc backend support (I mostly just use magit these
-   days):
+Disable Emacs' vc backend support (I mostly just use magit these
+days):
 
-   #+BEGIN_SRC emacs-lisp
-   (setq vc-handled-backends '())
-   #+END_SRC
+#+BEGIN_SRC emacs-lisp
+(setq vc-handled-backends '())
+#+END_SRC
 
 ** Theme Settings
 *** Font settings
-    Misc settings for fonts, depending on the OS:
+Misc settings for fonts, depending on the OS:
 
-    #+BEGIN_SRC emacs-lisp
-    (when (eq window-system 'ns)
-      (set-fontset-font "fontset-default" 'symbol "Monaco")
-      (set-default-font "Anonymous Pro")
-      (set-face-attribute 'default nil :height 115))
-    (when (eq window-system 'mac)
-      (set-fontset-font "fontset-default" 'symbol "Monaco")
-      (set-default-font "Anonymous Pro")
-      (set-face-attribute 'default nil :height 125))
-    (when (eq window-system 'x)
-      ;; Font family
-      (set-fontset-font "fontset-default" 'symbol "Bitstream Vera Sans Mono")
-      (set-default-font "Bitstream Vera Sans Mono")
-      ;; Font size
-      ;; 100 is too small, 105 is too big, 103 is juuuuuust right
-      (set-face-attribute 'default nil :height 90))
-    ;; Anti-aliasing
-    (setq mac-allow-anti-aliasing t)
-    #+END_SRC
+#+BEGIN_SRC emacs-lisp
+(when (eq window-system 'ns)
+  (set-fontset-font "fontset-default" 'symbol "Monaco")
+  (set-default-font "Anonymous Pro")
+  (set-face-attribute 'default nil :height 115))
+(when (eq window-system 'mac)
+  (set-fontset-font "fontset-default" 'symbol "Monaco")
+  (set-default-font "Anonymous Pro")
+  (set-face-attribute 'default nil :height 125))
+(when (eq window-system 'x)
+  ;; Font family
+  (set-fontset-font "fontset-default" 'symbol "Bitstream Vera Sans Mono")
+  (set-default-font "Bitstream Vera Sans Mono")
+  ;; Font size
+  ;; 100 is too small, 105 is too big, 103 is juuuuuust right
+  (set-face-attribute 'default nil :height 90))
+;; Anti-aliasing
+(setq mac-allow-anti-aliasing t)
+#+END_SRC
 
 *** Color scheme
-    #+BEGIN_SRC emacs-lisp
-    (defmacro defclojureface (name color desc &optional others)
-      `(defface
-         ,name '((((class color)) (:foreground ,color ,@others)))
-         ,desc :group 'faces))
+#+BEGIN_SRC emacs-lisp
+(defmacro defclojureface (name color desc &optional others)
+  `(defface
+     ,name '((((class color)) (:foreground ,color ,@others)))
+     ,desc :group 'faces))
 
-    (defun dakrone-dark ()
-      ;; https://github.com/dakrone/dakrone-theme
-      (load-theme 'dakrone t)
-      (if window-system
-        (set-background-color "#262626")))
+(defun dakrone-dark ()
+  ;; https://github.com/dakrone/dakrone-theme
+  (load-theme 'dakrone t)
+  (if window-system
+    (set-background-color "#262626")))
 
-    (defun dakrone-light ()
-      ;; https://github.com/fniessen/emacs-leuven-theme
-      (load-theme 'leuven t)
-      (defclojureface clojure-parens       "#696969"   "Clojure parens")
-      (defclojureface clojure-braces       "#696969"   "Clojure braces")
-      (defclojureface clojure-brackets     "#4682b4"   "Clojure brackets")
-      (defclojureface clojure-keyword      "DarkCyan"  "Clojure keywords")
-      (defclojureface clojure-namespace    "#c476f1"   "Clojure namespace")
-      (defclojureface clojure-java-call    "#008b8b"   "Clojure Java calls")
-      (defclojureface clojure-special      "#006400"   "Clojure special")
-      (defclojureface clojure-double-quote "#006400"   "Clojure special")
-      (if window-system
-          (set-face-foreground 'region nil)))
+(defun dakrone-light ()
+  ;; https://github.com/fniessen/emacs-leuven-theme
+  (load-theme 'leuven t)
+  (defclojureface clojure-parens       "#696969"   "Clojure parens")
+  (defclojureface clojure-braces       "#696969"   "Clojure braces")
+  (defclojureface clojure-brackets     "#4682b4"   "Clojure brackets")
+  (defclojureface clojure-keyword      "DarkCyan"  "Clojure keywords")
+  (defclojureface clojure-namespace    "#c476f1"   "Clojure namespace")
+  (defclojureface clojure-java-call    "#008b8b"   "Clojure Java calls")
+  (defclojureface clojure-special      "#006400"   "Clojure special")
+  (defclojureface clojure-double-quote "#006400"   "Clojure special")
+  (if window-system
+      (set-face-foreground 'region nil)))
 
-    ;; Define faces in clojure code
-    (defun tweak-clojure-syntax ()
-      "Tweaks syntax for Clojure-specific faces."
-      (mapcar (lambda (x) (font-lock-add-keywords nil x))
-              '((("#?['`]*(\\|)"       . 'clojure-parens))
-                (("#?\\^?{\\|}"        . 'clojure-brackets))
-                (("\\[\\|\\]"          . 'clojure-braces))
-                ((":\\w+"              . 'clojure-keyword))
-                (("nil\\|true\\|false\\|%[1-9]?" . 'clojure-special))
-                (("(\\(\\.[^ \n)]*\\|[^ \n)]+\\.\\|new\\)\\([ )\n]\\|$\\)" 1
-                  'clojure-java-call)))))
+;; Define faces in clojure code
+(defun tweak-clojure-syntax ()
+  "Tweaks syntax for Clojure-specific faces."
+  (mapcar (lambda (x) (font-lock-add-keywords nil x))
+          '((("#?['`]*(\\|)"       . 'clojure-parens))
+            (("#?\\^?{\\|}"        . 'clojure-brackets))
+            (("\\[\\|\\]"          . 'clojure-braces))
+            ((":\\w+"              . 'clojure-keyword))
+            (("nil\\|true\\|false\\|%[1-9]?" . 'clojure-special))
+            (("(\\(\\.[^ \n)]*\\|[^ \n)]+\\.\\|new\\)\\([ )\n]\\|$\\)" 1
+              'clojure-java-call)))))
 
-    (add-hook 'clojure-mode-hook 'tweak-clojure-syntax)
+(add-hook 'clojure-mode-hook 'tweak-clojure-syntax)
 
-    (if (eq my/background 'dark)
-        (dakrone-dark)
-      (dakrone-light))
-    #+END_SRC
+(if (eq my/background 'dark)
+    (dakrone-dark)
+  (dakrone-light))
+#+END_SRC
 
 *** Modeline
-    I vacillate between powerline and smart-mode-line, so I keep both installed
-    to switch between as needed:
+I vacillate between powerline and smart-mode-line, so I keep both installed
+to switch between as needed:
 
-    #+BEGIN_SRC emacs-lisp
-    ;; (use-package powerline
-    ;;   :init (powerline-default-theme))
-    (use-package smart-mode-line
-      :init (progn (setq sml/theme my/background)
-                   (sml/setup)))
-    #+END_SRC
+#+BEGIN_SRC emacs-lisp
+;; (use-package powerline
+;;   :init (powerline-default-theme))
+(use-package smart-mode-line
+  :init (progn (setq sml/theme my/background)
+               (sml/setup)))
+#+END_SRC
 
 ** Org-mode
-   I use org-mode a ton, so it get's its own page here.
+I use org-mode a ton, so it get's its own page here.
 
-   #+BEGIN_SRC emacs-lisp
-   (use-package org
-     :mode ("\\.\\(org\\|org_archive\\|txt\\)$" . org-mode)
-     :config
-     (progn
-       (require 'org-install)
-       (define-key global-map (kbd "C-c l") 'org-store-link)
-       (setq org-directory "~/org"
-             org-startup-truncated nil
-             org-return-follows-link t
-             org-use-fast-todo-selection t
-             org-src-fontify-natively t
-             org-completion-use-ido t
-             org-edit-src-content-indentation 0
-             org-agenda-start-on-weekday nil
-             org-todo-keywords
-             '((sequence "TODO(t)" "STARTED(s)" "WAITING(w)"
-                         "|" "DONE(x)")
-               (sequence "WAITING(w)" "|" "DONE(x)"))
-             org-todo-keyword-faces
-             '(("STARTED"   . (:foreground "deep sky blue" :weight bold))
-               ("DONE"      . (:foreground "SpringGreen1" :weight bold))
-               ("WAITING"   . (:foreground "orange" :weight bold)))
-             org-agenda-files '("~/org/todo.org" "~/org/notes.org"
-                                "~/org/journal.org" "~/org/work.org")
-             ;; org-agenda-files (directory-files "~/org" t ".*\.org")
-             org-refile-targets `((,(concat "~/org/todo.org") . (:level . 1))
-                                  (,(concat "~/org/notes.org") . (:level . 1)))
-             org-capture-templates
-             '(("t" "Todo" entry (file+headline "~/org/todo.org" "Unsorted")
-                "* TODO %i%? %^G\nAdded: %U")
-               ("n" "Notes" entry (file+headline "~/org/notes.org" "Notes")
-                "* %?\nAdded: %U")
-               ;; ("j" "Journal" entry (file+datetree "~/org/journal.org")
-               ;;  "* %?\nEntered on %U\n  %i")
-               ("j" "Journal" entry (file+datetree "~/org/journal.org")
-                "* %?\n")))
+A great lot of this was taken from http://doc.norang.ca/org-mode.html, to which
+I owe almost all of the agenda configuration. The capture stuff and regular org
+settings are mine.
 
-       (setq org-refile-targets (quote ((nil :maxlevel . 9)
-                                        (org-agenda-files :maxlevel . 9))))
-       ;; Use full outline paths for refile targets - we file directly with IDO
-       (setq org-refile-use-outline-path t)
+#+BEGIN_SRC emacs-lisp
+(use-package org
+  :mode ("\\.\\(org\\|org_archive\\|txt\\)$" . org-mode)
+  :config
+  (progn
+    (require 'org-install)
+    (define-key global-map (kbd "C-c l") 'org-store-link)
+    (setq org-directory "~/org"
+          org-startup-indented t
+          org-startup-truncated nil
+          org-return-follows-link t
+          org-use-fast-todo-selection t
+          org-src-fontify-natively t
+          org-completion-use-ido t
+          org-edit-src-content-indentation 0
+          org-agenda-start-on-weekday nil
+          ;; Use sticky agenda's so they persist
+          org-agenda-sticky t
+          org-cycle-separator-lines 0
+          org-blank-before-new-entry (quote ((heading)
+                                             (plain-list-item . auto)))
+          org-special-ctrl-a/e t
+          org-special-ctrl-k t
+          org-yank-adjusted-subtrees t
+          ;; Overwrite the current window with the agenda
+          org-agenda-window-setup 'current-window
 
-       ;; Targets complete directly with IDO
-       (setq org-outline-path-complete-in-steps nil)
+          org-todo-keywords
+          '((sequence "TODO(t)" "STARTED(s)" "WAITING(w)"
+                      "|" "DONE(d)")
+            (sequence "WAITING(w)" "|" "DONE(d)"))
+          org-todo-keyword-faces
+          '(("STARTED"   . (:foreground "deep sky blue" :weight bold))
+            ("DONE"      . (:foreground "SpringGreen1" :weight bold))
+            ("WAITING"   . (:foreground "orange" :weight bold)))
+          org-agenda-files '("~/org/todo.org" "~/org/notes.org"
+                             "~/org/journal.org" "~/org/work.org"
+                             "~/org/refile.org")
+          ;; org-agenda-files (directory-files "~/org" t ".*\.org")
+          org-refile-targets `((,(concat "~/org/todo.org") . (:level . 1))
+                               (,(concat "~/org/notes.org") . (:level . 1)))
+          org-capture-templates
+          ;;(file+headline "~/org/todo.org" "Unsorted")
+          '(("t" "Todo" entry (file "~/org/refile.org")
+             "* TODO %?\n%U\n%a\n")
+            ("n" "Notes" entry (file+headline "~/org/notes.org" "Notes")
+             "* %? :NOTE:\n%U\n%a\n")
+            ("j" "Journal" entry (file+datetree "~/org/journal.org")
+             "* %?\n%U\n")))
 
-       ;; Allow refile to create parent tasks with confirmation
-       (setq org-refile-allow-creating-parent-nodes (quote confirm))
+    (setq org-refile-targets (quote ((nil :maxlevel . 9)
+                                     (org-agenda-files :maxlevel . 9))))
+    ;; Use full outline paths for refile targets - we file directly with IDO
+    (setq org-refile-use-outline-path t)
 
-       ;; Use IDO for both buffer and file completion and ido-everywhere to t
-       (setq org-completion-use-ido t)
-       (setq ido-everywhere t)
-       (setq ido-max-directory-size 100000)
-       (ido-mode (quote both))
+    ;; Targets complete directly with IDO
+    (setq org-outline-path-complete-in-steps nil)
 
+    ;; Allow refile to create parent tasks with confirmation
+    (setq org-refile-allow-creating-parent-nodes (quote confirm))
 
-       (setq org-tag-alist '(("oss" . ?o)
-                             ("home" . ?h)
-                             ("work" . ?w)
-                             ("book" . ?b)))
+    ;; Use IDO for both buffer and file completion and ido-everywhere to t
+    (setq org-completion-use-ido t)
+    (setq ido-everywhere t)
+    (setq ido-max-directory-size 100000)
+    (ido-mode (quote both))
 
-       (define-key org-mode-map (kbd "C-M-<return>") 'org-insert-todo-heading)
-       (define-key org-mode-map (kbd "C-M-<tab>") 'show-all)
-       (local-unset-key (kbd "M-S-<return>"))
+    ;; Exclude DONE state tasks from refile targets
+    (defun bh/verify-refile-target ()
+      "Exclude todo keywords with a done state from refile targets"
+      (not (member (nth 2 (org-heading-components)) org-done-keywords)))
 
-       (add-hook 'org-mode-hook
-                 (lambda ()
-                   (define-key org-mode-map [C-tab] 'other-window)
-                   (define-key org-mode-map [C-S-tab]
-                     (lambda ()
-                       (interactive)
-                       (other-window -1)))))
+    (setq org-tag-alist '(("oss" . ?o)
+                          ("home" . ?h)
+                          ("work" . ?w)
+                          ("book" . ?b)))
 
-       ;; Standard key bindings
-       (global-set-key "\C-cl" 'org-store-link)
-       (global-set-key "\C-ca" 'org-agenda)
-       (global-set-key "\C-cb" 'org-iswitchb)
-       (define-key global-map "\C-cc" 'org-capture)
+    (define-key org-mode-map (kbd "C-M-<return>") 'org-insert-todo-heading)
+    (define-key org-mode-map (kbd "C-M-<tab>") 'show-all)
+    (local-unset-key (kbd "M-S-<return>"))
 
-       ;; org-babel stuff
-       (require 'ob-clojure)
-       (org-babel-do-load-languages
-        'org-babel-load-languages
-        '((emacs-lisp . t)
-          (clojure . t)
-          (sh . t)
-          (ruby . t)
-          (python . t)))
+    (add-hook 'org-mode-hook
+              (lambda ()
+                (define-key org-mode-map [C-tab] 'other-window)
+                (define-key org-mode-map [C-S-tab]
+                  (lambda ()
+                    (interactive)
+                    (other-window -1)))))
 
-       ;; Use cider as the clojure backend
-       (setq org-babel-clojure-backend 'cider)
+    ;; Standard key bindings
+    (global-set-key "\C-cl" 'org-store-link)
+    (global-set-key "\C-ca" 'org-agenda)
+    (global-set-key "\C-cb" 'org-iswitchb)
+    (define-key global-map "\C-cc" 'org-capture)
 
-       ;; don't run stuff automatically on export
-       (setq org-export-babel-evaluate nil)
+    ;; org-babel stuff
+    (require 'ob-clojure)
+    (org-babel-do-load-languages
+     'org-babel-load-languages
+     '((emacs-lisp . t)
+       (clojure . t)
+       (sh . t)
+       (ruby . t)
+       (python . t)))
 
-       ;; always enable noweb, results as code and exporting both
-       (setq org-babel-default-header-args
-             (cons '(:noweb . "yes")
-                   (assq-delete-all :noweb org-babel-default-header-args)))
-       (setq org-babel-default-header-args
-             (cons '(:results . "code")
-                   (assq-delete-all :noweb org-babel-default-header-args)))
-       (setq org-babel-default-header-args
-             (cons '(:exports . "both")
-                   (assq-delete-all :noweb org-babel-default-header-args)))
+    ;; Use cider as the clojure backend
+    (setq org-babel-clojure-backend 'cider)
 
-       ;; ensure this variable is defined defined
-       (unless (boundp 'org-babel-default-header-args:sh)
-         (setq org-babel-default-header-args:sh '()))
+    ;; don't run stuff automatically on export
+    (setq org-export-babel-evaluate nil)
 
-       ;; add a default shebang header argument shell scripts
-       (add-to-list 'org-babel-default-header-args:sh
-                    '(:shebang . "#!/usr/bin/env zsh"))
+    ;; always enable noweb, results as code and exporting both
+    (setq org-babel-default-header-args
+          (cons '(:noweb . "yes")
+                (assq-delete-all :noweb org-babel-default-header-args)))
+    (setq org-babel-default-header-args
+          (cons '(:results . "code")
+                (assq-delete-all :noweb org-babel-default-header-args)))
+    (setq org-babel-default-header-args
+          (cons '(:exports . "both")
+                (assq-delete-all :noweb org-babel-default-header-args)))
 
-       ;; add a default shebang header argument for python
-       (add-to-list 'org-babel-default-header-args:python
-                    '(:shebang . "#!/usr/bin/env python"))
+    ;; ensure this variable is defined defined
+    (unless (boundp 'org-babel-default-header-args:sh)
+      (setq org-babel-default-header-args:sh '()))
 
-       ;; I don't want to be prompted on every code block evaluation
-       (setq org-confirm-babel-evaluate nil)
+    ;; add a default shebang header argument shell scripts
+    (add-to-list 'org-babel-default-header-args:sh
+                 '(:shebang . "#!/usr/bin/env zsh"))
 
-       ;; set some keys to execute and tangle the buffer
-       (define-key org-mode-map (kbd "C-c M-c") 'org-babel-execute-buffer)
-       (define-key org-mode-map (kbd "C-c M-t") 'org-babel-tangle)
+    ;; add a default shebang header argument for python
+    (add-to-list 'org-babel-default-header-args:python
+                 '(:shebang . "#!/usr/bin/env python"))
 
-       ;; Clojure-specific org-babel stuff
-       (defvar org-babel-default-header-args:clojure
-         '((:results . "silent")))
+    ;; I don't want to be prompted on every code block evaluation
+    (setq org-confirm-babel-evaluate nil)
 
-       (defun org-babel-execute:clojure (body params)
-         "Execute a block of Clojure code with Babel."
-         (let ((result-plist
-                (nrepl-send-string-sync
-                 (org-babel-expand-body:clojure body params) nrepl-buffer-ns))
-               (result-type  (cdr (assoc :result-type params))))
-           (org-babel-script-escape
-            (cond ((eq result-type 'value) (plist-get result-plist :value))
-                  ((eq result-type 'output) (plist-get result-plist :value))
-                  (t (message "Unknown :results type!"))))))))
-   #+END_SRC
+    ;; set some keys to execute and tangle the buffer
+    (define-key org-mode-map (kbd "C-c M-c") 'org-babel-execute-buffer)
+    (define-key org-mode-map (kbd "C-c M-t") 'org-babel-tangle)
 
-   Custom agenda views:
+    ;; Clojure-specific org-babel stuff
+    (defvar org-babel-default-header-args:clojure
+      '((:results . "silent")))
 
-   #+BEGIN_SRC emacs-lisp
-   ;; Dim blocked tasks
-   (setq org-agenda-dim-blocked-tasks t)
+    (defun org-babel-execute:clojure (body params)
+      "Execute a block of Clojure code with Babel."
+      (let ((result-plist
+             (nrepl-send-string-sync
+              (org-babel-expand-body:clojure body params) nrepl-buffer-ns))
+            (result-type  (cdr (assoc :result-type params))))
+        (org-babel-script-escape
+         (cond ((eq result-type 'value) (plist-get result-plist :value))
+               ((eq result-type 'output) (plist-get result-plist :value))
+               (t (message "Unknown :results type!"))))))))
+#+END_SRC
 
-   ;; Compact the block agenda view
-   (setq org-agenda-compact-blocks t)
+Custom agenda views:
 
-   ;; Custom agenda command definitions
-   (setq org-agenda-custom-commands
-         (quote (("N" "Notes" tags "NOTE"
-                  ((org-agenda-overriding-header "Notes")
-                   (org-tags-match-list-sublevels t)))
-                 ("h" "Habits" tags-todo "STYLE=\"habit\""
-                  ((org-agenda-overriding-header "Habits")
-                   (org-agenda-sorting-strategy
-                    '(todo-state-down effort-up category-keep))))
-                 (" " "Agenda"
-                  ((agenda "" nil)
-                   (tags "REFILE"
-                         ((org-agenda-overriding-header "Tasks to Refile")
-                          (org-tags-match-list-sublevels nil)))
-                   (tags-todo "-CANCELLED/!"
-                              ((org-agenda-overriding-header "Stuck Projects")))
-                   (tags-todo "-WAITING-CANCELLED/!NEXT"
-                              ((org-agenda-overriding-header "Next Tasks")
-                               (org-agenda-todo-ignore-scheduled t)
-                               (org-agenda-todo-ignore-deadlines t)
-                               (org-agenda-todo-ignore-with-date t)
-                               (org-tags-match-list-sublevels t)
-                               (org-agenda-sorting-strategy
-                                '(todo-state-down effort-up category-keep))))
-                   (tags-todo "-REFILE-CANCELLED/!-HOLD-WAITING"
-                              ((org-agenda-overriding-header "Tasks")
-                               (org-agenda-todo-ignore-scheduled t)
-                               (org-agenda-todo-ignore-deadlines t)
-                               (org-agenda-todo-ignore-with-date t)
-                               (org-agenda-sorting-strategy
-                                '(category-keep))))
-                   (tags-todo "-HOLD-CANCELLED/!"
-                              ((org-agenda-overriding-header "Projects")
-                               (org-agenda-sorting-strategy
-                                '(category-keep))))
-                   (tags-todo "-CANCELLED/!WAITING|HOLD"
-                              ((org-agenda-overriding-header "Waiting and Postponed Tasks")
-                               (org-tags-match-list-sublevels nil)
-                               (org-agenda-todo-ignore-scheduled 'future)
-                               (org-agenda-todo-ignore-deadlines 'future)))
-                   (tags "-REFILE/"
-                         ((org-agenda-overriding-header "Tasks to Archive")
-                          (org-tags-match-list-sublevels nil))))
-                  nil)
-                 ("r" "Tasks to Refile" tags "REFILE"
-                  ((org-agenda-overriding-header "Tasks to Refile")
-                   (org-tags-match-list-sublevels nil)))
-                 ("#" "Stuck Projects" tags-todo "-CANCELLED/!"
-                  ((org-agenda-overriding-header "Stuck Projects")
-                   (org-agenda-skip-function 'bh/skip-non-stuck-projects)))
-                 ("n" "Next Tasks" tags-todo "-WAITING-CANCELLED/!NEXT"
-                  ((org-agenda-overriding-header "Next Tasks")
-                   (org-agenda-todo-ignore-scheduled t)
-                   (org-agenda-todo-ignore-deadlines t)
-                   (org-agenda-todo-ignore-with-date t)
-                   (org-tags-match-list-sublevels t)
-                   (org-agenda-sorting-strategy
-                    '(todo-state-down effort-up category-keep))))
-                 ("R" "Tasks" tags-todo "-REFILE-CANCELLED/!-HOLD-WAITING"
-                  ((org-agenda-overriding-header "Tasks")
-                   (org-agenda-sorting-strategy
-                    '(category-keep))))
-                 ("p" "Projects" tags-todo "-HOLD-CANCELLED/!"
-                  ((org-agenda-overriding-header "Projects")
-                   (org-agenda-sorting-strategy
-                    '(category-keep))))
-                 ("w" "Waiting Tasks" tags-todo "-CANCELLED/!WAITING|HOLD"
-                  ((org-agenda-overriding-header "Waiting and Postponed tasks"))
-                  (org-tags-match-list-sublevels nil))
-                 ("A" "Tasks to Archive" tags "-REFILE/"
-                  ((org-agenda-overriding-header "Tasks to Archive")
-                   (org-tags-match-list-sublevels nil))))))
-   #+END_SRC
+#+BEGIN_SRC emacs-lisp
+;; Do not dim blocked tasks
+(setq org-agenda-dim-blocked-tasks nil)
+
+;; Compact the block agenda view
+(setq org-agenda-compact-blocks t)
+
+;; Custom agenda command definitions
+(setq org-agenda-custom-commands
+      (quote (("N" "Notes" tags "NOTE"
+               ((org-agenda-overriding-header "Notes")
+                (org-tags-match-list-sublevels t)))
+              ("h" "Habits" tags-todo "STYLE=\"habit\""
+               ((org-agenda-overriding-header "Habits")
+                (org-agenda-sorting-strategy
+                 '(todo-state-down effort-up category-keep))))
+              (" " "Agenda"
+               ((agenda "" nil)
+                (tags "REFILE"
+                      ((org-agenda-overriding-header "Tasks to Refile")
+                       (org-tags-match-list-sublevels nil)))
+                (tags-todo "-CANCELLED/!"
+                           ((org-agenda-overriding-header "Stuck Projects")
+                            (org-agenda-skip-function 'bh/skip-non-stuck-projects)
+                            (org-agenda-sorting-strategy
+                             '(priority-down category-keep))))
+                (tags-todo "-HOLD-CANCELLED/!"
+                           ((org-agenda-overriding-header "Projects")
+                            (org-agenda-skip-function 'bh/skip-non-projects)
+                            (org-agenda-sorting-strategy
+                             '(priority-down category-keep))))
+                (tags-todo "-CANCELLED/!NEXT"
+                           ((org-agenda-overriding-header "Project Next Tasks")
+                            (org-agenda-skip-function 'bh/skip-projects-and-habits-and-single-tasks)
+                            (org-tags-match-list-sublevels t)
+                            (org-agenda-todo-ignore-scheduled bh/hide-scheduled-and-waiting-next-tasks)
+                            (org-agenda-todo-ignore-deadlines bh/hide-scheduled-and-waiting-next-tasks)
+                            (org-agenda-todo-ignore-with-date bh/hide-scheduled-and-waiting-next-tasks)
+                            (org-agenda-sorting-strategy
+                             '(priority-down todo-state-down effort-up category-keep))))
+                (tags-todo "-REFILE-CANCELLED-WAITING/!"
+                           ((org-agenda-overriding-header (if (marker-buffer org-agenda-restrict-begin) "Project Subtasks" "Standalone Tasks"))
+                            (org-agenda-skip-function 'bh/skip-project-tasks-maybe)
+                            (org-agenda-todo-ignore-scheduled bh/hide-scheduled-and-waiting-next-tasks)
+                            (org-agenda-todo-ignore-deadlines bh/hide-scheduled-and-waiting-next-tasks)
+                            (org-agenda-todo-ignore-with-date bh/hide-scheduled-and-waiting-next-tasks)
+                            (org-agenda-sorting-strategy
+                             '(category-keep))))
+                (tags-todo "-CANCELLED+WAITING/!"
+                           ((org-agenda-overriding-header "Waiting and Postponed Tasks")
+                            (org-agenda-skip-function 'bh/skip-stuck-projects)
+                            (org-tags-match-list-sublevels nil)
+                            (org-agenda-todo-ignore-scheduled 'future)
+                            (org-agenda-todo-ignore-deadlines 'future)))
+                (tags "-REFILE/"
+                      ((org-agenda-overriding-header "Tasks to Archive")
+                       (org-agenda-skip-function 'bh/skip-non-archivable-tasks)
+                       (org-tags-match-list-sublevels nil))))
+               nil))))
+
+(setq org-archive-mark-done nil)
+(setq org-archive-location "%s_archive::* Archived Tasks")
+(defun bh/skip-non-archivable-tasks ()
+  "Skip trees that are not available for archiving"
+  (save-restriction
+    (widen)
+    ;; Consider only tasks with done todo headings as archivable candidates
+    (let ((next-headline (save-excursion (or (outline-next-heading) (point-max))))
+          (subtree-end (save-excursion (org-end-of-subtree t))))
+      (if (member (org-get-todo-state) org-todo-keywords-1)
+          (if (member (org-get-todo-state) org-done-keywords)
+              (let* ((daynr (string-to-int (format-time-string "%d" (current-time))))
+                     (a-month-ago (* 60 60 24 (+ daynr 1)))
+                     (last-month (format-time-string "%Y-%m-" (time-subtract (current-time) (seconds-to-time a-month-ago))))
+                     (this-month (format-time-string "%Y-%m-" (current-time)))
+                     (subtree-is-current (save-excursion
+                                           (forward-line 1)
+                                           (and (< (point) subtree-end)
+                                                (re-search-forward (concat last-month "\\|" this-month) subtree-end t)))))
+                (if subtree-is-current
+                    subtree-end ; Has a date in this month or last month, skip it
+                  nil))  ; available to archive
+            (or subtree-end (point-max)))
+        next-headline))))
+
+(setq org-agenda-include-diary nil)
+(setq org-agenda-diary-file "~/org/journal.org")
+(setq org-agenda-insert-diary-extract-time t)
+
+(setq org-agenda-repeating-timestamp-show-all t)
+
+;; Show all agenda dates - even if they are empty
+(setq org-agenda-show-all-dates t)
+
+;; Sorting order for tasks on the agenda
+(setq org-agenda-sorting-strategy
+      (quote ((agenda habit-down time-up user-defined-up priority-down effort-up category-keep)
+              (todo category-up priority-down effort-up)
+              (tags category-up priority-down effort-up)
+              (search category-up))))
+
+;; Start the weekly agenda on Monday
+(setq org-agenda-start-on-weekday 1)
+
+;; Enable display of the time grid so we can see the marker for the current time
+(setq org-agenda-time-grid (quote ((daily today remove-match)
+                                   #("----------------" 0 16 (org-heading t))
+                                   (0900 1100 1300 1500 1700))))
+
+;;
+;; Agenda sorting functions
+;;
+(setq org-agenda-cmp-user-defined 'bh/agenda-sort)
+
+(defun bh/agenda-sort (a b)
+  "Sorting strategy for agenda items.
+Late deadlines first, then scheduled, then non-late deadlines"
+  (let (result num-a num-b)
+    (cond
+     ;; time specific items are already sorted first by org-agenda-sorting-strategy
+     ;; non-deadline and non-scheduled items next
+     ((bh/agenda-sort-test 'bh/is-not-scheduled-or-deadline a b))
+     ;; deadlines for today next
+     ((bh/agenda-sort-test 'bh/is-due-deadline a b))
+     ;; late deadlines next
+     ((bh/agenda-sort-test-num 'bh/is-late-deadline '> a b))
+     ;; scheduled items for today next
+     ((bh/agenda-sort-test 'bh/is-scheduled-today a b))
+     ;; late scheduled items next
+     ((bh/agenda-sort-test-num 'bh/is-scheduled-late '> a b))
+     ;; pending deadlines last
+     ((bh/agenda-sort-test-num 'bh/is-pending-deadline '< a b))
+     ;; finally default to unsorted
+     (t (setq result nil)))
+    result))
+
+(defmacro bh/agenda-sort-test (fn a b)
+  "Test for agenda sort"
+  `(cond
+    ;; if both match leave them unsorted
+    ((and (apply ,fn (list ,a))
+          (apply ,fn (list ,b)))
+     (setq result nil))
+    ;; if a matches put a first
+    ((apply ,fn (list ,a))
+     (setq result -1))
+    ;; otherwise if b matches put b first
+    ((apply ,fn (list ,b))
+     (setq result 1))
+    ;; if none match leave them unsorted
+    (t nil)))
+
+(defmacro bh/agenda-sort-test-num (fn compfn a b)
+  `(cond
+    ((apply ,fn (list ,a))
+     (setq num-a (string-to-number (match-string 1 ,a)))
+     (if (apply ,fn (list ,b))
+         (progn
+           (setq num-b (string-to-number (match-string 1 ,b)))
+           (setq result (if (apply ,compfn (list num-a num-b))
+                            -1
+                          1)))
+       (setq result -1)))
+    ((apply ,fn (list ,b))
+     (setq result 1))
+    (t nil)))
+
+(defun bh/is-not-scheduled-or-deadline (date-str)
+  (and (not (bh/is-deadline date-str))
+       (not (bh/is-scheduled date-str))))
+
+(defun bh/is-due-deadline (date-str)
+  (string-match "Deadline:" date-str))
+
+(defun bh/is-late-deadline (date-str)
+  (string-match "\\([0-9]*\\) d\. ago:" date-str))
+
+(defun bh/is-pending-deadline (date-str)
+  (string-match "In \\([^-]*\\)d\.:" date-str))
+
+(defun bh/is-deadline (date-str)
+  (or (bh/is-due-deadline date-str)
+      (bh/is-late-deadline date-str)
+      (bh/is-pending-deadline date-str)))
+
+(defun bh/is-scheduled (date-str)
+  (or (bh/is-scheduled-today date-str)
+      (bh/is-scheduled-late date-str)))
+
+(defun bh/is-scheduled-today (date-str)
+  (string-match "Scheduled:" date-str))
+
+(defun bh/is-scheduled-late (date-str)
+  (string-match "Sched\.\\(.*\\)x:" date-str))
+#+END_SRC
+
+Helpers for the agenda views:
+
+#+BEGIN_SRC emacs-lisp
+(setq org-stuck-projects (quote ("" nil nil "")))
+
+(defun bh/find-project-task ()
+  "Move point to the parent (project) task if any"
+  (save-restriction
+    (widen)
+    (let ((parent-task (save-excursion (org-back-to-heading 'invisible-ok) (point))))
+      (while (org-up-heading-safe)
+        (when (member (nth 2 (org-heading-components)) org-todo-keywords-1)
+          (setq parent-task (point))))
+      (goto-char parent-task)
+      parent-task)))
+
+(defun bh/is-project-p ()
+  "Any task with a todo keyword subtask"
+  (save-restriction
+    (widen)
+    (let ((has-subtask)
+          (subtree-end (save-excursion (org-end-of-subtree t)))
+          (is-a-task (member (nth 2 (org-heading-components)) org-todo-keywords-1)))
+      (save-excursion
+        (forward-line 1)
+        (while (and (not has-subtask)
+                    (< (point) subtree-end)
+                    (re-search-forward "^\*+ " subtree-end t))
+          (when (member (org-get-todo-state) org-todo-keywords-1)
+            (setq has-subtask t))))
+      (and is-a-task has-subtask))))
+
+(defun bh/is-project-subtree-p ()
+  "Any task with a todo keyword that is in a project subtree.
+Callers of this function already widen the buffer view."
+  (let ((task (save-excursion (org-back-to-heading 'invisible-ok)
+                              (point))))
+    (save-excursion
+      (bh/find-project-task)
+      (if (equal (point) task)
+          nil
+        t))))
+
+(defun bh/is-task-p ()
+  "Any task with a todo keyword and no subtask"
+  (save-restriction
+    (widen)
+    (let ((has-subtask)
+          (subtree-end (save-excursion (org-end-of-subtree t)))
+          (is-a-task (member (nth 2 (org-heading-components)) org-todo-keywords-1)))
+      (save-excursion
+        (forward-line 1)
+        (while (and (not has-subtask)
+                    (< (point) subtree-end)
+                    (re-search-forward "^\*+ " subtree-end t))
+          (when (member (org-get-todo-state) org-todo-keywords-1)
+            (setq has-subtask t))))
+      (and is-a-task (not has-subtask)))))
+
+(defun bh/is-subproject-p ()
+  "Any task which is a subtask of another project"
+  (let ((is-subproject)
+        (is-a-task (member (nth 2 (org-heading-components)) org-todo-keywords-1)))
+    (save-excursion
+      (while (and (not is-subproject) (org-up-heading-safe))
+        (when (member (nth 2 (org-heading-components)) org-todo-keywords-1)
+          (setq is-subproject t))))
+    (and is-a-task is-subproject)))
+
+(defun bh/list-sublevels-for-projects-indented ()
+  "Set org-tags-match-list-sublevels so when restricted to a subtree we list all subtasks.
+  This is normally used by skipping functions where this variable is already local to the agenda."
+  (if (marker-buffer org-agenda-restrict-begin)
+      (setq org-tags-match-list-sublevels 'indented)
+    (setq org-tags-match-list-sublevels nil))
+  nil)
+
+(defun bh/list-sublevels-for-projects ()
+  "Set org-tags-match-list-sublevels so when restricted to a subtree we list all subtasks.
+  This is normally used by skipping functions where this variable is already local to the agenda."
+  (if (marker-buffer org-agenda-restrict-begin)
+      (setq org-tags-match-list-sublevels t)
+    (setq org-tags-match-list-sublevels nil))
+  nil)
+
+(defvar bh/hide-scheduled-and-waiting-next-tasks t)
+
+(defun bh/toggle-next-task-display ()
+  (interactive)
+  (setq bh/hide-scheduled-and-waiting-next-tasks (not bh/hide-scheduled-and-waiting-next-tasks))
+  (when  (equal major-mode 'org-agenda-mode)
+    (org-agenda-redo))
+  (message "%s WAITING and SCHEDULED NEXT Tasks" (if bh/hide-scheduled-and-waiting-next-tasks "Hide" "Show")))
+
+(defun bh/skip-stuck-projects ()
+  "Skip trees that are not stuck projects"
+  (save-restriction
+    (widen)
+    (let ((next-headline (save-excursion (or (outline-next-heading) (point-max)))))
+      (if (bh/is-project-p)
+          (let* ((subtree-end (save-excursion (org-end-of-subtree t)))
+                 (has-next ))
+            (save-excursion
+              (forward-line 1)
+              (while (and (not has-next) (< (point) subtree-end) (re-search-forward "^\\*+ NEXT " subtree-end t))
+                (unless (member "WAITING" (org-get-tags-at))
+                  (setq has-next t))))
+            (if has-next
+                nil
+              next-headline)) ; a stuck project, has subtasks but no next task
+        nil))))
+
+(defun bh/skip-non-stuck-projects ()
+  "Skip trees that are not stuck projects"
+  (bh/list-sublevels-for-projects-indented)
+  (save-restriction
+    (widen)
+    (let ((next-headline (save-excursion (or (outline-next-heading) (point-max)))))
+      (if (bh/is-project-p)
+          (let* ((subtree-end (save-excursion (org-end-of-subtree t)))
+                 (has-next ))
+            (save-excursion
+              (forward-line 1)
+              (while (and (not has-next) (< (point) subtree-end) (re-search-forward "^\\*+ NEXT " subtree-end t))
+                (unless (member "WAITING" (org-get-tags-at))
+                  (setq has-next t))))
+            (if has-next
+                next-headline
+              nil)) ; a stuck project, has subtasks but no next task
+        next-headline))))
+
+(defun bh/skip-non-projects ()
+  "Skip trees that are not projects"
+  (bh/list-sublevels-for-projects-indented)
+  (if (save-excursion (bh/skip-non-stuck-projects))
+      (save-restriction
+        (widen)
+        (let ((subtree-end (save-excursion (org-end-of-subtree t))))
+          (cond
+           ((and (bh/is-project-p)
+                 (marker-buffer org-agenda-restrict-begin))
+            nil)
+           ((and (bh/is-project-p)
+                 (not (marker-buffer org-agenda-restrict-begin))
+                 (not (bh/is-project-subtree-p)))
+            nil)
+           (t
+            subtree-end))))
+    (save-excursion (org-end-of-subtree t))))
+
+(defun bh/skip-project-trees-and-habits ()
+  "Skip trees that are projects"
+  (save-restriction
+    (widen)
+    (let ((subtree-end (save-excursion (org-end-of-subtree t))))
+      (cond
+       ((bh/is-project-p)
+        subtree-end)
+       ((org-is-habit-p)
+        subtree-end)
+       (t
+        nil)))))
+
+(defun bh/skip-projects-and-habits-and-single-tasks ()
+  "Skip trees that are projects, tasks that are habits, single non-project tasks"
+  (save-restriction
+    (widen)
+    (let ((next-headline (save-excursion (or (outline-next-heading) (point-max)))))
+      (cond
+       ((org-is-habit-p)
+        next-headline)
+       ((and bh/hide-scheduled-and-waiting-next-tasks
+             (member "WAITING" (org-get-tags-at)))
+        next-headline)
+       ((bh/is-project-p)
+        next-headline)
+       ((and (bh/is-task-p) (not (bh/is-project-subtree-p)))
+        next-headline)
+       (t
+        nil)))))
+
+(defun bh/skip-project-tasks-maybe ()
+  "Show tasks related to the current restriction.
+When restricted to a project, skip project and sub project tasks, habits, NEXT tasks, and loose tasks.
+When not restricted, skip project and sub-project tasks, habits, and project related tasks."
+  (save-restriction
+    (widen)
+    (let* ((subtree-end (save-excursion (org-end-of-subtree t)))
+           (next-headline (save-excursion (or (outline-next-heading) (point-max))))
+           (limit-to-project (marker-buffer org-agenda-restrict-begin)))
+      (cond
+       ((bh/is-project-p)
+        next-headline)
+       ((org-is-habit-p)
+        subtree-end)
+       ((and (not limit-to-project)
+             (bh/is-project-subtree-p))
+        subtree-end)
+       ((and limit-to-project
+             (bh/is-project-subtree-p)
+             (member (org-get-todo-state) (list "NEXT")))
+        subtree-end)
+       (t
+        nil)))))
+
+(defun bh/skip-projects-and-habits ()
+  "Skip trees that are projects and tasks that are habits"
+  (save-restriction
+    (widen)
+    (let ((subtree-end (save-excursion (org-end-of-subtree t))))
+      (cond
+       ((bh/is-project-p)
+        subtree-end)
+       ((org-is-habit-p)
+        subtree-end)
+       (t
+        nil)))))
+
+(defun bh/skip-non-subprojects ()
+  "Skip trees that are not projects"
+  (let ((next-headline (save-excursion (outline-next-heading))))
+    (if (bh/is-subproject-p)
+        nil
+      next-headline)))
+#+END_SRC
 
 ** ERC Configuration
-   ERC (IRC) configuration, requires the ERC package
+ERC (IRC) configuration, requires the ERC package
 
-   First, set the SSL program to something sane. I use a cert at
-   =~/host.pem= for connecting to my bouncer:
+First, set the SSL program to something sane. I use a cert at
+=~/host.pem= for connecting to my bouncer:
 
-   #+BEGIN_SRC emacs-lisp
-   (setq tls-program
-         '("openssl s_client -connect %h:%p -no_ssl2 -ign_eof -cert ~/host.pem"
-           "gnutls-cli --priority secure256 --x509certfile ~/host.pem -p %p %h"
-           "gnutls-cli --priority secure256 -p %p %h"))
-   #+END_SRC
+#+BEGIN_SRC emacs-lisp
+(setq tls-program
+      '("openssl s_client -connect %h:%p -no_ssl2 -ign_eof -cert ~/host.pem"
+        "gnutls-cli --priority secure256 --x509certfile ~/host.pem -p %p %h"
+        "gnutls-cli --priority secure256 -p %p %h"))
+#+END_SRC
 
-   Next, load passwords from a file if the file exists:
+Next, load passwords from a file if the file exists:
 
-   #+BEGIN_SRC emacs-lisp
-   (when (window-system)
-     (when (file-exists-p "~/.ercpass")
-       (load-file "~/.ercpass")))
-   #+END_SRC
+#+BEGIN_SRC emacs-lisp
+(when (window-system)
+  (when (file-exists-p "~/.ercpass")
+    (load-file "~/.ercpass")))
+#+END_SRC
 
-   I also need to set up my notification rules:
+I also need to set up my notification rules:
 
-   #+BEGIN_SRC emacs-lisp
-   (when (window-system)
-     (use-package ercn
-       :config
-       (progn
-         ;; load private ercn notify rules if the file exists
-         (if (file-exists-p "~/.ercrules")
-             (load-file "~/.ercrules")
-           (setq ercn-notify-rules
-                 '((message . ("#denofclojure" "#elasticsearch"))
-                   (current-nick . all)
-                   (keyword . all)
-                   ;;(pal . all)
-                   (query-buffer . all))))
+#+BEGIN_SRC emacs-lisp
+(when (window-system)
+  (use-package ercn
+    :config
+    (progn
+      ;; load private ercn notify rules if the file exists
+      (if (file-exists-p "~/.ercrules")
+          (load-file "~/.ercrules")
+        (setq ercn-notify-rules
+              '((message . ("#denofclojure" "#elasticsearch"))
+                (current-nick . all)
+                (keyword . all)
+                ;;(pal . all)
+                (query-buffer . all))))
 
-         (defun do-notify (nickname message)
-           (todochiku-message (buffer-name)
-                              (concat nickname ": " message)
-                              (todochiku-icon 'irc)))
+      (defun do-notify (nickname message)
+        (todochiku-message (buffer-name)
+                           (concat nickname ": " message)
+                           (todochiku-icon 'irc)))
 
-         (add-hook 'ercn-notify 'do-notify)
-         (add-to-list 'erc-modules 'ercn)
+      (add-hook 'ercn-notify 'do-notify)
+      (add-to-list 'erc-modules 'ercn)
 
-         (defvar saved-ercn-rules nil)
-         (defun pause-ercn (seconds)
-           (setq saved-ercn-rules ercn-notify-rules)
-           (setq ercn-notify-rules
-                 '((current-nick . nil)
-                   (keyword . nil)
-                   (pal . nil)
-                   (query-buffer . nil)))
-           (run-with-idle-timer
-            seconds nil
-            (lambda ()
-              (setq ercn-notify-rules saved-ercn-rules)))))))
-   #+END_SRC
+      (defvar saved-ercn-rules nil)
+      (defun pause-ercn (seconds)
+        (setq saved-ercn-rules ercn-notify-rules)
+        (setq ercn-notify-rules
+              '((current-nick . nil)
+                (keyword . nil)
+                (pal . nil)
+                (query-buffer . nil)))
+        (run-with-idle-timer
+         seconds nil
+         (lambda ()
+           (setq ercn-notify-rules saved-ercn-rules)))))))
+#+END_SRC
 
-   Now, a helper function to manually start ERC, if desired:
+Now, a helper function to manually start ERC, if desired:
 
-   #+BEGIN_SRC emacs-lisp
-   (when (window-system)
-     (defun start-irc ()
-       "Connect to IRC."
-       (interactive)
-       (pause-ercn 6)
-       (erc-tls :server "freenode" :port 31425
-                :nick "dakrone" :password freenode-pass)))
-   #+END_SRC
+#+BEGIN_SRC emacs-lisp
+(when (window-system)
+  (defun start-irc ()
+    "Connect to IRC."
+    (interactive)
+    (pause-ercn 6)
+    (erc-tls :server "freenode" :port 31425
+             :nick "dakrone" :password freenode-pass)))
+#+END_SRC
 
-   And finally the giant setting of ERC configuration variables, only
-   if running in windowed mode, because I don't use ERC otherwise:
+And finally the giant setting of ERC configuration variables, only
+if running in windowed mode, because I don't use ERC otherwise:
 
-   #+BEGIN_SRC emacs-lisp
-   (when window-system
-     (use-package todochiku
-       :config
-       (progn
-         ;;------------------------------------------------------------------------
-         ;; Use terminal-notifier in OS X Mountain Lion
-         ;; https://github.com/alloy/terminal-notifier (Install in /Applications)
-         ;;------------------------------------------------------------------------
-         (setq terminal-notifier-path
-               "/Users/hinmanm/.rvm/gems/ruby-1.9.3-p448/bin/terminal-notifier")
+#+BEGIN_SRC emacs-lisp
+(when window-system
+  (use-package todochiku
+    :config
+    (progn
+      ;;------------------------------------------------------------------------
+      ;; Use terminal-notifier in OS X Mountain Lion
+      ;; https://github.com/alloy/terminal-notifier (Install in /Applications)
+      ;;------------------------------------------------------------------------
+      (setq terminal-notifier-path
+            "/Users/hinmanm/.rvm/gems/ruby-1.9.3-p448/bin/terminal-notifier")
 
-         (defadvice todochiku-get-arguments (around todochiku-nc)
-           (setq ad-return-value
-                 (list "-title" title "-message" message "-activate" "org.gnu.Emacs")))
+      (defadvice todochiku-get-arguments (around todochiku-nc)
+        (setq ad-return-value
+              (list "-title" title "-message" message "-activate" "org.gnu.Emacs")))
 
-         (when (file-executable-p terminal-notifier-path)
-           (setq todochiku-command terminal-notifier-path)
-           (ad-activate 'todochiku-get-arguments))))
+      (when (file-executable-p terminal-notifier-path)
+        (setq todochiku-command terminal-notifier-path)
+        (ad-activate 'todochiku-get-arguments))))
 
-     ;; Only track my nick(s)
-     (defadvice erc-track-find-face
-       (around erc-track-find-face-promote-query activate)
-       (if (erc-query-buffer-p)
-           (setq ad-return-value (intern "erc-current-nick-face"))
-         ad-do-it))
+  ;; Only track my nick(s)
+  (defadvice erc-track-find-face
+    (around erc-track-find-face-promote-query activate)
+    (if (erc-query-buffer-p)
+        (setq ad-return-value (intern "erc-current-nick-face"))
+      ad-do-it))
 
-     (use-package erc
-       :init (add-hook 'erc-connect-pre-hook (lambda (x) (erc-update-modules)))
-       :config
-       (progn
-         (setq erc-fill-column 90
-               erc-server-coding-system '(utf-8 . utf-8)
-               erc-hide-list '("JOIN" "PART" "QUIT" "NICK")
-               erc-track-exclude-types (append '("324" "329" "332" "333"
-                                                 "353" "477" "MODE")
-                                               erc-hide-list)
-               erc-nick '("dakrone" "dakrone_" "dakrone__")
-               erc-autojoin-timing :ident
-               erc-flood-protect nil
-               erc-pals '("hiredman" "danlarkin" "drewr" "pjstadig" "scgilardi"
-                          "joegallo" "jimduey" "leathekd" "zkim" "steve" "imotov"
-                          "technomancy" "ddillinger" "yazirian" "danielglauser")
-               erc-pal-highlight-type 'nil
-               erc-keywords '("dakrone" "dakrone_" "dakrone__" "clj-http"
-                              "cheshire" "clojure-opennlp" "opennlp")
-               erc-ignore-list '()
-               erc-track-exclude-types '("JOIN" "NICK" "PART" "QUIT" "MODE"
-                                         "324" "329" "332" "333" "353" "477")
-               erc-button-url-regexp
-               (concat "\\([-a-zA-Z0-9_=!?#$@~`%&*+\\/:;,]+\\.\\)+[-a-zA-Z0-9_=!?#"
-                       "$@~`%&*+\\/:;,]*[-a-zA-Z0-9\\/]")
-               erc-log-matches-types-alist
-               '((keyword . "ERC Keywords")
-                 (current-nick . "ERC Messages Addressed To You"))
-               erc-log-matches-flag t
-               erc-prompt-for-nickserv-password nil
-               erc-server-reconnect-timeout 5
-               erc-server-reconnect-attempts 4
-               ;; update ERC prompt with room name
-               erc-prompt (lambda ()
-                            (if (and (boundp 'erc-default-recipients)
-                                     (erc-default-target))
-                                (erc-propertize (concat (erc-default-target) ">")
-                                                'read-only t 'rear-nonsticky t
-                                                'front-nonsticky t)
-                              (erc-propertize (concat "ERC>") 'read-only t
-                                              'rear-nonsticky t
-                                              'front-nonsticky t))))
-         (use-package erc-services
-           :init (progn (add-to-list 'erc-modules 'spelling)
-                        (erc-services-mode 1)
-                        (erc-spelling-mode 1)))
-         (use-package erc-hl-nicks
-           :init (add-to-list 'erc-modules 'hl-nicks)))))
-   #+END_SRC
+  (use-package erc
+    :init (add-hook 'erc-connect-pre-hook (lambda (x) (erc-update-modules)))
+    :config
+    (progn
+      (setq erc-fill-column 90
+            erc-server-coding-system '(utf-8 . utf-8)
+            erc-hide-list '("JOIN" "PART" "QUIT" "NICK")
+            erc-track-exclude-types (append '("324" "329" "332" "333"
+                                              "353" "477" "MODE")
+                                            erc-hide-list)
+            erc-nick '("dakrone" "dakrone_" "dakrone__")
+            erc-autojoin-timing :ident
+            erc-flood-protect nil
+            erc-pals '("hiredman" "danlarkin" "drewr" "pjstadig" "scgilardi"
+                       "joegallo" "jimduey" "leathekd" "zkim" "steve" "imotov"
+                       "technomancy" "ddillinger" "yazirian" "danielglauser")
+            erc-pal-highlight-type 'nil
+            erc-keywords '("dakrone" "dakrone_" "dakrone__" "clj-http"
+                           "cheshire" "clojure-opennlp" "opennlp")
+            erc-ignore-list '()
+            erc-track-exclude-types '("JOIN" "NICK" "PART" "QUIT" "MODE"
+                                      "324" "329" "332" "333" "353" "477")
+            erc-button-url-regexp
+            (concat "\\([-a-zA-Z0-9_=!?#$@~`%&*+\\/:;,]+\\.\\)+[-a-zA-Z0-9_=!?#"
+                    "$@~`%&*+\\/:;,]*[-a-zA-Z0-9\\/]")
+            erc-log-matches-types-alist
+            '((keyword . "ERC Keywords")
+              (current-nick . "ERC Messages Addressed To You"))
+            erc-log-matches-flag t
+            erc-prompt-for-nickserv-password nil
+            erc-server-reconnect-timeout 5
+            erc-server-reconnect-attempts 4
+            ;; update ERC prompt with room name
+            erc-prompt (lambda ()
+                         (if (and (boundp 'erc-default-recipients)
+                                  (erc-default-target))
+                             (erc-propertize (concat (erc-default-target) ">")
+                                             'read-only t 'rear-nonsticky t
+                                             'front-nonsticky t)
+                           (erc-propertize (concat "ERC>") 'read-only t
+                                           'rear-nonsticky t
+                                           'front-nonsticky t))))
+      (use-package erc-services
+        :init (progn (add-to-list 'erc-modules 'spelling)
+                     (erc-services-mode 1)
+                     (erc-spelling-mode 1)))
+      (use-package erc-hl-nicks
+        :init (add-to-list 'erc-modules 'hl-nicks)))))
+#+END_SRC
 
 ** Email (mu4e) Configuration
-   #+BEGIN_SRC emacs-lisp
-   (defun mail ()
-     (interactive)
-     ;; gpg stuff
-     (require 'epa-file)
-     (epa-file-enable)
+#+BEGIN_SRC emacs-lisp
+(defun mail ()
+  (interactive)
+  ;; gpg stuff
+  (require 'epa-file)
+  (epa-file-enable)
 
-     (add-to-list 'load-path "~/src/mu-0.9.9.5/mu4e")
-     (require 'mu4e)
+  (add-to-list 'load-path "~/src/mu-0.9.9.5/mu4e")
+  (require 'mu4e)
 
-     (setq mu4e-mu-binary "/usr/local/bin/mu")
+  (setq mu4e-mu-binary "/usr/local/bin/mu")
 
-     (setq smtpmail-smtp-server "smtp.example.org")
-     ;;(setq mu4e-sent-messages-behavior 'delete)
+  (setq smtpmail-smtp-server "smtp.example.org")
+  ;;(setq mu4e-sent-messages-behavior 'delete)
 
-     ;; save attachments to the desktop
-     (setq mu4e-attachment-dir "~/Downloads")
-     ;; attempt to show images
-     (setq mu4e-view-show-images t
-           mu4e-view-image-max-width 800)
+  ;; save attachments to the desktop
+  (setq mu4e-attachment-dir "~/Downloads")
+  ;; attempt to show images
+  (setq mu4e-view-show-images t
+        mu4e-view-image-max-width 800)
 
-     (setq smtpmail-queue-mail nil ;; start in non-queuing mode
-           smtpmail-queue-dir        "~/.mailqueue/")
+  (setq smtpmail-queue-mail nil ;; start in non-queuing mode
+        smtpmail-queue-dir        "~/.mailqueue/")
 
-     ;; Always use pgg to sign messages
-     (setq mml2015-use 'epg)
-     ;; Always use pgg to sign messages
-     (setq pgg-default-user-id "3acecae0")
-     (setq epg-gpg-program "/usr/local/bin/gpg")
+  ;; Always use pgg to sign messages
+  (setq mml2015-use 'epg)
+  ;; Always use pgg to sign messages
+  (setq pgg-default-user-id "3acecae0")
+  (setq epg-gpg-program "/usr/local/bin/gpg")
 
-     (require 'gnus-dired)
-     ;; make the `gnus-dired-mail-buffers' function also work on
-     ;; message-mode derived modes, such as mu4e-compose-mode
-     (defun gnus-dired-mail-buffers ()
-       "Return a list of active message buffers."
-       (let (buffers)
-         (save-current-buffer
-           (dolist (buffer (buffer-list t))
-             (set-buffer buffer)
-             (when (and (derived-mode-p 'message-mode)
-                        (null message-sent-message-via))
-               (push (buffer-name buffer) buffers))))
-         (nreverse buffers)))
+  (require 'gnus-dired)
+  ;; make the `gnus-dired-mail-buffers' function also work on
+  ;; message-mode derived modes, such as mu4e-compose-mode
+  (defun gnus-dired-mail-buffers ()
+    "Return a list of active message buffers."
+    (let (buffers)
+      (save-current-buffer
+        (dolist (buffer (buffer-list t))
+          (set-buffer buffer)
+          (when (and (derived-mode-p 'message-mode)
+                     (null message-sent-message-via))
+            (push (buffer-name buffer) buffers))))
+      (nreverse buffers)))
 
-     (setq gnus-dired-mail-mode 'mu4e-user-agent)
-     (add-hook 'dired-mode-hook 'turn-on-gnus-dired-mode)
+  (setq gnus-dired-mail-mode 'mu4e-user-agent)
+  (add-hook 'dired-mode-hook 'turn-on-gnus-dired-mode)
 
-     ;; David's (and now my) config
+  ;; David's (and now my) config
 
-      ;; Vars used below
-     (defvar kdl-mu4e-new-mail nil
-       "Boolean to represent if there is new mail.")
+   ;; Vars used below
+  (defvar kdl-mu4e-new-mail nil
+    "Boolean to represent if there is new mail.")
 
-     (defvar kdl-mu4e-url-location-list '()
-       "Stores the location of each link in a mu4e view buffer")
+  (defvar kdl-mu4e-url-location-list '()
+    "Stores the location of each link in a mu4e view buffer")
 
-     ;; This is also defined in init.el, but b/c ESK runs all files in the
-     ;; user-dir before init.el it must also be defined here
-     (defvar message-filter-regexp-list '()
-       "regexps to filter matched msgs from the echo area when message is called")
+  ;; This is also defined in init.el, but b/c ESK runs all files in the
+  ;; user-dir before init.el it must also be defined here
+  (defvar message-filter-regexp-list '()
+    "regexps to filter matched msgs from the echo area when message is called")
 
-     (setq message-kill-buffer-on-exit t ;; kill sent msg buffers
-           ;; use msmtp
-           message-send-mail-function 'message-send-mail-with-sendmail
-           sendmail-program   "/usr/local/bin/msmtp"
-           ;; Look at the from header to determine the account from which
-           ;; to send. Might not be needed b/c of kdl-msmtp
-           mail-specify-envelope-from t
-           mail-envelope-from 'header
-           message-sendmail-envelope-from 'header
-           ;; emacs email defaults
-           user-mail-address  "lee@writequit.org"
-           user-full-name     "Lee Hinman"
-           mail-host-address  "writequit.org"
-           ;; mu4e defaults
-           mu4e-maildir       "~/.mail"
-           ;; misc mu settings
-           ;; Unicode FTW
-           mu4e-use-fancy-chars nil
-           ;; use the python html2text shell command to strip html
-           ;; brew/apt-get install html2text
-           mu4e-html2text-command "/usr/local/bin/elinks -dump"
-           ;; mu4e-html2text-command "/usr/local/bin/html2text -nobs"
-           ;; mu4e-html2text-command
-           ;; "/usr/bin/html2markdown | fgrep -v '&nbsp_place_holder;'"
-           ;; check for new messages ever 600 seconds (10 min)
-           mu4e-update-interval 600)
+  (setq message-kill-buffer-on-exit t ;; kill sent msg buffers
+        ;; use msmtp
+        message-send-mail-function 'message-send-mail-with-sendmail
+        sendmail-program   "/usr/local/bin/msmtp"
+        ;; Look at the from header to determine the account from which
+        ;; to send. Might not be needed b/c of kdl-msmtp
+        mail-specify-envelope-from t
+        mail-envelope-from 'header
+        message-sendmail-envelope-from 'header
+        ;; emacs email defaults
+        user-mail-address  "lee@writequit.org"
+        user-full-name     "Lee Hinman"
+        mail-host-address  "writequit.org"
+        ;; mu4e defaults
+        mu4e-maildir       "~/.mail"
+        ;; misc mu settings
+        ;; Unicode FTW
+        mu4e-use-fancy-chars nil
+        ;; use the python html2text shell command to strip html
+        ;; brew/apt-get install html2text
+        mu4e-html2text-command "/usr/local/bin/elinks -dump"
+        ;; mu4e-html2text-command "/usr/local/bin/html2text -nobs"
+        ;; mu4e-html2text-command
+        ;; "/usr/bin/html2markdown | fgrep -v '&nbsp_place_holder;'"
+        ;; check for new messages ever 600 seconds (10 min)
+        mu4e-update-interval 600)
 
-      ;; Multi-account support
-     (defun kdl-mu4e-current-account (&optional msg ignore-message-at-point)
-       "Figure out what the current account is based on the message being
-   composed, the message under the point, or (optionally) the message
-   passed in. Also supports ignoring the msg at the point."
-       (let ((cur-msg (or msg
-                          mu4e-compose-parent-message
-                          (and (not ignore-message-at-point)
-                               (mu4e-message-at-point t)))))
-         (when cur-msg
-           (let ((maildir (mu4e-msg-field cur-msg :maildir)))
-             (string-match "/\\(.*?\\)/" maildir)
-             (match-string 1 maildir)))))
+   ;; Multi-account support
+  (defun kdl-mu4e-current-account (&optional msg ignore-message-at-point)
+    "Figure out what the current account is based on the message being
+composed, the message under the point, or (optionally) the message
+passed in. Also supports ignoring the msg at the point."
+    (let ((cur-msg (or msg
+                       mu4e-compose-parent-message
+                       (and (not ignore-message-at-point)
+                            (mu4e-message-at-point t)))))
+      (when cur-msg
+        (let ((maildir (mu4e-msg-field cur-msg :maildir)))
+          (string-match "/\\(.*?\\)/" maildir)
+          (match-string 1 maildir)))))
 
-     (defun is-gmail-account? (acct)
-       (if (or (equal "elasticsearch" acct) (equal "gmail" acct))
-           t nil))
+  (defun is-gmail-account? (acct)
+    (if (or (equal "elasticsearch" acct) (equal "gmail" acct))
+        t nil))
 
-     ;; my elisp is bad and I should feel bad
-     (defun mlh-folder-for (acct g-folder-name other-folder-name)
-       (if (or (equal "elasticsearch" acct) (equal "gmail" acct))
-           (format "/%s/[Gmail].%s" acct g-folder-name)
-         (format "/%s/INBOX.%s" acct other-folder-name)))
+  ;; my elisp is bad and I should feel bad
+  (defun mlh-folder-for (acct g-folder-name other-folder-name)
+    (if (or (equal "elasticsearch" acct) (equal "gmail" acct))
+        (format "/%s/[Gmail].%s" acct g-folder-name)
+      (format "/%s/INBOX.%s" acct other-folder-name)))
 
-     ;; Support for multiple accounts
-     (setq mu4e-sent-folder   (lambda (msg)
-                                (mlh-folder-for (kdl-mu4e-current-account msg)
-                                                "Sent Mail" "Sent"))
-           mu4e-drafts-folder (lambda (msg)
-                                (mlh-folder-for (kdl-mu4e-current-account msg)
-                                                "Drafts" "Drafts"))
-           mu4e-trash-folder  (lambda (msg)
-                                (mlh-folder-for (kdl-mu4e-current-account msg)
-                                                "Trash" "Trash"))
-           mu4e-refile-folder (lambda (msg)
-                                (mlh-folder-for (kdl-mu4e-current-account msg)
-                                                "All Mail" "Archive"))
-           ;; The following list represents the account followed by key /
-           ;; value pairs of vars to set when the account is chosen
-           kdl-mu4e-account-alist
-           '(("gmail"
-              (user-mail-address   "matthew.hinman@gmail.com")
-              (msmtp-account       "gmail")
-              (mu4e-sent-messages-behavior delete))
-             ("elasticsearch"
-              (user-mail-address   "lee.hinman@elasticsearch.com")
-              (msmtp-account       "elasticsearch")
-              (mu4e-sent-messages-behavior delete))
-             ("writequit"
-              (user-mail-address   "lee@writequit.org")
-              (msmtp-account       "writequit")
-              (mu4e-sent-messages-behavior sent)))
-           ;; These are used when mu4e checks for new messages
-           mu4e-my-email-addresses
-           (mapcar (lambda (acct) (cadr (assoc 'user-mail-address (cdr acct))))
-                   kdl-mu4e-account-alist))
-
-     (defun kdl-mu4e-choose-account ()
-       "Prompt the user for an account to use"
-       (completing-read (format "Compose with account: (%s) "
-                                (mapconcat #'(lambda (var) (car var))
-                                           kdl-mu4e-account-alist "/"))
-                        (mapcar #'(lambda (var) (car var))
-                                kdl-mu4e-account-alist)
-                        nil t nil nil (caar kdl-mu4e-account-alist)))
-
-     (defun kdl-mu4e-set-compose-account ()
-       "Set various vars when composing a message. The vars to set are
-     defined in kdl-mu4e-account-alist."
-       (let* ((account (or (kdl-mu4e-current-account nil t)
-                           (kdl-mu4e-choose-account)))
-              (account-vars (cdr (assoc account kdl-mu4e-account-alist))))
-         (when account-vars
-           (mapc #'(lambda (var)
-                     (set (car var) (cadr var)))
-                 account-vars))))
-     (add-hook 'mu4e-compose-pre-hook 'kdl-mu4e-set-compose-account)
-
-      ;; Send mail through msmtp (setq stuff is below)
-     (defun kdl-msmtp ()
-       "Add some arguments to the msmtp call in order to route the message
-     through the right account."
-       (if (message-mail-p)
-           (save-excursion
-             (let* ((from (save-restriction (message-narrow-to-headers)
-                                            (message-fetch-field "from"))))
-               (setq message-sendmail-extra-arguments (list "-a" msmtp-account))))))
-     (add-hook 'message-send-mail-hook 'kdl-msmtp)
-
-      ;; Notification stuff
-     (setq global-mode-string
-           (if (string-match-p "kdl-mu4e-new-mail"
-                               (prin1-to-string global-mode-string))
-               global-mode-string
-             (cons
-              ;;         '(kdl-mu4e-new-mail "✉" "")
-              '(kdl-mu4e-new-mail "Mail" "")
-              global-mode-string)))
-
-     (defun kdl-mu4e-unread-mail-query ()
-       "The query to look for unread messages in all account INBOXes.
-     More generally, change this code to affect not only when the
-     envelope icon appears in the modeline, but also what shows up in
-     mu4e under the Unread bookmark"
-       (mapconcat
-        (lambda (acct)
-          (let ((name (car acct)))
-            (format "%s"
-                    (mapconcat (lambda (fmt)
-                                 (format fmt name))
-                               '("flag:unread AND maildir:/%s/INBOX")
-                               " "))))
+  ;; Support for multiple accounts
+  (setq mu4e-sent-folder   (lambda (msg)
+                             (mlh-folder-for (kdl-mu4e-current-account msg)
+                                             "Sent Mail" "Sent"))
+        mu4e-drafts-folder (lambda (msg)
+                             (mlh-folder-for (kdl-mu4e-current-account msg)
+                                             "Drafts" "Drafts"))
+        mu4e-trash-folder  (lambda (msg)
+                             (mlh-folder-for (kdl-mu4e-current-account msg)
+                                             "Trash" "Trash"))
+        mu4e-refile-folder (lambda (msg)
+                             (mlh-folder-for (kdl-mu4e-current-account msg)
+                                             "All Mail" "Archive"))
+        ;; The following list represents the account followed by key /
+        ;; value pairs of vars to set when the account is chosen
         kdl-mu4e-account-alist
-        " OR "))
+        '(("gmail"
+           (user-mail-address   "matthew.hinman@gmail.com")
+           (msmtp-account       "gmail")
+           (mu4e-sent-messages-behavior delete))
+          ("elasticsearch"
+           (user-mail-address   "lee.hinman@elasticsearch.com")
+           (msmtp-account       "elasticsearch")
+           (mu4e-sent-messages-behavior delete))
+          ("writequit"
+           (user-mail-address   "lee@writequit.org")
+           (msmtp-account       "writequit")
+           (mu4e-sent-messages-behavior sent)))
+        ;; These are used when mu4e checks for new messages
+        mu4e-my-email-addresses
+        (mapcar (lambda (acct) (cadr (assoc 'user-mail-address (cdr acct))))
+                kdl-mu4e-account-alist))
 
-     (defun kdl-mu4e-new-mail-p ()
-       "Predicate for if there is new mail or not"
-       (not (eq 0 (string-to-number
-                   (replace-regexp-in-string
-                    "[ \t\n\r]" "" (shell-command-to-string
-                                    (concat "mu find "
-                                            (kdl-mu4e-unread-mail-query)
-                                            " | wc -l")))))))
+  (defun kdl-mu4e-choose-account ()
+    "Prompt the user for an account to use"
+    (completing-read (format "Compose with account: (%s) "
+                             (mapconcat #'(lambda (var) (car var))
+                                        kdl-mu4e-account-alist "/"))
+                     (mapcar #'(lambda (var) (car var))
+                             kdl-mu4e-account-alist)
+                     nil t nil nil (caar kdl-mu4e-account-alist)))
 
-     (defun kdl-mu4e-notify ()
-       "Function called to update the new-mail flag used in the mode-line"
-       ;; This delay is to give emacs and mu a chance to have changed the
-       ;; status of the mail in the index
-       (run-with-idle-timer
-        1 nil (lambda () (setq kdl-mu4e-new-mail (kdl-mu4e-new-mail-p)))))
+  (defun kdl-mu4e-set-compose-account ()
+    "Set various vars when composing a message. The vars to set are
+  defined in kdl-mu4e-account-alist."
+    (let* ((account (or (kdl-mu4e-current-account nil t)
+                        (kdl-mu4e-choose-account)))
+           (account-vars (cdr (assoc account kdl-mu4e-account-alist))))
+      (when account-vars
+        (mapc #'(lambda (var)
+                  (set (car var) (cadr var)))
+              account-vars))))
+  (add-hook 'mu4e-compose-pre-hook 'kdl-mu4e-set-compose-account)
 
-     ;; I put a lot of effort (probably too much) into getting the
-     ;; 'new mail' icon to go away by showing or hiding it:
-     ;; - periodically (this runs even when mu4e isn't running)
-     (setq kdl-mu4e-notify-timer (run-with-timer 0 500 'kdl-mu4e-notify))
-     ;; - when the index is updated (this runs when mu4e is running)
-     (add-hook 'mu4e-index-updated-hook 'kdl-mu4e-notify)
-     ;; - after mail is processed (try to make the icon go away)
-     (defadvice mu4e-mark-execute-all
-       (after mu4e-mark-execute-all-notify activate) 'kdl-mu4e-notify)
-     ;; - when a message is opened (try to make the icon go away)
-     (add-hook 'mu4e-view-mode-hook 'kdl-mu4e-notify)
-     ;; wrap lines
-     (add-hook 'mu4e-view-mode-hook 'visual-line-mode)
+   ;; Send mail through msmtp (setq stuff is below)
+  (defun kdl-msmtp ()
+    "Add some arguments to the msmtp call in order to route the message
+  through the right account."
+    (if (message-mail-p)
+        (save-excursion
+          (let* ((from (save-restriction (message-narrow-to-headers)
+                                         (message-fetch-field "from"))))
+            (setq message-sendmail-extra-arguments (list "-a" msmtp-account))))))
+  (add-hook 'message-send-mail-hook 'kdl-msmtp)
 
-     (defun kdl-mu4e-quit-and-notify ()
-       "Bury the buffer and check for new messages. Mainly this is intended
-     to clear out the envelope icon when done reading mail."
-       (interactive)
-       (bury-buffer)
-       (kdl-mu4e-notify))
+   ;; Notification stuff
+  (setq global-mode-string
+        (if (string-match-p "kdl-mu4e-new-mail"
+                            (prin1-to-string global-mode-string))
+            global-mode-string
+          (cons
+           ;;         '(kdl-mu4e-new-mail "✉" "")
+           '(kdl-mu4e-new-mail "Mail" "")
+           global-mode-string)))
 
-     ;; Make 'quit' just bury the buffer
-     (define-key mu4e-headers-mode-map "q" 'kdl-mu4e-quit-and-notify)
-     (define-key mu4e-main-mode-map "q" 'kdl-mu4e-quit-and-notify)
+  (defun kdl-mu4e-unread-mail-query ()
+    "The query to look for unread messages in all account INBOXes.
+  More generally, change this code to affect not only when the
+  envelope icon appears in the modeline, but also what shows up in
+  mu4e under the Unread bookmark"
+    (mapconcat
+     (lambda (acct)
+       (let ((name (car acct)))
+         (format "%s"
+                 (mapconcat (lambda (fmt)
+                              (format fmt name))
+                            '("flag:unread AND maildir:/%s/INBOX")
+                            " "))))
+     kdl-mu4e-account-alist
+     " OR "))
 
-      ;; View mode stuff
-     ;; Make it possible to tab between links
-     (defun kdl-mu4e-populate-url-locations (&optional force)
-       "Scans the view buffer for the links that mu4e has identified and
-     notes their locations"
-       (when (or (null kdl-mu4e-url-location-list) force)
-         (make-local-variable 'kdl-mu4e-url-location-list)
-         (let ((pt (next-single-property-change (point-min) 'face)))
-           (while pt
-             (when (equal (get-text-property pt 'face) 'mu4e-view-link-face)
-               (add-to-list 'kdl-mu4e-url-location-list pt t))
-             (setq pt (next-single-property-change pt 'face)))))
-       kdl-mu4e-url-location-list)
+  (defun kdl-mu4e-new-mail-p ()
+    "Predicate for if there is new mail or not"
+    (not (eq 0 (string-to-number
+                (replace-regexp-in-string
+                 "[ \t\n\r]" "" (shell-command-to-string
+                                 (concat "mu find "
+                                         (kdl-mu4e-unread-mail-query)
+                                         " | wc -l")))))))
 
-     (defun kdl-mu4e-move-to-link (pt)
-       (if pt
-           (goto-char pt)
-         (error "No link found.")))
+  (defun kdl-mu4e-notify ()
+    "Function called to update the new-mail flag used in the mode-line"
+    ;; This delay is to give emacs and mu a chance to have changed the
+    ;; status of the mail in the index
+    (run-with-idle-timer
+     1 nil (lambda () (setq kdl-mu4e-new-mail (kdl-mu4e-new-mail-p)))))
 
-     (defun kdl-mu4e-forward-url ()
-       "Move the point to the beginning of the next link in the buffer"
-       (interactive)
-       (let* ((pt-list (kdl-mu4e-populate-url-locations)))
-         (kdl-mu4e-move-to-link
-          (or (some (lambda (pt) (when (> pt (point)) pt)) pt-list)
-              (some (lambda (pt) (when (> pt (point-min)) pt)) pt-list)))))
+  ;; I put a lot of effort (probably too much) into getting the
+  ;; 'new mail' icon to go away by showing or hiding it:
+  ;; - periodically (this runs even when mu4e isn't running)
+  (setq kdl-mu4e-notify-timer (run-with-timer 0 500 'kdl-mu4e-notify))
+  ;; - when the index is updated (this runs when mu4e is running)
+  (add-hook 'mu4e-index-updated-hook 'kdl-mu4e-notify)
+  ;; - after mail is processed (try to make the icon go away)
+  (defadvice mu4e-mark-execute-all
+    (after mu4e-mark-execute-all-notify activate) 'kdl-mu4e-notify)
+  ;; - when a message is opened (try to make the icon go away)
+  (add-hook 'mu4e-view-mode-hook 'kdl-mu4e-notify)
+  ;; wrap lines
+  (add-hook 'mu4e-view-mode-hook 'visual-line-mode)
 
-     (defun kdl-mu4e-backward-url ()
-       "Move the point to the beginning of the previous link in the buffer"
-       (interactive)
-       (let* ((pt-list (reverse (kdl-mu4e-populate-url-locations))))
-         (kdl-mu4e-move-to-link
-          (or (some (lambda (pt) (when (< pt (point)) pt)) pt-list)
-              (some (lambda (pt) (when (< pt (point-max)) pt)) pt-list)))))
+  (defun kdl-mu4e-quit-and-notify ()
+    "Bury the buffer and check for new messages. Mainly this is intended
+  to clear out the envelope icon when done reading mail."
+    (interactive)
+    (bury-buffer)
+    (kdl-mu4e-notify))
 
-     (define-key mu4e-view-mode-map (kbd "TAB") 'kdl-mu4e-forward-url)
-     (define-key mu4e-view-mode-map (kbd "<backtab>") 'kdl-mu4e-backward-url)
+  ;; Make 'quit' just bury the buffer
+  (define-key mu4e-headers-mode-map "q" 'kdl-mu4e-quit-and-notify)
+  (define-key mu4e-main-mode-map "q" 'kdl-mu4e-quit-and-notify)
 
-      ;; Misc
-     ;; The bookmarks for the main screen
-     (setq mu4e-bookmarks
-           `((,(kdl-mu4e-unread-mail-query) "New messages"         ?b)
-             ("date:today..now"             "Today's messages"     ?t)
-             ("date:7d..now"                "Last 7 days"          ?W)
-             ("maildir:/writequit/INBOX"    "Writequit"            ?w)
-             ("maildir:/elasticsearch/INBOX" "Elasticsearch"       ?s)
-             ("maildir:/gmail/INBOX"        "Gmail"                ?g)
-             ("maildir:/writequit/INBOX OR maildir:/elasticsearch/INBOX OR maildir:/gmail/INBOX"
-              "All Mail" ?a)
-             ("mime:image/*"                "Messages with images" ?p)))
+   ;; View mode stuff
+  ;; Make it possible to tab between links
+  (defun kdl-mu4e-populate-url-locations (&optional force)
+    "Scans the view buffer for the links that mu4e has identified and
+  notes their locations"
+    (when (or (null kdl-mu4e-url-location-list) force)
+      (make-local-variable 'kdl-mu4e-url-location-list)
+      (let ((pt (next-single-property-change (point-min) 'face)))
+        (while pt
+          (when (equal (get-text-property pt 'face) 'mu4e-view-link-face)
+            (add-to-list 'kdl-mu4e-url-location-list pt t))
+          (setq pt (next-single-property-change pt 'face)))))
+    kdl-mu4e-url-location-list)
 
-     ;; Skip the main mu4e screen and go right to unread
-     (defun kdl-mu4e-view-unread ()
-       "Open the Unread bookmark directly"
-       (interactive)
-       (mu4e~start)
-       (mu4e-headers-search-bookmark (mu4e-get-bookmark-query ?b)))
+  (defun kdl-mu4e-move-to-link (pt)
+    (if pt
+        (goto-char pt)
+      (error "No link found.")))
 
-     (global-set-key (kbd "C-c 2") 'kdl-mu4e-view-unread)
+  (defun kdl-mu4e-forward-url ()
+    "Move the point to the beginning of the next link in the buffer"
+    (interactive)
+    (let* ((pt-list (kdl-mu4e-populate-url-locations)))
+      (kdl-mu4e-move-to-link
+       (or (some (lambda (pt) (when (> pt (point)) pt)) pt-list)
+           (some (lambda (pt) (when (> pt (point-min)) pt)) pt-list)))))
 
-     ;; Don't echo some mu4e messages
-     (add-to-list 'message-filter-regexp-list "mu4e.*Indexing.*processed")
-     (add-to-list 'message-filter-regexp-list "mu4e.*Retrieving mail")
-     (add-to-list 'message-filter-regexp-list "mu4e.*Started")
+  (defun kdl-mu4e-backward-url ()
+    "Move the point to the beginning of the previous link in the buffer"
+    (interactive)
+    (let* ((pt-list (reverse (kdl-mu4e-populate-url-locations))))
+      (kdl-mu4e-move-to-link
+       (or (some (lambda (pt) (when (< pt (point)) pt)) pt-list)
+           (some (lambda (pt) (when (< pt (point-max)) pt)) pt-list)))))
 
-      ;; Start it up
-     (when (eq window-system 'ns)
-       ;; start mu4e
-       (mu4e~start)
-       ;; check for unread messages
-       (kdl-mu4e-notify))
+  (define-key mu4e-view-mode-map (kbd "TAB") 'kdl-mu4e-forward-url)
+  (define-key mu4e-view-mode-map (kbd "<backtab>") 'kdl-mu4e-backward-url)
 
-     (add-to-list 'mu4e-view-actions
-                  '("ViewInBrowser" . mu4e-action-view-in-browser) t)
+   ;; Misc
+  ;; The bookmarks for the main screen
+  (setq mu4e-bookmarks
+        `((,(kdl-mu4e-unread-mail-query) "New messages"         ?b)
+          ("date:today..now"             "Today's messages"     ?t)
+          ("date:7d..now"                "Last 7 days"          ?W)
+          ("maildir:/writequit/INBOX"    "Writequit"            ?w)
+          ("maildir:/elasticsearch/INBOX" "Elasticsearch"       ?s)
+          ("maildir:/gmail/INBOX"        "Gmail"                ?g)
+          ("maildir:/writequit/INBOX OR maildir:/elasticsearch/INBOX OR maildir:/gmail/INBOX"
+           "All Mail" ?a)
+          ("mime:image/*"                "Messages with images" ?p)))
 
-     (define-key mu4e-view-mode-map (kbd "j") 'next-line)
-     (define-key mu4e-view-mode-map (kbd "k") 'previous-line)
+  ;; Skip the main mu4e screen and go right to unread
+  (defun kdl-mu4e-view-unread ()
+    "Open the Unread bookmark directly"
+    (interactive)
+    (mu4e~start)
+    (mu4e-headers-search-bookmark (mu4e-get-bookmark-query ?b)))
 
-     (define-key mu4e-headers-mode-map (kbd "J") 'mu4e~headers-jump-to-maildir)
-     (define-key mu4e-headers-mode-map (kbd "j") 'next-line)
-     (define-key mu4e-headers-mode-map (kbd "k") 'previous-line)
+  (global-set-key (kbd "C-c 2") 'kdl-mu4e-view-unread)
 
-     (when (eq my/background 'light)
-       (set-face-background 'mu4e-header-highlight-face "#e0e0e0")))
-   #+END_SRC
+  ;; Don't echo some mu4e messages
+  (add-to-list 'message-filter-regexp-list "mu4e.*Indexing.*processed")
+  (add-to-list 'message-filter-regexp-list "mu4e.*Retrieving mail")
+  (add-to-list 'message-filter-regexp-list "mu4e.*Started")
+
+   ;; Start it up
+  (when (eq window-system 'ns)
+    ;; start mu4e
+    (mu4e~start)
+    ;; check for unread messages
+    (kdl-mu4e-notify))
+
+  (add-to-list 'mu4e-view-actions
+               '("ViewInBrowser" . mu4e-action-view-in-browser) t)
+
+  (define-key mu4e-view-mode-map (kbd "j") 'next-line)
+  (define-key mu4e-view-mode-map (kbd "k") 'previous-line)
+
+  (define-key mu4e-headers-mode-map (kbd "J") 'mu4e~headers-jump-to-maildir)
+  (define-key mu4e-headers-mode-map (kbd "j") 'next-line)
+  (define-key mu4e-headers-mode-map (kbd "k") 'previous-line)
+
+  (when (eq my/background 'light)
+    (set-face-background 'mu4e-header-highlight-face "#e0e0e0")))
+#+END_SRC
 
 ** Yascroll
-   #+BEGIN_SRC emacs-lisp
-   (use-package yascroll
-     :init (global-yascroll-bar-mode 1))
-   #+END_SRC
+#+BEGIN_SRC emacs-lisp
+(use-package yascroll
+  :init (global-yascroll-bar-mode 1)
+  :config (add-hook 'org-mode-hook (lambda () (yascroll-bar-mode -1))))
+#+END_SRC
 
 ** Smooth-scrolling
-   #+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp
    (use-package smooth-scrolling
      :init (setq smooth-scroll-margin 4))
-   #+END_SRC
+#+END_SRC
 
 ** Keyfreq
-   Keep track of the frequencies of commands, but only in GUI mode:
+Keep track of the frequencies of commands, but only in GUI mode:
 
-   #+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp
    (when (window-system)
      (use-package keyfreq
        :init (progn (keyfreq-mode 1)
                     (keyfreq-autosave-mode 1))))
-   #+END_SRC
+#+END_SRC
 
 ** Yasnippet
-   #+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp
    (use-package yasnippet
      :defer t
      :commands yas-minor-mode-on
@@ -1812,11 +2172,11 @@
        ;; snippet-mode for *.yasnippet files
        (add-to-list 'auto-mode-alist '("\\.yasnippet$" . snippet-mode))
        (yas-reload-all)))
-   #+END_SRC
+#+END_SRC
 
-   And some niceties to allow choosing a snippet using helm:
+And some niceties to allow choosing a snippet using helm:
 
-   #+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp
    (eval-after-load "helm-config"
      '(progn
         (defun my-yas/prompt (prompt choices &optional display-fn)
@@ -1836,10 +2196,10 @@
               (signal 'quit "user quit!"))))
         (custom-set-variables '(yas/prompt-functions '(my-yas/prompt)))
         (global-set-key (kbd "M-=") 'yas/insert-snippet)))
-   #+END_SRC
+#+END_SRC
 
 ** Paredit
-   #+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp
    (use-package paredit
      :commands paredit-mode
      :diminish "()"
@@ -1856,9 +2216,9 @@
        (define-key paredit-mode-map (kbd "C-(") 'paredit-forward-barf-sexp)
        (define-key paredit-mode-map (kbd "C-)") 'paredit-forward-slurp-sexp)
        (define-key paredit-mode-map (kbd ")") 'paredit-close-parenthesis)))
-   #+END_SRC
+#+END_SRC
 ** Smartparens
-   #+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp
    (use-package smartparens
      :init
      (progn
@@ -1924,9 +2284,9 @@
 
        (sp-with-modes sp--lisp-modes
          (sp-local-pair "(" nil :bind "C-("))))
-   #+END_SRC
+#+END_SRC
 ** Flycheck
-   #+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp
    (use-package flycheck
      :diminish "fc"
      :init
@@ -1945,16 +2305,16 @@
      :init
      (progn
        (defun google-url () (concat "https://duckduckgo.com/?q=%s"))))
-   #+END_SRC
+#+END_SRC
 ** Expand-region
 
-   #+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp
    (use-package expand-region
      :config (progn (global-set-key (kbd "C-c e") 'er/expand-region)
                     (global-set-key (kbd "C-M-@") 'er/contract-region)))
-   #+END_SRC
+#+END_SRC
 ** Magit
-   #+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp
    (defun magit-browse ()
      (interactive)
      (let ((url (with-temp-buffer
@@ -1979,18 +2339,18 @@
        (set-face-attribute 'magit-item-highlight nil
                            :background nil)
        (custom-set-variables '(magit-set-upstream-on-push (quote dontask)))))
-   #+END_SRC
+#+END_SRC
 
 ** Projectile
 
-   #+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp
    (use-package projectile
      :init (progn
              (projectile-global-mode)
              (defconst projectile-mode-line-lighter " P")))
-   #+END_SRC
+#+END_SRC
 ** Git-gutter
-   #+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp
    (use-package git-gutter
      :defer t
      :diminish git-gutter-mode
@@ -2005,11 +2365,11 @@
                          (global-set-key (kbd "C-x p") 'git-gutter:previous-hunk)
                          (global-set-key (kbd "C-x n") 'git-gutter:next-hunk)
                          (global-set-key (kbd "C-c G") 'git-gutter:popup-hunk)))))
-   #+END_SRC
+#+END_SRC
 
 ** Anzu
 
-   #+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp
    (use-package anzu
      :init (global-anzu-mode t)
      :config
@@ -2022,12 +2382,12 @@
      (isearch-yank-internal (lambda () (forward-symbol 1) (point))))
 
    (define-key isearch-mode-map (kbd "C-M-w") 'isearch-yank-symbol)
-   #+END_SRC
+#+END_SRC
 ** Helm
 
-   There are many helm things.
+There are many helm things.
 
-   #+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp
    (use-package helm
      :init
      (progn
@@ -2144,11 +2504,11 @@
          (":trust-store-pass - password for trust store")
          (":trust-store-type - type of trust store")))
        (action . message)))
-   #+END_SRC
+#+END_SRC
 
 ** Asciidoc and Markdown
 
-   #+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp
    (use-package adoc-mode
      :defer t
      :mode (("\\.asciidoc$" . adoc-mode)
@@ -2185,11 +2545,11 @@
            ("h5"   "^#####\\s-+\\(.+?\\)$" 1)
            ("h6"   "^######\\s-+\\(.+?\\)$" 1)
            ("fn"   "^\\[\\^\\(.+?\\)\\]" 1) ))))
-   #+END_SRC
+#+END_SRC
 
 ** Auto-completion
 
-   #+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp
    (use-package auto-complete
      :defer t
      :init (progn
@@ -2206,10 +2566,10 @@
        (define-key ac-complete-mode-map (kbd "M-p") 'ac-previous)
        (define-key ac-complete-mode-map (kbd "C-s") 'ac-isearch)
        (define-key ac-completing-map (kbd "<tab>") 'ac-complete)))
-   #+END_SRC
+#+END_SRC
 ** Smart-tab
 
-   #+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp
    (use-package smart-tab
      :diminish smart-tab-mode
      :init
@@ -2220,9 +2580,9 @@
                    (add-to-list 'smart-tab-disabled-major-modes 'mu4e-compose-mode)
                    (add-to-list 'smart-tab-disabled-major-modes 'erc-mode)
                    (add-to-list 'smart-tab-disabled-major-modes 'shell-mode)))))
-   #+END_SRC
+#+END_SRC
 ** Undo-tree
-   #+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp
    (use-package undo-tree
      :diminish undo-tree-mode
      :init (global-undo-tree-mode)
@@ -2230,10 +2590,10 @@
      (progn
        (define-key undo-tree-map (kbd "C-x u") 'undo-tree-visualize)
        (define-key undo-tree-map (kbd "C-/") 'undo-tree-undo)))
-   #+END_SRC
+#+END_SRC
 ** Popwin
 
-   #+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp
    (use-package popwin
      :config
      (progn
@@ -2291,35 +2651,35 @@
 
        (push '("*Occur*" :stick t) popwin:special-display-config)
        ))
-   #+END_SRC
+#+END_SRC
 ** Parenface
-   Parenface adds a face for parentheses, which is used by themes to darken the
-   parens.
+Parenface adds a face for parentheses, which is used by themes to darken the
+parens.
 
-   #+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp
    (use-package parenface
      :init (add-hook 'prog-mode-hook (lambda () (require 'parenface))))
-   #+END_SRC
+#+END_SRC
 
 ** Ido-ubiquitous
-   #+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp
    (use-package ido-ubiquitous)
-   #+END_SRC
+#+END_SRC
 
 ** Twittering-mode
-   Load up twittering mode, but defer it since I'm probably not loading emacs to
-   immediately use Twitter :P
+Load up twittering mode, but defer it since I'm probably not loading emacs to
+immediately use Twitter :P
 
-   #+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp
    (use-package twittering-mode
      :defer t
      :config
      (progn (setq twittering-icon-mode t)
             (setq twittering-use-master-password t)))
-   #+END_SRC
+#+END_SRC
 
 ** Lusty-explorer
-   #+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp
    (use-package lusty-explorer
      :disabled t
      :bind ("C-x C-f" . lusty-file-explorer)
@@ -2329,16 +2689,16 @@
                  (lambda ()
                    (bind-key "SPC" 'lusty-select-match lusty-mode-map)
                    (bind-key "C-d" 'exit-minibuffer lusty-mode-map)))))
-   #+END_SRC
+#+END_SRC
 
 ** Ido-vertical-mode
-   #+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp
    (use-package ido-vertical-mode
      :init (ido-vertical-mode t))
-   #+END_SRC
+#+END_SRC
 
 ** Smex
-   #+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp
    ;; smex, defers loading until M-x is used the first time
    (use-package smex
      :init
@@ -2361,191 +2721,188 @@
      :config
      (progn
        (global-set-key (kbd "C-c C-c M-x") 'execute-extended-command)))
-   #+END_SRC
+#+END_SRC
 
 ** Discover
-   "Discover more of Emacs"
+"Discover more of Emacs"
 
-   #+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp
    (use-package discover
      :init (global-discover-mode 1))
-   #+END_SRC
+#+END_SRC
 
 ** Bindings
-   These are miscellaneous bindings used all over the place that don't
-   really fit in anywhere else.
+These are miscellaneous bindings used all over the place that don't
+really fit in anywhere else.
 
-   #+BEGIN_SRC emacs-lisp
-   ;; ==== Dvorak niceity ====
-   (define-key key-translation-map "\C-t" "\C-x")
+#+BEGIN_SRC emacs-lisp
+(global-set-key (kbd "C-M-z")   'helm-resume)
+(global-set-key (kbd "C-x C-r") 'helm-recentf)
+(global-set-key (kbd "C-x M-o") 'helm-occur)
+(global-set-key (kbd "C-x C-o") 'helm-occur)
+(global-set-key (kbd "M-y")     'helm-show-kill-ring)
+(global-set-key (kbd "C-h a")   'helm-apropos)
+(global-set-key (kbd "C-h m")   'helm-man-woman)
+(global-set-key (kbd "C-h e")   'popwin:messages)
+(global-set-key (kbd "C-h C-p") 'popwin:special-display-config)
+(global-set-key (kbd "C-x C-i") 'helm-imenu)
+(global-set-key (kbd "C-c h") 'helm-mini)
+(global-set-key (kbd "C-c M-x") 'helm-M-x)
+(global-set-key (kbd "C-x C-b") 'helm-buffers-list)
+(global-set-key (kbd "C-x C-r") 'helm-recentf)
+(global-set-key (kbd "C-x f") 'projectile-find-file)
+(global-set-key (kbd "C-c C-a") 'helm-ag)
 
-   (global-set-key (kbd "C-M-z")   'helm-resume)
-   (global-set-key (kbd "C-x C-r") 'helm-recentf)
-   (global-set-key (kbd "C-x M-o") 'helm-occur)
-   (global-set-key (kbd "C-x C-o") 'helm-occur)
-   (global-set-key (kbd "M-y")     'helm-show-kill-ring)
-   (global-set-key (kbd "C-h a")   'helm-apropos)
-   (global-set-key (kbd "C-h m")   'helm-man-woman)
-   (global-set-key (kbd "C-h e")   'popwin:messages)
-   (global-set-key (kbd "C-h C-p") 'popwin:special-display-config)
-   (global-set-key (kbd "C-x C-i") 'helm-imenu)
-   (global-set-key (kbd "C-c h") 'helm-mini)
-   (global-set-key (kbd "C-c M-x") 'helm-M-x)
-   (global-set-key (kbd "C-x C-b") 'helm-buffers-list)
-   (global-set-key (kbd "C-x C-r") 'helm-recentf)
-   (global-set-key (kbd "C-x f") 'projectile-find-file)
-   (global-set-key (kbd "C-c C-a") 'helm-ag)
+;; M-g mapping
+(global-set-key (kbd "M-g .") 'helm-ag)
+(global-set-key (kbd "M-g >") 'helm-ag-this-file)
+(global-set-key (kbd "M-g ,") 'helm-ag-pop-stack)
+(global-set-key (kbd "M-g M-f") 'ffap)
 
-   ;; M-g mapping
-   (global-set-key (kbd "M-g .") 'helm-ag)
-   (global-set-key (kbd "M-g >") 'helm-ag-this-file)
-   (global-set-key (kbd "M-g ,") 'helm-ag-pop-stack)
-   (global-set-key (kbd "M-g M-f") 'ffap)
+(global-set-key (kbd "C-x C-l") 'toggle-truncate-lines)
 
-   (global-set-key (kbd "C-x C-l") 'toggle-truncate-lines)
+;; join on killing lines
+(defun kill-and-join-forward (&optional arg)
+  "If at end of line, join with following; otherwise kill line.
+Deletes whitespace at join."
+  (interactive "P")
+  (if (and (eolp) (not (bolp)))
+      (delete-indentation t)
+    (kill-line arg)))
 
-   ;; join on killing lines
-   (defun kill-and-join-forward (&optional arg)
-     "If at end of line, join with following; otherwise kill line.
-   Deletes whitespace at join."
-     (interactive "P")
-     (if (and (eolp) (not (bolp)))
-         (delete-indentation t)
-       (kill-line arg)))
+(global-set-key (kbd "C-k") 'kill-and-join-forward)
 
-   (global-set-key (kbd "C-k") 'kill-and-join-forward)
+(global-set-key (kbd "M-g M-n") 'flycheck-next-error)
+(global-set-key (kbd "M-g M-p") 'flycheck-prev-error)
 
-   (global-set-key (kbd "M-g M-n") 'flycheck-next-error)
-   (global-set-key (kbd "M-g M-p") 'flycheck-prev-error)
+;; C-; to enter/exit iedit-mode
+(use-package iedit
+  :defer t
+  :commands iedit-mode
+  :init (global-set-key (kbd "C-;") 'iedit-mode))
 
-   ;; C-; to enter/exit iedit-mode
-   (use-package iedit
-     :defer t
-     :commands iedit-mode
-     :init (global-set-key (kbd "C-;") 'iedit-mode))
+;; You know, like Readline.
+(global-set-key (kbd "C-M-h") 'backward-kill-word)
 
-   ;; You know, like Readline.
-   (global-set-key (kbd "C-M-h") 'backward-kill-word)
+;; Completion that uses many different methods to find options.
+(global-set-key (kbd "M-/") 'hippie-expand)
 
-   ;; Completion that uses many different methods to find options.
-   (global-set-key (kbd "M-/") 'hippie-expand)
+;; Perform general cleanup.
+(global-set-key (kbd "C-c n") 'cleanup-buffer)
 
-   ;; Perform general cleanup.
-   (global-set-key (kbd "C-c n") 'cleanup-buffer)
+;; Turn on the menu bar for exploring new modes
+(global-set-key (kbd "C-<f10>") 'menu-bar-mode)
 
-   ;; Turn on the menu bar for exploring new modes
-   (global-set-key (kbd "C-<f10>") 'menu-bar-mode)
+;; Font size
+(define-key global-map (kbd "C-+") 'text-scale-increase)
+(define-key global-map (kbd "C--") 'text-scale-decrease)
 
-   ;; Font size
-   (define-key global-map (kbd "C-+") 'text-scale-increase)
-   (define-key global-map (kbd "C--") 'text-scale-decrease)
+;; Use regex searches by default.
+(global-set-key (kbd "C-s") 'isearch-forward-regexp)
+(global-set-key (kbd "\C-r") 'isearch-backward-regexp)
 
-   ;; Use regex searches by default.
-   (global-set-key (kbd "C-s") 'isearch-forward-regexp)
-   (global-set-key (kbd "\C-r") 'isearch-backward-regexp)
+;; File finding
+(global-set-key (kbd "C-x M-f") 'ido-find-file-other-window)
 
-   ;; File finding
-   (global-set-key (kbd "C-x M-f") 'ido-find-file-other-window)
+(defun recentf-ido-find-file ()
+  "Find a recent file using ido."
+  (interactive)
+  (let ((file (ido-completing-read "Choose recent file: " recentf-list nil t)))
+    (when file
+      (find-file file))))
 
-   (defun recentf-ido-find-file ()
-     "Find a recent file using ido."
-     (interactive)
-     (let ((file (ido-completing-read "Choose recent file: " recentf-list nil t)))
-       (when file
-         (find-file file))))
+;;(global-set-key (kbd "C-x f") 'recentf-ido-find-file)
 
-   ;;(global-set-key (kbd "C-x f") 'recentf-ido-find-file)
+(global-set-key (kbd "C-c y") 'bury-buffer)
+(global-set-key (kbd "C-c r") 'revert-buffer)
 
-   (global-set-key (kbd "C-c y") 'bury-buffer)
-   (global-set-key (kbd "C-c r") 'revert-buffer)
+;; Start eshell or switch to it if it's active.
+(global-set-key (kbd "C-x m") 'eshell)
 
-   ;; Start eshell or switch to it if it's active.
-   (global-set-key (kbd "C-x m") 'eshell)
+;; Start a new eshell even if one is active.
+(global-set-key (kbd "C-x M") (lambda () (interactive) (eshell t)))
 
-   ;; Start a new eshell even if one is active.
-   (global-set-key (kbd "C-x M") (lambda () (interactive) (eshell t)))
+;; Start a regular shell if you prefer that.
+(global-set-key (kbd "C-x C-m") 'shell)
 
-   ;; Start a regular shell if you prefer that.
-   (global-set-key (kbd "C-x C-m") 'shell)
+;; If you want to be able to M-x without meta (phones, etc)
+(global-set-key (kbd "C-c C-x") 'execute-extended-command)
 
-   ;; If you want to be able to M-x without meta (phones, etc)
-   (global-set-key (kbd "C-c C-x") 'execute-extended-command)
+;; M-S-6 is awkward
+(global-set-key (kbd "C-c q") 'join-line)
 
-   ;; M-S-6 is awkward
-   (global-set-key (kbd "C-c q") 'join-line)
+;; So good!
+(global-set-key (kbd "C-c g") 'magit-status)
 
-   ;; So good!
-   (global-set-key (kbd "C-c g") 'magit-status)
+;; Activate occur easily inside isearch
+(define-key isearch-mode-map (kbd "C-o")
+  (lambda () (interactive)
+    (let ((case-fold-search isearch-case-fold-search))
+      (occur (if isearch-regexp isearch-string (regexp-quote isearch-string))))))
 
-   ;; Activate occur easily inside isearch
-   (define-key isearch-mode-map (kbd "C-o")
-     (lambda () (interactive)
-       (let ((case-fold-search isearch-case-fold-search))
-         (occur (if isearch-regexp isearch-string (regexp-quote isearch-string))))))
+;; ==== Window switching ====
+(global-set-key (kbd "M-'") 'other-window)
+(global-set-key (kbd "H-'") 'other-window)
+(global-set-key [C-tab] 'other-window)
+(global-set-key [C-S-tab]
+                (lambda ()
+                  (interactive)
+                  (other-window -1)))
 
-   ;; ==== Window switching ====
-   (global-set-key (kbd "M-'") 'other-window)
-   (global-set-key (kbd "H-'") 'other-window)
-   (global-set-key [C-tab] 'other-window)
-   (global-set-key [C-S-tab]
-                   (lambda ()
-                     (interactive)
-                     (other-window -1)))
+;; ==== transpose buffers ====
+(defun transpose-buffers (arg)
+  "Transpose the buffers shown in two windows."
+  (interactive "p")
+  (let ((selector (if (>= arg 0) 'next-window 'previous-window)))
+    (while (/= arg 0)
+      (let ((this-win (window-buffer))
+            (next-win (window-buffer (funcall selector))))
+        (set-window-buffer (selected-window) next-win)
+        (set-window-buffer (funcall selector) this-win)
+        (select-window (funcall selector)))
+      (setq arg (if (plusp arg) (1- arg) (1+ arg))))))
 
-   ;; ==== transpose buffers ====
-   (defun transpose-buffers (arg)
-     "Transpose the buffers shown in two windows."
-     (interactive "p")
-     (let ((selector (if (>= arg 0) 'next-window 'previous-window)))
-       (while (/= arg 0)
-         (let ((this-win (window-buffer))
-               (next-win (window-buffer (funcall selector))))
-           (set-window-buffer (selected-window) next-win)
-           (set-window-buffer (funcall selector) this-win)
-           (select-window (funcall selector)))
-         (setq arg (if (plusp arg) (1- arg) (1+ arg))))))
+(global-set-key (kbd "C-x 4 t") 'transpose-buffers)
 
-   (global-set-key (kbd "C-x 4 t") 'transpose-buffers)
+;; lisp stuff
+(define-key lisp-mode-shared-map (kbd "RET") 'reindent-then-newline-and-indent)
 
-   ;; lisp stuff
-   (define-key lisp-mode-shared-map (kbd "RET") 'reindent-then-newline-and-indent)
+(global-set-key (kbd "C-c m") 'mu4e)
 
-   (global-set-key (kbd "C-c m") 'mu4e)
+;;;; minor key setting
+(autoload 'hs-minor-mode "hideshow" nil t)
+(eval-after-load "hideshow"
+  '(progn
+     (define-key hs-minor-mode-map (kbd "C-c TAB") 'hs-toggle-hiding)
+     (defvar hs-special-modes-alist
+       (mapcar 'purecopy
+               '((c-mode "{" "}" "/[*/]" nil nil)
+                 (c++-mode "{" "}" "/[*/]" nil nil)
+                 (bibtex-mode ("@\\S(*\\(\\s(\\)" 1))
+                 (java-mode "{" "}" "/[*/]" nil nil)
+                 (js-mode "{" "}" "/[*/]" nil)
+                 (javascript-mode  "{" "}" "/[*/]" nil))))))
 
-   ;;;; minor key setting
-   (autoload 'hs-minor-mode "hideshow" nil t)
-   (eval-after-load "hideshow"
-     '(progn
-        (define-key hs-minor-mode-map (kbd "C-c TAB") 'hs-toggle-hiding)
-        (defvar hs-special-modes-alist
-          (mapcar 'purecopy
-                  '((c-mode "{" "}" "/[*/]" nil nil)
-                    (c++-mode "{" "}" "/[*/]" nil nil)
-                    (bibtex-mode ("@\\S(*\\(\\s(\\)" 1))
-                    (java-mode "{" "}" "/[*/]" nil nil)
-                    (js-mode "{" "}" "/[*/]" nil)
-                    (javascript-mode  "{" "}" "/[*/]" nil))))))
+(add-hook 'js-mode-hook
+          '(lambda ()
+             (require 'hideshow)
+             (hs-minor-mode t)
+             (define-key hs-minor-mode-map (kbd "C-c TAB") 'hs-toggle-hiding)))
 
-   (add-hook 'js-mode-hook
-             '(lambda ()
-                (require 'hideshow)
-                (hs-minor-mode t)
-                (define-key hs-minor-mode-map (kbd "C-c TAB") 'hs-toggle-hiding)))
-
-   (add-hook 'javascript-mode-hook
-             '(lambda ()
-                (require 'hideshow)
-                (hs-minor-mode t)
-                (define-key hs-minor-mode-map (kbd "C-c TAB") 'hs-toggle-hiding)))
-   #+END_SRC
+(add-hook 'javascript-mode-hook
+          '(lambda ()
+             (require 'hideshow)
+             (hs-minor-mode t)
+             (define-key hs-minor-mode-map (kbd "C-c TAB") 'hs-toggle-hiding)))
+#+END_SRC
 
 ** Utility methods
-   Various methods I call interactively for things.
+Various methods I call interactively for things.
 
 *** Fixing SSH agent settings
-    This is for correctly finding the SSH agent:
+This is for correctly finding the SSH agent:
 
-    #+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp
     (defun find-agent ()
       (first (split-string
               (shell-command-to-string
@@ -2560,35 +2917,35 @@
       (let ((agent (find-agent)))
         (setenv "SSH_AUTH_SOCK" agent)
         (message agent)))
-    #+END_SRC
+#+END_SRC
 
 *** Format JSON more beautifully
-    I work with a ton of JSON, so I need to be able to format it
-    nicely. Fortunately this is really easy with Python:
+I work with a ton of JSON, so I need to be able to format it
+nicely. Fortunately this is really easy with Python:
 
-    #+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp
     (defun beautify-json ()
       (interactive)
       (let ((b (if mark-active (min (point) (mark)) (point-min)))
             (e (if mark-active (max (point) (mark)) (point-max))))
         (shell-command-on-region b e
                                  "python -mjson.tool" (current-buffer) t)))
-    #+END_SRC
+#+END_SRC
 
 *** Recompile startup elisp files
-    Byte-compile startup stuff.
+Byte-compile startup stuff.
 
-    #+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp
     (defun byte-recompile-init-files ()
       "Recompile all of the startup files"
       (interactive)
       (byte-recompile-directory "~/.emacs.d" 0))
-    #+END_SRC
+#+END_SRC
 
 *** Adding directories to $PATH
-    A utility method to add things to the $PATH, if needed.
+A utility method to add things to the $PATH, if needed.
 
-    #+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp
     (defun add-to-path (path-element)
       "Add the specified path element to the Emacs PATH"
       (interactive "DEnter directory to be added to path: ")
@@ -2596,11 +2953,11 @@
           (setenv "PATH"
                   (concat (expand-file-name path-element)
                           path-separator (getenv "PATH")))))
-    #+END_SRC
+#+END_SRC
 
 *** Misc methods for cleaning up a buffer
 
-    #+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp
     (defun untabify-buffer ()
       (interactive)
       (untabify (point-min) (point-max)))
@@ -2615,13 +2972,13 @@
       (indent-buffer)
       (untabify-buffer)
       (delete-trailing-whitespace))
-    #+END_SRC
+#+END_SRC
 *** Browsing URLs
-    Search backwards, prompting to open any URL found. This is
-    fantastic for ERC buffers. I bind this to =C-c u= because I use it
-    a lot.
+Search backwards, prompting to open any URL found. This is
+fantastic for ERC buffers. I bind this to =C-c u= because I use it
+a lot.
 
-    #+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp
     (defun browse-last-url-in-brower ()
       (interactive)
       (save-excursion
@@ -2635,30 +2992,30 @@
           (ffap-next t t))))
 
     (global-set-key (kbd "C-c u") 'browse-last-url-in-brower)
-    #+END_SRC
+#+END_SRC
 *** Numbering rectangles
-    Let's say you have a list like:
+Let's say you have a list like:
 
-    #+BEGIN_SRC
+#+BEGIN_SRC
     First Item
     Second Item
     Third Item
     Fourth Item
-    #+END_SRC
+#+END_SRC
 
-    And you want to number it to look like:
+And you want to number it to look like:
 
-    #+BEGIN_SRC
+#+BEGIN_SRC
     1. First Item
     2. Second Item
     3. Third Item
     4. Fourth Item
-    #+END_SRC
+#+END_SRC
 
-    This function allows you to hit =C-x r N= and specify the pattern
-    and starting offset to number lines in rectangular-selection mode:
+This function allows you to hit =C-x r N= and specify the pattern
+and starting offset to number lines in rectangular-selection mode:
 
-    #+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp
     (defun number-rectangle (start end format-string from)
       "Delete (don't save) text in the region-rectangle, then number it."
       (interactive
@@ -2682,15 +3039,15 @@
       (goto-char start))
 
     (global-set-key (kbd "C-x r N") 'number-rectangle)
-    #+END_SRC
+#+END_SRC
 *** Insert look of disapproval
-    Used more often than you'd think...
+Used more often than you'd think...
 
-    #+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp
     (defun my/insert-lod ()
       "Well. This is disappointing."
       (interactive)
       (insert "ಠ_ಠ"))
 
     (global-set-key (kbd "C-c M-d") 'My/insert-lod)
-    #+END_SRC
+#+END_SRC

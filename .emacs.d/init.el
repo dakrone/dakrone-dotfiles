@@ -7,6 +7,8 @@
 
 ;; Keep track of loading time
 (defconst emacs-start-time (current-time))
+;; Dvorak nicety, regardless of loading settings
+(define-key key-translation-map "\C-t" "\C-x")
 ;; Load settings.org file
 (org-babel-load-file "~/.emacs.d/settings.org")
 

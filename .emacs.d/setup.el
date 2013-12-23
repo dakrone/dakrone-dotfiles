@@ -9,27 +9,29 @@
 
 (defvar my/install-packages
   '(
-    ;; init-loader
-    init-loader
+    ;; use-package
+    use-package
 
     ;; themeing
-    color-theme rainbow-mode rainbow-delimiters maxframe leuven-theme powerline
-    dakrone-theme
+    rainbow-mode leuven-theme powerline dakrone-theme smart-mode-line
 
     ;; misc
-    diminish erc-hl-nicks ercn erc-tweet todochiku twittering-mode yagist
+    diminish yagist
+
+    ;; IRC/ERC and social stuff
+    erc-hl-nicks ercn todochiku twittering-mode
 
     ;; for auto-complete
-    auto-complete fuzzy popup ac-slime ac-nrepl
-
-    ;; highlight
-    ace-jump-mode vline col-highlight
+    auto-complete fuzzy popup ac-nrepl
 
     ;; editing utilities
-    expand-region wrap-region smex windresize ido-hacks ag
-    undo-tree mark-multiple iedit ido-ubiquitous ido-vertical-mode
-    yasnippet goto-chg idle-highlight-mode org org-magit smart-tab anzu
+    expand-region smex windresize ag undo-tree iedit ido-ubiquitous
+    ido-vertical-mode yasnippet idle-highlight-mode smart-tab anzu
     smartparens flx-ido projectile smooth-scrolling yascroll keyfreq
+    lusty-explorer discover
+
+    ;; org-mode
+    org htmlize
 
     ;; buffer utils
     popwin
@@ -45,7 +47,7 @@
 
     ;; clojure
     clojure-mode cider paredit parenface kibit-mode clojure-test-mode
-    clojure-snippets cider-tracing cider-decompile javap-mode
+    cider-tracing cider-decompile javap-mode
 
     ;; perl
     cperl-mode
@@ -54,7 +56,7 @@
     jedi
 
     ;; ruby
-    ruby-mode ruby-test-mode inf-ruby yari rsense
+    ruby-mode ruby-test-mode inf-ruby
 
     ;; rust
     rust-mode
@@ -68,15 +70,11 @@
     ;; emacs-lisp
     elisp-slime-nav paredit
 
-    ;; common utility
-    quickrun
-
     ;; markup language
-    haml-mode htmlize adoc-mode markdown-mode markdown-mode+ yaml-mode
-    zencoding-mode
+    adoc-mode markdown-mode markdown-mode+ yaml-mode zencoding-mode
 
     ;; helm
-    helm helm-gtags helm-descbinds helm-themes helm-ag helm-projectile
+    helm helm-descbinds helm-ag helm-projectile
 
     ;; git
     magit git-gutter

@@ -5,19 +5,17 @@
 (package-initialize)
 (setq package-enable-at-startup nil)
 
-;; load environment value
-(let ((shellenv (concat user-emacs-directory "shellenv.el")))
-  (when (file-exists-p shellenv)
-    (load-file shellenv)
-    (dolist (path (reverse (split-string (getenv "PATH") ":")))
-      (add-to-list 'exec-path path))))
-
-;; init-loader
-(require 'init-loader)
-(init-loader-load (concat user-emacs-directory "init.d"))
+;; Keep track of loading time
+(defconst emacs-start-time (current-time))
+;; Load settings.org file
+(org-babel-load-file "~/.emacs.d/settings.org")
 
 ;; keep customize settings in their own file
 (setq custom-file "~/.emacs.d/custom.el")
-(load custom-file)
-(put 'upcase-region 'disabled nil)
-(put 'narrow-to-region 'disabled nil)
+(when (file-exists-p custom-file)
+  (load custom-file))
+
+;; Message how long it took to load everything (minus packages)
+(let ((elapsed (float-time (time-subtract (current-time)
+                                          emacs-start-time))))
+  (message "Loading settings...done (%.3fs)" elapsed))

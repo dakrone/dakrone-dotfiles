@@ -184,19 +184,6 @@ if [ -s ~/bin/z.sh ] ; then
     source ~/bin/z.sh ;
 fi
 
-# rvm stuff (if it exists):
-if [ -s ~/.rvm/scripts/rvm ] ; then
-    source ~/.rvm/scripts/rvm
-    # Set default ruby install
-    rvm default
-    PATH=$PATH:$HOME/.rvm/bin # Add RVM to PATH for scripting
-fi
-
-# rbenv stuff
-# if [ -s ~/.rbenv ]; then
-#     eval "$(rbenv init -)"
-# fi
-
 # Use zsh syntax highlighting if available
 if [ -s ~/.zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh ] ; then
     source ~/.zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
@@ -223,6 +210,8 @@ source ~/.zsh/linux.zsh
 source ~/.zsh/osx.zsh
 # Setting tmux titles
 source ~/.zsh/title.zsh
+# Ruby-related stuff
+source ~/.zsh/rvm.zsh
 
 # run the startup commands
 startup

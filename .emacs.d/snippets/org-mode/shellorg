@@ -14,35 +14,35 @@
   Create the index:
 
   #+BEGIN_SRC sh :tangle `(file-name-sans-extension (buffer-name))`.zsh
-    curl -XDELETE 'localhost:9200/${3:thing}'
-    echo
-    curl -XPOST 'localhost:9200/$3' -d'{
-      "mappings": {
-        "doc": {
-          "properties": {
-            "body": {"type": "string"}
-          }
+  curl -XDELETE 'localhost:9200/${3:thing}'
+  echo
+  curl -XPOST 'localhost:9200/$3' -d'{
+    "mappings": {
+      "doc": {
+        "properties": {
+          "body": {"type": "string"}
         }
       }
-    }'$0
-    echo
+    }
+  }'$0
+  echo
   #+END_SRC
 
   Index some docs:
 
   #+BEGIN_SRC sh :tangle `(file-name-sans-extension (buffer-name))`.zsh
-    curl -XPOST 'localhost:9200/$3/doc/1' -d'{"body": "foo"}'
-    echo
-    curl -XPOST 'localhost:9200/$3/_refresh'
-    echo
+  curl -XPOST 'localhost:9200/$3/doc/1' -d'{"body": "foo"}'
+  echo
+  curl -XPOST 'localhost:9200/$3/_refresh'
+  echo
   #+END_SRC
 
   Perform the query:
 
   #+BEGIN_SRC sh :tangle `(file-name-sans-extension (buffer-name))`.zsh
-    curl -XPOST 'localhost:9200/$3/_search?pretty' -d'
-    {
-      "query": {
-      }
-    }'
+  curl -XPOST 'localhost:9200/$3/_search?pretty' -d'
+  {
+    "query": {
+      "match_all": {}
+  }'
   #+END_SRC

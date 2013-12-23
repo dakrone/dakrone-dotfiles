@@ -113,10 +113,11 @@
 
     #+BEGIN_SRC emacs-lisp
     (menu-bar-mode -1)
-    (set-scroll-bar-mode 'nil)
+    (when (window-system)
+      (set-scroll-bar-mode 'nil)
+      (mouse-wheel-mode t))
     (tool-bar-mode -1)
     (tooltip-mode -1)
-    (mouse-wheel-mode t)
     (blink-cursor-mode -1)
     #+END_SRC
 
@@ -1354,12 +1355,13 @@
    Now, a helper function to manually start ERC, if desired:
 
    #+BEGIN_SRC emacs-lisp
-   (defun start-irc ()
-     "Connect to IRC."
-     (interactive)
-     (pause-ercn 6)
-     (erc-tls :server "freenode" :port 31425
-              :nick "dakrone" :password freenode-pass))
+   (when (window-system)
+     (defun start-irc ()
+       "Connect to IRC."
+       (interactive)
+       (pause-ercn 6)
+       (erc-tls :server "freenode" :port 31425
+                :nick "dakrone" :password freenode-pass)))
    #+END_SRC
 
    And finally the giant setting of ERC configuration variables, only
@@ -1769,7 +1771,8 @@
      (define-key mu4e-headers-mode-map (kbd "j") 'next-line)
      (define-key mu4e-headers-mode-map (kbd "k") 'previous-line)
 
-     (set-face-background 'mu4e-header-highlight-face "#e0e0e0"))
+     (when (eq my/background 'light)
+       (set-face-background 'mu4e-header-highlight-face "#e0e0e0")))
    #+END_SRC
 
 ** Yascroll

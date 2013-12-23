@@ -35,47 +35,36 @@ running it until all the packages are installed.
 
 ## Notes
 
-My emacs config uses
-[mu4e](http://www.djcbsoftware.nl/code/mu/mu4e.html) for email, ERC
-for IRC, twittering-mode for twitter and all kinds of goodies for
-clojure development.
+My emacs config uses [mu4e](http://www.djcbsoftware.nl/code/mu/mu4e.html) for
+email, ERC for IRC, twittering-mode for twitter and all kinds of goodies for
+clojure development. It requires manually calling the method `mail` in order to
+start the mail functionality. For IRC I use
+[ERC](http://www.emacswiki.org/emacs/ERC), which can be started with the
+`start-irc` function.
 
-All files in ~/.emacs.d/init.d are loaded in order and errors are
-displayed when loading. I've tried to make everything as portable as
-possible, so if you use this and have loading errors other than mail
-stuff, which is purposefully non-portable (unless you're trying to
-send email as me?!), let me know and I'll try to fix it.
+All of the settings are in `~/.emacs.d/settings.org`, and are tangled and then
+loaded from `settings.el` in the same directory. This (hopefully) makes reading
+the configuration a bit easier.
 
-I recommend you install
-[ag](https://github.com/ggreer/the_silver_searcher) for searching also
-and [gpg](http://www.gnupg.org/) for crypto stuff to get the full
+I recommend you install [ag](https://github.com/ggreer/the_silver_searcher) for
+searching also and [gpg](http://www.gnupg.org/) for crypto stuff to get the full
 benefit.
 
 ### Emacs themes
 
-I used a custom Emacs theme called 'color-theme-dakrone' for dark
-background, and tsdh-light for light-colored backgrounds (working
-outside).
+I my custom Emacs theme called
+[dakrone-theme](https://github.com/dakrone/dakrone-theme) for dark background,
+and [leuven](https://github.com/fniessen/emacs-leuven-theme) for light-colored
+backgrounds (working outside).
 
-To swap between them, change the line at the end of
-`~/.emacs.d/init.d/95_theme.el` to whichever you'd like to use (the
-dark probably looks better, but sucks for working outdoors):
-
-```
-;; Currently using light-colored theme
-;;(dakrone-dark)
-(dakrone-light)
-```
-
-You also need to change which mode-line is being set up, in
-`~/.emacs.d/init.d/96_modeline.el`:
+To swap between them, change the line at the beginning of
+`~/.emacs.d/settings.org` that looks like:
 
 ```
-;;(modeline-setup-face-light)
-(modeline-setup-face-dark)
+;; Currently using dark-colored theme
+;;(defvar my/background 'light)
+(defvar my/background 'dark)
 ```
-
-(you can call these functions interactively also)
 
 # Polipo + pdnsd caching proxy
 
@@ -93,3 +82,7 @@ Steps:
   already exist)
 - set DNS to 127.0.0.1
 - set HTTP proxy to 127.0.0.1, port 8118
+
+# Privoxy
+
+There's also some stuff for privoxy in here. Proxies all over the place!

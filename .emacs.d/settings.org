@@ -1,7 +1,7 @@
 #+TITLE:    Lee's emacs settings file
 #+AUTHOR:   Lee Hinman
 #+EMAIL:    lee [at] writequit [dot] org
-#+STARTUP:  align fold nodlcheck oddeven
+#+STARTUP:  align fold nodlcheck
 #+OPTIONS:  H:4 num:nil toc:t \n:nil @:t ::t |:t ^:{} -:t f:t *:t
 #+OPTIONS:  skip:nil d:(HIDE) tags:not-in-toc
 #+PROPERTY: header-args :results none :noweb yes
@@ -54,7 +54,7 @@ or a light theme. I set a var to either '=light= or '=dark=
 depending on whatever I'm in the mood for.
 
 #+BEGIN_SRC emacs-lisp
-;;(defvar background 'light)
+;;(defvar my/background 'light)
 (defvar my/background 'dark)
 #+END_SRC
 
@@ -1006,6 +1006,12 @@ Misc settings for fonts, depending on the OS:
 
 *** Color scheme
 #+BEGIN_SRC emacs-lisp
+(setq ns-use-srgb-colorspace t)
+
+(defface clojure-parens '() "")
+(defface clojure-keyword '() "")
+(defface clojure-braces '() "")
+
 (defmacro defclojureface (name color desc &optional others)
   `(defface
      ,name '((((class color)) (:foreground ,color ,@others)))
@@ -1048,6 +1054,8 @@ Misc settings for fonts, depending on the OS:
 (if (eq my/background 'dark)
     (dakrone-dark)
   (dakrone-light))
+
+(font-lock-add-keywords 'clojure-mode '(("(\\|)" . 'paren-face)))
 #+END_SRC
 
 *** Modeline
@@ -1055,11 +1063,13 @@ I vacillate between powerline and smart-mode-line, so I keep both installed
 to switch between as needed:
 
 #+BEGIN_SRC emacs-lisp
-;; (use-package powerline
-;;   :init (powerline-default-theme))
+;;(use-package powerline
+;;  :init (powerline-default-theme))
+
+(setq sml/theme my/background)
+(setq sml/mode-width 'full)
 (use-package smart-mode-line
-  :init (progn (setq sml/theme my/background)
-               (sml/setup)))
+  :init (sml/setup))
 #+END_SRC
 
 ** Org-mode
@@ -1088,11 +1098,9 @@ settings are mine.
           ;; Use sticky agenda's so they persist
           org-agenda-sticky t
           org-cycle-separator-lines 0
-          org-blank-before-new-entry (quote ((heading)
-                                             (plain-list-item . auto)))
-          org-special-ctrl-a/e t
-          org-special-ctrl-k t
-          org-yank-adjusted-subtrees t
+          org-special-ctrl-a/e nil
+          org-special-ctrl-k nil
+          org-yank-adjusted-subtrees nil
           ;; Overwrite the current window with the agenda
           org-agenda-window-setup 'current-window
 
@@ -1106,18 +1114,18 @@ settings are mine.
             ("WAITING"   . (:foreground "orange" :weight bold)))
           org-agenda-files '("~/org/todo.org" "~/org/notes.org"
                              "~/org/journal.org" "~/org/work.org"
-                             "~/org/refile.org")
+                             "~/org/refile.org" "~/org/meetings.org")
           ;; org-agenda-files (directory-files "~/org" t ".*\.org")
           org-refile-targets `((,(concat "~/org/todo.org") . (:level . 1))
                                (,(concat "~/org/notes.org") . (:level . 1)))
           org-capture-templates
-          ;;(file+headline "~/org/todo.org" "Unsorted")
-          '(("t" "Todo" entry (file "~/org/refile.org")
+          '(("t" "Todo" entry (file+headline "~/org/todo.org" "Unsorted")
              "* TODO %?\n%U\n%a\n")
             ("n" "Notes" entry (file+headline "~/org/notes.org" "Notes")
              "* %? :NOTE:\n%U\n%a\n")
             ("j" "Journal" entry (file+datetree "~/org/journal.org")
-             "* %?\n%U\n")))
+             "* %?\n%U\n")
+            ("m" "Meeting" entry (file+headline "~/org/meetings.org" "Meetings"))))
 
     (setq org-refile-targets (quote ((nil :maxlevel . 9)
                                      (org-agenda-files :maxlevel . 9))))
@@ -1261,19 +1269,30 @@ Custom agenda views:
                              '(priority-down category-keep))))
                 (tags-todo "-CANCELLED/!NEXT"
                            ((org-agenda-overriding-header "Project Next Tasks")
-                            (org-agenda-skip-function 'bh/skip-projects-and-habits-and-single-tasks)
+                            (org-agenda-skip-function
+                             'bh/skip-projects-and-habits-and-single-tasks)
                             (org-tags-match-list-sublevels t)
-                            (org-agenda-todo-ignore-scheduled bh/hide-scheduled-and-waiting-next-tasks)
-                            (org-agenda-todo-ignore-deadlines bh/hide-scheduled-and-waiting-next-tasks)
-                            (org-agenda-todo-ignore-with-date bh/hide-scheduled-and-waiting-next-tasks)
+                            (org-agenda-todo-ignore-scheduled
+                             bh/hide-scheduled-and-waiting-next-tasks)
+                            (org-agenda-todo-ignore-deadlines
+                             bh/hide-scheduled-and-waiting-next-tasks)
+                            (org-agenda-todo-ignore-with-date
+                             bh/hide-scheduled-and-waiting-next-tasks)
                             (org-agenda-sorting-strategy
                              '(priority-down todo-state-down effort-up category-keep))))
                 (tags-todo "-REFILE-CANCELLED-WAITING/!"
-                           ((org-agenda-overriding-header (if (marker-buffer org-agenda-restrict-begin) "Project Subtasks" "Standalone Tasks"))
-                            (org-agenda-skip-function 'bh/skip-project-tasks-maybe)
-                            (org-agenda-todo-ignore-scheduled bh/hide-scheduled-and-waiting-next-tasks)
-                            (org-agenda-todo-ignore-deadlines bh/hide-scheduled-and-waiting-next-tasks)
-                            (org-agenda-todo-ignore-with-date bh/hide-scheduled-and-waiting-next-tasks)
+                           ((org-agenda-overriding-header
+                             (if (marker-buffer org-agenda-restrict-begin)
+                                 "Project Subtasks"
+                               "Standalone Tasks"))
+                            (org-agenda-skip-function
+                             'bh/skip-project-tasks-maybe)
+                            (org-agenda-todo-ignore-scheduled
+                             bh/hide-scheduled-and-waiting-next-tasks)
+                            (org-agenda-todo-ignore-deadlines
+                             bh/hide-scheduled-and-waiting-next-tasks)
+                            (org-agenda-todo-ignore-with-date
+                             bh/hide-scheduled-and-waiting-next-tasks)
                             (org-agenda-sorting-strategy
                              '(category-keep))))
                 (tags-todo "-CANCELLED+WAITING/!"
@@ -1301,12 +1320,18 @@ Custom agenda views:
           (if (member (org-get-todo-state) org-done-keywords)
               (let* ((daynr (string-to-int (format-time-string "%d" (current-time))))
                      (a-month-ago (* 60 60 24 (+ daynr 1)))
-                     (last-month (format-time-string "%Y-%m-" (time-subtract (current-time) (seconds-to-time a-month-ago))))
+                     (last-month
+                      (format-time-string
+                       "%Y-%m-"
+                       (time-subtract (current-time) (seconds-to-time a-month-ago))))
                      (this-month (format-time-string "%Y-%m-" (current-time)))
-                     (subtree-is-current (save-excursion
-                                           (forward-line 1)
-                                           (and (< (point) subtree-end)
-                                                (re-search-forward (concat last-month "\\|" this-month) subtree-end t)))))
+                     (subtree-is-current
+                      (save-excursion
+                        (forward-line 1)
+                        (and (< (point) subtree-end)
+                             (re-search-forward
+                              (concat last-month "\\|" this-month)
+                              subtree-end t)))))
                 (if subtree-is-current
                     subtree-end ; Has a date in this month or last month, skip it
                   nil))  ; available to archive
@@ -1495,7 +1520,7 @@ Callers of this function already widen the buffer view."
 
 (defun bh/list-sublevels-for-projects-indented ()
   "Set org-tags-match-list-sublevels so when restricted to a subtree we list all subtasks.
-  This is normally used by skipping functions where this variable is already local to the agenda."
+This is normally used by skipping functions where this variable is already local to the agenda."
   (if (marker-buffer org-agenda-restrict-begin)
       (setq org-tags-match-list-sublevels 'indented)
     (setq org-tags-match-list-sublevels nil))
@@ -1503,7 +1528,8 @@ Callers of this function already widen the buffer view."
 
 (defun bh/list-sublevels-for-projects ()
   "Set org-tags-match-list-sublevels so when restricted to a subtree we list all subtasks.
-  This is normally used by skipping functions where this variable is already local to the agenda."
+This is normally used by skipping functions where this variable
+is already local to the agenda."
   (if (marker-buffer org-agenda-restrict-begin)
       (setq org-tags-match-list-sublevels t)
     (setq org-tags-match-list-sublevels nil))
@@ -1513,10 +1539,12 @@ Callers of this function already widen the buffer view."
 
 (defun bh/toggle-next-task-display ()
   (interactive)
-  (setq bh/hide-scheduled-and-waiting-next-tasks (not bh/hide-scheduled-and-waiting-next-tasks))
+  (setq bh/hide-scheduled-and-waiting-next-tasks
+        (not bh/hide-scheduled-and-waiting-next-tasks))
   (when  (equal major-mode 'org-agenda-mode)
     (org-agenda-redo))
-  (message "%s WAITING and SCHEDULED NEXT Tasks" (if bh/hide-scheduled-and-waiting-next-tasks "Hide" "Show")))
+  (message "%s WAITING and SCHEDULED NEXT Tasks"
+           (if bh/hide-scheduled-and-waiting-next-tasks "Hide" "Show")))
 
 (defun bh/skip-stuck-projects ()
   "Skip trees that are not stuck projects"
@@ -1528,7 +1556,9 @@ Callers of this function already widen the buffer view."
                  (has-next ))
             (save-excursion
               (forward-line 1)
-              (while (and (not has-next) (< (point) subtree-end) (re-search-forward "^\\*+ NEXT " subtree-end t))
+              (while (and (not has-next)
+                          (< (point) subtree-end)
+                          (re-search-forward "^\\*+ NEXT " subtree-end t))
                 (unless (member "WAITING" (org-get-tags-at))
                   (setq has-next t))))
             (if has-next
@@ -1547,7 +1577,9 @@ Callers of this function already widen the buffer view."
                  (has-next ))
             (save-excursion
               (forward-line 1)
-              (while (and (not has-next) (< (point) subtree-end) (re-search-forward "^\\*+ NEXT " subtree-end t))
+              (while (and (not has-next)
+                          (< (point) subtree-end)
+                          (re-search-forward "^\\*+ NEXT " subtree-end t))
                 (unless (member "WAITING" (org-get-tags-at))
                   (setq has-next t))))
             (if has-next
@@ -1607,8 +1639,10 @@ Callers of this function already widen the buffer view."
 
 (defun bh/skip-project-tasks-maybe ()
   "Show tasks related to the current restriction.
-When restricted to a project, skip project and sub project tasks, habits, NEXT tasks, and loose tasks.
-When not restricted, skip project and sub-project tasks, habits, and project related tasks."
+When restricted to a project, skip project and sub project tasks,
+habits, NEXT tasks, and loose tasks. When not restricted, skip
+project and sub-project tasks, habits, and project related
+tasks."
   (save-restriction
     (widen)
     (let* ((subtree-end (save-excursion (org-end-of-subtree t)))
@@ -2657,8 +2691,10 @@ Parenface adds a face for parentheses, which is used by themes to darken the
 parens.
 
 #+BEGIN_SRC emacs-lisp
-   (use-package parenface
-     :init (add-hook 'prog-mode-hook (lambda () (require 'parenface))))
+(use-package parenface
+  :init (progn
+          (add-hook 'prog-mode-hook (lambda () (require 'parenface)))
+          (add-hook 'clojure-mode-hook (paren-face-add-support clojure-font-lock-keywords))))
 #+END_SRC
 
 ** Ido-ubiquitous

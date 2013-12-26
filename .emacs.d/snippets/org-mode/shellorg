@@ -3,7 +3,7 @@
 # --
 #+TITLE:    ${1:<title>}
 #+AUTHOR:   Lee Hinman
-#+STARTUP:  align fold nodlcheck oddeven lognotestate showall
+#+STARTUP:  align fold nodlcheck lognotestate showall
 #+OPTIONS:  H:4 num:nil toc:t \n:nil @:t ::t |:t ^:{} -:t f:t *:t
 #+OPTIONS:  skip:nil d:(HIDE) tags:not-in-toc
 #+PROPERTY: header-args :results code :exports both :noweb yes
@@ -11,38 +11,38 @@
 #+LANGUAGE: en
 
 * ${2:<description>}
-  Create the index:
+Create the index:
 
-  #+BEGIN_SRC sh :tangle `(file-name-sans-extension (buffer-name))`.zsh
-  curl -XDELETE 'localhost:9200/${3:thing}'
-  echo
-  curl -XPOST 'localhost:9200/$3' -d'{
-    "mappings": {
-      "doc": {
-        "properties": {
-          "body": {"type": "string"}
-        }
+#+BEGIN_SRC sh :tangle `(file-name-sans-extension (buffer-name))`.zsh
+curl -XDELETE 'localhost:9200/${3:thing}'
+echo
+curl -XPOST 'localhost:9200/$3' -d'{
+  "mappings": {
+    "doc": {
+      "properties": {
+        "body": {"type": "string"}
       }
     }
-  }'$0
-  echo
-  #+END_SRC
+  }
+}'$0
+echo
+#+END_SRC
 
-  Index some docs:
+Index some docs:
 
-  #+BEGIN_SRC sh :tangle `(file-name-sans-extension (buffer-name))`.zsh
-  curl -XPOST 'localhost:9200/$3/doc/1' -d'{"body": "foo"}'
-  echo
-  curl -XPOST 'localhost:9200/$3/_refresh'
-  echo
-  #+END_SRC
+#+BEGIN_SRC sh :tangle `(file-name-sans-extension (buffer-name))`.zsh
+curl -XPOST 'localhost:9200/$3/doc/1' -d'{"body": "foo"}'
+echo
+curl -XPOST 'localhost:9200/$3/_refresh'
+echo
+#+END_SRC
 
-  Perform the query:
+Perform the query:
 
-  #+BEGIN_SRC sh :tangle `(file-name-sans-extension (buffer-name))`.zsh
-  curl -XPOST 'localhost:9200/$3/_search?pretty' -d'
-  {
-    "query": {
-      "match_all": {}
-  }'
-  #+END_SRC
+#+BEGIN_SRC sh :tangle `(file-name-sans-extension (buffer-name))`.zsh
+curl -XPOST 'localhost:9200/$3/_search?pretty' -d'
+{
+  "query": {
+    "match_all": {}
+}'
+#+END_SRC

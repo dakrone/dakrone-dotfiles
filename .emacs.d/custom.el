@@ -9,11 +9,9 @@
  '(compilation-skip-threshold 2)
  '(custom-safe-themes (quote ("fc6e906a0e6ead5747ab2e7c5838166f7350b958d82e410257aeeb2820e8a07a" default)))
  '(delete-selection-mode t)
- '(face-background "#fcf4dc")
  '(org-export-backends (quote (ascii html icalendar latex md)))
  '(org-modules (quote (org-bbdb org-bibtex org-docview org-gnus org-habit org-info org-irc org-mhe org-rmail org-w3m)))
  '(sp-cancel-autoskip-on-backward-movement nil)
- '(yas-prompt-functions (quote (my-yas/prompt)))
  '(yas/prompt-functions (quote (my-yas/prompt))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.

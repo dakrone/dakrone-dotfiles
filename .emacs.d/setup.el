@@ -13,7 +13,7 @@
     use-package
 
     ;; themeing
-    rainbow-mode leuven-theme powerline dakrone-theme smart-mode-line
+    rainbow-mode leuven-theme dakrone-theme smart-mode-line
 
     ;; misc
     diminish yagist

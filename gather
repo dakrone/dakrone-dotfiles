@@ -41,7 +41,6 @@ mkdir -p .emacs.d
 cp -f -r ~/.emacs.d .
 rm -rf .emacs.d/elpa
 rm -f .emacs.d/history
-rm -f .emacs.d/settings.el
 rm -f .emacs.d/settings.html
 # Remove elc files
 find . -name "*.elc" -exec rm {} \;

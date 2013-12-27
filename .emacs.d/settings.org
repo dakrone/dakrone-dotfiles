@@ -1162,6 +1162,7 @@ settings are mine.
 
     (define-key org-mode-map (kbd "C-M-<return>") 'org-insert-todo-heading)
     (define-key org-mode-map (kbd "C-M-<tab>") 'show-all)
+    (define-key org-mode-map (kbd "M-G") 'org-plot/gnuplot)
     (local-unset-key (kbd "M-S-<return>"))
 
     (add-hook 'org-mode-hook
@@ -1186,7 +1187,8 @@ settings are mine.
        (clojure . t)
        (sh . t)
        (ruby . t)
-       (python . t)))
+       (python . t)
+       (gnuplot . t)))
 
     ;; Use cider as the clojure backend
     (setq org-babel-clojure-backend 'cider)
@@ -2794,6 +2796,7 @@ really fit in anywhere else.
 (global-set-key (kbd "C-x C-r") 'helm-recentf)
 (global-set-key (kbd "C-x f") 'projectile-find-file)
 (global-set-key (kbd "C-c C-a") 'helm-ag)
+(global-set-key (kbd "C-x C-u") 'eww)
 
 ;; M-g mapping
 (global-set-key (kbd "M-g .") 'helm-ag)

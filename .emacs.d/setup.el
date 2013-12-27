@@ -31,7 +31,7 @@
     lusty-explorer discover
 
     ;; org-mode
-    org htmlize
+    org htmlize gnuplot-mode gnuplot
 
     ;; buffer utils
     popwin

@@ -1008,9 +1008,15 @@ Misc settings for fonts, depending on the OS:
 #+BEGIN_SRC emacs-lisp
 (setq ns-use-srgb-colorspace t)
 
+;; Emacs 24.4 requires these faces to be defined :-/
 (defface clojure-parens '() "")
 (defface clojure-keyword '() "")
 (defface clojure-braces '() "")
+(defface clojure-brackets '() "")
+(defface clojure-namespace '() "")
+(defface clojure-java-call '() "")
+(defface clojure-special '() "")
+(defface clojure-double-quote '() "")
 
 (defmacro defclojureface (name color desc &optional others)
   `(defface

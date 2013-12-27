@@ -3093,3 +3093,16 @@ Used more often than you'd think...
 
     (global-set-key (kbd "C-c M-d") 'My/insert-lod)
 #+END_SRC
+*** Browse Elasticsearch documentation
+A function to search/browse ES docs from Emacs using =eww=
+
+#+BEGIN_SRC emacs-lisp
+(defun my/search-es-docs (text)
+  "Search ES docs for `text'."
+  (interactive (list (read-string "Search for: ")))
+  (eww (url-encode-url
+        (format "http://www.elasticsearch.org/?s=%s"
+                text))))
+
+(global-set-key (kbd "C-c D") 'my/search-es-docs)
+#+END_SRC

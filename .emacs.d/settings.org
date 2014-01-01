@@ -995,13 +995,6 @@ Follow symlinks and update VCS info on revert:
 (setq auto-revert-check-vc-info t)
 #+END_SRC
 
-Disable Emacs' vc backend support (I mostly just use magit these
-days):
-
-#+BEGIN_SRC emacs-lisp
-(setq vc-handled-backends '())
-#+END_SRC
-
 ** Theme Settings
 *** Font settings
 Misc settings for fonts, depending on the OS:

@@ -1020,6 +1020,11 @@ Misc settings for fonts, depending on the OS:
 #+END_SRC
 
 *** Color scheme
+For light-colored backgrounds, I used [[https://github.com/fniessen/emacs-leuven-theme][leuven-theme]]. For dark-colored
+backgrounds (most of the time), I use my own custom theme, called [[https://github.com/dakrone/dakrone-theme][dakrone-theme]]:
+
+See a [[https://github-camo.global.ssl.fastly.net/585b59c2a71eb618b0bff59b3f5ca4ae99d7ae81/687474703a2f2f692e696d6775722e636f6d2f7753644f6e544d2e706e67][screenshot]].
+
 #+BEGIN_SRC emacs-lisp
 (setq ns-use-srgb-colorspace t)
 
@@ -1084,13 +1089,11 @@ I vacillate between powerline and smart-mode-line, so I keep both installed
 to switch between as needed:
 
 #+BEGIN_SRC emacs-lisp
-;;(use-package powerline
-;;  :init (powerline-default-theme))
-
-(setq sml/theme my/background)
-(setq sml/mode-width 'full)
 (use-package smart-mode-line
-  :init (sml/setup))
+  :init (progn
+          (setq sml/mode-width 'full)
+          (sml/setup)
+          (sml/apply-theme my/background)))
 #+END_SRC
 
 ** Org-mode
@@ -2344,24 +2347,27 @@ And some niceties to allow choosing a snippet using helm:
 #+END_SRC
 ** Flycheck
 #+BEGIN_SRC emacs-lisp
-   (use-package flycheck
-     :diminish "fc"
-     :init
-     (progn
-       (add-hook 'after-init-hook #'global-flycheck-mode)))
+(use-package flycheck
+  :diminish "fc"
+  :init
+  (progn
+    (add-hook 'after-init-hook #'global-flycheck-mode)
+    ;; disable the annoying doc checker))
+    (setq-default flycheck-disabled-checkers
+                  '(emacs-lisp-checkdoc))))
 
-   (use-package flycheck-tip
-     :init
-     (progn
-       (add-hook 'flycheck-mode-hook
-                 (lambda ()
-                   (global-set-key (kbd "C-c C-n") 'flycheck-tip-cycle)
-                   (global-set-key (kbd "C-c C-p") 'flycheck-tip-cycle-reverse)))))
+(use-package flycheck-tip
+  :init
+  (progn
+    (add-hook 'flycheck-mode-hook
+              (lambda ()
+                (global-set-key (kbd "C-c C-n") 'flycheck-tip-cycle)
+                (global-set-key (kbd "C-c C-p") 'flycheck-tip-cycle-reverse)))))
 
-   (use-package google-this
-     :init
-     (progn
-       (defun google-url () (concat "https://duckduckgo.com/?q=%s"))))
+(use-package google-this
+  :init
+  (progn
+    (defun google-url () (concat "https://duckduckgo.com/?q=%s"))))
 #+END_SRC
 ** Expand-region
 
@@ -2863,15 +2869,6 @@ Deletes whitespace at join."
 
 ;; File finding
 (global-set-key (kbd "C-x M-f") 'ido-find-file-other-window)
-
-(defun recentf-ido-find-file ()
-  "Find a recent file using ido."
-  (interactive)
-  (let ((file (ido-completing-read "Choose recent file: " recentf-list nil t)))
-    (when file
-      (find-file file))))
-
-;;(global-set-key (kbd "C-x f") 'recentf-ido-find-file)
 
 (global-set-key (kbd "C-c y") 'bury-buffer)
 (global-set-key (kbd "C-c r") 'revert-buffer)

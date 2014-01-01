@@ -68,7 +68,10 @@ depending on whatever I'm in the mood for.
 Always, *always*, prefer UTF-8, anything else is insanity
 
 #+BEGIN_SRC emacs-lisp
-(prefer-coding-system 'utf-8-unix)
+(set-terminal-coding-system 'utf-8)
+(set-keyboard-coding-system 'utf-8)
+(set-language-environment "UTF-8")
+(prefer-coding-system 'utf-8)
 #+END_SRC
 
 I need =use-package= to do package-specific stuff:

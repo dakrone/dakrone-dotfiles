@@ -340,6 +340,17 @@ Set the internal calculator not to go to scientific form quite so quickly:
 (setq calc-display-sci-low -5)
 #+END_SRC
 
+Bury the =*scratch*= buffer, never kill it:
+
+#+BEGIN_SRC emacs-lisp
+(defadvice kill-buffer (around kill-buffer-around-advice activate)
+  (let ((buffer-to-kill (ad-get-arg 0)))
+    (if (equal buffer-to-kill "*scratch*")
+        (bury-buffer)
+      ad-do-it)))
+#+END_SRC
+
+
 Finally, enable some usually-disabled things:
 
 #+BEGIN_SRC emacs-lisp

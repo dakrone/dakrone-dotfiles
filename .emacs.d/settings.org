@@ -405,6 +405,7 @@ coreutils=
 
 #+BEGIN_SRC emacs-lisp
 (when (macosx-p)
+  (setq ns-use-native-fullscreen nil)
   (setq insert-directory-program "gls")
   (setq dired-listing-switches "-aBhl --group-directories-first"))
 #+END_SRC

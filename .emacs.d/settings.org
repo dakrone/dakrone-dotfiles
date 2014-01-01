@@ -2415,6 +2415,32 @@ And some niceties to allow choosing a snippet using helm:
              (projectile-global-mode)
              (defconst projectile-mode-line-lighter " P")))
 #+END_SRC
+** Prodigy
+I basically use this to start up ES when I need to test something really quickly
+
+#+BEGIN_SRC emacs-lisp
+(use-package prodigy
+  :defer t
+  :bind ("C-x P" . prodigy)
+  :config
+  (progn
+    (prodigy-define-service
+     :name "Elasticsearch 1.0"
+     :cwd "~/esi/elasticsearch-1.0.0.Beta2/"
+     :command "~/esi/elasticsearch-1.0.0.Beta2/bin/elasticsearch"
+     :args '("-f")
+     :tags '(work test es)
+     :port 9200)
+
+    (prodigy-define-service
+     :name "Elasticsearch 0.90.x"
+     :cwd "~/esi/elasticsearch-0.90.9/"
+     :command "~/esi/elasticsearch-0.90.9/bin/elasticsearch"
+     :args '("-f")
+     :tags '(work test es)
+     :port 9200)))
+#+END_SRC
+
 ** Git-gutter
 #+BEGIN_SRC emacs-lisp
    (use-package git-gutter

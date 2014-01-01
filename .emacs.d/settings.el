@@ -5,7 +5,10 @@
 ;;(defvar my/background 'light)
 (defvar my/background 'dark)
 
-(prefer-coding-system 'utf-8-unix)
+(set-terminal-coding-system 'utf-8)
+(set-keyboard-coding-system 'utf-8)
+(set-language-environment "UTF-8")
+(prefer-coding-system 'utf-8)
 
 (require 'use-package)
 
@@ -126,6 +129,12 @@
 
 (setq calc-display-sci-low -5)
 
+(defadvice kill-buffer (around kill-buffer-around-advice activate)
+  (let ((buffer-to-kill (ad-get-arg 0)))
+    (if (equal buffer-to-kill "*scratch*")
+        (bury-buffer)
+      ad-do-it)))
+
 (put 'upcase-region 'disabled nil)
 (put 'narrow-to-region 'disabled nil)
 
@@ -150,6 +159,7 @@
 (global-set-key (kbd "C-M-w") 'yank-to-x-clipboard)
 
 (when (macosx-p)
+  (setq ns-use-native-fullscreen nil)
   (setq insert-directory-program "gls")
   (setq dired-listing-switches "-aBhl --group-directories-first"))
 
@@ -516,8 +526,6 @@
 (setq vc-follow-symlinks t)
 (setq auto-revert-check-vc-info t)
 
-(setq vc-handled-backends '())
-
 (when (eq window-system 'ns)
   (set-fontset-font "fontset-default" 'symbol "Monaco")
   (set-default-font "Anonymous Pro")
@@ -593,13 +601,11 @@
 
 (font-lock-add-keywords 'clojure-mode '(("(\\|)" . 'paren-face)))
 
-;;(use-package powerline
-;;  :init (powerline-default-theme))
-
-(setq sml/theme my/background)
-(setq sml/mode-width 'full)
 (use-package smart-mode-line
-  :init (sml/setup))
+  :init (progn
+          (setq sml/mode-width 'full)
+          (sml/setup)
+          (sml/apply-theme my/background)))
 
 (use-package org
   :mode ("\\.\\(org\\|org_archive\\|txt\\)$" . org-mode)
@@ -626,13 +632,16 @@
           org-agenda-window-setup 'current-window
 
           org-todo-keywords
-          '((sequence "TODO(t)" "STARTED(s)" "WAITING(w)" "INPROGRESS(i)"
+          '((sequence "TODO(t)" "STARTED(s)" "INPROGRESS(i)" "WAITING(w)"
+                      "|" "DONE(d)")
+            (sequence "TODO(t)" "INPROGRESS(i)" "NEEDSREVIEW(n)"
                       "|" "DONE(d)"))
           org-todo-keyword-faces
-          '(("STARTED"    . (:foreground "deep sky blue" :weight bold))
-            ("DONE"       . (:foreground "SpringGreen1" :weight bold))
-            ("WAITING"    . (:foreground "orange" :weight bold))
-            ("INPROGRESS" . (:foreground "cyan" :weight bold)))
+          '(("STARTED"     . (:foreground "deep sky blue" :weight bold))
+            ("DONE"        . (:foreground "SpringGreen1" :weight bold))
+            ("WAITING"     . (:foreground "orange" :weight bold))
+            ("INPROGRESS"  . (:foreground "cyan" :weight bold))
+            ("NEEDSREVIEW" . (:foreground "#edd400" :weight bold)))
           org-agenda-files '("~/org/todo.org" "~/org/notes.org"
                              "~/org/journal.org" "~/org/work.org"
                              "~/org/refile.org" "~/org/meetings.org")
@@ -1246,9 +1255,9 @@ tasks."
   (defun start-irc ()
     "Connect to IRC."
     (interactive)
-    (pause-ercn 6)
+    (pause-ercn 10)
     (erc-tls :server "freenode" :port 31425
-             :nick "dakrone" :password freenode-pass)))
+             :nick "dakrone" :password znc-pass)))
 
 (when window-system
   (use-package todochiku
@@ -1787,7 +1796,10 @@ passed in. Also supports ignoring the msg at the point."
   :diminish "fc"
   :init
   (progn
-    (add-hook 'after-init-hook #'global-flycheck-mode)))
+    (add-hook 'after-init-hook #'global-flycheck-mode)
+    ;; disable the annoying doc checker))
+    (setq-default flycheck-disabled-checkers
+                  '(emacs-lisp-checkdoc))))
 
 (use-package flycheck-tip
   :init
@@ -1835,6 +1847,27 @@ passed in. Also supports ignoring the msg at the point."
   :init (progn
           (projectile-global-mode)
           (defconst projectile-mode-line-lighter " P")))
+
+(use-package prodigy
+  :defer t
+  :bind ("C-x P" . prodigy)
+  :config
+  (progn
+    (prodigy-define-service
+     :name "Elasticsearch 1.0"
+     :cwd "~/esi/elasticsearch-1.0.0.Beta2/"
+     :command "~/esi/elasticsearch-1.0.0.Beta2/bin/elasticsearch"
+     :args '("-f")
+     :tags '(work test es)
+     :port 9200)
+
+    (prodigy-define-service
+     :name "Elasticsearch 0.90.x"
+     :cwd "~/esi/elasticsearch-0.90.9/"
+     :command "~/esi/elasticsearch-0.90.9/bin/elasticsearch"
+     :args '("-f")
+     :tags '(work test es)
+     :port 9200)))
 
 (use-package git-gutter
   :defer t
@@ -2232,15 +2265,6 @@ Deletes whitespace at join."
 
 ;; File finding
 (global-set-key (kbd "C-x M-f") 'ido-find-file-other-window)
-
-(defun recentf-ido-find-file ()
-  "Find a recent file using ido."
-  (interactive)
-  (let ((file (ido-completing-read "Choose recent file: " recentf-list nil t)))
-    (when file
-      (find-file file))))
-
-;;(global-set-key (kbd "C-x f") 'recentf-ido-find-file)
 
 (global-set-key (kbd "C-c y") 'bury-buffer)
 (global-set-key (kbd "C-c r") 'revert-buffer)

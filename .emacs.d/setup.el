@@ -71,7 +71,7 @@
     elisp-slime-nav paredit
 
     ;; markup language
-    adoc-mode markdown-mode markdown-mode+ yaml-mode zencoding-mode
+    markdown-mode markdown-mode+ yaml-mode zencoding-mode
 
     ;; helm
     helm helm-descbinds helm-ag helm-projectile

@@ -2014,11 +2014,6 @@ passed in. Also supports ignoring the msg at the point."
       (":trust-store-type - type of trust store")))
     (action . message)))
 
-(use-package adoc-mode
-  :defer t
-  :mode (("\\.asciidoc$" . adoc-mode)
-         ("\\.adoc$" . adoc-mode)))
-
 (use-package markdown-mode
   :defer t
   :mode (("\\.markdown$" . markdown-mode)

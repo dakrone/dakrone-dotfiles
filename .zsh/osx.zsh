@@ -6,6 +6,7 @@ if [[ $OS == "Darwin" ]]; then
     export JAVA_HOME=/Library/Java/JavaVirtualMachines/jdk1.7.0_40.jdk/Contents/Home
 
     export EMACS_HOME="/Applications/Emacs.app/Contents/MacOS"
+    export ERC_HOME="/Applications/ERC.app/Contents/MacOS"
 
     if [ -s /usr/local/bin/emacs ]; then
         alias emacs='TERM=xterm-256color emacs'
@@ -25,6 +26,7 @@ if [[ $OS == "Darwin" ]]; then
 
     alias emacs="TERM=xterm-256color PATH=$EMACS_HOME/bin:$PATH $EMACS_HOME/Emacs -nw"
     alias gemacs="TERM=xterm-256color PATH=$EMACS_HOME/bin:$PATH $EMACS_HOME/Emacs 2>&1 > /dev/null &"
+    alias erc="TERM=xterm-256color PATH=$ERC_HOME/bin:$PATH $ERC_HOME/Emacs 2>&1 > /dev/null &"
 
     export EDITOR="TERM=xterm-256color PATH=$EMACS_HOME/bin:$PATH $EMACS_HOME/Emacs -nw"
 

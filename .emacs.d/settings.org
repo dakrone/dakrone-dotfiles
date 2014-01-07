@@ -2238,53 +2238,56 @@ passed in. Also supports ignoring the msg at the point."
 ** Keyfreq
 Keep track of the frequencies of commands, but only in GUI mode:
 
+Keeping this disabled for now, because running multiple GUI Emacs causes Emacs
+to complain about editing the file from multiple places.
+
 #+BEGIN_SRC emacs-lisp
-   (when (window-system)
-     (use-package keyfreq
-       :init (progn (keyfreq-mode 1)
-                    (keyfreq-autosave-mode 1))))
+;; (when (window-system)
+;;   (use-package keyfreq
+;;     :init (progn (keyfreq-mode 1)
+;;                  (keyfreq-autosave-mode 1))))
 #+END_SRC
 
 ** Yasnippet
 #+BEGIN_SRC emacs-lisp
-   (use-package yasnippet
-     :defer t
-     :commands yas-minor-mode-on
-     :diminish yas-minor-mode
-     :init
-     (progn
-       (dolist (hook '(clojure-mode-hook
-                       org-mode-hook))
-         (add-hook hook 'yas-minor-mode-on)))
-     :config
-     (progn
-       ;; snippet-mode for *.yasnippet files
-       (add-to-list 'auto-mode-alist '("\\.yasnippet$" . snippet-mode))
-       (yas-reload-all)))
+(use-package yasnippet
+  :defer t
+  :commands yas-minor-mode-on
+  :diminish yas-minor-mode
+  :init
+  (progn
+    (dolist (hook '(clojure-mode-hook
+                    org-mode-hook))
+      (add-hook hook 'yas-minor-mode-on)))
+  :config
+  (progn
+    ;; snippet-mode for *.yasnippet files
+    (add-to-list 'auto-mode-alist '("\\.yasnippet$" . snippet-mode))
+    (yas-reload-all)))
 #+END_SRC
 
 And some niceties to allow choosing a snippet using helm:
 
 #+BEGIN_SRC emacs-lisp
-   (eval-after-load "helm-config"
-     '(progn
-        (defun my-yas/prompt (prompt choices &optional display-fn)
-          (let* ((names (loop for choice in choices
-                              collect (or (and display-fn
-                                               (funcall display-fn choice))
-                                          coice)))
-                 (selected (helm-other-buffer
-                            `(((name . ,(format "%s" prompt))
-                               (candidates . names)
-                               (action . (("Insert snippet" . (lambda (arg)
-                                                                arg))))))
-                            "*helm yas/prompt*")))
-            (if selected
-                (let ((n (position selected names :test 'equal)))
-                  (nth n choices))
-              (signal 'quit "user quit!"))))
-        (custom-set-variables '(yas/prompt-functions '(my-yas/prompt)))
-        (global-set-key (kbd "M-=") 'yas/insert-snippet)))
+(eval-after-load "helm-config"
+  '(progn
+     (defun my-yas/prompt (prompt choices &optional display-fn)
+       (let* ((names (loop for choice in choices
+                           collect (or (and display-fn
+                                            (funcall display-fn choice))
+                                       coice)))
+              (selected (helm-other-buffer
+                         `(((name . ,(format "%s" prompt))
+                            (candidates . names)
+                            (action . (("Insert snippet" . (lambda (arg)
+                                                             arg))))))
+                         "*helm yas/prompt*")))
+         (if selected
+             (let ((n (position selected names :test 'equal)))
+               (nth n choices))
+           (signal 'quit "user quit!"))))
+     (custom-set-variables '(yas/prompt-functions '(my-yas/prompt)))
+     (global-set-key (kbd "M-=") 'yas/insert-snippet)))
 #+END_SRC
 
 ** Paredit

@@ -1204,6 +1204,7 @@ settings are mine.
                           ("book" . ?b)))
 
     (define-key org-mode-map (kbd "C-M-<return>") 'org-insert-todo-heading)
+    (define-key org-mode-map (kbd "C-c t") 'org-todo)
     (define-key org-mode-map (kbd "C-M-<tab>") 'show-all)
     (define-key org-mode-map (kbd "M-G") 'org-plot/gnuplot)
     (local-unset-key (kbd "M-S-<return>"))
@@ -1389,8 +1390,8 @@ Custom agenda views:
             (or subtree-end (point-max)))
         next-headline))))
 
-(setq org-agenda-include-diary nil)
-(setq org-agenda-diary-file "~/org/journal.org")
+(setq org-agenda-include-diary t)
+(setq org-agenda-diary-file "~/diary")
 (setq org-agenda-insert-diary-extract-time t)
 
 (setq org-agenda-repeating-timestamp-show-all t)
@@ -1404,9 +1405,6 @@ Custom agenda views:
               (todo category-up priority-down effort-up)
               (tags category-up priority-down effort-up)
               (search category-up))))
-
-;; Start the weekly agenda on Monday
-(setq org-agenda-start-on-weekday 1)
 
 ;; Enable display of the time grid so we can see the marker for the current time
 (setq org-agenda-time-grid (quote ((daily today remove-match)

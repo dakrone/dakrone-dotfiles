@@ -265,6 +265,9 @@
      (define-key doc-view-mode-map (kbd "k")
        'doc-view-previous-line-or-previous-page)))
 
+(global-set-key (kbd "C-M-n") 'View-scroll-half-page-forward)
+(global-set-key (kbd "C-M-p") 'View-scroll-half-page-backward)
+
 (use-package dired
   :defer t
   :config
@@ -480,6 +483,15 @@
    (setq tab-width 4)
    (setq whitespace-line-column 180)))
 
+;; (use-package malabar-mode
+;;   :init (add-to-list 'auto-mode-alist '("\\.java\\'" . malabar-mode))
+;;   :config
+;;   (progn
+;;     (use-package cedet)
+;;     (use-package semantic)
+;;     (load "semantic/loaddefs.el")
+;;     (semantic-mode 1);;))
+
 (use-package haskell-mode
   :mode ("\\.\\(hs\\|hi\\|gs\\)\\'" . haskell-mode)
   :config
@@ -685,6 +697,7 @@
                           ("book" . ?b)))
 
     (define-key org-mode-map (kbd "C-M-<return>") 'org-insert-todo-heading)
+    (define-key org-mode-map (kbd "C-c t") 'org-todo)
     (define-key org-mode-map (kbd "C-M-<tab>") 'show-all)
     (define-key org-mode-map (kbd "M-G") 'org-plot/gnuplot)
     (local-unset-key (kbd "M-S-<return>"))
@@ -866,8 +879,8 @@
             (or subtree-end (point-max)))
         next-headline))))
 
-(setq org-agenda-include-diary nil)
-(setq org-agenda-diary-file "~/org/journal.org")
+(setq org-agenda-include-diary t)
+(setq org-agenda-diary-file "~/diary")
 (setq org-agenda-insert-diary-extract-time t)
 
 (setq org-agenda-repeating-timestamp-show-all t)
@@ -881,9 +894,6 @@
               (todo category-up priority-down effort-up)
               (tags category-up priority-down effort-up)
               (search category-up))))
-
-;; Start the weekly agenda on Monday
-(setq org-agenda-start-on-weekday 1)
 
 ;; Enable display of the time grid so we can see the marker for the current time
 (setq org-agenda-time-grid (quote ((daily today remove-match)
@@ -1666,13 +1676,16 @@ passed in. Also supports ignoring the msg at the point."
   :init (global-yascroll-bar-mode 1)
   :config (add-hook 'org-mode-hook (lambda () (yascroll-bar-mode -1))))
 
+(use-package ace-jump-mode
+  :init (global-set-key (kbd "C-c SPC") 'ace-jump-mode))
+
 (use-package smooth-scrolling
   :init (setq smooth-scroll-margin 4))
 
-(when (window-system)
-  (use-package keyfreq
-    :init (progn (keyfreq-mode 1)
-                 (keyfreq-autosave-mode 1))))
+;; (when (window-system)
+;;   (use-package keyfreq
+;;     :init (progn (keyfreq-mode 1)
+;;                  (keyfreq-autosave-mode 1))))
 
 (use-package yasnippet
   :defer t
@@ -1762,8 +1775,8 @@ passed in. Also supports ignoring the msg at the point."
     (define-key emacs-lisp-mode-map (kbd ")") 'sp-up-sexp)
     (define-key sp-keymap (kbd "C-M-u") 'sp-backward-up-sexp)
     (define-key sp-keymap (kbd "C-M-t") 'sp-transpose-sexp)
-    (define-key sp-keymap (kbd "C-M-n") 'sp-next-sexp)
-    (define-key sp-keymap (kbd "C-M-p") 'sp-previous-sexp)
+    ;; (define-key sp-keymap (kbd "C-M-n") 'sp-next-sexp)
+    ;; (define-key sp-keymap (kbd "C-M-p") 'sp-previous-sexp)
     (define-key sp-keymap (kbd "C-M-k") 'sp-kill-sexp)
     (define-key sp-keymap (kbd "C-M-w") 'sp-copy-sexp)
     (define-key sp-keymap (kbd "M-D") 'sp-splice-sexp)
@@ -2445,4 +2458,4 @@ Deletes whitespace at join."
         (format "http://www.elasticsearch.org/?s=%s"
                 text))))
 
-(global-set-key (kbd "C-c D") 'my/search-es-docs)
+(global-set-key (kbd "C-c d") 'my/search-es-docs)

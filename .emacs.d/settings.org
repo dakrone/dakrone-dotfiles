@@ -2223,6 +2223,12 @@ passed in. Also supports ignoring the msg at the point."
   :config (add-hook 'org-mode-hook (lambda () (yascroll-bar-mode -1))))
 #+END_SRC
 
+** Ace-jump-mode
+#+BEGIN_SRC emacs-lisp
+(use-package ace-jump-mode
+  :init (global-set-key (kbd "C-c SPC") 'ace-jump-mode))
+#+END_SRC
+
 ** Smooth-scrolling
 #+BEGIN_SRC emacs-lisp
    (use-package smooth-scrolling

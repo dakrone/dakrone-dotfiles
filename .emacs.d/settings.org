@@ -922,6 +922,19 @@ Java uses eclim to make life at least a little bit livable.
    (setq whitespace-line-column 180)))
 #+END_SRC
 
+Some malabar stuff if needed:
+
+#+BEGIN_SRC emacs-lisp
+;; (use-package malabar-mode
+;;   :init (add-to-list 'auto-mode-alist '("\\.java\\'" . malabar-mode))
+;;   :config
+;;   (progn
+;;     (use-package cedet)
+;;     (use-package semantic)
+;;     (load "semantic/loaddefs.el")
+;;     (semantic-mode 1);;))
+#+END_SRC
+
 *** Haskell
 Use GHC for haskell mode, and turn on auto-complete and some doc/indent
 modes:

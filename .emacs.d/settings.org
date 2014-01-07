@@ -540,7 +540,7 @@ in a less/vim manner.
 When in view-mode, the buffer is read-only:
 
 #+BEGIN_SRC emacs-lisp
-    (setq view-read-only t)
+(setq view-read-only t)
 #+END_SRC
 
 Set up the keybindings to be like better viewers:
@@ -3172,5 +3172,5 @@ A function to search/browse ES docs from Emacs using =eww=
         (format "http://www.elasticsearch.org/?s=%s"
                 text))))
 
-(global-set-key (kbd "C-c D") 'my/search-es-docs)
+(global-set-key (kbd "C-c d") 'my/search-es-docs)
 #+END_SRC

@@ -10,13 +10,12 @@
 #+HTML_HEAD: <style type="text/css"> body {margin-right:15%; margin-left:15%;} </style>
 #+LANGUAGE: en
 
-* ${2:<description>}
-Create the index:
+* Create the index
 
-#+BEGIN_SRC sh :tangle `(file-name-sans-extension (buffer-name))`.zsh
-curl -XDELETE 'localhost:9200/${3:thing}'
+#+BEGIN_SRC sh :tangle `(file-name-base (buffer-name))`.zsh
+curl -XDELETE 'localhost:9200/${2:thing}'
 echo
-curl -XPOST 'localhost:9200/$3' -d'{
+curl -XPOST 'localhost:9200/$2' -d'{
   "mappings": {
     "doc": {
       "properties": {
@@ -28,19 +27,19 @@ curl -XPOST 'localhost:9200/$3' -d'{
 echo
 #+END_SRC
 
-Index some docs:
+* Index docs
 
-#+BEGIN_SRC sh :tangle `(file-name-sans-extension (buffer-name))`.zsh
-curl -XPOST 'localhost:9200/$3/doc/1' -d'{"body": "foo"}'
+#+BEGIN_SRC sh :tangle `(file-name-base (buffer-name))`.zsh
+curl -XPOST 'localhost:9200/$2/doc/1' -d'{"body": "foo"}'
 echo
-curl -XPOST 'localhost:9200/$3/_refresh'
+curl -XPOST 'localhost:9200/$2/_refresh'
 echo
 #+END_SRC
 
-Perform the query:
+* Query
 
-#+BEGIN_SRC sh :tangle `(file-name-sans-extension (buffer-name))`.zsh
-curl -XPOST 'localhost:9200/$3/_search?pretty' -d'
+#+BEGIN_SRC sh :tangle `(file-name-base (buffer-name))`.zsh
+curl -XPOST 'localhost:9200/$2/_search?pretty' -d'
 {
   "query": {
     "match_all": {}

@@ -1,6 +1,6 @@
 # -*- mode: snippet -*-
 #name : shs
 # --
-#+BEGIN_SRC sh :tangle `(file-name-sans-extension (buffer-name))`.zsh
+#+BEGIN_SRC sh :tangle `(file-name-base (buffer-name))`.zsh
 $0
 #+END_SRC

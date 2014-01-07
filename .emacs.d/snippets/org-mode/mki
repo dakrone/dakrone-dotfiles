@@ -1,19 +1,19 @@
 # -*- mode: snippet -*-
 #name : mki
 # --
-#+BEGIN_SRC sh :results code :exports both :noweb yes :tangle `(file-name-sans-extension (buffer-name))`.zsh :var INDEX="${1:idxname}"
-  curl -XDELETE "localhost:9200/$INDEX"
-  echo
-  curl -XPOST "localhost:9200/$INDEX" -d'{
-    "mappings": {
-      "doc": {
-        "properties": {
-          "body": {
-            "type": "string"
-          }$0
-        }
+#+BEGIN_SRC sh :results code :exports both :noweb yes :tangle `(file-name-base (buffer-name))`.zsh
+curl -XDELETE "localhost:9200/${1:test}"
+echo
+curl -XPOST 'localhost:9200/$1' -d'{
+  "mappings": {
+    "doc": {
+      "properties": {
+        "body": {
+          "type": "string"
+        }$0
       }
     }
-  }'
-  echo
+  }
+}'
+echo
 #+END_SRC

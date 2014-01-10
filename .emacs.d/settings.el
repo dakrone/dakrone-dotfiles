@@ -483,14 +483,15 @@
    (setq tab-width 4)
    (setq whitespace-line-column 180)))
 
-;; (use-package malabar-mode
-;;   :init (add-to-list 'auto-mode-alist '("\\.java\\'" . malabar-mode))
-;;   :config
-;;   (progn
-;;     (use-package cedet)
-;;     (use-package semantic)
-;;     (load "semantic/loaddefs.el")
-;;     (semantic-mode 1);;))
+(use-package malabar-mode
+  :disabled t
+  :init (add-to-list 'auto-mode-alist '("\\.java\\'" . malabar-mode))
+  :config
+  (progn
+    (use-package cedet)
+    (use-package semantic)
+    (load "semantic/loaddefs.el")
+    (semantic-mode 1)))
 
 (use-package haskell-mode
   :mode ("\\.\\(hs\\|hi\\|gs\\)\\'" . haskell-mode)
@@ -662,9 +663,9 @@
                                (,(concat "~/org/notes.org") . (:level . 1)))
           org-capture-templates
           '(("t" "Todo" entry (file+headline "~/org/todo.org" "Unsorted")
-             "* TODO %?\n%U\n%a\n")
+             "* TODO %?\n%U\n")
             ("n" "Notes" entry (file+headline "~/org/notes.org" "Notes")
-             "* %? :NOTE:\n%U\n%a\n")
+             "* %? :NOTE:\n%U\n")
             ("j" "Journal" entry (file+datetree "~/org/journal.org")
              "* %?\n%U\n")
             ("m" "Meeting" entry (file+headline "~/org/meetings.org" "Meetings"))))
@@ -1216,6 +1217,48 @@ tasks."
     (if (bh/is-subproject-p)
         nil
       next-headline)))
+
+(setq org-publish-project-alist
+      '(("emacs dotfiles"
+         :base-directory "~/.emacs.d/"
+         :base-extension "org"
+         :publishing-directory "/ssh:hinmanph@writequit:~/public_html/wq/paste/org/"
+         :publishing-function org-html-publish-to-html
+         :with-toc t
+         :html-preamble t)
+        ("org-pastebin"
+         :base-directory "~/org/"
+         :base-extension "org"
+         :publishing-directory "/ssh:hinmanph@writequit:~/public_html/wq/paste/org/"
+         :publishing-function org-html-publish-to-html
+         :with-toc t
+         :html-preamble t)
+        ("org-pastebin-db"
+         :base-directory "~/Dropbox/org/"
+         :base-extension "org"
+         :publishing-directory "/ssh:hinmanph@writequit:~/public_html/wq/paste/org/"
+         :publishing-function org-html-publish-to-html
+         :with-toc t
+         :html-preamble t)
+        ("org-es-pastebin"
+         :base-directory "~/org/es/"
+         :base-extension "org"
+         :publishing-directory "/ssh:hinmanph@writequit:~/public_html/wq/paste/org/"
+         :publishing-function org-html-publish-to-html
+         :with-toc t
+         :html-preamble t)
+        ("org-es-pastebin-db"
+         :base-directory "~/Dropbox/org/es/"
+         :base-extension "org"
+         :publishing-directory "/ssh:hinmanph@writequit:~/public_html/wq/paste/org/"
+         :publishing-function org-html-publish-to-html
+         ;; :exclude "PrivatePage.org"   ;; regexp
+         ;; :headline-levels 3
+         ;; :section-numbers nil
+         :with-toc t
+         ;; :html-head "<link rel=\"stylesheet\"
+         ;;               href=\"../other/mystyle.css\" type=\"text/css\"/>"
+         :html-preamble t)))
 
 (setq tls-program
       '("openssl s_client -connect %h:%p -no_ssl2 -ign_eof -cert ~/host.pem"
@@ -1902,7 +1945,13 @@ passed in. Also supports ignoring the msg at the point."
   :config
   (progn
     (setq anzu-mode-lighter "")
-    (set-face-attribute 'anzu-mode-line nil :foreground "yellow")))
+    (set-face-attribute 'anzu-mode-line nil :foreground "yellow")
+    ;; The "refactor" button
+    (use-package thingatpt
+      :init (global-set-key [(f6)] 'anzu-query-replace-at-cursor-thing))
+    ;; Replace with anzu versions
+    (global-set-key (kbd "M-%") 'anzu-query-replace-regexp)
+    (global-set-key (kbd "C-M-%") 'anzu-query-replace)))
 
 (defun isearch-yank-symbol ()
   (interactive)
@@ -2459,3 +2508,4 @@ Deletes whitespace at join."
                 text))))
 
 (global-set-key (kbd "C-c d") 'my/search-es-docs)
+(global-set-key (kbd "C-x d") 'my/search-es-docs)

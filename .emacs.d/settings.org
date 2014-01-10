@@ -1734,6 +1734,58 @@ tasks."
       next-headline)))
 #+END_SRC
 
+** Org-publishing
+Publishing org-mode files to my hosting provider:
+
+Both dropbox and non dropbox are included here, because symlinks suck.
+
+#+BEGIN_SRC emacs-lisp
+(setq org-publish-project-alist
+      '(("emacs dotfiles"
+         :base-directory "~/.emacs.d/"
+         :base-extension "org"
+         :publishing-directory "/ssh:hinmanph@writequit:~/public_html/wq/paste/org/"
+         :publishing-function org-html-publish-to-html
+         :with-toc t
+         :html-preamble t)
+        ("org-pastebin"
+         :base-directory "~/org/"
+         :base-extension "org"
+         :publishing-directory "/ssh:hinmanph@writequit:~/public_html/wq/paste/org/"
+         :publishing-function org-html-publish-to-html
+         :with-toc t
+         :html-preamble t)
+        ("org-pastebin-db"
+         :base-directory "~/Dropbox/org/"
+         :base-extension "org"
+         :publishing-directory "/ssh:hinmanph@writequit:~/public_html/wq/paste/org/"
+         :publishing-function org-html-publish-to-html
+         :with-toc t
+         :html-preamble t)
+        ("org-es-pastebin"
+         :base-directory "~/org/es/"
+         :base-extension "org"
+         :publishing-directory "/ssh:hinmanph@writequit:~/public_html/wq/paste/org/"
+         :publishing-function org-html-publish-to-html
+         :with-toc t
+         :html-preamble t)
+        ("org-es-pastebin-db"
+         :base-directory "~/Dropbox/org/es/"
+         :base-extension "org"
+         :publishing-directory "/ssh:hinmanph@writequit:~/public_html/wq/paste/org/"
+         :publishing-function org-html-publish-to-html
+         ;; :exclude "PrivatePage.org"   ;; regexp
+         ;; :headline-levels 3
+         ;; :section-numbers nil
+         :with-toc t
+         ;; :html-head "<link rel=\"stylesheet\"
+         ;;               href=\"../other/mystyle.css\" type=\"text/css\"/>"
+         :html-preamble t)))
+#+END_SRC
+
+Then, when I'm editing ~/org/es/feature-foo.org, I can hit =C-c C-e P f= and
+export the file to show up in http://p.writequit.org/org
+
 ** ERC Configuration
 ERC (IRC) configuration, requires the ERC package
 

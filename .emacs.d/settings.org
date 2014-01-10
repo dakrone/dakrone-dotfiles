@@ -3240,4 +3240,5 @@ A function to search/browse ES docs from Emacs using =eww=
                 text))))
 
 (global-set-key (kbd "C-c d") 'my/search-es-docs)
+(global-set-key (kbd "C-x d") 'my/search-es-docs)
 #+END_SRC

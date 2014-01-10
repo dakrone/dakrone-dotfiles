@@ -2542,21 +2542,35 @@ I basically use this to start up ES when I need to test something really quickly
 #+END_SRC
 
 ** Anzu
+Anzu shows the number of search hits in the modeline, which is handy.
+
+It can also be used for a "refactor-like" thing similar to query-replace.
 
 #+BEGIN_SRC emacs-lisp
-   (use-package anzu
-     :init (global-anzu-mode t)
-     :config
-     (progn
-       (setq anzu-mode-lighter "")
-       (set-face-attribute 'anzu-mode-line nil :foreground "yellow")))
-
-   (defun isearch-yank-symbol ()
-     (interactive)
-     (isearch-yank-internal (lambda () (forward-symbol 1) (point))))
-
-   (define-key isearch-mode-map (kbd "C-M-w") 'isearch-yank-symbol)
+(use-package anzu
+  :init (global-anzu-mode t)
+  :config
+  (progn
+    (setq anzu-mode-lighter "")
+    (set-face-attribute 'anzu-mode-line nil :foreground "yellow")
+    ;; The "refactor" button
+    (use-package thingatpt
+      :init (global-set-key [(f6)] 'anzu-query-replace-at-cursor-thing))
+    ;; Replace with anzu versions
+    (global-set-key (kbd "M-%") 'anzu-query-replace-regexp)
+    (global-set-key (kbd "C-M-%") 'anzu-query-replace)))
 #+END_SRC
+
+Also, add a thing for yanking the entire symbol into the query while searching:
+
+#+BEGIN_SRC emacs-lisp
+(defun isearch-yank-symbol ()
+  (interactive)
+  (isearch-yank-internal (lambda () (forward-symbol 1) (point))))
+
+(define-key isearch-mode-map (kbd "C-M-w") 'isearch-yank-symbol)
+#+END_SRC
+
 ** Helm
 
 There are many helm things.

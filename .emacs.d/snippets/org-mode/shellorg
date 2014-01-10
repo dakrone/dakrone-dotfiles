@@ -43,5 +43,6 @@ curl -XPOST 'localhost:9200/$2/_search?pretty' -d'
 {
   "query": {
     "match_all": {}
+  }
 }'
 #+END_SRC

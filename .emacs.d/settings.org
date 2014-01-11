@@ -1143,6 +1143,8 @@ settings are mine.
           org-src-fontify-natively t
           org-completion-use-ido t
           org-edit-src-content-indentation 0
+          ;; Imenu should use 3 depth instead of 2
+          org-imenu-depth 3
           org-agenda-start-on-weekday nil
           ;; Use sticky agenda's so they persist
           org-agenda-sticky t
@@ -1745,36 +1747,50 @@ Both dropbox and non dropbox are included here, because symlinks suck.
 (setq org-publish-project-alist
       '(("emacs dotfiles"
          :base-directory "~/.emacs.d/"
-         :base-extension "org"
+         :base-extension "org\\|zsh\\|html"
          :publishing-directory "/ssh:hinmanph@writequit:~/public_html/wq/paste/org/"
          :publishing-function org-html-publish-to-html
          :with-toc t
          :html-preamble t)
         ("org-pastebin"
          :base-directory "~/org/"
-         :base-extension "org"
+         :base-extension "org\\|zsh\\|html"
          :publishing-directory "/ssh:hinmanph@writequit:~/public_html/wq/paste/org/"
          :publishing-function org-html-publish-to-html
          :with-toc t
          :html-preamble t)
         ("org-pastebin-db"
          :base-directory "~/Dropbox/org/"
-         :base-extension "org"
+         :base-extension "org\\|zsh\\|html"
          :publishing-directory "/ssh:hinmanph@writequit:~/public_html/wq/paste/org/"
          :publishing-function org-html-publish-to-html
          :with-toc t
          :html-preamble t)
         ("org-es-pastebin"
          :base-directory "~/org/es/"
-         :base-extension "org"
+         :base-extension "org\\|zsh\\|html"
          :publishing-directory "/ssh:hinmanph@writequit:~/public_html/wq/paste/org/"
          :publishing-function org-html-publish-to-html
          :with-toc t
          :html-preamble t)
         ("org-es-pastebin-db"
          :base-directory "~/Dropbox/org/es/"
-         :base-extension "org"
+         :base-extension "org\\|zsh\\|html"
          :publishing-directory "/ssh:hinmanph@writequit:~/public_html/wq/paste/org/"
+         :publishing-function org-html-publish-to-html
+         :with-toc t
+         :html-preamble t)
+        ("org-book-pastebin"
+         :base-directory "~/org/book/"
+         :base-extension "org\\|zsh\\|html"
+         :publishing-directory "/ssh:hinmanph@writequit:~/public_html/wq/paste/org/book/"
+         :publishing-function org-html-publish-to-html
+         :with-toc t
+         :html-preamble t)
+        ("org-book-pastebin-db"
+         :base-directory "~/Dropbox/org/book/"
+         :base-extension "org\\|zsh\\|html"
+         :publishing-directory "/ssh:hinmanph@writequit:~/public_html/wq/paste/org/book/"
          :publishing-function org-html-publish-to-html
          ;; :exclude "PrivatePage.org"   ;; regexp
          ;; :headline-levels 3

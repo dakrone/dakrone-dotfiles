@@ -2,7 +2,7 @@ confdir /usr/local/etc/privoxy
 logdir /usr/local/var/log/privoxy
 logfile privoxy.log
 #hostname hostname.example.org
-listen-address  127.0.0.1:8228
+listen-address  127.0.0.1:8118
 toggle  1
 enable-remote-toggle  0
 enable-remote-http-toggle  0
@@ -23,7 +23,7 @@ max-client-connections 256
 
 # To chain Privoxy and Tor, both running on the same system:
 # forward-socks5   /               127.0.0.1:9050 .
-
+forward / localhost:8123
 #
 #  2.4. actionsfile
 #  =================
@@ -72,4 +72,3 @@ debug 4096
 #debug  1024 # Actions that are applied to all sites and maybe overruled later on.
 #debug  4096 # Startup banner and warnings
 #debug  8192 # Non-fatal errors
-

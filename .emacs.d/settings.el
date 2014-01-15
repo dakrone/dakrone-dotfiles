@@ -1881,11 +1881,6 @@ passed in. Also supports ignoring the msg at the point."
                 (global-set-key (kbd "C-c C-n") 'flycheck-tip-cycle)
                 (global-set-key (kbd "C-c C-p") 'flycheck-tip-cycle-reverse)))))
 
-(use-package google-this
-  :init
-  (progn
-    (defun google-url () (concat "https://duckduckgo.com/?q=%s"))))
-
 (use-package expand-region
   :config (progn (global-set-key (kbd "C-c e") 'er/expand-region)
                  (global-set-key (kbd "C-M-@") 'er/contract-region)))

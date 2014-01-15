@@ -43,7 +43,7 @@
     ssh-config-mode
 
     ;; flycheck
-    flycheck flycheck-tip google-this
+    flycheck flycheck-tip
 
     ;; clojure
     clojure-mode cider paredit parenface kibit-mode clojure-test-mode

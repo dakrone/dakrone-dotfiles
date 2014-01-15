@@ -389,6 +389,7 @@
     (set-auto-complete-as-completion-at-point-function)))
 
 (use-package cider
+  :defer t
   :config
   (progn
     (add-hook 'cider-mode-hook 'setup-clojure-cider)

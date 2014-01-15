@@ -778,6 +778,7 @@ And then finally use them if cider and ac-nrepl packages are available:
 
 #+BEGIN_SRC emacs-lisp
 (use-package cider
+  :defer t
   :config
   (progn
     (add-hook 'cider-mode-hook 'setup-clojure-cider)

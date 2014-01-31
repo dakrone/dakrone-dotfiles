@@ -3,14 +3,28 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(ansi-color-faces-vector [default bold shadow italic underline bold bold-italic bold])
- '(ansi-color-names-vector ["#242424" "#e5786d" "#95e454" "#cae682" "#8ac6f2" "#333366" "#ccaa8f" "#f6f3e8"])
+ '(ansi-color-faces-vector
+   [default bold shadow italic underline bold bold-italic bold])
+ '(ansi-color-names-vector
+   ["#242424" "#e5786d" "#95e454" "#cae682" "#8ac6f2" "#333366" "#ccaa8f" "#f6f3e8"])
  '(compilation-scroll-output t)
  '(compilation-skip-threshold 2)
- '(custom-safe-themes (quote ("fc6e906a0e6ead5747ab2e7c5838166f7350b958d82e410257aeeb2820e8a07a" default)))
+ '(custom-safe-themes
+   (quote
+    ("fc6e906a0e6ead5747ab2e7c5838166f7350b958d82e410257aeeb2820e8a07a" default)))
  '(delete-selection-mode t)
  '(org-export-backends (quote (ascii html icalendar latex md)))
- '(org-modules (quote (org-bbdb org-bibtex org-docview org-gnus org-habit org-info org-irc org-mhe org-rmail org-w3m)))
+ '(org-modules
+   (quote
+    (org-bbdb org-bibtex org-docview org-gnus org-habit org-info org-irc org-mhe org-rmail org-w3m)))
+ '(safe-local-variable-values
+   (quote
+    ((fill-column 140)
+     (whitespace-line-column 140)
+     (tab-width 4)
+     (c-basic-offset 2)
+     (c-basic-offset 4)
+     (tab-width 2))))
  '(sp-cancel-autoskip-on-backward-movement nil)
  '(yas/prompt-functions (quote (my-yas/prompt))))
 (custom-set-faces

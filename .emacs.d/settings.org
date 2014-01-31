@@ -918,7 +918,34 @@ Not much to say about ruby, although I may add to this in the future.
 *** Java
 Java uses eclim to make life at least a little bit livable.
 
+=eclipse-java-style= is the same as the "java" style (copied from cc-styles.el)
+with the addition of (arglist-cont-nonempty . ++) to c-offsets-alist to make it
+more like default Eclipse formatting -- function arguments starting on a new
+line are indented by 8 characters (++ = 2 x normal offset) rather than lined up
+with the arguments on the previous line
+
 #+BEGIN_SRC emacs-lisp
+(defconst eclipse-java-style
+  '((c-basic-offset . 4)
+    (c-comment-only-line-offset . (0 . 0))
+    ;; the following preserves Javadoc starter lines
+    (c-offsets-alist . ((inline-open . 0)
+                        (topmost-intro-cont    . +)
+                        (statement-block-intro . +)
+                        (knr-argdecl-intro     . 5)
+                        (substatement-open     . +)
+                        (substatement-label    . +)
+                        (label                 . +)
+                        (statement-case-open   . +)
+                        (statement-cont        . +)
+                        (arglist-intro  . c-lineup-arglist-intro-after-paren)
+                        (arglist-close  . c-lineup-arglist)
+                        (access-label   . 0)
+                        (inher-cont     . c-lineup-java-inher)
+                        (func-decl-cont . c-lineup-java-throws)
+                        (arglist-cont-nonempty . ++))))
+  "Eclipse Java Programming Style")
+
 (add-hook
  'java-mode-hook
  (lambda ()
@@ -926,22 +953,22 @@ Java uses eclim to make life at least a little bit livable.
      :init (global-eclim-mode)
      :config (use-package ac-emacs-eclim-source
                :init (ac-emacs-eclim-config)))
-   (setq tab-width 4)
-   (setq whitespace-line-column 180)))
-#+END_SRC
-
-Some malabar stuff if needed:
-
-#+BEGIN_SRC emacs-lisp
-(use-package malabar-mode
-  :disabled t
-  :init (add-to-list 'auto-mode-alist '("\\.java\\'" . malabar-mode))
-  :config
-  (progn
-    (use-package cedet)
-    (use-package semantic)
-    (load "semantic/loaddefs.el")
-    (semantic-mode 1)))
+   ;; Malabar things
+   (use-package malabar-mode
+     :init (add-to-list 'auto-mode-alist '("\\.java\\'" . malabar-mode))
+     :config
+     (progn
+       (use-package cedet)
+       (use-package semantic)
+       (load "semantic/loaddefs.el")
+       (semantic-mode 1)))
+   ;; Generic java stuff things
+   (setq whitespace-line-column 140)
+   (c-add-style "ECLIPSE" eclipse-java-style)
+   (customize-set-variable 'c-default-style
+                           (quote ((java-mode . "eclipse")
+                                   (awk-mode . "awk")
+                                   (other . "gnu"))))))
 #+END_SRC
 
 *** Haskell

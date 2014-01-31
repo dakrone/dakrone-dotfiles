@@ -2551,17 +2551,16 @@ I basically use this to start up ES when I need to test something really quickly
   :config
   (progn
     (prodigy-define-service
-     :name "Elasticsearch 1.0"
-     :cwd "~/esi/elasticsearch-1.0.0.Beta2/"
-     :command "~/esi/elasticsearch-1.0.0.Beta2/bin/elasticsearch"
-     :args '("-f")
+     :name "Elasticsearch 1.0 RC1"
+     :cwd "~/esi/elasticsearch-1.0.0.RC1/"
+     :command "~/esi/elasticsearch-1.0.0.RC1/bin/elasticsearch"
      :tags '(work test es)
      :port 9200)
 
     (prodigy-define-service
-     :name "Elasticsearch 0.90.x"
-     :cwd "~/esi/elasticsearch-0.90.9/"
-     :command "~/esi/elasticsearch-0.90.9/bin/elasticsearch"
+     :name "Elasticsearch 0.90.10"
+     :cwd "~/esi/elasticsearch-0.90.10/"
+     :command "~/esi/elasticsearch-0.90.10/bin/elasticsearch"
      :args '("-f")
      :tags '(work test es)
      :port 9200)))

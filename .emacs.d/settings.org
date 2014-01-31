@@ -2319,6 +2319,7 @@ passed in. Also supports ignoring the msg at the point."
 ** Yascroll
 #+BEGIN_SRC emacs-lisp
 (use-package yascroll
+  :disabled t
   :init (global-yascroll-bar-mode 1)
   :config (add-hook 'org-mode-hook (lambda () (yascroll-bar-mode -1))))
 #+END_SRC

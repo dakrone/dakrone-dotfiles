@@ -13,7 +13,7 @@
     use-package
 
     ;; themeing
-    rainbow-mode leuven-theme dakrone-theme smart-mode-line
+    rainbow-mode leuven-theme dakrone-theme smart-mode-line color-identifiers-mode
 
     ;; misc
     diminish yagist
@@ -22,7 +22,7 @@
     erc-hl-nicks ercn todochiku twittering-mode
 
     ;; for auto-complete
-    auto-complete fuzzy popup ac-nrepl
+    auto-complete fuzzy popup ac-nrepl company company-cider
 
     ;; editing utilities
     expand-region smex windresize ag undo-tree iedit ido-ubiquitous

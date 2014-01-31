@@ -387,6 +387,7 @@
   (lambda ()
     (define-key cider-mode-map (kbd "C-c C-d")
       'ac-nrepl-popup-doc)
+    (paredit-mode 1)
     (setq cider-history-file "~/.nrepl-history")
     (setq cider-hide-special-buffers t)
     (setq cider-popup-stacktraces-in-repl t)
@@ -399,6 +400,7 @@
     (add-hook 'cider-mode-hook 'setup-clojure-cider)
     (add-hook 'cider-repl-mode-hook 'setup-clojure-cider)
     (use-package ac-nrepl
+      :disabled t
       :config
       (progn
         (add-hook 'cider-mode-hook 'ac-nrepl-setup)

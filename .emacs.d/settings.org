@@ -2900,6 +2900,9 @@ helpful for documentation buffers and so on.
           popwin:special-display-config)
 
     (push '("*Occur*" :stick t) popwin:special-display-config)
+
+    ;; prodigy
+    (push '("*prodigy*" :stick t) popwin:special-display-config)
     ))
 #+END_SRC
 ** Parenface

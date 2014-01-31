@@ -30,6 +30,9 @@
     smartparens flx-ido projectile smooth-scrolling yascroll keyfreq
     lusty-explorer discover prodigy
 
+    ;; LaTeX
+    auctex
+
     ;; org-mode
     org htmlize gnuplot-mode gnuplot
 

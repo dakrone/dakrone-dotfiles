@@ -334,6 +334,7 @@ Turn on auto-fill mode in text buffers (like org-mode):
 
 #+BEGIN_SRC emacs-lisp
 (add-hook 'text-mode-hook 'turn-on-auto-fill)
+(add-hook 'org-mode-hook 'turn-on-auto-fill)
 #+END_SRC
 
 Set the internal calculator not to go to scientific form quite so quickly:

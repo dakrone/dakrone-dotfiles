@@ -126,6 +126,7 @@
 (setq diff-switches "-u")
 
 (add-hook 'text-mode-hook 'turn-on-auto-fill)
+(add-hook 'org-mode-hook 'turn-on-auto-fill)
 
 (setq calc-display-sci-low -5)
 

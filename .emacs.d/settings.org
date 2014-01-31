@@ -2796,6 +2796,21 @@ Standard auto-completion configuration
     (define-key ac-complete-mode-map (kbd "C-s") 'ac-isearch)
     (define-key ac-completing-map (kbd "<tab>") 'ac-complete)))
 #+END_SRC
+
+Same, but with company-mode
+
+#+BEGIN_SRC emacs-lisp
+(use-package company
+  :defer t
+  :diminish company-mode
+  :init (add-hook 'after-init-hook 'global-company-mode)
+  :config
+  ;; Tiny delay before completion
+  (setq company-idle-delay 0.1
+        ;; min prefix of 2 chars
+        company-minimum-prefix-length 2))
+#+END_SRC
+
 ** Smart-tab
 Used smart-tab to complete everywhere except for ERC, shell and mu4e.
 

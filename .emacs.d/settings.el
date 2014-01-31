@@ -480,6 +480,27 @@
   :mode (("\\.\\(rb\\|gemspec\\|ru\\|\\)\\'" . ruby-mode)
          ("\\(Rakefile\\|Gemfile\\)\\'" . ruby-mode)))
 
+(defconst eclipse-java-style
+  '((c-basic-offset . 4)
+    (c-comment-only-line-offset . (0 . 0))
+    ;; the following preserves Javadoc starter lines
+    (c-offsets-alist . ((inline-open . 0)
+                        (topmost-intro-cont    . +)
+                        (statement-block-intro . +)
+                        (knr-argdecl-intro     . 5)
+                        (substatement-open     . +)
+                        (substatement-label    . +)
+                        (label                 . +)
+                        (statement-case-open   . +)
+                        (statement-cont        . +)
+                        (arglist-intro  . c-lineup-arglist-intro-after-paren)
+                        (arglist-close  . c-lineup-arglist)
+                        (access-label   . 0)
+                        (inher-cont     . c-lineup-java-inher)
+                        (func-decl-cont . c-lineup-java-throws)
+                        (arglist-cont-nonempty . ++))))
+  "Eclipse Java Programming Style")
+
 (add-hook
  'java-mode-hook
  (lambda ()
@@ -487,18 +508,22 @@
      :init (global-eclim-mode)
      :config (use-package ac-emacs-eclim-source
                :init (ac-emacs-eclim-config)))
-   (setq tab-width 4)
-   (setq whitespace-line-column 180)))
-
-(use-package malabar-mode
-  :disabled t
-  :init (add-to-list 'auto-mode-alist '("\\.java\\'" . malabar-mode))
-  :config
-  (progn
-    (use-package cedet)
-    (use-package semantic)
-    (load "semantic/loaddefs.el")
-    (semantic-mode 1)))
+   ;; Malabar things
+   (use-package malabar-mode
+     :init (add-to-list 'auto-mode-alist '("\\.java\\'" . malabar-mode))
+     :config
+     (progn
+       (use-package cedet)
+       (use-package semantic)
+       (load "semantic/loaddefs.el")
+       (semantic-mode 1)))
+   ;; Generic java stuff things
+   (setq whitespace-line-column 140)
+   (c-add-style "ECLIPSE" eclipse-java-style)
+   (customize-set-variable 'c-default-style
+                           (quote ((java-mode . "eclipse")
+                                   (awk-mode . "awk")
+                                   (other . "gnu"))))))
 
 (use-package haskell-mode
   :mode ("\\.\\(hs\\|hi\\|gs\\)\\'" . haskell-mode)
@@ -540,6 +565,7 @@
 (defalias 'javascript-generic-mode 'js-mode)
 (add-to-list 'auto-mode-alist '("\\.js$" . js-mode))
 (setq-default js-auto-indent-flag nil)
+(setq-default js-indent-level 2)
 
 (global-auto-revert-mode 1)
 
@@ -1735,6 +1761,7 @@ passed in. Also supports ignoring the msg at the point."
         (set-face-background 'mu4e-header-highlight-face "#e0e0e0")))))
 
 (use-package yascroll
+  :disabled t
   :init (global-yascroll-bar-mode 1)
   :config (add-hook 'org-mode-hook (lambda () (yascroll-bar-mode -1))))
 
@@ -1924,17 +1951,16 @@ passed in. Also supports ignoring the msg at the point."
   :config
   (progn
     (prodigy-define-service
-     :name "Elasticsearch 1.0"
-     :cwd "~/esi/elasticsearch-1.0.0.Beta2/"
-     :command "~/esi/elasticsearch-1.0.0.Beta2/bin/elasticsearch"
-     :args '("-f")
+     :name "Elasticsearch 1.0 RC1"
+     :cwd "~/esi/elasticsearch-1.0.0.RC1/"
+     :command "~/esi/elasticsearch-1.0.0.RC1/bin/elasticsearch"
      :tags '(work test es)
      :port 9200)
 
     (prodigy-define-service
-     :name "Elasticsearch 0.90.x"
-     :cwd "~/esi/elasticsearch-0.90.9/"
-     :command "~/esi/elasticsearch-0.90.9/bin/elasticsearch"
+     :name "Elasticsearch 0.90.10"
+     :cwd "~/esi/elasticsearch-0.90.10/"
+     :command "~/esi/elasticsearch-0.90.10/bin/elasticsearch"
      :args '("-f")
      :tags '(work test es)
      :port 9200)))
@@ -2123,6 +2149,7 @@ passed in. Also supports ignoring the msg at the point."
         ("fn"   "^\\[\\^\\(.+?\\)\\]" 1) ))))
 
 (use-package auto-complete
+  :disabled t
   :defer t
   :init (progn
           (use-package popup)
@@ -2138,6 +2165,16 @@ passed in. Also supports ignoring the msg at the point."
     (define-key ac-complete-mode-map (kbd "M-p") 'ac-previous)
     (define-key ac-complete-mode-map (kbd "C-s") 'ac-isearch)
     (define-key ac-completing-map (kbd "<tab>") 'ac-complete)))
+
+(use-package company
+  :defer t
+  :diminish company-mode
+  :init (add-hook 'after-init-hook 'global-company-mode)
+  :config
+  ;; Tiny delay before completion
+  (setq company-idle-delay 0.1
+        ;; min prefix of 2 chars
+        company-minimum-prefix-length 2))
 
 (use-package smart-tab
   :diminish smart-tab-mode
@@ -2214,6 +2251,9 @@ passed in. Also supports ignoring the msg at the point."
           popwin:special-display-config)
 
     (push '("*Occur*" :stick t) popwin:special-display-config)
+
+    ;; prodigy
+    (push '("*prodigy*" :stick t) popwin:special-display-config)
     ))
 
 (use-package parenface
@@ -2264,6 +2304,15 @@ passed in. Also supports ignoring the msg at the point."
   :config
   (progn
     (global-set-key (kbd "C-c C-c M-x") 'execute-extended-command)))
+
+(use-package color-identifiers-mode
+  :init
+  (progn
+    (add-hook 'emacs-lisp-mode-hook 'color-identifiers-mode)
+    (add-hook 'python-mode-hook 'color-identifiers-mode)
+    (add-hook 'ruby-mode-hook 'color-identifiers-mode)
+    (add-hook 'js-mode-hook 'color-identifiers-mode)
+    (add-hook 'js2-mode-hook 'color-identifiers-mode)))
 
 (use-package discover
   :disabled t

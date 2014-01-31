@@ -266,8 +266,11 @@
      (define-key doc-view-mode-map (kbd "k")
        'doc-view-previous-line-or-previous-page)))
 
-(global-set-key (kbd "C-M-n") 'View-scroll-half-page-forward)
-(global-set-key (kbd "C-M-p") 'View-scroll-half-page-backward)
+(use-package view
+  :init
+  (progn
+    (global-set-key (kbd "C-M-n") 'View-scroll-half-page-forward)
+    (global-set-key (kbd "C-M-p") 'View-scroll-half-page-backward)))
 
 (use-package dired
   :defer t

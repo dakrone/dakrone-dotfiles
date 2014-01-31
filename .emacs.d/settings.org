@@ -584,10 +584,12 @@ Set up the keybindings to be like better viewers:
 I actually like half-page scrolling everywhere also:
 
 #+BEGIN_SRC emacs-lisp
-(global-set-key (kbd "C-M-n") 'View-scroll-half-page-forward)
-(global-set-key (kbd "C-M-p") 'View-scroll-half-page-backward)
+(use-package view
+  :init
+  (progn
+    (global-set-key (kbd "C-M-n") 'View-scroll-half-page-forward)
+    (global-set-key (kbd "C-M-p") 'View-scroll-half-page-backward)))
 #+END_SRC
-
 
 *** Dired
 Dired is sweet, I require =dired-x= also so I can hit =C-x C-j=

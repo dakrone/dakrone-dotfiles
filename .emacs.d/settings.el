@@ -763,6 +763,12 @@
        (python . t)
        (gnuplot . t)))
 
+    ;; Allow executing es-mode files (https://github.com/dakrone/es-mode)
+    (defun org-babel-execute:es (body params)
+      "Execute a block of ES code with org-babel."
+      (message "executing ES source code block")
+      (org-babel-eval "/bin/sh" body))
+
     ;; Use cider as the clojure backend
     (setq org-babel-clojure-backend 'cider)
 

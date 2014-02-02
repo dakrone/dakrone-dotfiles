@@ -16,7 +16,7 @@
     rainbow-mode leuven-theme dakrone-theme smart-mode-line color-identifiers-mode
 
     ;; misc
-    diminish yagist
+    diminish yagist es-mode
 
     ;; IRC/ERC and social stuff
     erc-hl-nicks ercn todochiku twittering-mode

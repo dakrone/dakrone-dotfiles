@@ -2989,13 +2989,7 @@ immediately use Twitter :P
 ** Color-identifiers-mode
 #+BEGIN_SRC emacs-lisp
 (use-package color-identifiers-mode
-  :init
-  (progn
-    (add-hook 'emacs-lisp-mode-hook 'color-identifiers-mode)
-    (add-hook 'python-mode-hook 'color-identifiers-mode)
-    (add-hook 'ruby-mode-hook 'color-identifiers-mode)
-    (add-hook 'js-mode-hook 'color-identifiers-mode)
-    (add-hook 'js2-mode-hook 'color-identifiers-mode)))
+  :init (global-color-identifiers-mode))
 #+END_SRC
 
 ** Discover

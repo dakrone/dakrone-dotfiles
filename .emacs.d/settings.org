@@ -3319,7 +3319,7 @@ Used more often than you'd think...
       (interactive)
       (insert "ಠ_ಠ"))
 
-    (global-set-key (kbd "C-c M-d") 'My/insert-lod)
+    (global-set-key (kbd "C-c M-d") 'my/insert-lod)
 #+END_SRC
 *** Browse Elasticsearch documentation
 A function to search/browse ES docs from Emacs using =eww=

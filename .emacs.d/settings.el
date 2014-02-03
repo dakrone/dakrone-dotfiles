@@ -2568,7 +2568,7 @@ Deletes whitespace at join."
   (interactive)
   (insert "ಠ_ಠ"))
 
-(global-set-key (kbd "C-c M-d") 'My/insert-lod)
+(global-set-key (kbd "C-c M-d") 'my/insert-lod)
 
 (defun my/search-es-docs (text)
   "Search ES docs for `text'."

@@ -388,9 +388,10 @@
     (define-key cider-mode-map (kbd "C-c C-d")
       'ac-nrepl-popup-doc)
     (paredit-mode 1)
-    (setq cider-history-file "~/.nrepl-history")
-    (setq cider-hide-special-buffers t)
-    (setq cider-popup-stacktraces-in-repl t)
+    (setq cider-history-file "~/.nrepl-history"
+          cider-hide-special-buffers t
+          cider-repl-history-size 10000
+          cider-popup-stacktraces-in-repl t)
     (set-auto-complete-as-completion-at-point-function)))
 
 (use-package cider
@@ -691,14 +692,23 @@
             ("INPROGRESS"  . (:foreground "cyan" :weight bold))
             ("NEEDSREVIEW" . (:foreground "#edd400" :weight bold)))
           org-agenda-files '("~/org/todo.org" "~/org/notes.org"
-                             "~/org/journal.org" "~/org/work.org"
-                             "~/org/refile.org" "~/org/meetings.org")
+                             "~/org/journal.org" "~/org/refile.org"
+                             "~/org/meetings.org")
           ;; org-agenda-files (directory-files "~/org" t ".*\.org")
           org-refile-targets `((,(concat "~/org/todo.org") . (:level . 1))
                                (,(concat "~/org/notes.org") . (:level . 1)))
           org-capture-templates
           '(("t" "Todo" entry (file+headline "~/org/todo.org" "Unsorted")
-             "* TODO %?\n%U\n")
+             "* TODO %?\n")
+            ("e" "ES Todo" entry (file+headline "~/org/todo.org" "Elasticsearch")
+             "* TODO %? :work:\n")
+            ("o" "OSS Todo" entry (file+headline "~/org/todo.org"
+                                                 "Open Source Software")
+             "* TODO %? :oss:\n")
+            ("h" "Home Todo" entry (file+headline "~/org/todo.org" "Home")
+             "* TODO %? :home:\n")
+            ("b" "Book Todo" entry (file+headline "~/org/todo.org" "Book")
+             "* TODO %? :book:\n")
             ("n" "Notes" entry (file+headline "~/org/notes.org" "Notes")
              "* %? :NOTE:\n%U\n")
             ("j" "Journal" entry (file+datetree "~/org/journal.org")
@@ -779,12 +789,12 @@
     (setq org-babel-default-header-args
           (cons '(:noweb . "yes")
                 (assq-delete-all :noweb org-babel-default-header-args)))
-    (setq org-babel-default-header-args
-          (cons '(:results . "code")
-                (assq-delete-all :noweb org-babel-default-header-args)))
+    ;; (setq org-babel-default-header-args
+    ;;       (cons '(:results . "code")
+    ;;             (assq-delete-all :results org-babel-default-header-args)))
     (setq org-babel-default-header-args
           (cons '(:exports . "both")
-                (assq-delete-all :noweb org-babel-default-header-args)))
+                (assq-delete-all :exports org-babel-default-header-args)))
 
     ;; ensure this variable is defined defined
     (unless (boundp 'org-babel-default-header-args:sh)
@@ -2178,9 +2188,9 @@ passed in. Also supports ignoring the msg at the point."
   :init (add-hook 'after-init-hook 'global-company-mode)
   :config
   ;; Tiny delay before completion
-  (setq company-idle-delay 0.1
-        ;; min prefix of 2 chars
-        company-minimum-prefix-length 2))
+  (setq company-idle-delay 0.2
+        ;; min prefix of 3 chars
+        company-minimum-prefix-length 3))
 
 (use-package smart-tab
   :diminish smart-tab-mode

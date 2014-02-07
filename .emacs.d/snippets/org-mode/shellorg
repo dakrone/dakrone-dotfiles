@@ -8,11 +8,12 @@
 #+OPTIONS:  skip:nil d:(HIDE) tags:not-in-toc
 #+PROPERTY: header-args :results code :exports both :noweb yes
 #+HTML_HEAD: <style type="text/css"> body {margin-right:15%; margin-left:15%;} </style>
+#+HTML_HEAD: <style> pre.src {background-color: #202020; color: #eeeeee;} </style>
 #+LANGUAGE: en
 
 * Create the index
 
-#+BEGIN_SRC sh :tangle `(file-name-base (buffer-name))`.zsh
+#+BEGIN_SRC es :tangle `(file-name-base (buffer-name))`.zsh
 curl -XDELETE 'localhost:9200/${2:thing}'
 echo
 curl -XPOST 'localhost:9200/$2' -d'{
@@ -29,7 +30,7 @@ echo
 
 * Index docs
 
-#+BEGIN_SRC sh :tangle `(file-name-base (buffer-name))`.zsh
+#+BEGIN_SRC es :tangle `(file-name-base (buffer-name))`.zsh
 curl -XPOST 'localhost:9200/$2/doc/1' -d'{"body": "foo"}'
 echo
 curl -XPOST 'localhost:9200/$2/_refresh'
@@ -38,7 +39,7 @@ echo
 
 * Query
 
-#+BEGIN_SRC sh :tangle `(file-name-base (buffer-name))`.zsh
+#+BEGIN_SRC es :tangle `(file-name-base (buffer-name))`.zsh
 curl -XPOST 'localhost:9200/$2/_search?pretty' -d'
 {
   "query": {

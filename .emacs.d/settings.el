@@ -115,6 +115,7 @@
 (whitespace-mode t)
 
 (set-default 'indicate-empty-lines t)
+(setq show-trailing-whitespace t)
 
 (set-default 'imenu-auto-rescan t)
 
@@ -323,6 +324,8 @@
 (add-hook
  'prog-mode-hook
  (lambda ()
+   (use-package column-marker
+     :init (column-marker-1 80))
    (subword-mode t)))
 
 (use-package idle-highlight-mode
@@ -413,7 +416,7 @@
 (add-hook 'sh-mode-hook
           (lambda ()
             (show-paren-mode -1)
-            (setq whitespace-line-column 180)
+            (setq whitespace-line-column 140)
             (flycheck-mode -1)
             (setq blink-matching-paren nil)))
 
@@ -575,7 +578,7 @@
 
 (when (eq window-system 'ns)
   (set-fontset-font "fontset-default" 'symbol "Monaco")
-  (set-default-font "Anonymous Pro")
+  (set-default-font "Inconsolata")
   (set-face-attribute 'default nil :height 115)
   (set-face-attribute 'fixed-pitch nil :height 115))
 (when (eq window-system 'mac)
@@ -597,7 +600,8 @@
 ;; (defun my-buffer-face-mode-variable ()
 ;; "Set font to a variable width (proportional) fonts in current buffer"
 ;; (interactive)
-;; (setq buffer-face-mode-face '(:family "DejaVu Sans" :height 125 :width semi-condensed))
+;; (setq buffer-face-mode-face
+;;       '(:family "DejaVu Sans" :height 125 :width semi-condensed))
 ;; (buffer-face-mode))
 
 ;; ;; Use monospaced font faces in current buffer
@@ -700,6 +704,11 @@
           (setq sml/mode-width 'full)
           (sml/setup)
           (sml/apply-theme my/background)))
+
+(setq multi-term-program "/usr/localbin/zsh")
+(add-hook 'term-mode-hook
+          (lambda ()
+            (setq term-buffer-maximum-size 10000)))
 
 (use-package org
   :mode ("\\.\\(org\\|org_archive\\|txt\\)$" . org-mode)
@@ -1915,6 +1924,8 @@ passed in. Also supports ignoring the msg at the point."
 
     (define-key sp-keymap (kbd "C-(") 'sp-forward-barf-sexp)
     (define-key sp-keymap (kbd "C-)") 'sp-forward-slurp-sexp)
+    (define-key sp-keymap (kbd "M-(") 'sp-forward-barf-sexp)
+    (define-key sp-keymap (kbd "M-)") 'sp-forward-slurp-sexp)
     (define-key sp-keymap (kbd "C-M-f") 'sp-forward-sexp)
     (define-key sp-keymap (kbd "C-M-b") 'sp-backward-sexp)
     (define-key sp-keymap (kbd "C-M-f") 'sp-forward-sexp)
@@ -2014,16 +2025,16 @@ passed in. Also supports ignoring the msg at the point."
   :config
   (progn
     (prodigy-define-service
-     :name "Elasticsearch 1.0 RC1"
-     :cwd "~/esi/elasticsearch-1.0.0.RC1/"
-     :command "~/esi/elasticsearch-1.0.0.RC1/bin/elasticsearch"
+     :name "Elasticsearch 1.0"
+     :cwd "~/esi/elasticsearch-1.0.0/"
+     :command "~/esi/elasticsearch-1.0.0/bin/elasticsearch"
      :tags '(work test es)
      :port 9200)
 
     (prodigy-define-service
-     :name "Elasticsearch 0.90.10"
-     :cwd "~/esi/elasticsearch-0.90.10/"
-     :command "~/esi/elasticsearch-0.90.10/bin/elasticsearch"
+     :name "Elasticsearch 0.90.11"
+     :cwd "~/esi/elasticsearch-0.90.11/"
+     :command "~/esi/elasticsearch-0.90.11/bin/elasticsearch"
      :args '("-f")
      :tags '(work test es)
      :port 9200)))

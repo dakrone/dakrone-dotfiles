@@ -303,6 +303,7 @@ Indicate trailing empty lines in the GUI:
 
 #+BEGIN_SRC emacs-lisp
 (set-default 'indicate-empty-lines t)
+(setq show-trailing-whitespace t)
 #+END_SRC
 
 Make sure auto automatically rescan for imenu changes:
@@ -687,6 +688,8 @@ on subword mode and idle-highlight-mode:
 (add-hook
  'prog-mode-hook
  (lambda ()
+   (use-package column-marker
+     :init (column-marker-1 80))
    (subword-mode t)))
 
 (use-package idle-highlight-mode
@@ -808,7 +811,7 @@ it!) as well as not blinking the matching paren.
 (add-hook 'sh-mode-hook
           (lambda ()
             (show-paren-mode -1)
-            (setq whitespace-line-column 180)
+            (setq whitespace-line-column 140)
             (flycheck-mode -1)
             (setq blink-matching-paren nil)))
 
@@ -1062,7 +1065,7 @@ Misc settings for fonts, depending on the OS:
 #+BEGIN_SRC emacs-lisp
 (when (eq window-system 'ns)
   (set-fontset-font "fontset-default" 'symbol "Monaco")
-  (set-default-font "Anonymous Pro")
+  (set-default-font "Inconsolata")
   (set-face-attribute 'default nil :height 115)
   (set-face-attribute 'fixed-pitch nil :height 115))
 (when (eq window-system 'mac)
@@ -1084,7 +1087,8 @@ Misc settings for fonts, depending on the OS:
 ;; (defun my-buffer-face-mode-variable ()
 ;; "Set font to a variable width (proportional) fonts in current buffer"
 ;; (interactive)
-;; (setq buffer-face-mode-face '(:family "DejaVu Sans" :height 125 :width semi-condensed))
+;; (setq buffer-face-mode-face
+;;       '(:family "DejaVu Sans" :height 125 :width semi-condensed))
 ;; (buffer-face-mode))
 
 ;; ;; Use monospaced font faces in current buffer
@@ -1204,6 +1208,14 @@ to switch between as needed:
           (sml/apply-theme my/background)))
 #+END_SRC
 
+** Terminal (multi-term) settings
+#+BEGIN_SRC emacs-lisp
+(setq multi-term-program "/usr/localbin/zsh")
+(add-hook 'term-mode-hook
+          (lambda ()
+            (setq term-buffer-maximum-size 10000)))
+#+END_SRC
+
 ** Org-mode
 I use org-mode a ton, so it get's its own page here.
 
@@ -1308,6 +1320,8 @@ settings are mine.
 
     (add-hook 'org-mode-hook
               (lambda ()
+                (use-package column-marker
+                  :init (column-marker-1 80))
                 (define-key org-mode-map [C-tab] 'other-window)
                 (define-key org-mode-map [C-S-tab]
                   (lambda ()
@@ -2381,14 +2395,6 @@ passed in. Also supports ignoring the msg at the point."
         (set-face-background 'mu4e-header-highlight-face "#e0e0e0")))))
 #+END_SRC
 
-** Yascroll
-#+BEGIN_SRC emacs-lisp
-(use-package yascroll
-  :disabled t
-  :init (global-yascroll-bar-mode 1)
-  :config (add-hook 'org-mode-hook (lambda () (yascroll-bar-mode -1))))
-#+END_SRC
-
 ** Ace-jump-mode
 #+BEGIN_SRC emacs-lisp
 (use-package ace-jump-mode
@@ -2501,6 +2507,8 @@ And some niceties to allow choosing a snippet using helm:
 
     (define-key sp-keymap (kbd "C-(") 'sp-forward-barf-sexp)
     (define-key sp-keymap (kbd "C-)") 'sp-forward-slurp-sexp)
+    (define-key sp-keymap (kbd "M-(") 'sp-forward-barf-sexp)
+    (define-key sp-keymap (kbd "M-)") 'sp-forward-slurp-sexp)
     (define-key sp-keymap (kbd "C-M-f") 'sp-forward-sexp)
     (define-key sp-keymap (kbd "C-M-b") 'sp-backward-sexp)
     (define-key sp-keymap (kbd "C-M-f") 'sp-forward-sexp)
@@ -2615,16 +2623,16 @@ I basically use this to start up ES when I need to test something really quickly
   :config
   (progn
     (prodigy-define-service
-     :name "Elasticsearch 1.0 RC1"
-     :cwd "~/esi/elasticsearch-1.0.0.RC1/"
-     :command "~/esi/elasticsearch-1.0.0.RC1/bin/elasticsearch"
+     :name "Elasticsearch 1.0"
+     :cwd "~/esi/elasticsearch-1.0.0/"
+     :command "~/esi/elasticsearch-1.0.0/bin/elasticsearch"
      :tags '(work test es)
      :port 9200)
 
     (prodigy-define-service
-     :name "Elasticsearch 0.90.10"
-     :cwd "~/esi/elasticsearch-0.90.10/"
-     :command "~/esi/elasticsearch-0.90.10/bin/elasticsearch"
+     :name "Elasticsearch 0.90.11"
+     :cwd "~/esi/elasticsearch-0.90.11/"
+     :command "~/esi/elasticsearch-0.90.11/bin/elasticsearch"
      :args '("-f")
      :tags '(work test es)
      :port 9200)))
@@ -3011,19 +3019,6 @@ immediately use Twitter :P
          (setq twittering-use-master-password t)))
 #+END_SRC
 
-** Lusty-explorer
-#+BEGIN_SRC emacs-lisp
-(use-package lusty-explorer
-  :disabled t
-  :bind ("C-x C-f" . lusty-file-explorer)
-  :config
-  (progn
-    (add-hook 'lusty-setup-hook
-              (lambda ()
-                (bind-key "SPC" 'lusty-select-match lusty-mode-map)
-                (bind-key "C-d" 'exit-minibuffer lusty-mode-map)))))
-#+END_SRC
-
 ** Ido-vertical-mode
 #+BEGIN_SRC emacs-lisp
 (use-package ido-vertical-mode
@@ -3062,17 +3057,6 @@ immediately use Twitter :P
   :init (global-color-identifiers-mode))
 #+END_SRC
 
-** Discover
-"Discover more of Emacs"
-
-Broken in 24.4, so disabled here.
-
-#+BEGIN_SRC emacs-lisp
-(use-package discover
-  :disabled t
-  :init (global-discover-mode 1))
-#+END_SRC
-
 ** Bindings
 These are miscellaneous bindings used all over the place that don't
 really fit in anywhere else.
@@ -3095,6 +3079,7 @@ really fit in anywhere else.
 (global-set-key (kbd "C-x f") 'projectile-find-file)
 (global-set-key (kbd "C-c C-a") 'helm-ag)
 (global-set-key (kbd "C-x C-u") 'eww)
+(global-set-key (kbd "C-x +") 'balance-windows-area)
 
 ;; M-g mapping
 (global-set-key (kbd "M-g .") 'helm-ag)

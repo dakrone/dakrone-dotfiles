@@ -968,6 +968,9 @@ with the arguments on the previous line
        (semantic-mode 1)))
    ;; Generic java stuff things
    (setq whitespace-line-column 140)
+   (use-package column-marker
+     :init (progn (column-marker-1 140)
+                  (column-marker-2 80)))
    (c-add-style "ECLIPSE" eclipse-java-style)
    (customize-set-variable 'c-default-style
                            (quote ((java-mode . "eclipse")
@@ -1244,8 +1247,8 @@ settings are mine.
           ;; Use sticky agenda's so they persist
           org-agenda-sticky t
           org-cycle-separator-lines 0
-          org-special-ctrl-a/e nil
-          org-special-ctrl-k nil
+          org-special-ctrl-a/e t
+          org-special-ctrl-k t
           org-yank-adjusted-subtrees nil
           ;; Overwrite the current window with the agenda
           org-agenda-window-setup 'current-window

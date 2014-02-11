@@ -523,6 +523,9 @@
        (semantic-mode 1)))
    ;; Generic java stuff things
    (setq whitespace-line-column 140)
+   (use-package column-marker
+     :init (progn (column-marker-1 140)
+                  (column-marker-2 80)))
    (c-add-style "ECLIPSE" eclipse-java-style)
    (customize-set-variable 'c-default-style
                            (quote ((java-mode . "eclipse")
@@ -806,6 +809,8 @@
 
     (add-hook 'org-mode-hook
               (lambda ()
+                (use-package column-marker
+                  :init (column-marker-1 80))
                 (define-key org-mode-map [C-tab] 'other-window)
                 (define-key org-mode-map [C-S-tab]
                   (lambda ()
@@ -1832,11 +1837,6 @@ passed in. Also supports ignoring the msg at the point."
       (when (eq my/background 'light)
         (set-face-background 'mu4e-header-highlight-face "#e0e0e0")))))
 
-(use-package yascroll
-  :disabled t
-  :init (global-yascroll-bar-mode 1)
-  :config (add-hook 'org-mode-hook (lambda () (yascroll-bar-mode -1))))
-
 (use-package ace-jump-mode
   :init (global-set-key (kbd "C-c SPC") 'ace-jump-mode))
 
@@ -2355,16 +2355,6 @@ passed in. Also supports ignoring the msg at the point."
   (progn (setq twittering-icon-mode t)
          (setq twittering-use-master-password t)))
 
-(use-package lusty-explorer
-  :disabled t
-  :bind ("C-x C-f" . lusty-file-explorer)
-  :config
-  (progn
-    (add-hook 'lusty-setup-hook
-              (lambda ()
-                (bind-key "SPC" 'lusty-select-match lusty-mode-map)
-                (bind-key "C-d" 'exit-minibuffer lusty-mode-map)))))
-
 (use-package ido-vertical-mode
   :init (ido-vertical-mode t))
 
@@ -2394,10 +2384,6 @@ passed in. Also supports ignoring the msg at the point."
 (use-package color-identifiers-mode
   :init (global-color-identifiers-mode))
 
-(use-package discover
-  :disabled t
-  :init (global-discover-mode 1))
-
 (global-set-key (kbd "C-M-z")   'helm-resume)
 (global-set-key (kbd "C-x C-r") 'helm-recentf)
 (global-set-key (kbd "C-x M-o") 'helm-occur)
@@ -2415,6 +2401,7 @@ passed in. Also supports ignoring the msg at the point."
 (global-set-key (kbd "C-x f") 'projectile-find-file)
 (global-set-key (kbd "C-c C-a") 'helm-ag)
 (global-set-key (kbd "C-x C-u") 'eww)
+(global-set-key (kbd "C-x +") 'balance-windows-area)
 
 ;; M-g mapping
 (global-set-key (kbd "M-g .") 'helm-ag)

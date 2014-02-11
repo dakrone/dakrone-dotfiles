@@ -941,31 +941,34 @@ with the arguments on the previous line
                         (substatement-label    . +)
                         (label                 . +)
                         (statement-case-open   . +)
-                        (statement-cont        . +)
-                        (arglist-intro  . c-lineup-arglist-intro-after-paren)
-                        (arglist-close  . c-lineup-arglist)
+                        (statement-cont        . ++)
+                        (arglist-intro  . ++)
+                        (arglist-close  . ++)
+                        (arglist-cont-nonempty . ++)
                         (access-label   . 0)
-                        (inher-cont     . c-lineup-java-inher)
-                        (func-decl-cont . c-lineup-java-throws)
-                        (arglist-cont-nonempty . ++))))
+                        (inher-cont     . ++)
+                        (func-decl-cont . ++))))
   "Eclipse Java Programming Style")
+
+(use-package eclim
+  :defer t
+  :config
+  (use-package ac-emacs-eclim-source
+    :init (ac-emacs-eclim-config)))
+
+;; Malabar things
+(use-package malabar-mode
+  :init (add-to-list 'auto-mode-alist '("\\.java$" . malabar-mode))
+  :config
+  (progn
+    (use-package cedet)
+    (use-package semantic)
+    (load "semantic/loaddefs.el")
+    (semantic-mode 1)))
 
 (add-hook
  'java-mode-hook
  (lambda ()
-   (use-package eclim
-     :init (global-eclim-mode)
-     :config (use-package ac-emacs-eclim-source
-               :init (ac-emacs-eclim-config)))
-   ;; Malabar things
-   (use-package malabar-mode
-     :init (add-to-list 'auto-mode-alist '("\\.java\\'" . malabar-mode))
-     :config
-     (progn
-       (use-package cedet)
-       (use-package semantic)
-       (load "semantic/loaddefs.el")
-       (semantic-mode 1)))
    ;; Generic java stuff things
    (setq whitespace-line-column 140)
    (use-package column-marker
@@ -975,7 +978,8 @@ with the arguments on the previous line
    (customize-set-variable 'c-default-style
                            (quote ((java-mode . "eclipse")
                                    (awk-mode . "awk")
-                                   (other . "gnu"))))))
+                                   (other . "gnu"))))
+   (c-set-offset 'arglist-cont-nonempty '++)))
 #+END_SRC
 
 *** Haskell
@@ -2989,6 +2993,10 @@ helpful for documentation buffers and so on.
 
     ;; prodigy
     (push '("*prodigy*" :stick t) popwin:special-display-config)
+
+    ;; malabar-mode
+    (push '("*Malabar Compilation*" :stick t :height 30)
+          popwin:special-display-config)
     ))
 #+END_SRC
 ** Parenface

@@ -496,31 +496,34 @@
                         (substatement-label    . +)
                         (label                 . +)
                         (statement-case-open   . +)
-                        (statement-cont        . +)
-                        (arglist-intro  . c-lineup-arglist-intro-after-paren)
-                        (arglist-close  . c-lineup-arglist)
+                        (statement-cont        . ++)
+                        (arglist-intro  . ++)
+                        (arglist-close  . ++)
+                        (arglist-cont-nonempty . ++)
                         (access-label   . 0)
-                        (inher-cont     . c-lineup-java-inher)
-                        (func-decl-cont . c-lineup-java-throws)
-                        (arglist-cont-nonempty . ++))))
+                        (inher-cont     . ++)
+                        (func-decl-cont . ++))))
   "Eclipse Java Programming Style")
+
+(use-package eclim
+  :defer t
+  :config
+  (use-package ac-emacs-eclim-source
+    :init (ac-emacs-eclim-config)))
+
+;; Malabar things
+(use-package malabar-mode
+  :init (add-to-list 'auto-mode-alist '("\\.java$" . malabar-mode))
+  :config
+  (progn
+    (use-package cedet)
+    (use-package semantic)
+    (load "semantic/loaddefs.el")
+    (semantic-mode 1)))
 
 (add-hook
  'java-mode-hook
  (lambda ()
-   (use-package eclim
-     :init (global-eclim-mode)
-     :config (use-package ac-emacs-eclim-source
-               :init (ac-emacs-eclim-config)))
-   ;; Malabar things
-   (use-package malabar-mode
-     :init (add-to-list 'auto-mode-alist '("\\.java\\'" . malabar-mode))
-     :config
-     (progn
-       (use-package cedet)
-       (use-package semantic)
-       (load "semantic/loaddefs.el")
-       (semantic-mode 1)))
    ;; Generic java stuff things
    (setq whitespace-line-column 140)
    (use-package column-marker
@@ -530,7 +533,8 @@
    (customize-set-variable 'c-default-style
                            (quote ((java-mode . "eclipse")
                                    (awk-mode . "awk")
-                                   (other . "gnu"))))))
+                                   (other . "gnu"))))
+   (c-set-offset 'arglist-cont-nonempty '++)))
 
 (use-package haskell-mode
   :mode ("\\.\\(hs\\|hi\\|gs\\)\\'" . haskell-mode)
@@ -733,8 +737,8 @@
           ;; Use sticky agenda's so they persist
           org-agenda-sticky t
           org-cycle-separator-lines 0
-          org-special-ctrl-a/e nil
-          org-special-ctrl-k nil
+          org-special-ctrl-a/e t
+          org-special-ctrl-k t
           org-yank-adjusted-subtrees nil
           ;; Overwrite the current window with the agenda
           org-agenda-window-setup 'current-window
@@ -2339,6 +2343,10 @@ passed in. Also supports ignoring the msg at the point."
 
     ;; prodigy
     (push '("*prodigy*" :stick t) popwin:special-display-config)
+
+    ;; malabar-mode
+    (push '("*Malabar Compilation*" :stick t :height 30)
+          popwin:special-display-config)
     ))
 
 (use-package parenface

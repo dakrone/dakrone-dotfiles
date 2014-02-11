@@ -314,7 +314,7 @@
     :if (not noninteractive)
     :config
     (progn
-      (setq recentf-max-saved-items 100)
+      (setq recentf-max-saved-items 200)
       (setq recentf-exclude '("/auto-install/" ".recentf" "/repos/" "/elpa/"
                               "\\.mime-example" "\\.ido.last" "COMMIT_EDITMSG"
                               ".gz"))
@@ -576,7 +576,8 @@
 (when (eq window-system 'ns)
   (set-fontset-font "fontset-default" 'symbol "Monaco")
   (set-default-font "Anonymous Pro")
-  (set-face-attribute 'default nil :height 115))
+  (set-face-attribute 'default nil :height 115)
+  (set-face-attribute 'fixed-pitch nil :height 115))
 (when (eq window-system 'mac)
   (set-fontset-font "fontset-default" 'symbol "Monaco")
   (set-default-font "Anonymous Pro")
@@ -590,6 +591,26 @@
   (set-face-attribute 'default nil :height 90))
 ;; Anti-aliasing
 (setq mac-allow-anti-aliasing t)
+
+;; ;; Insidious Black Magic Bits:
+;; ;; Use variable width font faces in current buffer
+;; (defun my-buffer-face-mode-variable ()
+;; "Set font to a variable width (proportional) fonts in current buffer"
+;; (interactive)
+;; (setq buffer-face-mode-face '(:family "DejaVu Sans" :height 125 :width semi-condensed))
+;; (buffer-face-mode))
+
+;; ;; Use monospaced font faces in current buffer
+;; (defun my-buffer-face-mode-fixed ()
+;; "Sets a fixed width (monospace) font in current buffer"
+;; (interactive)
+;; (setq buffer-face-mode-face '(:family "DejaVu Sans Mono" :height 115))
+;; (buffer-face-mode))
+
+;; (add-hook 'erc-mode-hook 'my-buffer-face-mode-variable)
+;; (add-hook 'org-mode-hook 'my-buffer-face-mode-variable)
+;; (add-hook 'text-mode-hook 'my-buffer-face-mode-variable)
+;; (add-hook 'Info-mode-hook 'my-buffer-face-mode-variable)
 
 (setq ns-use-srgb-colorspace t)
 
@@ -609,12 +630,14 @@
      ,desc :group 'faces))
 
 (defun dakrone-dark ()
+  (interactive)
   ;; https://github.com/dakrone/dakrone-theme
   (load-theme 'dakrone t)
-  (if window-system
-    (set-background-color "#262626")))
+  (if (window-system)
+      (set-background-color "#262626")))
 
 (defun dakrone-light ()
+  (interactive)
   ;; https://github.com/fniessen/emacs-leuven-theme
   (load-theme 'leuven t)
   (defclojureface clojure-parens       "#696969"   "Clojure parens")
@@ -625,7 +648,7 @@
   (defclojureface clojure-java-call    "#008b8b"   "Clojure Java calls")
   (defclojureface clojure-special      "#006400"   "Clojure special")
   (defclojureface clojure-double-quote "#006400"   "Clojure special")
-  (if window-system
+  (if (window-system)
       (set-face-foreground 'region nil)))
 
 ;; Define faces in clojure code
@@ -647,6 +670,30 @@
   (dakrone-light))
 
 (font-lock-add-keywords 'clojure-mode '(("(\\|)" . 'paren-face)))
+
+;; (set-face-attribute 'org-table nil :inherit 'fixed-pitch)
+;; (set-face-attribute 'org-code nil :inherit 'fixed-pitch)
+;; (set-face-attribute 'org-block nil :inherit 'fixed-pitch)
+;; (set-face-attribute 'org-block-background nil :inherit 'fixed-pitch)
+;; (set-face-attribute 'org-block nil :inherit 'fixed-pitch)
+
+;; (defun my-adjoin-to-list-or-symbol (element list-or-symbol)
+;;   (let ((list (if (not (listp list-or-symbol))
+;;                   (list list-or-symbol)
+;;                 list-or-symbol)))
+;;     (require 'cl-lib)
+;;     (cl-adjoin element list)))
+
+;; (eval-after-load "org"
+;;   '(mapc
+;;     (lambda (face)
+;;       (set-face-attribute
+;;        face nil
+;;        :inherit
+;;        (my-adjoin-to-list-or-symbol
+;;         'fixed-pitch
+;;         (face-attribute face :inherit))))
+;;     (list 'org-code 'org-block 'org-table 'org-block-background)))
 
 (use-package smart-mode-line
   :init (progn
@@ -2153,6 +2200,17 @@ passed in. Also supports ignoring the msg at the point."
     (define-key markdown-mode-map (kbd "C-c C-b") 'outline-backward-same-level)
     (define-key markdown-mode-map (kbd "C-c C-u") 'outline-up-heading)
 
+    ;; Make fixed-width parts of markdown be in fixed width font
+    ;; (mapc
+    ;;  (lambda (face)
+    ;;    (set-face-attribute
+    ;;     face nil
+    ;;     :inherit
+    ;;     (my-adjoin-to-list-or-symbol
+    ;;      'fixed-pitch
+    ;;      (face-attribute face :inherit))))
+    ;;  (list 'markdown-pre-face 'markdown-inline-code-face))
+
     (defvar markdown-imenu-generic-expression
       '(("title"  "^\\(.+?\\)[\n]=+$" 1)
         ("h2-"    "^\\(.+?\\)[\n]-+$" 1)
@@ -2275,7 +2333,8 @@ passed in. Also supports ignoring the msg at the point."
 (use-package parenface
   :init (progn
           (add-hook 'prog-mode-hook (lambda () (require 'parenface)))
-          (add-hook 'clojure-mode-hook (paren-face-add-support clojure-font-lock-keywords))))
+          (add-hook 'clojure-mode-hook (paren-face-add-support clojure-font-lock-keywords))
+          (add-hook 'hy-mode-hook (paren-face-add-support hy-font-lock-keywords))))
 
 (use-package ido-ubiquitous)
 

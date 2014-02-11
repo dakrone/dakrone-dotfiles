@@ -56,7 +56,7 @@
     cperl-mode
 
     ;; python
-    jedi
+    jedi hy-mode
 
     ;; ruby
     ruby-mode ruby-test-mode inf-ruby

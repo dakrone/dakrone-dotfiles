@@ -11,7 +11,7 @@
  '(compilation-skip-threshold 2)
  '(custom-safe-themes
    (quote
-    ("9a217ee1dcefd5e83f78381c61e25e9c4d25c7b80bf032f44d7d62ca68c6a384" "fc6e906a0e6ead5747ab2e7c5838166f7350b958d82e410257aeeb2820e8a07a" default)))
+    ("76b226dd750d085eaaf7efa5eb07a3282223d74f327a0f4319512c0a59f6df39" "9a217ee1dcefd5e83f78381c61e25e9c4d25c7b80bf032f44d7d62ca68c6a384" "fc6e906a0e6ead5747ab2e7c5838166f7350b958d82e410257aeeb2820e8a07a" default)))
  '(delete-selection-mode t)
  '(org-export-backends (quote (ascii html icalendar latex md)))
  '(org-modules

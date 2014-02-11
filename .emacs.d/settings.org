@@ -2646,6 +2646,7 @@ I basically use this to start up ES when I need to test something really quickly
 #+END_SRC
 
 ** Git-gutter
+
 #+BEGIN_SRC emacs-lisp
 (use-package git-gutter
   :defer t
@@ -2661,6 +2662,16 @@ I basically use this to start up ES when I need to test something really quickly
                       (global-set-key (kbd "C-x p") 'git-gutter:previous-hunk)
                       (global-set-key (kbd "C-x n") 'git-gutter:next-hunk)
                       (global-set-key (kbd "C-c G") 'git-gutter:popup-hunk)))))
+#+END_SRC
+
+** Highlight-symbol
+Jump to the next/prev symbol pretty easily
+
+#+BEGIN_SRC emacs-lisp
+(use-package highlight-symbol
+  :init
+  (progn (global-set-key (kbd "M-n") 'highlight-symbol-next)
+         (global-set-key (kbd "M-p") 'highlight-symbol-prev)))
 #+END_SRC
 
 ** Anzu

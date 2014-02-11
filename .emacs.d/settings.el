@@ -2058,6 +2058,11 @@ passed in. Also supports ignoring the msg at the point."
                       (global-set-key (kbd "C-x n") 'git-gutter:next-hunk)
                       (global-set-key (kbd "C-c G") 'git-gutter:popup-hunk)))))
 
+(use-package highlight-symbol
+  :init
+  (progn (global-set-key (kbd "M-n") 'highlight-symbol-next)
+         (global-set-key (kbd "M-p") 'highlight-symbol-prev)))
+
 (use-package anzu
   :init (global-anzu-mode t)
   :config

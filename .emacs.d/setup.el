@@ -28,7 +28,7 @@
     expand-region smex windresize ag undo-tree iedit ido-ubiquitous
     ido-vertical-mode yasnippet idle-highlight-mode smart-tab anzu
     smartparens flx-ido projectile smooth-scrolling keyfreq
-    prodigy column-marker
+    prodigy column-marker highlight-symbol
 
     ;; LaTeX
     auctex

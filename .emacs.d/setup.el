@@ -27,14 +27,14 @@
     ;; editing utilities
     expand-region smex windresize ag undo-tree iedit ido-ubiquitous
     ido-vertical-mode yasnippet idle-highlight-mode smart-tab anzu
-    smartparens flx-ido projectile smooth-scrolling yascroll keyfreq
-    lusty-explorer discover prodigy
+    smartparens flx-ido projectile smooth-scrolling keyfreq
+    prodigy column-marker
 
     ;; LaTeX
     auctex
 
     ;; org-mode
-    org htmlize gnuplot-mode gnuplot
+    htmlize gnuplot-mode gnuplot
 
     ;; buffer utils
     popwin
@@ -82,6 +82,9 @@
     ;; git
     magit git-gutter
     ))
+
+;; org-mode is forced manually
+(package-install 'org)
 
 (dolist (pack my/install-packages)
   (unless (package-installed-p pack)

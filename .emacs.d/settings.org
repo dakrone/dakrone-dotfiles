@@ -11,7 +11,10 @@
 
 * Configuration
 This file is used by org-mode to load my personal emacs
-configuration file.
+configuration file. The latest version of this file is always at
+[[https://github.com/dakrone/dakrone-dotfiles]], keep in mind that to use it you
+will probably have to install a number of packages. Here's my list of packages:
+[[https://github.com/dakrone/dakrone-dotfiles/blob/master/.emacs.d/setup.el]]
 
 It can be loaded by putting the following in your .emacs.d/init.el:
 

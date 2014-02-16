@@ -89,13 +89,6 @@
 
 (global-set-key (kbd "C-M-r") 'my/move-specified-char)
 
-(defun my/add-watchwords ()
-  (font-lock-add-keywords
-   nil '(("\\<\\(FIXME\\|TODO\\|XXX\\|NOCOMMIT\\|@@@\\)\\>"
-          1 '((:foreground "pink") (:weight bold)) t))))
-
-(add-hook 'prog-mode-hook 'my/add-watchwords)
-
 (setq sentence-end-double-space nil)
 
 (defun my/cleanup-for-spaces ()
@@ -335,6 +328,13 @@
               (lambda ()
                 (idle-highlight-mode t)))))
 
+(defun my/add-watchwords ()
+  (font-lock-add-keywords
+   nil '(("\\<\\(FIXME\\|TODO\\|NOCOMMIT\\)\\>"
+          1 '((:foreground "#d7a3ad") (:weight bold)) t))))
+
+(add-hook 'prog-mode-hook 'my/add-watchwords)
+
 ;; custom test locations instead of foo_test.clj, use test/foo.clj
 (defun my-clojure-test-for (namespace)
   (let* ((namespace (clojure-underscores-for-hyphens namespace))
@@ -511,19 +511,18 @@
   (use-package ac-emacs-eclim-source
     :init (ac-emacs-eclim-config)))
 
-;; Malabar things
-(use-package malabar-mode
-  :init (add-to-list 'auto-mode-alist '("\\.java$" . malabar-mode))
-  :config
-  (progn
-    (use-package cedet)
-    (use-package semantic)
-    (load "semantic/loaddefs.el")
-    (semantic-mode 1)))
-
 (add-hook
  'java-mode-hook
  (lambda ()
+   ;; Malabar things
+   (use-package malabar-mode
+     :init (add-to-list 'auto-mode-alist '("\\.java$" . malabar-mode))
+     :config
+     (progn
+       (use-package cedet)
+       (use-package semantic)
+       (load "semantic/loaddefs.el")
+       (semantic-mode 1)))
    ;; Generic java stuff things
    (setq whitespace-line-column 140)
    (use-package column-marker
@@ -744,14 +743,14 @@
           org-agenda-window-setup 'current-window
 
           org-todo-keywords
-          '((sequence "TODO(t)" "STARTED(s)" "INPROGRESS(i)" "WAITING(w)"
+          '((sequence "TODO(t)" "STARTED(s)" "INPROGRESS(i)" "PENDING(p)"
                       "|" "DONE(d)")
             (sequence "TODO(t)" "INPROGRESS(i)" "NEEDSREVIEW(n)"
                       "|" "DONE(d)"))
           org-todo-keyword-faces
           '(("STARTED"     . (:foreground "deep sky blue" :weight bold))
             ("DONE"        . (:foreground "SpringGreen1" :weight bold))
-            ("WAITING"     . (:foreground "orange" :weight bold))
+            ("PENDING"     . (:foreground "orange" :weight bold))
             ("INPROGRESS"  . (:foreground "cyan" :weight bold))
             ("NEEDSREVIEW" . (:foreground "#edd400" :weight bold)))
           org-agenda-files '("~/org/todo.org" "~/org/notes.org"
@@ -2017,6 +2016,8 @@ passed in. Also supports ignoring the msg at the point."
     (set-face-attribute 'magit-item-highlight nil
                         :background nil)
     (custom-set-variables '(magit-set-upstream-on-push (quote dontask)))))
+
+(use-package editorconfig)
 
 (use-package projectile
   :init (progn

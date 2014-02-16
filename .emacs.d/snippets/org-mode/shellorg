@@ -17,6 +17,10 @@
 curl -XDELETE 'localhost:9200/${2:thing}'
 echo
 curl -XPOST 'localhost:9200/$2' -d'{
+  "settings": {
+    "number_of_shards": 1,
+    "number_of_replicas": 0
+  },
   "mappings": {
     "doc": {
       "properties": {

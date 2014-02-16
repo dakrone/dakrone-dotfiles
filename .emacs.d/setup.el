@@ -13,7 +13,8 @@
     use-package
 
     ;; themeing
-    rainbow-mode leuven-theme dakrone-theme smart-mode-line color-identifiers-mode
+    rainbow-mode leuven-theme dakrone-theme smart-mode-line
+    color-identifiers-mode
 
     ;; misc
     diminish yagist es-mode
@@ -28,7 +29,7 @@
     expand-region smex windresize ag undo-tree iedit ido-ubiquitous
     ido-vertical-mode yasnippet idle-highlight-mode smart-tab anzu
     smartparens flx-ido projectile smooth-scrolling keyfreq
-    prodigy column-marker highlight-symbol
+    prodigy column-marker highlight-symbol editorconfig
 
     ;; LaTeX
     auctex

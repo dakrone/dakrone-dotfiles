@@ -17,10 +17,10 @@ global_excludes = Set{ "shift-cmd-tab",
                        "cmd-e",
                        "cmd-k",
                        "cmd-option-a",
-                       "shift-cmd-.",
                        "cmd-return",
                        "cmd-enter",
-                       "shift-cmd-0"
+                       "shift-cmd-t",
+                       "shift-cmd-["
 }
 
 -- The set of apps we want to consider swapping keys for, with some
@@ -34,7 +34,6 @@ apps = {
                             "cmd-3",
                             "cmd-`",
                             "cmd-c",
-                            "cmd-v",
                             "cmd-1",
                             "cmd-2",
                             "cmd-3",
@@ -46,14 +45,12 @@ apps = {
                             "cmd-3",
                             "cmd-`",
                             "cmd-c",
-                            "cmd-v",
                             "cmd-1",
                             "cmd-2",
                             "cmd-3",
                             "cmd-t",
                             "cmd-`",
-           } },
-   Eclipse  = { exclude = {} }
+           } }
 }
 
 -- Return true to swap cmd/alt, otherwise false.

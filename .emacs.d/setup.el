@@ -50,7 +50,7 @@
     flycheck flycheck-tip
 
     ;; clojure
-    clojure-mode cider paredit parenface kibit-mode clojure-test-mode
+    clojure-mode cider paredit paren-face kibit-mode clojure-test-mode
     cider-tracing cider-decompile javap-mode
 
     ;; perl

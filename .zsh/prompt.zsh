@@ -28,7 +28,7 @@ function +vi-git-st() {
 
     # Are we on a remote-tracking branch?
     remote=${$(git rev-parse --verify ${hook_com[branch]}@{upstream} \
-        --symbolic-full-name 2>/dev/null)/refs\/remotes\/}
+                   --symbolic-full-name 2>/dev/null)/refs\/remotes\/}
 
     if [[ -n ${remote} ]] ; then
         # for git prior to 1.7
@@ -143,14 +143,89 @@ function setprompt() {
     ### Finally, set the prompt
     PROMPT=${(F)lines}
     if [[ "$TERM" == "dumb" ]] then
-        unsetopt zle
-        unsetopt prompt_cr
-        unsetopt prompt_subst
-        unfunction precmd
-        unfunction preexec
-        PROMPT='‹ %~ › %(?..%? )∴ '
-        export DISABLE_AUTO_TITLE=true
-        export ZSH_HIGHLIGHT_MAXLENGTH=0
+       unsetopt zle
+       unsetopt prompt_cr
+       unsetopt prompt_subst
+       unfunction precmd
+       unfunction preexec
+       PROMPT='‹ %~ › %(?..%? )∴ '
+       export DISABLE_AUTO_TITLE=true
+       export ZSH_HIGHLIGHT_MAXLENGTH=0
+    fi
+}
+
+function colorSetup {
+    # ls colors
+    autoload colors; colors;
+    #export LS_COLORS
+
+    # A script to make using 256 colors in zsh less painful.
+    # P.C. Shyamshankar <sykora@lucentbeing.com>
+    # Copied from http://github.com/sykora/etc/blob/master/zsh/functions/spectrum/
+
+    typeset -Ag FX FG BG
+
+    FX=(
+        reset     "%{[00m%}"
+        bold      "%{[01m%}" no-bold      "%{[22m%}"
+        italic    "%{[03m%}" no-italic    "%{[23m%}"
+        underline "%{[04m%}" no-underline "%{[24m%}"
+        blink     "%{[05m%}" no-blink     "%{[25m%}"
+        reverse   "%{[07m%}" no-reverse   "%{[27m%}"
+    )
+
+    for color in {000..255}; do
+        FG[$color]="%{[38;5;${color}m%}"
+        BG[$color]="%{[48;5;${color}m%}"
+    done
+
+    # Show all 256 colors with color number
+    function spectrum_ls() {
+        for code in {000..255}; do
+            print -P -- "$code: %F{$code}Test%f"
+        done
+    }
+
+    # Show all 256 colors where the background is set to specific color
+    function spectrum_bls() {
+        for code in {000..255}; do
+            ((cc = code + 1))
+            print -P -- "$BG[$code]$code: Test %{$reset_color%}"
+        done
+    }
+
+    # Setup the prompt with pretty colors
+    setopt prompt_subst
+}
+
+# Initialize colors for setprompt2
+colorSetup
+
+function setprompt2 {
+    if [ $UID -eq 0 ]; then NCOLOR="red"; else NCOLOR="green"; fi
+    local return_code="%(?..%{$fg[red]%}%? ↵%{$reset_color%})"
+
+    PROMPT='$FG[237]⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅%{$reset_color%}
+$FG[032]%~ ${gray}${vcs_info_msg_0_}
+$FG[105]%(!.#.»)%{$reset_color%} '
+    PROMPT2='%{$fg[red]%}\ %{$reset_color%}'
+    RPS1='${return_code}'
+
+    # color vars
+    eval my_gray='$FG[237]'
+
+    # right prompt
+    RPROMPT='$my_gray%n@%m%{$reset_color%}%'
+
+    if [[ "$TERM" == "dumb" ]] then
+       unsetopt zle
+       unsetopt prompt_cr
+       unsetopt prompt_subst
+       unfunction precmd
+       unfunction preexec
+       PROMPT='‹ %~ › %(?..%? )∴ '
+       export DISABLE_AUTO_TITLE=true
+       export ZSH_HIGHLIGHT_MAXLENGTH=0
     fi
 }
 
@@ -159,7 +234,7 @@ function precmd {
         z --add "$(pwd -P)"
     fi
     vcs_info
-    setprompt
+    setprompt2
 }
 
 # Disable stuff when your term sucks

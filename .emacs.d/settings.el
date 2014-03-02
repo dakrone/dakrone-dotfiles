@@ -505,15 +505,20 @@
                         (func-decl-cont . ++))))
   "Eclipse Java Programming Style")
 
-(use-package eclim
-  :defer t
-  :config
-  (use-package ac-emacs-eclim-source
-    :init (ac-emacs-eclim-config)))
-
 (add-hook
  'java-mode-hook
  (lambda ()
+   ;; eclim things
+   (use-package eclim
+     :init (global-eclim-mode)
+     :config
+     (progn
+       (setq help-at-pt-display-when-idle t)
+       (setq help-at-pt-timer-delay 0.1)
+       (help-at-pt-set-timer)
+       (require 'company-emacs-eclim)
+       (company-emacs-eclim-setup)))
+
    ;; Malabar things
    (use-package malabar-mode
      :init (add-to-list 'auto-mode-alist '("\\.java$" . malabar-mode))
@@ -641,10 +646,16 @@
 
 (defun dakrone-dark ()
   (interactive)
-  ;; https://github.com/dakrone/dakrone-theme
-  (load-theme 'dakrone t)
   (if (window-system)
-      (set-background-color "#262626")))
+      (progn
+        ;; https://github.com/dakrone/dakrone-theme
+        ;; (load-theme 'dakrone t)
+        ;; (set-background-color "#262626")
+        ;; https://github.com/cryon/subatomic
+        (load-theme 'subatomic t))
+    (progn
+      ;; https://github.com/d11wtq/subatomic256
+      (load-theme 'subatomic256 t))))
 
 (defun dakrone-light ()
   (interactive)
@@ -673,37 +684,11 @@
             (("(\\(\\.[^ \n)]*\\|[^ \n)]+\\.\\|new\\)\\([ )\n]\\|$\\)" 1
               'clojure-java-call)))))
 
-(add-hook 'clojure-mode-hook 'tweak-clojure-syntax)
+;; (add-hook 'clojure-mode-hook 'tweak-clojure-syntax)
 
 (if (eq my/background 'dark)
     (dakrone-dark)
   (dakrone-light))
-
-(font-lock-add-keywords 'clojure-mode '(("(\\|)" . 'paren-face)))
-
-;; (set-face-attribute 'org-table nil :inherit 'fixed-pitch)
-;; (set-face-attribute 'org-code nil :inherit 'fixed-pitch)
-;; (set-face-attribute 'org-block nil :inherit 'fixed-pitch)
-;; (set-face-attribute 'org-block-background nil :inherit 'fixed-pitch)
-;; (set-face-attribute 'org-block nil :inherit 'fixed-pitch)
-
-;; (defun my-adjoin-to-list-or-symbol (element list-or-symbol)
-;;   (let ((list (if (not (listp list-or-symbol))
-;;                   (list list-or-symbol)
-;;                 list-or-symbol)))
-;;     (require 'cl-lib)
-;;     (cl-adjoin element list)))
-
-;; (eval-after-load "org"
-;;   '(mapc
-;;     (lambda (face)
-;;       (set-face-attribute
-;;        face nil
-;;        :inherit
-;;        (my-adjoin-to-list-or-symbol
-;;         'fixed-pitch
-;;         (face-attribute face :inherit))))
-;;     (list 'org-code 'org-block 'org-table 'org-block-background)))
 
 (use-package smart-mode-line
   :init (progn
@@ -841,7 +826,7 @@
     (defun org-babel-execute:es (body params)
       "Execute a block of ES code with org-babel."
       (message "executing ES source code block")
-      (org-babel-eval "/bin/sh" body))
+      (org-babel-eval "/usr/local/bin/zsh" body))
 
     ;; Use cider as the clojure backend
     (setq org-babel-clojure-backend 'cider)
@@ -853,7 +838,7 @@
     (setq org-babel-default-header-args
           (cons '(:noweb . "yes")
                 (assq-delete-all :noweb org-babel-default-header-args)))
-    ;; (setq org-babel-default-header-args
+    ;; (setq org-babeln-default-header-args
     ;;       (cons '(:results . "code")
     ;;             (assq-delete-all :results org-babel-default-header-args)))
     (setq org-babel-default-header-args
@@ -2021,6 +2006,7 @@ passed in. Also supports ignoring the msg at the point."
 
 (use-package projectile
   :init (progn
+          (setq projectile-enable-caching t)
           (projectile-global-mode)
           (defconst projectile-mode-line-lighter " P")))
 
@@ -2030,16 +2016,16 @@ passed in. Also supports ignoring the msg at the point."
   :config
   (progn
     (prodigy-define-service
-     :name "Elasticsearch 1.0"
-     :cwd "~/esi/elasticsearch-1.0.0/"
-     :command "~/esi/elasticsearch-1.0.0/bin/elasticsearch"
+     :name "Elasticsearch 1.0.1"
+     :cwd "~/esi/elasticsearch-1.0.1/"
+     :command "~/esi/elasticsearch-1.0.1/bin/elasticsearch"
      :tags '(work test es)
      :port 9200)
 
     (prodigy-define-service
-     :name "Elasticsearch 0.90.11"
-     :cwd "~/esi/elasticsearch-0.90.11/"
-     :command "~/esi/elasticsearch-0.90.11/bin/elasticsearch"
+     :name "Elasticsearch 0.90.12"
+     :cwd "~/esi/elasticsearch-0.90.12/"
+     :command "~/esi/elasticsearch-0.90.12/bin/elasticsearch"
      :args '("-f")
      :tags '(work test es)
      :port 9200)))
@@ -2282,6 +2268,11 @@ passed in. Also supports ignoring the msg at the point."
                 (add-to-list 'smart-tab-disabled-major-modes 'erc-mode)
                 (add-to-list 'smart-tab-disabled-major-modes 'shell-mode)))))
 
+(when (window-system)
+  (use-package elfeed
+    :config
+    (progn (load-file "~/.elfeed-urls"))))
+
 (use-package undo-tree
   :diminish undo-tree-mode
   :init (global-undo-tree-mode)
@@ -2355,11 +2346,8 @@ passed in. Also supports ignoring the msg at the point."
           popwin:special-display-config)
     ))
 
-(use-package parenface
-  :init (progn
-          (add-hook 'prog-mode-hook (lambda () (require 'parenface)))
-          (add-hook 'clojure-mode-hook (paren-face-add-support clojure-font-lock-keywords))
-          (add-hook 'hy-mode-hook (paren-face-add-support hy-font-lock-keywords))))
+(use-package paren-face
+  :init (global-paren-face-mode))
 
 (use-package ido-ubiquitous)
 

@@ -14,7 +14,7 @@
 
     ;; themeing
     rainbow-mode leuven-theme dakrone-theme smart-mode-line
-    color-identifiers-mode
+    color-identifiers-mode subatomic-theme subatomic256-theme
 
     ;; misc
     diminish yagist es-mode

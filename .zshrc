@@ -3,7 +3,7 @@ OS=$(uname)
 # path
 export PATH=/usr/local/bin:$PATH
 export PATH=$PATH:/usr/local/sbin:/usr/libexec:/opt/local/sbin
-export PATH=$PATH:/usr/local/mysql/bin:~/.cabal/bin
+export PATH=~/.cabal/bin:$PATH
 export PATH=$PATH:/usr/local/git/libexec/git-core
 # Always override with my personal bin
 export PATH=~/bin:$PATH
@@ -37,10 +37,6 @@ export PAGER=less
 # report things that take a while
 export REPORTTIME=5
 
-# node things
-export NODE_PATH=/usr/local/lib/node:/usr/local/lib/node_modules
-export PATH=$PATH:/usr/local/share/npm/bin
-
 # CVS options
 export CVSEDITOR=emacs
 
@@ -70,9 +66,6 @@ export QUEUENAME=''
 # word chars
 # default is: *?_-.[]~=/&;!#$%^(){}<>
 export WORDCHARS="*?_-.[]~=&;!#$%^(){}<>\\"
-
-export JIRAPATH=~/src/jira
-alias jira="$JIRAPATH/jira.sh --action getIssue --issue "
 
 # history
 HISTFILE=$HOME/.zsh-history

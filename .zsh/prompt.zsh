@@ -215,7 +215,7 @@ $FG[105]%(!.#.»)%{$reset_color%} '
     eval my_gray='$FG[237]'
 
     # right prompt
-    RPROMPT='$my_gray%n@%m%{$reset_color%}%'
+    # RPROMPT='$my_gray%n@%m%{$reset_color%}%'
 
     if [[ "$TERM" == "dumb" ]] then
        unsetopt zle

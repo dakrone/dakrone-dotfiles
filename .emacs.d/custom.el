@@ -19,7 +19,9 @@
     (org-bbdb org-bibtex org-docview org-gnus org-habit org-info org-irc org-mhe org-rmail org-w3m)))
  '(safe-local-variable-values
    (quote
-    ((eval when
+    ((eval ispell-change-dictionary "en_US")
+     (flyspell-default-dictionary . "en_US")
+     (eval when
            (and
             (buffer-file-name)
             (file-regular-p

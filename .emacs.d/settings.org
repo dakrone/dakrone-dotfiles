@@ -2390,9 +2390,13 @@ passed in. Also supports ignoring the msg at the point."
 #+END_SRC
 
 ** Ace-jump-mode
+Jump quickly between words or lines, I mostly use it with eww
+
 #+BEGIN_SRC emacs-lisp
 (use-package ace-jump-mode
-  :init (global-set-key (kbd "C-c SPC") 'ace-jump-mode))
+  :init (progn
+          (global-set-key (kbd "C-c SPC") 'ace-jump-mode)
+          (global-set-key (kbd "C-c M-SPC") 'ace-jump-line-mode)))
 #+END_SRC
 
 ** Smooth-scrolling
@@ -3013,6 +3017,10 @@ helpful for documentation buffers and so on.
     ;; malabar-mode
     (push '("*Malabar Compilation*" :stick t :height 30)
           popwin:special-display-config)
+
+    ;; org-mode
+    (push '("*Org tags*" :stick t :height 30)
+          popwin:special-display-config)
     ))
 #+END_SRC
 ** Paren-face
@@ -3029,6 +3037,19 @@ Use ido everywhere, because ido is great.
 
 #+BEGIN_SRC emacs-lisp
 (use-package ido-ubiquitous)
+#+END_SRC
+
+** Multiple cursors
+Mulitple cursors is like rectangular selection/insertion but on steroids
+
+#+BEGIN_SRC emacs-lisp
+(use-package multiple-cursors
+  :init
+  (progn
+    (global-set-key (kbd "C-S-c C-S-c") 'mc/edit-lines)
+    (global-set-key (kbd "C->") 'mc/mark-next-like-this)
+    (global-set-key (kbd "C-<") 'mc/mark-previous-like-this)
+    (global-set-key (kbd "C-c C-<") 'mc/mark-all-like-this)))
 #+END_SRC
 
 ** Twittering-mode

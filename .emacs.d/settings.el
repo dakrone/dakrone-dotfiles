@@ -1826,7 +1826,9 @@ passed in. Also supports ignoring the msg at the point."
         (set-face-background 'mu4e-header-highlight-face "#e0e0e0")))))
 
 (use-package ace-jump-mode
-  :init (global-set-key (kbd "C-c SPC") 'ace-jump-mode))
+  :init (progn
+          (global-set-key (kbd "C-c SPC") 'ace-jump-mode)
+          (global-set-key (kbd "C-c M-SPC") 'ace-jump-line-mode)))
 
 (use-package smooth-scrolling
   :init (setq smooth-scroll-margin 4))
@@ -2344,12 +2346,24 @@ passed in. Also supports ignoring the msg at the point."
     ;; malabar-mode
     (push '("*Malabar Compilation*" :stick t :height 30)
           popwin:special-display-config)
+
+    ;; org-mode
+    (push '("*Org tags*" :stick t :height 30)
+          popwin:special-display-config)
     ))
 
 (use-package paren-face
   :init (global-paren-face-mode))
 
 (use-package ido-ubiquitous)
+
+(use-package multiple-cursors
+  :init
+  (progn
+    (global-set-key (kbd "C-S-c C-S-c") 'mc/edit-lines)
+    (global-set-key (kbd "C->") 'mc/mark-next-like-this)
+    (global-set-key (kbd "C-<") 'mc/mark-previous-like-this)
+    (global-set-key (kbd "C-c C-<") 'mc/mark-all-like-this)))
 
 (use-package twittering-mode
   :defer t

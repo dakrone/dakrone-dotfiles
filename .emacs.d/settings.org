@@ -1417,53 +1417,9 @@ Custom agenda views:
                  '(todo-state-down effort-up category-keep))))
               (" " "Agenda"
                ((agenda "" nil)
-                (tags "REFILE"
-                      ((org-agenda-overriding-header "Tasks to Refile")
-                       (org-tags-match-list-sublevels nil)))
-                (tags-todo "-CANCELLED/!"
-                           ((org-agenda-overriding-header "Stuck Projects")
-                            (org-agenda-skip-function 'bh/skip-non-stuck-projects)
-                            (org-agenda-sorting-strategy
-                             '(priority-down category-keep))))
-                (tags-todo "-HOLD-CANCELLED/!"
-                           ((org-agenda-overriding-header "Projects")
-                            (org-agenda-skip-function 'bh/skip-non-projects)
-                            (org-agenda-sorting-strategy
-                             '(priority-down category-keep))))
-                (tags-todo "-CANCELLED/!NEXT"
-                           ((org-agenda-overriding-header "Project Next Tasks")
-                            (org-agenda-skip-function
-                             'bh/skip-projects-and-habits-and-single-tasks)
-                            (org-tags-match-list-sublevels t)
-                            (org-agenda-todo-ignore-scheduled
-                             bh/hide-scheduled-and-waiting-next-tasks)
-                            (org-agenda-todo-ignore-deadlines
-                             bh/hide-scheduled-and-waiting-next-tasks)
-                            (org-agenda-todo-ignore-with-date
-                             bh/hide-scheduled-and-waiting-next-tasks)
-                            (org-agenda-sorting-strategy
-                             '(priority-down todo-state-down effort-up category-keep))))
                 (tags-todo "-REFILE-CANCELLED-WAITING/!"
-                           ((org-agenda-overriding-header
-                             (if (marker-buffer org-agenda-restrict-begin)
-                                 "Project Subtasks"
-                               "Standalone Tasks"))
-                            (org-agenda-skip-function
-                             'bh/skip-project-tasks-maybe)
-                            (org-agenda-todo-ignore-scheduled
-                             bh/hide-scheduled-and-waiting-next-tasks)
-                            (org-agenda-todo-ignore-deadlines
-                             bh/hide-scheduled-and-waiting-next-tasks)
-                            (org-agenda-todo-ignore-with-date
-                             bh/hide-scheduled-and-waiting-next-tasks)
-                            (org-agenda-sorting-strategy
-                             '(category-keep))))
-                (tags-todo "-CANCELLED+WAITING/!"
-                           ((org-agenda-overriding-header "Waiting and Postponed Tasks")
-                            (org-agenda-skip-function 'bh/skip-stuck-projects)
-                            (org-tags-match-list-sublevels nil)
-                            (org-agenda-todo-ignore-scheduled 'future)
-                            (org-agenda-todo-ignore-deadlines 'future)))
+                           ((org-agenda-overriding-header "Standalone Tasks")
+                            (org-agenda-sorting-strategy '(category-keep))))
                 (tags "-REFILE/"
                       ((org-agenda-overriding-header "Tasks to Archive")
                        (org-agenda-skip-function 'bh/skip-non-archivable-tasks)
@@ -1472,6 +1428,7 @@ Custom agenda views:
 
 (setq org-archive-mark-done nil)
 (setq org-archive-location "%s_archive::* Archived Tasks")
+
 (defun bh/skip-non-archivable-tasks ()
   "Skip trees that are not available for archiving"
   (save-restriction
@@ -1501,15 +1458,6 @@ Custom agenda views:
             (or subtree-end (point-max)))
         next-headline))))
 
-(setq org-agenda-include-diary t)
-(setq org-agenda-diary-file "~/diary")
-(setq org-agenda-insert-diary-extract-time t)
-
-(setq org-agenda-repeating-timestamp-show-all t)
-
-;; Show all agenda dates - even if they are empty
-(setq org-agenda-show-all-dates t)
-
 ;; Sorting order for tasks on the agenda
 (setq org-agenda-sorting-strategy
       (quote ((agenda habit-down time-up user-defined-up priority-down effort-up category-keep)
@@ -1521,64 +1469,6 @@ Custom agenda views:
 (setq org-agenda-time-grid (quote ((daily today remove-match)
                                    #("----------------" 0 16 (org-heading t))
                                    (0900 1100 1300 1500 1700))))
-
-;;
-;; Agenda sorting functions
-;;
-(setq org-agenda-cmp-user-defined 'bh/agenda-sort)
-
-(defun bh/agenda-sort (a b)
-  "Sorting strategy for agenda items.
-Late deadlines first, then scheduled, then non-late deadlines"
-  (let (result num-a num-b)
-    (cond
-     ;; time specific items are already sorted first by org-agenda-sorting-strategy
-     ;; non-deadline and non-scheduled items next
-     ((bh/agenda-sort-test 'bh/is-not-scheduled-or-deadline a b))
-     ;; deadlines for today next
-     ((bh/agenda-sort-test 'bh/is-due-deadline a b))
-     ;; late deadlines next
-     ((bh/agenda-sort-test-num 'bh/is-late-deadline '> a b))
-     ;; scheduled items for today next
-     ((bh/agenda-sort-test 'bh/is-scheduled-today a b))
-     ;; late scheduled items next
-     ((bh/agenda-sort-test-num 'bh/is-scheduled-late '> a b))
-     ;; pending deadlines last
-     ((bh/agenda-sort-test-num 'bh/is-pending-deadline '< a b))
-     ;; finally default to unsorted
-     (t (setq result nil)))
-    result))
-
-(defmacro bh/agenda-sort-test (fn a b)
-  "Test for agenda sort"
-  `(cond
-    ;; if both match leave them unsorted
-    ((and (apply ,fn (list ,a))
-          (apply ,fn (list ,b)))
-     (setq result nil))
-    ;; if a matches put a first
-    ((apply ,fn (list ,a))
-     (setq result -1))
-    ;; otherwise if b matches put b first
-    ((apply ,fn (list ,b))
-     (setq result 1))
-    ;; if none match leave them unsorted
-    (t nil)))
-
-(defmacro bh/agenda-sort-test-num (fn compfn a b)
-  `(cond
-    ((apply ,fn (list ,a))
-     (setq num-a (string-to-number (match-string 1 ,a)))
-     (if (apply ,fn (list ,b))
-         (progn
-           (setq num-b (string-to-number (match-string 1 ,b)))
-           (setq result (if (apply ,compfn (list num-a num-b))
-                            -1
-                          1)))
-       (setq result -1)))
-    ((apply ,fn (list ,b))
-     (setq result 1))
-    (t nil)))
 
 (defun bh/is-not-scheduled-or-deadline (date-str)
   (and (not (bh/is-deadline date-str))
@@ -1609,11 +1499,24 @@ Late deadlines first, then scheduled, then non-late deadlines"
   (string-match "Sched\.\\(.*\\)x:" date-str))
 #+END_SRC
 
+Helpers for EmacsDiarySync:
+
+See [[https://github.com/cwhatley/emacsdiarysync]] for more info
+
+#+BEGIN_SRC emacs-lisp
+(setq org-agenda-include-diary t)
+(setq org-agenda-diary-file "~/diary")
+(setq org-agenda-insert-diary-extract-time t)
+
+(setq org-agenda-repeating-timestamp-show-all t)
+
+;; Show all agenda dates - even if they are empty
+(setq org-agenda-show-all-dates t)
+#+END_SRC
+
 Helpers for the agenda views:
 
 #+BEGIN_SRC emacs-lisp
-(setq org-stuck-projects (quote ("" nil nil "")))
-
 (defun bh/find-project-task ()
   "Move point to the parent (project) task if any"
   (save-restriction

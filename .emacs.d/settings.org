@@ -3064,6 +3064,16 @@ immediately use Twitter :P
          (setq twittering-use-master-password t)))
 #+END_SRC
 
+** Scpaste
+scp-ing an HTML version of the current buffer somewhere
+
+#+BEGIN_SRC emacs-lisp
+(use-package scpaste
+  :config
+  (setq scpaste-http-destination "http://p.writequit.org"
+        scpaste-scp-destination "writequit:public_html/wq/paste/"))
+#+END_SRC
+
 ** Ido-vertical-mode
 #+BEGIN_SRC emacs-lisp
 (use-package ido-vertical-mode

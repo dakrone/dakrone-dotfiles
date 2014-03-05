@@ -17,7 +17,7 @@
     color-identifiers-mode subatomic-theme subatomic256-theme
 
     ;; misc
-    diminish yagist es-mode
+    diminish yagist es-mode scpaste
 
     ;; IRC/ERC and social stuff
     erc-hl-nicks ercn todochiku twittering-mode

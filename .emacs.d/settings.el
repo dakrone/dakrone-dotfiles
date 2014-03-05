@@ -2371,6 +2371,11 @@ passed in. Also supports ignoring the msg at the point."
   (progn (setq twittering-icon-mode t)
          (setq twittering-use-master-password t)))
 
+(use-package scpaste
+  :config
+  (setq scpaste-http-destination "http://p.writequit.org"
+        scpaste-scp-destination "writequit:public_html/wq/paste/"))
+
 (use-package ido-vertical-mode
   :init (ido-vertical-mode t))
 

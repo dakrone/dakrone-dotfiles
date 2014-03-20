@@ -13,10 +13,12 @@
 
 * Create the index
 
-#+BEGIN_SRC es :tangle `(file-name-base (buffer-name))`.zsh
-curl -XDELETE 'localhost:9200/${2:thing}'
-echo
-curl -XPOST 'localhost:9200/$2' -d'{
+#+BEGIN_SRC es :tangle yes
+DELETE /${2:thing}
+{}
+
+POST /$2
+{
   "settings": {
     "number_of_shards": 1,
     "number_of_replicas": 0
@@ -28,26 +30,26 @@ curl -XPOST 'localhost:9200/$2' -d'{
       }
     }
   }
-}'$0
-echo
+}$0
 #+END_SRC
 
 * Index docs
 
-#+BEGIN_SRC es :tangle `(file-name-base (buffer-name))`.zsh
-curl -XPOST 'localhost:9200/$2/doc/1' -d'{"body": "foo"}'
-echo
-curl -XPOST 'localhost:9200/$2/_refresh'
-echo
+#+BEGIN_SRC es :tangle yes
+POST /$2/doc/1
+{"body": "foo"}
+
+POST /$2/_refresh
+{}
 #+END_SRC
 
 * Query
 
-#+BEGIN_SRC es :tangle `(file-name-base (buffer-name))`.zsh
-curl -XPOST 'localhost:9200/$2/_search?pretty' -d'
+#+BEGIN_SRC es :tangle yes
+POST /$2/_search?pretty
 {
   "query": {
     "match_all": {}
   }
-}'
+}
 #+END_SRC

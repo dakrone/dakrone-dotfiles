@@ -1056,6 +1056,21 @@ Bleh javascript.
 (setq-default js-indent-level 2)
 #+END_SRC
 
+*** Elasticsearch
+(es-mode) stuff, loaded from disk so I can develop on it quickly.
+
+#+BEGIN_SRC emacs-lisp
+(when (file-exists-p "~/src/elisp/es-mode")
+  (add-to-list 'load-path "~/src/elisp/es-mode")
+  (use-package es-mode)
+  (use-package ob-elasticsearch
+    :config
+    (org-babel-do-load-languages
+     'org-babel-load-languages
+     '((elasticsearch . t)))))
+
+#+END_SRC
+
 ** VCS Settings
 These are my settings for version control stuff.
 
@@ -1315,7 +1330,7 @@ settings are mine.
     (add-hook 'org-mode-hook
               (lambda ()
                 (use-package column-marker
-                  :init (column-marker-1 80))
+                  :init (column-marker-1 140))
                 (define-key org-mode-map [C-tab] 'other-window)
                 (define-key org-mode-map [C-S-tab]
                   (lambda ()
@@ -1338,12 +1353,6 @@ settings are mine.
        (ruby . t)
        (python . t)
        (gnuplot . t)))
-
-    (use-package ob-elasticsearch
-      :config
-      (org-babel-do-load-languages
-       'org-babel-load-languages
-       '((elasticsearch . t))))
 
     ;; Allow executing es-mode files (https://github.com/dakrone/es-mode)
     ;; (defun org-babel-execute:es (body params)
@@ -2507,8 +2516,10 @@ And some niceties to allow choosing a snippet using helm:
     ;; faces
     ;; (set-face-attribute 'magit-branch nil
     ;;                     :foreground "yellow" :weight 'bold :underline t)
-    (set-face-attribute 'magit-item-highlight nil
-                        :background nil)
+    (add-hook 'magit-mode-hook
+              (lambda ()
+                (set-face-attribute 'magit-item-highlight nil
+                                    :background "#262626")))
     (custom-set-variables '(magit-set-upstream-on-push (quote dontask)))))
 #+END_SRC
 ** Editorconfig
@@ -2524,7 +2535,6 @@ Per-project navigation
 #+BEGIN_SRC emacs-lisp
 (use-package projectile
   :init (progn
-          (setq projectile-enable-caching t)
           (projectile-global-mode)
           (defconst projectile-mode-line-lighter " P")))
 #+END_SRC

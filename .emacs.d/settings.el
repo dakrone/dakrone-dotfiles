@@ -582,6 +582,15 @@
 (setq-default js-auto-indent-flag nil)
 (setq-default js-indent-level 2)
 
+(when (file-exists-p "~/src/elisp/es-mode")
+  (add-to-list 'load-path "~/src/elisp/es-mode")
+  (use-package es-mode)
+  (use-package ob-elasticsearch
+    :config
+    (org-babel-do-load-languages
+     'org-babel-load-languages
+     '((elasticsearch . t)))))
+
 (global-auto-revert-mode 1)
 
 (setq vc-follow-symlinks t)
@@ -798,7 +807,7 @@
     (add-hook 'org-mode-hook
               (lambda ()
                 (use-package column-marker
-                  :init (column-marker-1 80))
+                  :init (column-marker-1 140))
                 (define-key org-mode-map [C-tab] 'other-window)
                 (define-key org-mode-map [C-S-tab]
                   (lambda ()
@@ -821,12 +830,6 @@
        (ruby . t)
        (python . t)
        (gnuplot . t)))
-
-    (use-package ob-elasticsearch
-      :config
-      (org-babel-do-load-languages
-       'org-babel-load-languages
-       '((elasticsearch . t))))
 
     ;; Allow executing es-mode files (https://github.com/dakrone/es-mode)
     ;; (defun org-babel-execute:es (body params)
@@ -1903,15 +1906,16 @@ passed in. Also supports ignoring the msg at the point."
     ;; faces
     ;; (set-face-attribute 'magit-branch nil
     ;;                     :foreground "yellow" :weight 'bold :underline t)
-    (set-face-attribute 'magit-item-highlight nil
-                        :background nil)
+    (add-hook 'magit-mode-hook
+              (lambda ()
+                (set-face-attribute 'magit-item-highlight nil
+                                    :background "#262626")))
     (custom-set-variables '(magit-set-upstream-on-push (quote dontask)))))
 
 (use-package editorconfig)
 
 (use-package projectile
   :init (progn
-          (setq projectile-enable-caching t)
           (projectile-global-mode)
           (defconst projectile-mode-line-lighter " P")))
 

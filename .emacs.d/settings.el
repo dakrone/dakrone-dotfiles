@@ -317,8 +317,7 @@
 (add-hook
  'prog-mode-hook
  (lambda ()
-   (use-package column-marker
-     :init (column-marker-1 80))
+   (use-package column-marker)
    (subword-mode t)))
 
 (use-package idle-highlight-mode
@@ -615,27 +614,6 @@
 ;; Anti-aliasing
 (setq mac-allow-anti-aliasing t)
 
-;; ;; Insidious Black Magic Bits:
-;; ;; Use variable width font faces in current buffer
-;; (defun my-buffer-face-mode-variable ()
-;; "Set font to a variable width (proportional) fonts in current buffer"
-;; (interactive)
-;; (setq buffer-face-mode-face
-;;       '(:family "DejaVu Sans" :height 125 :width semi-condensed))
-;; (buffer-face-mode))
-
-;; ;; Use monospaced font faces in current buffer
-;; (defun my-buffer-face-mode-fixed ()
-;; "Sets a fixed width (monospace) font in current buffer"
-;; (interactive)
-;; (setq buffer-face-mode-face '(:family "DejaVu Sans Mono" :height 115))
-;; (buffer-face-mode))
-
-;; (add-hook 'erc-mode-hook 'my-buffer-face-mode-variable)
-;; (add-hook 'org-mode-hook 'my-buffer-face-mode-variable)
-;; (add-hook 'text-mode-hook 'my-buffer-face-mode-variable)
-;; (add-hook 'Info-mode-hook 'my-buffer-face-mode-variable)
-
 (setq ns-use-srgb-colorspace t)
 
 ;; Emacs 24.4 requires these faces to be defined :-/
@@ -664,7 +642,9 @@
         (load-theme 'subatomic t))
     (progn
       ;; https://github.com/d11wtq/subatomic256
-      (load-theme 'subatomic256 t))))
+      ;;(load-theme 'subatomic256 t)
+      (load-theme 'dakrone t)
+      )))
 
 (defun dakrone-light ()
   (interactive)
@@ -1925,9 +1905,9 @@ passed in. Also supports ignoring the msg at the point."
   :config
   (progn
     (prodigy-define-service
-     :name "Elasticsearch 1.0.1"
-     :cwd "~/esi/elasticsearch-1.0.1/"
-     :command "~/esi/elasticsearch-1.0.1/bin/elasticsearch"
+     :name "Elasticsearch 1.1.0"
+     :cwd "~/esi/elasticsearch-1.1.0/"
+     :command "~/esi/elasticsearch-1.1.0/bin/elasticsearch"
      :tags '(work test es)
      :port 9200)
 
@@ -1936,6 +1916,13 @@ passed in. Also supports ignoring the msg at the point."
      :cwd "~/esi/elasticsearch-0.90.12/"
      :command "~/esi/elasticsearch-0.90.12/bin/elasticsearch"
      :args '("-f")
+     :tags '(work test es)
+     :port 9200)
+
+    (prodigy-define-service
+     :name "Elasticsearch 1.0.2"
+     :cwd "~/esi/elasticsearch-1.0.2/"
+     :command "~/esi/elasticsearch-1.0.2/bin/elasticsearch"
      :tags '(work test es)
      :port 9200)))
 

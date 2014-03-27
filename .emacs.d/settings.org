@@ -63,11 +63,12 @@ overwritten the next time this is tangled
 *** General settings
 First, let's determine whether I'm going to be using a dark theme,
 or a light theme. I set a var to either '=light= or '=dark=
-depending on whatever I'm in the mood for.
+depending on whatever I'm in the mood for. This is used later on for the
+modeline theme, as well as the general theme for things.
 
 #+BEGIN_SRC emacs-lisp
-;;(defvar my/background 'light)
-(defvar my/background 'dark)
+(defvar my/background 'light)
+;;(defvar my/background 'dark)
 #+END_SRC
 
 Always, *always*, prefer UTF-8, anything else is insanity
@@ -528,6 +529,7 @@ running very quickly. My personal word dictionary is at
 
 (setq ispell-personal-dictionary "~/.flydict")
 #+END_SRC
+
 *** View-mode
 Read-only viewing of files. Keybindings for paging through stuff
 in a less/vim manner.
@@ -1154,6 +1156,7 @@ See a [[https://github-camo.global.ssl.fastly.net/585b59c2a71eb618b0bff59b3f5ca4
   (interactive)
   ;; https://github.com/fniessen/emacs-leuven-theme
   (load-theme 'leuven t)
+  ;;(load-theme 'flatui t)
   (defclojureface clojure-parens       "#696969"   "Clojure parens")
   (defclojureface clojure-braces       "#696969"   "Clojure braces")
   (defclojureface clojure-brackets     "#4682b4"   "Clojure brackets")
@@ -1213,7 +1216,7 @@ settings are mine.
 
 #+BEGIN_SRC emacs-lisp
 (use-package org
-  :mode ("\\.\\(org\\|org_archive\\|txt\\)$" . org-mode)
+  :mode ("\\.\\(org\\|org_archive\\)$" . org-mode)
   :config
   (progn
     (require 'org-install)
@@ -1224,6 +1227,7 @@ settings are mine.
           org-return-follows-link t
           org-use-fast-todo-selection t
           org-src-fontify-natively t
+          org-fontify-whole-heading-line t
           org-completion-use-ido t
           org-edit-src-content-indentation 0
           ;; Imenu should use 3 depth instead of 2
@@ -1235,6 +1239,7 @@ settings are mine.
           org-special-ctrl-a/e t
           org-special-ctrl-k t
           org-yank-adjusted-subtrees nil
+          org-src-window-setup 'current-window
           ;; Overwrite the current window with the agenda
           org-agenda-window-setup 'current-window
 
@@ -1273,6 +1278,14 @@ settings are mine.
              "* %?\n%U\n")
             ("m" "Meeting" entry (file+headline "~/org/meetings.org" "Meetings"))))
 
+    (with-eval-after-load "org"
+      ;; ellipsis to use in the Org mode outline
+      (setq org-ellipsis
+            (if (char-displayable-p ?\u25B7) ; white right-pointing triangle
+                ;; this test takes ~ 0.40s; hence, wrapped in eval-after-load
+                " \u25B7"                 ; string
+              'org-ellipsis)))
+
     (setq org-refile-targets (quote ((nil :maxlevel . 9)
                                      (org-agenda-files :maxlevel . 9))))
     ;; Use full outline paths for refile targets - we file directly with IDO
@@ -1308,6 +1321,7 @@ settings are mine.
 
     (add-hook 'org-mode-hook
               (lambda ()
+                (turn-on-flyspell)
                 (use-package column-marker
                   :init (column-marker-1 140))
                 (define-key org-mode-map [C-tab] 'other-window)
@@ -2376,7 +2390,9 @@ And some niceties to allow choosing a snippet using helm:
     (define-key paredit-mode-map (kbd "C-)") 'paredit-forward-slurp-sexp)
     (define-key paredit-mode-map (kbd ")") 'paredit-close-parenthesis)))
 #+END_SRC
+
 ** Smartparens
+
 #+BEGIN_SRC emacs-lisp
 (use-package smartparens
   :init
@@ -2446,7 +2462,9 @@ And some niceties to allow choosing a snippet using helm:
     (sp-with-modes sp--lisp-modes
       (sp-local-pair "(" nil :bind "C-("))))
 #+END_SRC
+
 ** Flycheck
+
 #+BEGIN_SRC emacs-lisp
 (use-package flycheck
   :diminish "fc"
@@ -2465,6 +2483,7 @@ And some niceties to allow choosing a snippet using helm:
                 (global-set-key (kbd "C-c C-n") 'flycheck-tip-cycle)
                 (global-set-key (kbd "C-c C-p") 'flycheck-tip-cycle-reverse)))))
 #+END_SRC
+
 ** Expand-region
 
 #+BEGIN_SRC emacs-lisp
@@ -2472,6 +2491,7 @@ And some niceties to allow choosing a snippet using helm:
   :config (progn (global-set-key (kbd "C-c e") 'er/expand-region)
                  (global-set-key (kbd "C-M-@") 'er/contract-region)))
 #+END_SRC
+
 ** Magit
 #+BEGIN_SRC emacs-lisp
 (defun magit-browse ()
@@ -2495,12 +2515,13 @@ And some niceties to allow choosing a snippet using helm:
     ;; faces
     ;; (set-face-attribute 'magit-branch nil
     ;;                     :foreground "yellow" :weight 'bold :underline t)
-    (add-hook 'magit-mode-hook
-              (lambda ()
-                (set-face-attribute 'magit-item-highlight nil
-                                    :background "#262626")))
+    ;; (add-hook 'magit-mode-hook
+    ;;           (lambda ()
+    ;;             (set-face-attribute 'magit-item-highlight nil
+    ;;                                 :background "#262626")))
     (custom-set-variables '(magit-set-upstream-on-push (quote dontask)))))
 #+END_SRC
+
 ** Editorconfig
 Editor-specific settings, make sure to =brew install editorconfig= or whatever.
 
@@ -2517,6 +2538,7 @@ Per-project navigation
           (projectile-global-mode)
           (defconst projectile-mode-line-lighter " P")))
 #+END_SRC
+
 ** Prodigy
 I basically use this to start up ES when I need to test something really quickly
 
@@ -2831,6 +2853,7 @@ Used smart-tab to complete everywhere except for ERC, shell and mu4e.
                 (add-to-list 'smart-tab-disabled-major-modes 'erc-mode)
                 (add-to-list 'smart-tab-disabled-major-modes 'shell-mode)))))
 #+END_SRC
+
 ** Elfeed
 RSS in Emacs
 
@@ -2854,6 +2877,7 @@ visualize it in ascii art if needed.
     (define-key undo-tree-map (kbd "C-x u") 'undo-tree-visualize)
     (define-key undo-tree-map (kbd "C-/") 'undo-tree-undo)))
 #+END_SRC
+
 ** Popwin
 Popwin handles little popup windows at the bottom of the screen, which is very
 helpful for documentation buffers and so on.
@@ -2928,6 +2952,7 @@ helpful for documentation buffers and so on.
           popwin:special-display-config)
     ))
 #+END_SRC
+
 ** Paren-face
 Paren-face adds a face for parentheses, which is used by themes to darken the
 parens.
@@ -2967,6 +2992,19 @@ immediately use Twitter :P
   :config
   (progn (setq twittering-icon-mode t)
          (setq twittering-use-master-password t)))
+#+END_SRC
+
+** EMMS
+Music playing from Emacs
+
+#+BEGIN_SRC emacs-lisp
+(use-package emms-setup
+  :disabled t
+  :config
+  (progn
+    (emms-all)
+    (emms-default-players)
+    (setq emms-source-file-default-directory "~/Music/iTunes/iTunes Media/Music/")))
 #+END_SRC
 
 ** Scpaste
@@ -3252,6 +3290,7 @@ A utility method to add things to the $PATH, if needed.
   (untabify-buffer)
   (delete-trailing-whitespace))
 #+END_SRC
+
 *** Browsing URLs
 Search backwards, prompting to open any URL found. This is
 fantastic for ERC buffers. I bind this to =C-c u= because I use it
@@ -3272,6 +3311,7 @@ a lot.
 
     (global-set-key (kbd "C-c u") 'browse-last-url-in-brower)
 #+END_SRC
+
 *** Numbering rectangles
 Let's say you have a list like:
 
@@ -3319,6 +3359,7 @@ and starting offset to number lines in rectangular-selection mode:
 
     (global-set-key (kbd "C-x r N") 'number-rectangle)
 #+END_SRC
+
 *** Insert look of disapproval
 Used more often than you'd think...
 
@@ -3330,6 +3371,7 @@ Used more often than you'd think...
 
     (global-set-key (kbd "C-c M-d") 'my/insert-lod)
 #+END_SRC
+
 *** Browse Elasticsearch documentation
 A function to search/browse ES docs from Emacs using =eww=
 

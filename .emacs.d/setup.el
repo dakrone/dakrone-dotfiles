@@ -30,7 +30,7 @@
     ido-vertical-mode yasnippet idle-highlight-mode smart-tab anzu
     smartparens flx-ido projectile smooth-scrolling keyfreq
     prodigy column-marker highlight-symbol editorconfig ace-jump-mode
-    multiple-cursors
+    multiple-cursors fancy-narrow
 
     ;; LaTeX
     auctex

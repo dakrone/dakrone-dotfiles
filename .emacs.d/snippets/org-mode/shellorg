@@ -8,7 +8,6 @@
 #+OPTIONS:  skip:nil d:(HIDE) tags:not-in-toc
 #+PROPERTY: header-args :results code :exports both :noweb yes
 #+HTML_HEAD: <style type="text/css">body {margin-right:15%; margin-left:15%;}</style>
-#+HTML_HEAD: <style>pre.src {background-color: #303347; color: #e5e5e5;}</style>
 #+LANGUAGE: en
 
 * Create the index

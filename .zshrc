@@ -15,7 +15,8 @@ export MANPATH=$MANPATH:$PLAN9/man
 
 # go
 export GOROOT=/usr/local/go
-export PATH=$PATH:$GOROOT/bin
+export GOPATH=~/.go
+export PATH=$PATH:$GOPATH/bin
 
 # crazy pip/homebrew things
 export PATH=$PATH:/usr/local/share/python

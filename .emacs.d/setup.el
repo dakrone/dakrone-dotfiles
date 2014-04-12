@@ -30,7 +30,7 @@
     ido-vertical-mode yasnippet idle-highlight-mode smart-tab anzu
     smartparens flx-ido projectile smooth-scrolling keyfreq
     prodigy column-marker highlight-symbol editorconfig ace-jump-mode
-    multiple-cursors fancy-narrow
+    multiple-cursors fancy-narrow easy-kill
 
     ;; LaTeX
     auctex
@@ -52,7 +52,7 @@
 
     ;; clojure
     clojure-mode cider paredit paren-face kibit-mode clojure-test-mode
-    cider-tracing cider-decompile javap-mode
+    cider-tracing cider-decompile javap-mode company-cider
 
     ;; perl
     cperl-mode
@@ -71,6 +71,9 @@
 
     ;; java
     emacs-eclim
+
+    ;; javascript
+    tern
 
     ;; emacs-lisp
     elisp-slime-nav paredit

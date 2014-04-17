@@ -29,6 +29,5 @@
             (setq ido-enable-flex-matching t)
             (global-set-key "\M-x" 'ido-execute-command)))
 
-(tool-bar-mode -1)
 (menu-bar-mode -1)
 (scroll-bar-mode -1)

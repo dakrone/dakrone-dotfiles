@@ -50,8 +50,8 @@ export LEDGER_FILE=~/data/ledger.dat
 # IRBRC for RVM
 export IRBRC=~/.irbrc
 
-# 20 second poll time for autossh
-export AUTOSSH_POLL=20
+# 10 second poll time for autossh
+export AUTOSSH_POLL=10
 
 # don't show load in prompt by default
 export SHOW_LOAD=false

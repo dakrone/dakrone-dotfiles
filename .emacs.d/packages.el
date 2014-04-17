@@ -9,9 +9,6 @@
 
 (defvar my/install-packages
   '(
-    ;; use-package
-    use-package
-
     ;; themeing
     rainbow-mode leuven-theme dakrone-theme smart-mode-line
     color-identifiers-mode subatomic-theme subatomic256-theme
@@ -70,7 +67,7 @@
     go-mode
 
     ;; java
-    emacs-eclim
+    emacs-eclim malabar-mode
 
     ;; javascript
     tern
@@ -82,7 +79,7 @@
     markdown-mode markdown-mode+ yaml-mode zencoding-mode
 
     ;; helm
-    helm helm-descbinds helm-ag helm-projectile
+    helm helm-descbinds helm-ag helm-projectile helm-swoop
 
     ;; git
     magit git-gutter

@@ -818,18 +818,20 @@ keys, the custom hook only loads jedi when editing python files:
 (setup-lazy
   '(python-mode) "python"
   (define-key python-mode-map (kbd "C-c C-z") 'run-python)
-  (define-key python-mode-map (kbd "<backtab>") 'python-back-indent)
-  (setup-after "python"
-    (setup-expecting "jedi"
-      (jedi:setup)
-      (jedi:ac-setup)
-      (setq jedi:setup-keys t)
-      (setq jedi:complete-on-dot t)
-      (define-key python-mode-map (kbd "C-c C-d") 'jedi:show-doc)
-      (setq jedi:tooltip-method nil)
-      (set-face-attribute 'jedi:highlight-function-argument nil
-                          :foreground "green")
-      (define-key python-mode-map (kbd "C-c C-l") 'jedi:get-in-function-call))))
+  (define-key python-mode-map (kbd "<backtab>") 'python-back-indent))
+
+(setup-lazy '(jedi-mode) "jedi"
+  (jedi:setup)
+  (jedi:ac-setup)
+  (setq jedi:setup-keys t)
+  (setq jedi:complete-on-dot t)
+  (define-key python-mode-map (kbd "C-c C-d") 'jedi:show-doc)
+  (setq jedi:tooltip-method nil)
+  (set-face-attribute 'jedi:highlight-function-argument nil
+                      :foreground "green")
+  (define-key python-mode-map (kbd "C-c C-l") 'jedi:get-in-function-call))
+
+(add-hook 'python-mode-hook (lambda () (jedi-mode t)))
 #+END_SRC
 
 *** Ruby

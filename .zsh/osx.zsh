@@ -10,6 +10,14 @@ if [[ $OS == "Darwin" ]]; then
     }
 
     function java7() {
+        export JAVA_HOME=/Library/Java/JavaVirtualMachines/jdk1.7.0_55.jdk/Contents/Home
+    }
+
+    function java7_55() {
+        export JAVA_HOME=/Library/Java/JavaVirtualMachines/jdk1.7.0_55.jdk/Contents/Home
+    }
+
+    function java7_51() {
         export JAVA_HOME=/Library/Java/JavaVirtualMachines/jdk1.7.0_51.jdk/Contents/Home
     }
 

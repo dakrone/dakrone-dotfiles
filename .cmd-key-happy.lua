@@ -32,6 +32,7 @@ apps = {
    iTerm = { exclude = Set{ "cmd-1",
                             "cmd-2",
                             "cmd-3",
+                            "cmd-4",
                             "cmd-`",
                             "cmd-c",
                             "cmd-1",

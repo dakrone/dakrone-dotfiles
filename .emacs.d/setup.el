@@ -57,6 +57,7 @@
 (require 'cl-lib)
 (require 'find-func)
 (require 'macroexp)
+(require 'bytecomp)
 
 (defconst setup-version "1.0.0")
 

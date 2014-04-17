@@ -1631,11 +1631,11 @@ passed in. Also supports ignoring the msg at the point."
 
 (setup-lazy
   '(yas-minor-mode yas-minor-mode-on) "yasnippet"
-  (yas-reload-all)
-  (setup-expecting "org"
-    (add-hook org-mode-hook 'yas-minor-mode-on))
-  (setup-expecting "clojure-mode"
-    (add-hook clojure-mode-hook 'yas-minor-mode-on)))
+  (yas-reload-all))
+
+(add-hook 'emacs-lisp-mode-hook 'yas-minor-mode-on)
+(add-hook 'org-mode-hook 'yas-minor-mode-on)
+(add-hook 'clojure-mode-hook 'yas-minor-mode-on)
 
 (setup-after "helm-config"
   (setup-expecting "yasnippet"

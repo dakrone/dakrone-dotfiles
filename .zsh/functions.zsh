@@ -274,3 +274,15 @@ function chk-url() {
 function pub() {
     scp $1 writequit:public_html/wq/pub/
 }
+
+function cla() {
+    curl -I 'http://54.204.36.1:3000/verify/nickname/$1'
+}
+
+function es-tunnel() {
+    autossh -M0 $1 -L 9400:localhost:9200 -CNf
+}
+
+function kibana-tunnel() {
+    autossh -M0 $1 -L 9292:localhost:9292 -CNf
+}

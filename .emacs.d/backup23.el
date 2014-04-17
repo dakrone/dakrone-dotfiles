@@ -1,3 +1,6 @@
+;; Dvorak nicety, regardless of loading settings
+(define-key key-translation-map "\C-t" "\C-x")
+
 (autoload 'ansi-color-for-comint-mode-on "ansi-color" nil t)
 (add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on)
 (custom-set-faces

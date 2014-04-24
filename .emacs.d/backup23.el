@@ -33,4 +33,3 @@
             (global-set-key "\M-x" 'ido-execute-command)))
 
 (menu-bar-mode -1)
-(scroll-bar-mode -1)

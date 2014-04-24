@@ -286,3 +286,8 @@ function es-tunnel() {
 function kibana-tunnel() {
     autossh -M0 $1 -L 9292:localhost:9292 -CNf
 }
+
+function del-branch() {
+    git branch -d $1
+    git push dakrone :$1
+}

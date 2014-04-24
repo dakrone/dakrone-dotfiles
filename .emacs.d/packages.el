@@ -27,7 +27,7 @@
     ido-vertical-mode yasnippet idle-highlight-mode smart-tab anzu
     smartparens flx-ido projectile smooth-scrolling keyfreq
     prodigy column-marker highlight-symbol ace-jump-mode
-    multiple-cursors fancy-narrow easy-kill
+    multiple-cursors fancy-narrow easy-kill indent-guide
 
     ;; LaTeX
     auctex
@@ -70,7 +70,7 @@
     emacs-eclim malabar-mode
 
     ;; javascript
-    tern
+    tern json-mode
 
     ;; emacs-lisp
     elisp-slime-nav paredit

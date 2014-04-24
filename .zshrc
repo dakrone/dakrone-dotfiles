@@ -18,6 +18,9 @@ export GOROOT=/usr/local/go
 export GOPATH=~/.go
 export PATH=$PATH:$GOPATH/bin
 
+# node things
+export PATH=$PATH:~/node_modules/.bin/
+
 # crazy pip/homebrew things
 export PATH=$PATH:/usr/local/share/python
 export PYTHONSTARTUP=~/.pythonstartup

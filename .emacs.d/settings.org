@@ -160,7 +160,7 @@ know Emacs is starting.
 
 #+BEGIN_SRC emacs-lisp
 (setq ring-bell-function (lambda()))
-(setq inhibit-startup-message nil
+(setq inhibit-startup-message t
       initial-major-mode 'fundamental-mode)
 #+END_SRC
 
@@ -506,12 +506,9 @@ Read-only viewing of files. Keybindings for paging through stuff
 in a less/vim manner.
 
 #+BEGIN_SRC emacs-lisp
-(setup-lazy
-  '(view-mode) "view"
-  :prepare
-  (setup-keybinds nil
-    "C-M-n" 'View-scroll-half-page-forward
-    "C-M-p" 'View-scroll-half-page-backward)
+(setup "view"
+  (global-set-key (kbd "C-M-n") 'View-scroll-half-page-forward)
+  (global-set-key (kbd "C-M-p") 'View-scroll-half-page-backward)
 
   ;; When in view-mode, the buffer is read-only:
   (setq view-read-only t)
@@ -573,7 +570,7 @@ top. Always copy and delete recursively. Also enable
 Let's make sure to start up a server!
 
 #+BEGIN_SRC emacs-lisp
-(when (window-system)
+(when (not (window-system))
   (setup "server"
     (unless (server-running-p)
       (server-start))))
@@ -2173,6 +2170,8 @@ And some niceties to allow choosing a snippet using helm:
   (define-key paredit-mode-map (kbd "C-(") 'paredit-forward-barf-sexp)
   (define-key paredit-mode-map (kbd "C-)") 'paredit-forward-slurp-sexp)
   (define-key paredit-mode-map (kbd ")") 'paredit-close-parenthesis))
+
+(add-hook 'cider-repl-mode-hook (lambda () (paredit-mode t)))
 #+END_SRC
 
 ** Smartparens
@@ -2251,7 +2250,10 @@ And some niceties to allow choosing a snippet using helm:
 
 #+BEGIN_SRC emacs-lisp
 (setup-lazy
-  '(flycheck-mode) "flycheck"
+  '(flycheck-mode flycheck-next-error flycheck-previous-error) "flycheck"
+  :prepare (setup-keybinds nil
+             "M-g M-n" 'flycheck-next-error
+             "M-g M-p" 'flycheck-previous-error)
   (add-hook 'after-init-hook #'global-flycheck-mode)
   ;; disable the annoying doc checker
   (setq-default flycheck-disabled-checkers
@@ -2299,10 +2301,10 @@ And some niceties to allow choosing a snippet using helm:
   ;; faces
   ;; (set-face-attribute 'magit-branch nil
   ;;                     :foreground "yellow" :weight 'bold :underline t)
-  ;; (add-hook 'magit-mode-hook
-  ;;           (lambda ()
-  ;;             (set-face-attribute 'magit-item-highlight nil
-  ;;                                 :background "#262626")))
+  (add-hook 'magit-mode-hook
+            (lambda ()
+              (set-face-attribute 'magit-item-highlight nil
+                                  :background "#262626")))
   (custom-set-variables '(magit-set-upstream-on-push (quote dontask))))
 #+END_SRC
 
@@ -2327,24 +2329,24 @@ I basically use this to start up ES when I need to test something really quickly
   '(prodigy) "prodigy"
   :prepare (setup-keybinds nil "C-x P" 'prodigy)
   (prodigy-define-service
-    :name "Elasticsearch 1.1.0"
-    :cwd "~/esi/elasticsearch-1.1.0/"
-    :command "~/esi/elasticsearch-1.1.0/bin/elasticsearch"
+    :name "Elasticsearch 1.1.1"
+    :cwd "~/esi/elasticsearch-1.1.1/"
+    :command "~/esi/elasticsearch-1.1.1/bin/elasticsearch"
     :tags '(work test es)
     :port 9200)
 
   (prodigy-define-service
-    :name "Elasticsearch 0.90.12"
-    :cwd "~/esi/elasticsearch-0.90.12/"
-    :command "~/esi/elasticsearch-0.90.12/bin/elasticsearch"
+    :name "Elasticsearch 0.90.13"
+    :cwd "~/esi/elasticsearch-0.90.13/"
+    :command "~/esi/elasticsearch-0.90.13/bin/elasticsearch"
     :args '("-f")
     :tags '(work test es)
     :port 9200)
 
   (prodigy-define-service
-    :name "Elasticsearch 1.0.2"
-    :cwd "~/esi/elasticsearch-1.0.2/"
-    :command "~/esi/elasticsearch-1.0.2/bin/elasticsearch"
+    :name "Elasticsearch 1.0.3"
+    :cwd "~/esi/elasticsearch-1.0.3/"
+    :command "~/esi/elasticsearch-1.0.3/bin/elasticsearch"
     :tags '(work test es)
     :port 9200))
 #+END_SRC
@@ -2865,7 +2867,7 @@ scp-ing an HTML version of the current buffer somewhere
 #+BEGIN_SRC emacs-lisp
 (setup-lazy '(color-identifiers-mode) "color-identifiers-mode")
 
-(add-hook 'prog-mode-hook (lambda () (color-identifiers-mode t)))
+;;(add-hook 'prog-mode-hook (lambda () (color-identifiers-mode t)))
 #+END_SRC
 
 ** Iedit
@@ -2898,6 +2900,14 @@ scp-ing an HTML version of the current buffer somewhere
             '(lambda ()
                (hs-minor-mode t)
                (define-key hs-minor-mode-map (kbd "C-c TAB") 'hs-toggle-hiding)))
+#+END_SRC
+** Indent-guide
+A neat mode to show indention
+
+#+BEGIN_SRC emacs-lisp
+(setup-lazy '(indent-guide-mode) "indent-guide")
+
+(add-hook 'prog-mode-hook (lambda () (indent-guide-mode t)))
 #+END_SRC
 
 ** Modeline
@@ -2938,9 +2948,6 @@ Deletes whitespace at join."
     (kill-line arg)))
 
 (global-set-key (kbd "C-k") 'kill-and-join-forward)
-
-(global-set-key (kbd "M-g M-n") 'flycheck-next-error)
-(global-set-key (kbd "M-g M-p") 'flycheck-prev-error)
 
 ;; You know, like Readline.
 (global-set-key (kbd "C-M-h") 'backward-kill-word)

@@ -50,7 +50,7 @@
 (blink-cursor-mode -1)
 
 (setq ring-bell-function (lambda()))
-(setq inhibit-startup-message nil
+(setq inhibit-startup-message t
       initial-major-mode 'fundamental-mode)
 
 (line-number-mode 1)
@@ -228,12 +228,9 @@
   (define-key flyspell-mode-map (kbd "M-n") 'flyspell-goto-next-error)
   (define-key flyspell-mode-map (kbd "M-.") 'ispell-word))
 
-(setup-lazy
-  '(view-mode) "view"
-  :prepare
-  (setup-keybinds nil
-    "C-M-n" 'View-scroll-half-page-forward
-    "C-M-p" 'View-scroll-half-page-backward)
+(setup "view"
+  (global-set-key (kbd "C-M-n") 'View-scroll-half-page-forward)
+  (global-set-key (kbd "C-M-p") 'View-scroll-half-page-backward)
 
   ;; When in view-mode, the buffer is read-only:
   (setq view-read-only t)
@@ -280,7 +277,7 @@
     (define-key dired-mode-map (kbd "C-M-u") 'dired-up-directory)
     (add-hook 'dired-mode-hook (lambda () (hl-line-mode)))))
 
-(when (window-system)
+(when (not (window-system))
   (setup "server"
     (unless (server-running-p)
       (server-start))))
@@ -1664,6 +1661,8 @@ passed in. Also supports ignoring the msg at the point."
   (define-key paredit-mode-map (kbd "C-)") 'paredit-forward-slurp-sexp)
   (define-key paredit-mode-map (kbd ")") 'paredit-close-parenthesis))
 
+(add-hook 'cider-repl-mode-hook (lambda () (paredit-mode t)))
+
 (setup-lazy
   '(smartparens-mode) "smartparens"
   (add-hook 'sh-mode-hook
@@ -1733,7 +1732,10 @@ passed in. Also supports ignoring the msg at the point."
             (show-smartparens-global-mode t)))
 
 (setup-lazy
-  '(flycheck-mode) "flycheck"
+  '(flycheck-mode flycheck-next-error flycheck-previous-error) "flycheck"
+  :prepare (setup-keybinds nil
+             "M-g M-n" 'flycheck-next-error
+             "M-g M-p" 'flycheck-previous-error)
   (add-hook 'after-init-hook #'global-flycheck-mode)
   ;; disable the annoying doc checker
   (setq-default flycheck-disabled-checkers
@@ -1773,10 +1775,10 @@ passed in. Also supports ignoring the msg at the point."
   ;; faces
   ;; (set-face-attribute 'magit-branch nil
   ;;                     :foreground "yellow" :weight 'bold :underline t)
-  ;; (add-hook 'magit-mode-hook
-  ;;           (lambda ()
-  ;;             (set-face-attribute 'magit-item-highlight nil
-  ;;                                 :background "#262626")))
+  (add-hook 'magit-mode-hook
+            (lambda ()
+              (set-face-attribute 'magit-item-highlight nil
+                                  :background "#262626")))
   (custom-set-variables '(magit-set-upstream-on-push (quote dontask))))
 
 (setup-lazy
@@ -1791,24 +1793,24 @@ passed in. Also supports ignoring the msg at the point."
   '(prodigy) "prodigy"
   :prepare (setup-keybinds nil "C-x P" 'prodigy)
   (prodigy-define-service
-    :name "Elasticsearch 1.1.0"
-    :cwd "~/esi/elasticsearch-1.1.0/"
-    :command "~/esi/elasticsearch-1.1.0/bin/elasticsearch"
+    :name "Elasticsearch 1.1.1"
+    :cwd "~/esi/elasticsearch-1.1.1/"
+    :command "~/esi/elasticsearch-1.1.1/bin/elasticsearch"
     :tags '(work test es)
     :port 9200)
 
   (prodigy-define-service
-    :name "Elasticsearch 0.90.12"
-    :cwd "~/esi/elasticsearch-0.90.12/"
-    :command "~/esi/elasticsearch-0.90.12/bin/elasticsearch"
+    :name "Elasticsearch 0.90.13"
+    :cwd "~/esi/elasticsearch-0.90.13/"
+    :command "~/esi/elasticsearch-0.90.13/bin/elasticsearch"
     :args '("-f")
     :tags '(work test es)
     :port 9200)
 
   (prodigy-define-service
-    :name "Elasticsearch 1.0.2"
-    :cwd "~/esi/elasticsearch-1.0.2/"
-    :command "~/esi/elasticsearch-1.0.2/bin/elasticsearch"
+    :name "Elasticsearch 1.0.3"
+    :cwd "~/esi/elasticsearch-1.0.3/"
+    :command "~/esi/elasticsearch-1.0.3/bin/elasticsearch"
     :tags '(work test es)
     :port 9200))
 
@@ -2219,7 +2221,7 @@ passed in. Also supports ignoring the msg at the point."
 
 (setup-lazy '(color-identifiers-mode) "color-identifiers-mode")
 
-(add-hook 'prog-mode-hook (lambda () (color-identifiers-mode t)))
+;;(add-hook 'prog-mode-hook (lambda () (color-identifiers-mode t)))
 
 (setup-lazy
   '(iedit-mode) "iedit"
@@ -2246,6 +2248,10 @@ passed in. Also supports ignoring the msg at the point."
             '(lambda ()
                (hs-minor-mode t)
                (define-key hs-minor-mode-map (kbd "C-c TAB") 'hs-toggle-hiding)))
+
+(setup-lazy '(indent-guide-mode) "indent-guide")
+
+(add-hook 'prog-mode-hook (lambda () (indent-guide-mode t)))
 
 (setup "smart-mode-line")
 
@@ -2274,9 +2280,6 @@ Deletes whitespace at join."
     (kill-line arg)))
 
 (global-set-key (kbd "C-k") 'kill-and-join-forward)
-
-(global-set-key (kbd "M-g M-n") 'flycheck-next-error)
-(global-set-key (kbd "M-g M-p") 'flycheck-prev-error)
 
 ;; You know, like Readline.
 (global-set-key (kbd "C-M-h") 'backward-kill-word)

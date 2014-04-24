@@ -13,9 +13,6 @@ curl -s https://raw.github.com/dakrone/dakrone-dotfiles/master/bootstrap | zsh
 
 # ZSH randomness:
 
-A random prompt pet is chosen, `export PROMPT_PETS=("a" "b" "c" ...)` to
-specify a list, or set PROMPT_PET explicitly to use that pet.
-
 Put important commands in ~/.important_commands and they'll always be
 in your backwards search history.
 
@@ -25,7 +22,7 @@ in your backwards search history.
 2. Run:
 
 ```
-emacs -q -batch -l ~/.emacs.d/setup.el -kill
+emacs -q -batch -l ~/.emacs.d/packages.el -kill
 ```
 
 Much package installing will commence. If there are errors, just keep
@@ -43,7 +40,7 @@ start the mail functionality. For IRC I use
 `start-irc` function.
 
 All of the settings are in `~/.emacs.d/settings.org`, and are tangled and then
-loaded from `settings.el` in the same directory. This (hopefully) makes reading
+loaded from `init.el` in the same directory. This (hopefully) makes reading
 the configuration a bit easier.
 
 I recommend you install [ag](https://github.com/ggreer/the_silver_searcher) for

@@ -140,6 +140,9 @@ setopt notify
 setopt dvorak
 #setopt correct                # Spelling correction
 
+# Nice renaming
+autoload -U zmv
+alias mmv='noglob zmv -W'
 
 autoload -U url-quote-magic
 zle -N self-insert url-quote-magic

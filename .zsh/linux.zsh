@@ -7,7 +7,7 @@ if [[ $OS == "Linux" ]]; then
 
     alias ec="emacsclient"
 
-    function ek() { emacsclient -e '(kill-emacs)' -s $1 }
+    function ekill() { emacsclient -e '(kill-emacs)' }
 
     alias e='emacs -nw'
 

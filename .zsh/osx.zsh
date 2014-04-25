@@ -50,7 +50,7 @@ if [[ $OS == "Darwin" ]]; then
     alias ec="emacsclient"
 
     #function el() { ps ax|grep Emacs }
-    function ek() { emacsclient -e '(kill-emacs)' -s $1 }
+    function ekill() { emacsclient -e '(kill-emacs)' }
 
     alias emacs="TERM=xterm-256color PATH=$EMACS_HOME/bin:$PATH $EMACS_HOME/Emacs -nw"
     alias gemacs="TERM=xterm-256color PATH=$EMACS_HOME/bin:$PATH $EMACS_HOME/Emacs 2>&1 > /dev/null &"

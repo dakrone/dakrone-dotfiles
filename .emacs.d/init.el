@@ -1758,6 +1758,8 @@ passed in. Also supports ignoring the msg at the point."
   '(magit magit-status) "magit"
   :prepare (setup-keybinds nil "M-g M-g" 'magit-status)
 
+  (when (eq system-type 'darwin)
+    (setq magit-emacsclient-executable "/usr/local/Cellar/emacs/HEAD/bin/emacsclient"))
   (defun magit-browse ()
   (interactive)
   (let ((url (with-temp-buffer

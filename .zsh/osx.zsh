@@ -61,6 +61,7 @@ if [[ $OS == "Darwin" ]]; then
 
     # for connection to a running emacs
     export EDITOR="emacsclient"
+    export ALTERNATIVE_EDITOR="TERM=xterm-256color PATH=$EMACS_HOME/bin:$PATH $EMACS_HOME/Emacs -nw"
 
     # Use MacVim's vim for terminal sessions, since it has everything compiled in.
     alias vim='/Applications/MacVim.app/Contents/MacOS/Vim'

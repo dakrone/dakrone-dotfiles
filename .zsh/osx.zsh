@@ -47,21 +47,20 @@ if [[ $OS == "Darwin" ]]; then
 
     #function ec() { TERM=xterm-256color PATH=$EMACS_HOME/bin:$PATH emacsclient -t $@ }
     alias e="TERM=xterm-256color PATH=$EMACS_HOME/bin:$PATH $EMACS_HOME/Emacs -nw"
-    alias ec="TERM=xterm-256color emacsclient -t"
+    alias ec="emacsclient"
 
     #function el() { ps ax|grep Emacs }
-    function ek() { $EMACS_HOME/bin/emacsclient -e '(kill-emacs)' -s $1 }
-
-    # function tmacs () {
-    #     TERM=xterm-256color /Applications/Emacs.app/Contents/MacOS/Emacs -nw $@
-    # }
+    function ek() { emacsclient -e '(kill-emacs)' -s $1 }
 
     alias emacs="TERM=xterm-256color PATH=$EMACS_HOME/bin:$PATH $EMACS_HOME/Emacs -nw"
     alias gemacs="TERM=xterm-256color PATH=$EMACS_HOME/bin:$PATH $EMACS_HOME/Emacs 2>&1 > /dev/null &"
     alias erc="TERM=xterm-256color PATH=$ERC_HOME/bin:$PATH $ERC_HOME/Emacs 2>&1 > /dev/null &"
 
+    # for a separate emacs instance
     # export EDITOR="TERM=xterm-256color PATH=$EMACS_HOME/bin:$PATH $EMACS_HOME/Emacs -nw"
-    export EDITOR="TERM=xterm-256color emacsclient -t"
+
+    # for connection to a running emacs
+    export EDITOR="emacsclient"
 
     # Use MacVim's vim for terminal sessions, since it has everything compiled in.
     alias vim='/Applications/MacVim.app/Contents/MacOS/Vim'

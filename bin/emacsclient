@@ -1,0 +1,22 @@
+#!/usr/bin/env zsh
+
+# Script that looks in a number of different of different places for
+# `emacsclient`, and uses it if found. Otherwise it falls back to `emacsclient`
+# in the path.
+
+TERM=xterm-256color
+EC=emacsclient
+
+if [ -s /usr/local/bin/emacsclient ]; then
+    EC=/usr/local/bin/emacsclient
+fi
+
+if [ -s $EMACS_HOME/emacsclient ]; then
+    EC=$EMACS_HOME/emacsclient
+fi
+
+if [ -s /usr/local/Cellar/emacs/HEAD/bin/emacsclient ]; then
+    EC=/usr/local/Cellar/emacs/HEAD/bin/emacsclient
+fi
+
+$EC -t "$@"

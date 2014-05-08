@@ -1,0 +1,5 @@
+#!/bin/sh
+
+# Display Fielddata of Elasticsearch cluster
+
+curl -s localhost:9200/_cat/fielddata/$1\?v

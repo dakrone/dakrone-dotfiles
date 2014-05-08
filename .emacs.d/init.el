@@ -518,6 +518,10 @@
 (add-hook 'c-mode-hook #'my/c-mode-init)
 (add-hook 'c++-mode-hook #'my/c-mode-init)
 
+(add-hook 'yaml-mode-hook
+          '(lambda ()
+             (define-key yaml-mode-map "\C-m" 'newline-and-indent)))
+
 (defun html-mode-insert-br ()
   (interactive)
   (insert "<br />"))
@@ -660,6 +664,8 @@
         org-agenda-start-on-weekday nil
         ;; Use sticky agenda's so they persist
         org-agenda-sticky t
+        ;; show 4 agenda days
+        org-agenda-span 4
         org-cycle-separator-lines 0
         org-special-ctrl-a/e t
         org-special-ctrl-k t
@@ -668,9 +674,11 @@
         ;; Overwrite the current window with the agenda
         org-agenda-window-setup 'current-window
         org-todo-keywords
-        '((sequence "TODO(t)" "STARTED(s)" "PENDING(p)" "NEEDSREVIEW(n)" "|" "DONE(d)"))
+        '((sequence "TODO(t)" "STARTED(s)" "PENDING(p)" "NEEDSREVIEW(n)" "|" "DONE(d)")
+          (sequence "SOMEDAY(r)" "TODO(t)" "STARTED(s)" "|" "DONE(d)"))
         org-todo-keyword-faces
         '(("STARTED"     . (:foreground "deep sky blue" :weight bold))
+          ("SOMEDAY"     . (:foreground "white" :weight bold))
           ("DONE"        . (:foreground "SpringGreen1" :weight bold))
           ("PENDING"     . (:foreground "orange" :weight bold))
           ("NEEDSREVIEW" . (:foreground "#edd400" :weight bold)))
@@ -729,13 +737,19 @@
         org-agenda-compact-blocks t
         ;; Custom agenda command definitions
         org-agenda-custom-commands
-        (quote ((" " "Agenda"
+        (quote ((" " "Everything"
                  ((agenda "" nil)
-                  (tags-todo "-REFILE-CANCELLED-WAITING/!"
-                             ((org-agenda-overriding-header "Standalone Tasks")
-                              (org-agenda-sorting-strategy '(category-keep))))
-                  (tags "-REFILE/"
-                        ((org-agenda-overriding-header "Tasks to Archive")
+                  (todo "STARTED"
+                        ((org-agenda-overriding-header "Current work")))
+                  (todo "NEEDSREVIEW"
+                        ((org-agenda-overriding-header "Waiting on reviews")))
+                  (todo "PENDING"
+                        ((org-agenda-overriding-header "Waiting for feedback")))
+                  (todo "TODO"
+                        ((org-agenda-overriding-header "Task list")
+                         (org-agenda-sorting-strategy '(category-keep))))
+                  (tags "-REFILE-SOMEDAY/"
+                        ((org-agenda-overriding-header "Tasks for archive")
                          (org-agenda-skip-function 'bh/skip-non-archivable-tasks)
                          (org-tags-match-list-sublevels nil))))
                  nil)))
@@ -1875,11 +1889,18 @@ passed in. Also supports ignoring the msg at the point."
     "C-c h" 'helm-mini
     "C-c M-x" 'helm-M-x
     "C-x C-b" 'helm-buffers-list
-    "C-x C-r" 'helm-recentf)
+    "C-x C-r" 'helm-recentf
+    "C-h t" 'helm-world-time)
   (require 'helm-config)
   (setq helm-idle-delay 0.1
         helm-input-idle-delay 0
         helm-candidate-number-limit 500)
+  (setq display-time-world-list '(("America/Denver" "Denver")
+                                  ("EST5EDT" "Boston")
+                                  ("UTC" "UTC")
+                                  ("Europe/London" "London")
+                                  ("Europe/Amsterdam" "Amsterdam")
+                                  ("Australia/Sydney" "Sydney")))
   (define-key helm-map (kbd "C-p")   'helm-previous-line)
   (define-key helm-map (kbd "C-n")   'helm-next-line)
   (define-key helm-map (kbd "C-M-n") 'helm-next-source)
@@ -2104,6 +2125,7 @@ passed in. Also supports ignoring the msg at the point."
 
   ;; basic
   (push '("*Help*" :stick t :noselect t) popwin:special-display-config)
+  (push '("*helm world time*" :stick t :noselect t) popwin:special-display-config)
 
   ;; magit
   (push '("*magit-process*" :stick t) popwin:special-display-config)

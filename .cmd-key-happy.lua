@@ -20,6 +20,7 @@ global_excludes = Set{ "shift-cmd-tab",
                        "cmd-enter",
                        "cmd-return",
                        "shift-cmd-t",
+                       "shift-cmd-l",
                        "shift-cmd-["
 }
 

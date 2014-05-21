@@ -9,6 +9,9 @@
 
 (defvar my/install-packages
   '(
+    ;; package management
+    use-package
+
     ;; themeing
     rainbow-mode leuven-theme dakrone-theme smart-mode-line
     color-identifiers-mode subatomic-theme subatomic256-theme
@@ -49,7 +52,7 @@
 
     ;; clojure
     clojure-mode cider paredit paren-face kibit-mode clojure-test-mode
-    cider-tracing cider-decompile javap-mode company-cider
+    cider-tracing cider-decompile company-cider
 
     ;; perl
     cperl-mode
@@ -67,7 +70,7 @@
     go-mode
 
     ;; java
-    emacs-eclim malabar-mode
+    emacs-eclim malabar-mode groovy-mode javap-mode
 
     ;; javascript
     tern json-mode

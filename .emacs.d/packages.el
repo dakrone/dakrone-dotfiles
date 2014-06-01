@@ -15,6 +15,7 @@
     ;; themeing
     rainbow-mode leuven-theme dakrone-theme smart-mode-line
     color-identifiers-mode subatomic-theme subatomic256-theme
+    moe-theme powerline
 
     ;; misc
     diminish yagist es-mode scpaste

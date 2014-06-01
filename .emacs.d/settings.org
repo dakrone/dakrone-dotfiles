@@ -148,9 +148,9 @@ Turn off all kinds of modes, I don't need the menu bar, or the tool bar:
 (menu-bar-mode -1)
 (when (window-system)
   (set-scroll-bar-mode 'nil)
-  (mouse-wheel-mode t))
+  (mouse-wheel-mode t)
+  (tooltip-mode -1))
 (tool-bar-mode -1)
-(tooltip-mode -1)
 (blink-cursor-mode -1)
 #+END_SRC
 
@@ -386,6 +386,13 @@ Follow symlinks and update VCS info on revert:
 (setq vc-follow-symlinks t)
 (setq auto-revert-check-vc-info t)
 #+END_SRC
+
+Remove fringe things
+
+#+BEGIN_SRC emacs-lisp
+(set-fringe-style 0)
+#+END_SRC
+
 
 *** OS-specific settings
 These are settings that are applied depending on what OS I'm
@@ -1065,18 +1072,31 @@ See a [[https://github-camo.global.ssl.fastly.net/585b59c2a71eb618b0bff59b3f5ca4
         ;; (load-theme 'dakrone t)
         ;; (set-background-color "#262626")
         ;; https://github.com/cryon/subatomic
-        (load-theme 'subatomic t))
+        ;;(load-theme 'subatomic t)
+        ;; https://github.com/kuanyui/moe-theme.el
+        (use-package moe-theme
+          :init (moe-dark)
+          :config
+          (setq moe-theme-mode-line-color 'orange)
+          (powerline-moe-theme)))
     (progn
       ;; https://github.com/d11wtq/subatomic256
       ;;(load-theme 'subatomic256 t)
-      (load-theme 'dakrone t)
+      ;;(load-theme 'dakrone t)
+      (use-package moe-theme
+        :init (moe-dark)
+        :config
+        (setq moe-theme-mode-line-color 'orange)
+        (powerline-moe-theme))
       )))
 
 (defun dakrone-light ()
   (interactive)
   ;; https://github.com/fniessen/emacs-leuven-theme
-  (load-theme 'leuven t)
+  ;;(load-theme 'leuven t)
   ;;(load-theme 'flatui t)
+  (use-package moe-theme
+    :init (moe-light))
   (defclojureface clojure-parens       "#696969"   "Clojure parens")
   (defclojureface clojure-braces       "#696969"   "Clojure braces")
   (defclojureface clojure-brackets     "#4682b4"   "Clojure brackets")
@@ -1151,8 +1171,9 @@ settings are mine.
           '((sequence "TODO(t)" "INPROGRESS(i)" "PENDING(p)" "NEEDSREVIEW(n)" "|" "DONE(d)")
             (sequence "SOMEDAY(s)" "TODO(t)" "INPROGRESS(i)" "|" "DONE(d)"))
           org-todo-keyword-faces
-          '(("INPROGRESS"  . (:foreground "deep sky blue" :weight bold))
-            ("SOMEDAY"     . (:foreground "white" :weight bold))
+          '(("TODO"        . (:foreground "red" :weight bold :background nil))
+            ("INPROGRESS"  . (:foreground "deep sky blue" :weight bold))
+            ("SOMEDAY"     . (:foreground "purple" :weight bold))
             ("DONE"        . (:foreground "SpringGreen1" :weight bold))
             ("PENDING"     . (:foreground "orange" :weight bold))
             ("NEEDSREVIEW" . (:foreground "#edd400" :weight bold)))
@@ -1667,6 +1688,14 @@ Both dropbox and non dropbox are included here, because symlinks suck.
 Then, when I'm editing ~/org/es/feature-foo.org, I can hit =C-c C-e P f= and
 export the file to show up in http://p.writequit.org/org
 
+** Org-export
+I am using the custom org-mode export to Github-flavored-markdown from:
+https://lists.gnu.org/archive/html/emacs-orgmode/2014-04/msg00241.html
+
+#+BEGIN_SRC emacs-lisp
+(load-file "~/.emacs.d/ox-gfm.el")
+#+END_SRC
+
 ** ERC Configuration
 ERC (IRC) configuration, requires the ERC package
 
@@ -1699,7 +1728,7 @@ if running in windowed mode, because I don't use ERC otherwise:
   (use-package erc
     :config
     (progn
-      (setq erc-fill-column 90
+      (setq erc-fill-column 100
             erc-server-coding-system '(utf-8 . utf-8)
             erc-hide-list '("JOIN" "PART" "QUIT" "NICK")
             erc-track-exclude-types (append '("324" "329" "332" "333"
@@ -1709,11 +1738,11 @@ if running in windowed mode, because I don't use ERC otherwise:
             erc-autojoin-timing :ident
             erc-flood-protect nil
             erc-pals '("hiredman" "danlarkin" "drewr" "pjstadig" "scgilardi"
-                       "joegallo" "jimduey" "leathekd" "zkim" "steve" "imotov"
-                       "technomancy" "ddillinger" "yazirian" "danielglauser")
+                       "joegallo" "jimduey" "leathekd" "zkim" "imotov"
+                       "technomancy" "yazirian" "danielglauser")
             erc-pal-highlight-type 'nil
-            erc-keywords '("dakrone" "dakrone_" "dakrone__" "clj-http"
-                           "cheshire" "clojure-opennlp" "opennlp")
+            erc-keywords '("dakrone" "dakrone_" "clj-http" "cheshire"
+                           "clojure-opennlp" "opennlp" "circuit breaker")
             erc-ignore-list '()
             erc-track-exclude-types '("JOIN" "NICK" "PART" "QUIT" "MODE"
                                       "324" "329" "332" "333" "353" "477")
@@ -2117,6 +2146,18 @@ Jump quickly between words or lines, I mostly use it with eww
   (setq smooth-scroll-margin 4))
 #+END_SRC
 
+** Sublimity
+
+#+BEGIN_SRC emacs-lisp
+(when (window-system)
+  (use-package sublimity
+    :idle (sublimity-mode 1)
+    :config
+    (progn (use-package sublimity-scroll)
+           (setq sublimity-scroll-weight 3
+                 sublimity-scroll-drift-length 3))))
+#+END_SRC
+
 ** Yasnippet
 #+BEGIN_SRC emacs-lisp
 (use-package yasnippet
@@ -2296,10 +2337,11 @@ And some niceties to allow choosing a snippet using helm:
     ;; faces
     ;; (set-face-attribute 'magit-branch nil
     ;;                     :foreground "yellow" :weight 'bold :underline t)
-    (add-hook 'magit-mode-hook
-              (lambda ()
-                (set-face-attribute 'magit-item-highlight nil
-                                    :background "#262626")))
+    (when (eq my/background 'dark)
+      (add-hook 'magit-mode-hook
+                (lambda ()
+                  (set-face-attribute 'magit-item-highlight nil
+                                      :background "#262626"))))
     (custom-set-variables '(magit-set-upstream-on-push (quote dontask)))))
 #+END_SRC
 
@@ -2323,6 +2365,20 @@ I basically use this to start up ES when I need to test something really quickly
   :bind ("C-x P" . prodigy)
   :config
   (progn
+    (prodigy-define-service
+      :name "Elasticsearch 1.2.0"
+      :cwd "~/esi/elasticsearch-1.2.0/"
+      :command "~/esi/elasticsearch-1.2.0/bin/elasticsearch"
+      :tags '(work test es)
+      :port 9200)
+
+    (prodigy-define-service
+      :name "Elasticsearch 1.1.2"
+      :cwd "~/esi/elasticsearch-1.1.2/"
+      :command "~/esi/elasticsearch-1.1.2/bin/elasticsearch"
+      :tags '(work test es)
+      :port 9200)
+
     (prodigy-define-service
       :name "Elasticsearch 1.1.1"
       :cwd "~/esi/elasticsearch-1.1.1/"
@@ -2434,6 +2490,7 @@ There are many helm things.
     (use-package helm-misc)
     (use-package helm-aliases)
     (use-package helm-elisp)
+    (use-package helm-imenu)
     (setq helm-idle-delay 0.1
           helm-input-idle-delay 0
           helm-candidate-number-limit 500)
@@ -2874,11 +2931,17 @@ to switch between as needed:
 
 #+BEGIN_SRC emacs-lisp
 (use-package smart-mode-line
+  :disabled t
   :init
   (progn
     (setq sml/mode-width 'full)
     (sml/setup)
     (sml/apply-theme my/background)))
+
+(use-package powerline
+  :init
+  (progn
+    (powerline-default-theme)))
 #+END_SRC
 
 ** Bindings

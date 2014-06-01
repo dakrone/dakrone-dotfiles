@@ -43,9 +43,9 @@
 (menu-bar-mode -1)
 (when (window-system)
   (set-scroll-bar-mode 'nil)
-  (mouse-wheel-mode t))
+  (mouse-wheel-mode t)
+  (tooltip-mode -1))
 (tool-bar-mode -1)
-(tooltip-mode -1)
 (blink-cursor-mode -1)
 
 (setq ring-bell-function (lambda()))
@@ -153,6 +153,8 @@
 
 (setq vc-follow-symlinks t)
 (setq auto-revert-check-vc-info t)
+
+(set-fringe-style 0)
 
 (when (eq system-type 'gnu/linux)
   (use-package notificatons)
@@ -614,18 +616,31 @@
         ;; (load-theme 'dakrone t)
         ;; (set-background-color "#262626")
         ;; https://github.com/cryon/subatomic
-        (load-theme 'subatomic t))
+        ;;(load-theme 'subatomic t)
+        ;; https://github.com/kuanyui/moe-theme.el
+        (use-package moe-theme
+          :init (moe-dark)
+          :config
+          (setq moe-theme-mode-line-color 'orange)
+          (powerline-moe-theme)))
     (progn
       ;; https://github.com/d11wtq/subatomic256
       ;;(load-theme 'subatomic256 t)
-      (load-theme 'dakrone t)
+      ;;(load-theme 'dakrone t)
+      (use-package moe-theme
+        :init (moe-dark)
+        :config
+        (setq moe-theme-mode-line-color 'orange)
+        (powerline-moe-theme))
       )))
 
 (defun dakrone-light ()
   (interactive)
   ;; https://github.com/fniessen/emacs-leuven-theme
-  (load-theme 'leuven t)
+  ;;(load-theme 'leuven t)
   ;;(load-theme 'flatui t)
+  (use-package moe-theme
+    :init (moe-light))
   (defclojureface clojure-parens       "#696969"   "Clojure parens")
   (defclojureface clojure-braces       "#696969"   "Clojure braces")
   (defclojureface clojure-brackets     "#4682b4"   "Clojure brackets")
@@ -691,8 +706,9 @@
           '((sequence "TODO(t)" "INPROGRESS(i)" "PENDING(p)" "NEEDSREVIEW(n)" "|" "DONE(d)")
             (sequence "SOMEDAY(s)" "TODO(t)" "INPROGRESS(i)" "|" "DONE(d)"))
           org-todo-keyword-faces
-          '(("INPROGRESS"  . (:foreground "deep sky blue" :weight bold))
-            ("SOMEDAY"     . (:foreground "white" :weight bold))
+          '(("TODO"        . (:foreground "red" :weight bold :background nil))
+            ("INPROGRESS"  . (:foreground "deep sky blue" :weight bold))
+            ("SOMEDAY"     . (:foreground "purple" :weight bold))
             ("DONE"        . (:foreground "SpringGreen1" :weight bold))
             ("PENDING"     . (:foreground "orange" :weight bold))
             ("NEEDSREVIEW" . (:foreground "#edd400" :weight bold)))
@@ -1195,6 +1211,8 @@ tasks."
            ;;               href=\"../other/mystyle.css\" type=\"text/css\"/>"
            :html-preamble t))))
 
+(load-file "~/.emacs.d/ox-gfm.el")
+
 (setq tls-program
       '("openssl s_client -connect %h:%p -no_ssl2 -ign_eof -cert ~/host.pem"
         "gnutls-cli --priority secure256 --x509certfile ~/host.pem -p %p %h"
@@ -1215,7 +1233,7 @@ tasks."
   (use-package erc
     :config
     (progn
-      (setq erc-fill-column 90
+      (setq erc-fill-column 100
             erc-server-coding-system '(utf-8 . utf-8)
             erc-hide-list '("JOIN" "PART" "QUIT" "NICK")
             erc-track-exclude-types (append '("324" "329" "332" "333"
@@ -1225,11 +1243,11 @@ tasks."
             erc-autojoin-timing :ident
             erc-flood-protect nil
             erc-pals '("hiredman" "danlarkin" "drewr" "pjstadig" "scgilardi"
-                       "joegallo" "jimduey" "leathekd" "zkim" "steve" "imotov"
-                       "technomancy" "ddillinger" "yazirian" "danielglauser")
+                       "joegallo" "jimduey" "leathekd" "zkim" "imotov"
+                       "technomancy" "yazirian" "danielglauser")
             erc-pal-highlight-type 'nil
-            erc-keywords '("dakrone" "dakrone_" "dakrone__" "clj-http"
-                           "cheshire" "clojure-opennlp" "opennlp")
+            erc-keywords '("dakrone" "dakrone_" "clj-http" "cheshire"
+                           "clojure-opennlp" "opennlp" "circuit breaker")
             erc-ignore-list '()
             erc-track-exclude-types '("JOIN" "NICK" "PART" "QUIT" "MODE"
                                       "324" "329" "332" "333" "353" "477")
@@ -1615,6 +1633,14 @@ passed in. Also supports ignoring the msg at the point."
   :config
   (setq smooth-scroll-margin 4))
 
+(when (window-system)
+  (use-package sublimity
+    :idle (sublimity-mode 1)
+    :config
+    (progn (use-package sublimity-scroll)
+           (setq sublimity-scroll-weight 3
+                 sublimity-scroll-drift-length 3))))
+
 (use-package yasnippet
   :diminish ""
   :idle (yas-reload-all))
@@ -1769,10 +1795,11 @@ passed in. Also supports ignoring the msg at the point."
     ;; faces
     ;; (set-face-attribute 'magit-branch nil
     ;;                     :foreground "yellow" :weight 'bold :underline t)
-    (add-hook 'magit-mode-hook
-              (lambda ()
-                (set-face-attribute 'magit-item-highlight nil
-                                    :background "#262626")))
+    (when (eq my/background 'dark)
+      (add-hook 'magit-mode-hook
+                (lambda ()
+                  (set-face-attribute 'magit-item-highlight nil
+                                      :background "#262626"))))
     (custom-set-variables '(magit-set-upstream-on-push (quote dontask)))))
 
 (use-package projectile
@@ -1786,6 +1813,20 @@ passed in. Also supports ignoring the msg at the point."
   :bind ("C-x P" . prodigy)
   :config
   (progn
+    (prodigy-define-service
+      :name "Elasticsearch 1.2.0"
+      :cwd "~/esi/elasticsearch-1.2.0/"
+      :command "~/esi/elasticsearch-1.2.0/bin/elasticsearch"
+      :tags '(work test es)
+      :port 9200)
+
+    (prodigy-define-service
+      :name "Elasticsearch 1.1.2"
+      :cwd "~/esi/elasticsearch-1.1.2/"
+      :command "~/esi/elasticsearch-1.1.2/bin/elasticsearch"
+      :tags '(work test es)
+      :port 9200)
+
     (prodigy-define-service
       :name "Elasticsearch 1.1.1"
       :cwd "~/esi/elasticsearch-1.1.1/"
@@ -1868,6 +1909,7 @@ passed in. Also supports ignoring the msg at the point."
     (use-package helm-misc)
     (use-package helm-aliases)
     (use-package helm-elisp)
+    (use-package helm-imenu)
     (setq helm-idle-delay 0.1
           helm-input-idle-delay 0
           helm-candidate-number-limit 500)
@@ -2224,11 +2266,17 @@ passed in. Also supports ignoring the msg at the point."
 (add-hook 'prog-mode-hook (lambda () (indent-guide-mode t)))
 
 (use-package smart-mode-line
+  :disabled t
   :init
   (progn
     (setq sml/mode-width 'full)
     (sml/setup)
     (sml/apply-theme my/background)))
+
+(use-package powerline
+  :init
+  (progn
+    (powerline-default-theme)))
 
 (global-set-key (kbd "C-h e") 'popwin:messages)
 (global-set-key (kbd "C-h C-p") 'popwin:special-display-config)

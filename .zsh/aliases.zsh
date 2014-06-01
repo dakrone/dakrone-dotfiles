@@ -136,3 +136,5 @@ alias bdt='gdate "+%Y%m%dT%H%M%S.%3N%z"'
 alias epoch='date +%s'
 # jump start to magit
 alias magit='emacs -f magit-status'
+# npm install -g gitjk
+alias gitjk='history | tail -r | head -10 | gitjk_cmd'

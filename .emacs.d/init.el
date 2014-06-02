@@ -154,7 +154,8 @@
 (setq vc-follow-symlinks t)
 (setq auto-revert-check-vc-info t)
 
-(set-fringe-style 0)
+(when (window-system)
+  (set-fringe-style 0))
 
 (when (eq system-type 'gnu/linux)
   (use-package notificatons)
@@ -452,6 +453,7 @@
 
 (defun setup-java ()
   (interactive)
+  (define-key java-mode-map (kbd "M-,") 'pop-tag-mark)
   (defconst eclipse-java-style
     '((c-basic-offset . 4)
       (c-comment-only-line-offset . (0 . 0))
@@ -1219,7 +1221,8 @@ tasks."
         "gnutls-cli --priority secure256 -p %p %h"))
 
 ;; ERC is only loaded for GUI emacs
-(when window-system
+(defun setup-irc ()
+  (interactive)
   (when (file-exists-p "~/.ercpass")
     (load-file "~/.ercpass"))
 
@@ -1633,11 +1636,11 @@ passed in. Also supports ignoring the msg at the point."
   :config
   (setq smooth-scroll-margin 4))
 
-(when (window-system)
-  (use-package sublimity
-    :idle (sublimity-mode 1)
-    :config
-    (progn (use-package sublimity-scroll)
+(use-package sublimity
+  :idle (sublimity-mode 1)
+  :config
+  (progn (use-package sublimity-scroll)
+         (when (window-system)
            (setq sublimity-scroll-weight 3
                  sublimity-scroll-drift-length 3))))
 
@@ -2264,6 +2267,17 @@ passed in. Also supports ignoring the msg at the point."
 (use-package indent-guide)
 
 (add-hook 'prog-mode-hook (lambda () (indent-guide-mode t)))
+
+(use-package confluence
+  :bind ("C-x w f" . confluence-get-page)
+  :disabled t
+  :config
+  (progn
+    (setq confluence-url "https://elasticsearch.atlassian.net/rpc/xmlrpc")
+    (add-hook 'confluence-edit-mode-hook
+          (local-set-key "\C-xw" confluence-prefix-map)
+          (local-set-key "\M-j" 'confluence-newline-and-indent)
+          (local-set-key "\M-;" 'confluence-list-indent-dwim))))
 
 (use-package smart-mode-line
   :disabled t

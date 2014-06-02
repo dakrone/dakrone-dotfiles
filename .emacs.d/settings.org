@@ -390,7 +390,8 @@ Follow symlinks and update VCS info on revert:
 Remove fringe things
 
 #+BEGIN_SRC emacs-lisp
-(set-fringe-style 0)
+(when (window-system)
+  (set-fringe-style 0))
 #+END_SRC
 
 
@@ -860,6 +861,7 @@ with the arguments on the previous line
 #+BEGIN_SRC emacs-lisp
 (defun setup-java ()
   (interactive)
+  (define-key java-mode-map (kbd "M-,") 'pop-tag-mark)
   (defconst eclipse-java-style
     '((c-basic-offset . 4)
       (c-comment-only-line-offset . (0 . 0))
@@ -1714,7 +1716,8 @@ if running in windowed mode, because I don't use ERC otherwise:
 
 #+BEGIN_SRC emacs-lisp
 ;; ERC is only loaded for GUI emacs
-(when window-system
+(defun setup-irc ()
+  (interactive)
   (when (file-exists-p "~/.ercpass")
     (load-file "~/.ercpass"))
 
@@ -2149,11 +2152,11 @@ Jump quickly between words or lines, I mostly use it with eww
 ** Sublimity
 
 #+BEGIN_SRC emacs-lisp
-(when (window-system)
-  (use-package sublimity
-    :idle (sublimity-mode 1)
-    :config
-    (progn (use-package sublimity-scroll)
+(use-package sublimity
+  :idle (sublimity-mode 1)
+  :config
+  (progn (use-package sublimity-scroll)
+         (when (window-system)
            (setq sublimity-scroll-weight 3
                  sublimity-scroll-drift-length 3))))
 #+END_SRC
@@ -2923,6 +2926,23 @@ A neat mode to show indention
 (use-package indent-guide)
 
 (add-hook 'prog-mode-hook (lambda () (indent-guide-mode t)))
+#+END_SRC
+
+** Confluence
+This doesn't work yet, I think our version of Confluence might be too old? Not
+sure, I need to look into it more.
+
+#+BEGIN_SRC emacs-lisp
+(use-package confluence
+  :bind ("C-x w f" . confluence-get-page)
+  :disabled t
+  :config
+  (progn
+    (setq confluence-url "https://elasticsearch.atlassian.net/rpc/xmlrpc")
+    (add-hook 'confluence-edit-mode-hook
+          (local-set-key "\C-xw" confluence-prefix-map)
+          (local-set-key "\M-j" 'confluence-newline-and-indent)
+          (local-set-key "\M-;" 'confluence-list-indent-dwim))))
 #+END_SRC
 
 ** Modeline

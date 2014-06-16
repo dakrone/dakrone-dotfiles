@@ -672,6 +672,8 @@
     (dakrone-dark)
   (dakrone-light))
 
+(load-file "~/.emacs.d/ox-gfm.el")
+
 (use-package org
   :bind (("C-c l" . org-store-link)
          ("C-c a" . org-agenda)
@@ -1213,7 +1215,8 @@ tasks."
            ;;               href=\"../other/mystyle.css\" type=\"text/css\"/>"
            :html-preamble t))))
 
-(load-file "~/.emacs.d/ox-gfm.el")
+(use-package org-toc
+  :init (add-hook 'org-mode-hook 'org-toc-enable))
 
 (setq tls-program
       '("openssl s_client -connect %h:%p -no_ssl2 -ign_eof -cert ~/host.pem"
@@ -1639,10 +1642,11 @@ passed in. Also supports ignoring the msg at the point."
 (use-package sublimity
   :idle (sublimity-mode 1)
   :config
-  (progn (use-package sublimity-scroll)
-         (when (window-system)
-           (setq sublimity-scroll-weight 3
-                 sublimity-scroll-drift-length 3))))
+  (progn
+    (when (window-system)
+      (use-package sublimity-scroll)
+      (setq sublimity-scroll-weight 3
+            sublimity-scroll-drift-length 3))))
 
 (use-package yasnippet
   :diminish ""
@@ -1820,6 +1824,13 @@ passed in. Also supports ignoring the msg at the point."
       :name "Elasticsearch 1.2.0"
       :cwd "~/esi/elasticsearch-1.2.0/"
       :command "~/esi/elasticsearch-1.2.0/bin/elasticsearch"
+      :tags '(work test es)
+      :port 9200)
+
+    (prodigy-define-service
+      :name "Elasticsearch 1.2.1"
+      :cwd "~/esi/elasticsearch-1.2.1/"
+      :command "~/esi/elasticsearch-1.2.1/bin/elasticsearch"
       :tags '(work test es)
       :port 9200)
 

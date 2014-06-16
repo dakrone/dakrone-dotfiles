@@ -1,4 +1,4 @@
 # -*- mode: snippet -*-
 #name : bgd
 # --
-#+HTML_HEAD: <style>pre.src {background-color: #303347; color: #e5e5e5;}</style>
+#+HTML_HEAD: <style>pre.src {background-color: #303030; color: #e5e5e5;}</style>

@@ -1641,6 +1641,7 @@ passed in. Also supports ignoring the msg at the point."
 
 (use-package sublimity
   :idle (sublimity-mode 1)
+  :disabled t
   :config
   (progn
     (when (window-system)

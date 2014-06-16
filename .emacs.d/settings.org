@@ -2167,9 +2167,12 @@ buffer.
 Some fancy animations around page-up, page-down, etc, to give a little visual
 indication as to the direction the buffer is moving.
 
+Disabled for now, as it's kind of a pain being slow
+
 #+BEGIN_SRC emacs-lisp
 (use-package sublimity
   :idle (sublimity-mode 1)
+  :disabled t
   :config
   (progn
     (when (window-system)

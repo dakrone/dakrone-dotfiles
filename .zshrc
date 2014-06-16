@@ -67,6 +67,11 @@ export AWS_CONFIG_FILE=~/.notify-aws-creds
 export AWS_DEFAULT_REGION=us-east-1
 export QUEUENAME=''
 
+# Nix stuff
+if [ -s ~/.nix-profile/etc/profile.d/nix.sh ] ; then
+    source ~/.nix-profile/etc/profile.d/nix.sh
+fi
+
 # word chars
 # default is: *?_-.[]~=/&;!#$%^(){}<>
 export WORDCHARS="*?_-.[]~=&;!#$%^(){}<>\\"

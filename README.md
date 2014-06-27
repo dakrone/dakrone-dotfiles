@@ -8,7 +8,7 @@ See the images directory for an example of what some of the stuff looks like.
 # Bootstrap the config
 
 ```
-curl -s https://raw.github.com/dakrone/dakrone-dotfiles/master/bootstrap | zsh
+curl -s https://raw.githubusercontent.com/dakrone/dakrone-dotfiles/master/bootstrap | zsh
 ```
 
 # ZSH randomness:

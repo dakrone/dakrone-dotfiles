@@ -117,7 +117,8 @@
       (goto-char (point-max))
       (delete-blank-lines))))
 
-(add-hook 'before-save-hook 'my/cleanup-for-spaces)
+;; disabled
+;;(add-hook 'before-save-hook 'my/cleanup-for-spaces)
 
 (setq split-height-threshold nil)
 (setq split-width-threshold 180)
@@ -288,9 +289,9 @@
 
 (when (window-system)
   (use-package recentf
-    :idle (when (not noninteractive) (recentf-mode 1))
+    :init (when (not noninteractive) (recentf-mode 1))
     :config
-    (setq recentf-max-saved-items 200
+    (setq recentf-max-saved-items 300
           recentf-exclude '("/auto-install/" ".recentf" "/repos/" "/elpa/"
                             "\\.mime-example" "\\.ido.last" "COMMIT_EDITMSG"
                             ".gz")
@@ -302,6 +303,7 @@
 
 (add-hook 'prog-mode-hook
           (lambda ()
+            (setq show-trailing-whitespace t)
             (subword-mode t)
             (idle-highlight-mode t)))
 
@@ -615,7 +617,7 @@
   (if (window-system)
       (progn
         ;; https://github.com/dakrone/dakrone-theme
-        ;; (load-theme 'dakrone t)
+        ;;(load-theme 'dakrone t)
         ;; (set-background-color "#262626")
         ;; https://github.com/cryon/subatomic
         ;;(load-theme 'subatomic t)
@@ -639,10 +641,10 @@
 (defun dakrone-light ()
   (interactive)
   ;; https://github.com/fniessen/emacs-leuven-theme
-  ;;(load-theme 'leuven t)
+  (load-theme 'leuven t)
   ;;(load-theme 'flatui t)
-  (use-package moe-theme
-    :init (moe-light))
+  ;; (use-package moe-theme
+  ;;   :init (moe-light))
   (defclojureface clojure-parens       "#696969"   "Clojure parens")
   (defclojureface clojure-braces       "#696969"   "Clojure braces")
   (defclojureface clojure-brackets     "#4682b4"   "Clojure brackets")

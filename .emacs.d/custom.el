@@ -11,7 +11,7 @@
  '(compilation-skip-threshold 2)
  '(custom-safe-themes
    (quote
-    ("76b226dd750d085eaaf7efa5eb07a3282223d74f327a0f4319512c0a59f6df39" "9a217ee1dcefd5e83f78381c61e25e9c4d25c7b80bf032f44d7d62ca68c6a384" "fc6e906a0e6ead5747ab2e7c5838166f7350b958d82e410257aeeb2820e8a07a" default)))
+    ("025354235e98db5e7fd9c1a74622ff53ad31b7bde537d290ff68d85665213d85" "6fe6ab4abe97a4f13533e47ae59fbba7f2919583f9162b440dd06707b01f7794" "76b226dd750d085eaaf7efa5eb07a3282223d74f327a0f4319512c0a59f6df39" "9a217ee1dcefd5e83f78381c61e25e9c4d25c7b80bf032f44d7d62ca68c6a384" "fc6e906a0e6ead5747ab2e7c5838166f7350b958d82e410257aeeb2820e8a07a" default)))
  '(delete-selection-mode t)
  '(org-export-backends (quote (ascii html icalendar latex md gfm)))
  '(org-modules
@@ -52,10 +52,10 @@
      (c-basic-offset 4)
      (tab-width 2))))
  '(sp-cancel-autoskip-on-backward-movement nil)
- '(yas/prompt-functions (quote (my-yas/prompt))))
+ '(yas-prompt-functions (quote (my-yas/prompt))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- )
+ '(default ((t (:background nil)))))

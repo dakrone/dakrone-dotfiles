@@ -207,7 +207,7 @@ function setprompt2 {
 
     PROMPT='$FG[237]⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅%{$reset_color%}
 $FG[032]%~ ${gray}${vcs_info_msg_0_}
-$FG[105]%(!.#.»)%{$reset_color%} '
+$FG[105]%(?..${red}%?$FG[105] )%(!.#.»)%{$reset_color%} '
     PROMPT2='%{$fg[red]%}\ %{$reset_color%}'
     RPS1='${return_code}'
 

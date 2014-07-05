@@ -15,10 +15,10 @@
     ;; themeing
     rainbow-mode leuven-theme dakrone-theme smart-mode-line
     color-identifiers-mode subatomic-theme subatomic256-theme
-    moe-theme powerline
+    moe-theme powerline nyan-mode
 
     ;; misc
-    diminish yagist es-mode scpaste
+    diminish yagist es-mode scpaste w3m
 
     ;; IRC/ERC and social stuff
     erc-hl-nicks ercn todochiku twittering-mode

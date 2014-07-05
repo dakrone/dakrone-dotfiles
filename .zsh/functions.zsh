@@ -276,7 +276,7 @@ function pub() {
 }
 
 function cla() {
-    curl -I 'http://54.204.36.1:3000/verify/nickname/$1'
+    curl -I "http://54.204.36.1:3000/verify/nickname/$1"
 }
 
 function es-tunnel() {

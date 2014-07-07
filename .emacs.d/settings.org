@@ -3185,23 +3185,23 @@ http://amitp.blogspot.nl/2011/08/emacs-custom-mode-line.html
 (make-face 'mode-line-80col-face)
 
 (set-face-attribute 'mode-line nil
+    :foreground "gray60" :background "gray10"
+    :inverse-video nil
+    :box '(:line-width 1 :color "gray60" :style nil))
+(set-face-attribute 'mode-line-inactive nil
     :foreground "gray60" :background "gray20"
     :inverse-video nil
-    :box '(:line-width 3 :color "gray20" :style nil))
-(set-face-attribute 'mode-line-inactive nil
-    :foreground "gray80" :background "gray40"
-    :inverse-video nil
-    :box '(:line-width 3 :color "gray40" :style nil))
+    :box '(:line-width 1 :color "gray10" :style nil))
 
 (set-face-attribute 'mode-line-read-only-face nil
     :inherit 'mode-line-face
     :foreground "#4271ae"
-    :box '(:line-width 2 :color "#4271ae"))
+    :box '(:line-width 1 :color "#4271ae"))
 (set-face-attribute 'mode-line-modified-face nil
     :inherit 'mode-line-face
     :foreground "#c82829"
     :background "#ffffff"
-    :box '(:line-width 2 :color "#c82829"))
+    :box '(:line-width 1 :color "#c82829"))
 (set-face-attribute 'mode-line-folder-face nil
     :inherit 'mode-line-face
     :foreground "gray60")
@@ -3211,7 +3211,7 @@ http://amitp.blogspot.nl/2011/08/emacs-custom-mode-line.html
     :weight 'bold)
 (set-face-attribute 'mode-line-position-face nil
     :inherit 'mode-line-face
-    :family "Menlo"
+    ;;:family "Menlo"
     :height 100
     )
 (set-face-attribute 'mode-line-mode-face nil

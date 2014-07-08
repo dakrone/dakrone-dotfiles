@@ -10,78 +10,49 @@
 #+LANGUAGE: en
 
 * Configuration
-This file is used by org-mode to load my personal emacs
-configuration file. The latest version of this file is always at
-[[https://github.com/dakrone/dakrone-dotfiles]], keep in mind that to use it you
-will probably have to install a number of packages. Here's my list of packages:
-[[https://github.com/dakrone/dakrone-dotfiles/blob/master/.emacs.d/packages.el]]
+  This file is used by org-mode to load my personal emacs configuration file. The
+  latest version of this file is always at
+  [[https://github.com/dakrone/dakrone-dotfiles]], keep in mind that to use it you
+  will probably have to install a number of packages. Here's my list of packages:
+  [[https://github.com/dakrone/dakrone-dotfiles/blob/master/.emacs.d/packages.el]]
 
-It can be loaded by putting the following in your .emacs.d/init.el:
+  It can be loaded by putting the following in your .emacs.d/init.el:
 
-#+BEGIN_SRC
-;; initalize all ELPA packages
-(require 'package)
+  #+BEGIN_SRC
+  ;; Keep track of loading time
+  (defconst emacs-start-time (current-time))
+  ;; initalize all ELPA packages
+  (require 'package)
 
-(add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/"))
-(package-initialize)
-(setq package-enable-at-startup nil)
+  (add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/"))
+  ;; for wanderlust
+  (add-to-list 'package-archives '("e6h" . "http://www.e6h.org/packages/"))
+  (package-initialize)
+  (setq package-enable-at-startup nil)
+  (let ((elapsed (float-time (time-subtract (current-time)
+                                            emacs-start-time))))
+    (message "Loaded packages in %.3fs" elapsed))
 
-;; Keep track of loading time
-(defconst emacs-start-time (current-time))
-;; Dvorak nicety, regardless of loading settings
-(define-key key-translation-map "\C-t" "\C-x")
-;; Load settings.org file
-(org-babel-load-file "~/.emacs.d/settings.org")
+  ;; Dvorak nicety, regardless of loading settings
+  (define-key key-translation-map "\C-t" "\C-x")
+  ;; Load use-package, used for loading packages
+  (require 'use-package)
 
-;; keep customize settings in their own file
-(setq custom-file "~/.emacs.d/custom.el")
-(when (file-exists-p custom-file)
-  (load custom-file))
+  ;; keep customize settings in their own file
+  (setq custom-file "~/.emacs.d/custom.el")
+  (when (file-exists-p custom-file)
+    (load custom-file))
 
-;; Message how long it took to load everything (minus packages)
-(let ((elapsed (float-time (time-subtract (current-time)
-                                          emacs-start-time))))
-  (message "Loading settings...done (%.3fs)" elapsed))
-#+END_SRC
+  (require 'org)
+  (org-babel-load-file
+   (expand-file-name "settings.org"
+                     user-emacs-directory))
 
-** Preamble
-This should go inside of =init.el=:
-
-#+BEGIN_SRC
-;; Keep track of loading time
-(defconst emacs-start-time (current-time))
-;; initalize all ELPA packages
-(require 'package)
-
-(add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/"))
-;; for wanderlust
-(add-to-list 'package-archives '("e6h" . "http://www.e6h.org/packages/"))
-(package-initialize)
-(setq package-enable-at-startup nil)
-(let ((elapsed (float-time (time-subtract (current-time)
-                                          emacs-start-time))))
-  (message "Loaded packages in %.3fs" elapsed))
-
-;; Dvorak nicety, regardless of loading settings
-(define-key key-translation-map "\C-t" "\C-x")
-;; Load use-package, used for loading packages
-(require 'use-package)
-
-;; keep customize settings in their own file
-(setq custom-file "~/.emacs.d/custom.el")
-(when (file-exists-p custom-file)
-  (load custom-file))
-
-(require 'org)
-(org-babel-load-file
- (expand-file-name "settings.org"
-                   user-emacs-directory))
-
-;; Message how long it took to load everything (minus packages)
-(let ((elapsed (float-time (time-subtract (current-time)
-                                          emacs-start-time))))
-  (message "Loading settings...done (%.3fs)" elapsed))
-#+END_SRC
+  ;; Message how long it took to load everything (minus packages)
+  (let ((elapsed (float-time (time-subtract (current-time)
+                                            emacs-start-time))))
+    (message "Loading settings...done (%.3fs)" elapsed))
+  #+END_SRC
 
 ** Basics and settings used everywhere
 
@@ -1059,8 +1030,7 @@ Bleh javascript.
      '((elasticsearch . t)))))
 #+END_SRC
 
-** Theme Settings
-*** Font settings
+** Theme
 Misc settings for fonts, depending on the OS:
 
 #+BEGIN_SRC emacs-lisp
@@ -1084,7 +1054,6 @@ Misc settings for fonts, depending on the OS:
 (setq mac-allow-anti-aliasing t)
 #+END_SRC
 
-*** Color scheme
 For light-colored backgrounds, I used [[https://github.com/fniessen/emacs-leuven-theme][leuven-theme]]. For dark-colored
 backgrounds (most of the time), I use my own custom theme, called [[https://github.com/dakrone/dakrone-theme][dakrone-theme]]:
 
@@ -1178,16 +1147,16 @@ See a [[https://github-camo.global.ssl.fastly.net/585b59c2a71eb618b0bff59b3f5ca4
   (dakrone-light))
 #+END_SRC
 
-** Org-export
+** Org-mode
+I use org-mode a ton, so it get's its own page here.
+
 I am using the custom org-mode export to Github-flavored-markdown from:
 https://lists.gnu.org/archive/html/emacs-orgmode/2014-04/msg00241.html
 
 #+BEGIN_SRC emacs-lisp
-(load-file "~/.emacs.d/ox-gfm.el")
+(when (file-exists-p "~/.emacs.d/ox-gfm.el")
+    (load-file "~/.emacs.d/ox-gfm.el"))
 #+END_SRC
-
-** Org-mode
-I use org-mode a ton, so it get's its own page here.
 
 A great lot of this was taken from http://doc.norang.ca/org-mode.html, to which
 I owe almost all of the agenda configuration. The capture stuff and regular org
@@ -1230,7 +1199,7 @@ settings are mine.
           '((sequence "TODO(t)" "INPROGRESS(i)" "PENDING(p)" "NEEDSREVIEW(n)" "|" "DONE(d)")
             (sequence "SOMEDAY(s)" "TODO(t)" "INPROGRESS(i)" "|" "DONE(d)"))
           org-todo-keyword-faces
-          '(("TODO"        . (:foreground "red" :weight bold :background nil))
+          '(("TODO"        . (:foreground "red" :weight bold))
             ("INPROGRESS"  . (:foreground "deep sky blue" :weight bold))
             ("SOMEDAY"     . (:foreground "purple" :weight bold))
             ("DONE"        . (:foreground "SpringGreen1" :weight bold))
@@ -1269,7 +1238,6 @@ settings are mine.
           org-refile-allow-creating-parent-nodes (quote confirm)
 
           ;; Use IDO for both buffer and file completion and ido-everywhere to t
-          org-completion-use-ido t
           ido-everywhere t
           ido-max-directory-size 100000
           ;; Use cider as the clojure backend
@@ -1304,8 +1272,7 @@ settings are mine.
                      (org-agenda-sorting-strategy '(category-keep))))
               (tags "-REFILE-SOMEDAY/"
                     ((org-agenda-overriding-header "Tasks for archive")
-                     (org-agenda-skip-function 'bh/skip-non-archivable-tasks)
-                     (org-tags-match-list-sublevels nil))))
+                     (org-agenda-skip-function 'bh/skip-non-archivable-tasks))))
              nil))
 
           org-archive-mark-done nil
@@ -1330,11 +1297,6 @@ settings are mine.
           )
 
     (ido-mode (quote both))
-
-    ;; Exclude DONE state tasks from refile targets
-    (defun bh/verify-refile-target ()
-      "Exclude todo keywords with a done state from refile targets"
-      (not (member (nth 2 (org-heading-components)) org-done-keywords)))
 
     (define-key org-mode-map (kbd "C-M-<return>") 'org-insert-todo-heading)
     (define-key org-mode-map (kbd "C-c t") 'org-todo)
@@ -1389,7 +1351,7 @@ settings are mine.
                ((eq result-type 'output) (plist-get result-plist :value))
                (t (message "Unknown :results type!"))))))
 
-  ;;; Function declarations
+    ;; Function declarations
     (defun bh/skip-non-archivable-tasks ()
       "Skip trees that are not available for archiving"
       (save-restriction
@@ -1417,265 +1379,7 @@ settings are mine.
                         subtree-end ; Has a date in this month or last month, skip it
                       nil))  ; available to archive
                 (or subtree-end (point-max)))
-            next-headline))))
-
-    (defun bh/is-not-scheduled-or-deadline (date-str)
-      (and (not (bh/is-deadline date-str))
-           (not (bh/is-scheduled date-str))))
-
-    (defun bh/is-due-deadline (date-str)
-      (string-match "Deadline:" date-str))
-
-    (defun bh/is-late-deadline (date-str)
-      (string-match "\\([0-9]*\\) d\. ago:" date-str))
-
-    (defun bh/is-pending-deadline (date-str)
-      (string-match "In \\([^-]*\\)d\.:" date-str))
-
-    (defun bh/is-deadline (date-str)
-      (or (bh/is-due-deadline date-str)
-          (bh/is-late-deadline date-str)
-          (bh/is-pending-deadline date-str)))
-
-    (defun bh/is-scheduled (date-str)
-      (or (bh/is-scheduled-today date-str)
-          (bh/is-scheduled-late date-str)))
-
-    (defun bh/is-scheduled-today (date-str)
-      (string-match "Scheduled:" date-str))
-
-    (defun bh/is-scheduled-late (date-str)
-      (string-match "Sched\.\\(.*\\)x:" date-str))
-
-    (defun bh/find-project-task ()
-      "Move point to the parent (project) task if any"
-      (save-restriction
-        (widen)
-        (let ((parent-task (save-excursion (org-back-to-heading 'invisible-ok) (point))))
-          (while (org-up-heading-safe)
-            (when (member (nth 2 (org-heading-components)) org-todo-keywords-1)
-              (setq parent-task (point))))
-          (goto-char parent-task)
-          parent-task)))
-
-    (defun bh/is-project-p ()
-      "Any task with a todo keyword subtask"
-      (save-restriction
-        (widen)
-        (let ((has-subtask)
-              (subtree-end (save-excursion (org-end-of-subtree t)))
-              (is-a-task (member (nth 2 (org-heading-components)) org-todo-keywords-1)))
-          (save-excursion
-            (forward-line 1)
-            (while (and (not has-subtask)
-                        (< (point) subtree-end)
-                        (re-search-forward "^\*+ " subtree-end t))
-              (when (member (org-get-todo-state) org-todo-keywords-1)
-                (setq has-subtask t))))
-          (and is-a-task has-subtask))))
-
-    (defun bh/is-project-subtree-p ()
-      "Any task with a todo keyword that is in a project subtree.
-Callers of this function already widen the buffer view."
-      (let ((task (save-excursion (org-back-to-heading 'invisible-ok)
-                                  (point))))
-        (save-excursion
-          (bh/find-project-task)
-          (if (equal (point) task)
-              nil
-            t))))
-
-    (defun bh/is-task-p ()
-      "Any task with a todo keyword and no subtask"
-      (save-restriction
-        (widen)
-        (let ((has-subtask)
-              (subtree-end (save-excursion (org-end-of-subtree t)))
-              (is-a-task (member (nth 2 (org-heading-components)) org-todo-keywords-1)))
-          (save-excursion
-            (forward-line 1)
-            (while (and (not has-subtask)
-                        (< (point) subtree-end)
-                        (re-search-forward "^\*+ " subtree-end t))
-              (when (member (org-get-todo-state) org-todo-keywords-1)
-                (setq has-subtask t))))
-          (and is-a-task (not has-subtask)))))
-
-    (defun bh/is-subproject-p ()
-      "Any task which is a subtask of another project"
-      (let ((is-subproject)
-            (is-a-task (member (nth 2 (org-heading-components)) org-todo-keywords-1)))
-        (save-excursion
-          (while (and (not is-subproject) (org-up-heading-safe))
-            (when (member (nth 2 (org-heading-components)) org-todo-keywords-1)
-              (setq is-subproject t))))
-        (and is-a-task is-subproject)))
-
-    (defun bh/list-sublevels-for-projects-indented ()
-      "Set org-tags-match-list-sublevels so when restricted to a subtree we list all subtasks.
-This is normally used by skipping functions where this variable
-is already local to the agenda."
-      (if (marker-buffer org-agenda-restrict-begin)
-          (setq org-tags-match-list-sublevels 'indented)
-        (setq org-tags-match-list-sublevels nil))
-      nil)
-
-    (defun bh/list-sublevels-for-projects ()
-      "Set org-tags-match-list-sublevels so when restricted to a subtree we list all subtasks.
-This is normally used by skipping functions where this variable
-is already local to the agenda."
-      (if (marker-buffer org-agenda-restrict-begin)
-          (setq org-tags-match-list-sublevels t)
-        (setq org-tags-match-list-sublevels nil))
-      nil)
-
-    (defvar bh/hide-scheduled-and-waiting-next-tasks t)
-
-    (defun bh/toggle-next-task-display ()
-      (interactive)
-      (setq bh/hide-scheduled-and-waiting-next-tasks
-            (not bh/hide-scheduled-and-waiting-next-tasks))
-      (when  (equal major-mode 'org-agenda-mode)
-        (org-agenda-redo))
-      (message "%s WAITING and SCHEDULED NEXT Tasks"
-               (if bh/hide-scheduled-and-waiting-next-tasks "Hide" "Show")))
-
-    (defun bh/skip-stuck-projects ()
-      "Skip trees that are not stuck projects"
-      (save-restriction
-        (widen)
-        (let ((next-headline (save-excursion (or (outline-next-heading) (point-max)))))
-          (if (bh/is-project-p)
-              (let* ((subtree-end (save-excursion (org-end-of-subtree t)))
-                     (has-next ))
-                (save-excursion
-                  (forward-line 1)
-                  (while (and (not has-next)
-                              (< (point) subtree-end)
-                              (re-search-forward "^\\*+ NEXT " subtree-end t))
-                    (unless (member "WAITING" (org-get-tags-at))
-                      (setq has-next t))))
-                (if has-next
-                    nil
-                  next-headline)) ; a stuck project, has subtasks but no next task
-            nil))))
-
-    (defun bh/skip-non-stuck-projects ()
-      "Skip trees that are not stuck projects"
-      (bh/list-sublevels-for-projects-indented)
-      (save-restriction
-        (widen)
-        (let ((next-headline (save-excursion (or (outline-next-heading) (point-max)))))
-          (if (bh/is-project-p)
-              (let* ((subtree-end (save-excursion (org-end-of-subtree t)))
-                     (has-next ))
-                (save-excursion
-                  (forward-line 1)
-                  (while (and (not has-next)
-                              (< (point) subtree-end)
-                              (re-search-forward "^\\*+ NEXT " subtree-end t))
-                    (unless (member "WAITING" (org-get-tags-at))
-                      (setq has-next t))))
-                (if has-next
-                    next-headline
-                  nil)) ; a stuck project, has subtasks but no next task
-            next-headline))))
-
-    (defun bh/skip-non-projects ()
-      "Skip trees that are not projects"
-      (bh/list-sublevels-for-projects-indented)
-      (if (save-excursion (bh/skip-non-stuck-projects))
-          (save-restriction
-            (widen)
-            (let ((subtree-end (save-excursion (org-end-of-subtree t))))
-              (cond
-               ((and (bh/is-project-p)
-                     (marker-buffer org-agenda-restrict-begin))
-                nil)
-               ((and (bh/is-project-p)
-                     (not (marker-buffer org-agenda-restrict-begin))
-                     (not (bh/is-project-subtree-p)))
-                nil)
-               (t
-                subtree-end))))
-        (save-excursion (org-end-of-subtree t))))
-
-    (defun bh/skip-project-trees-and-habits ()
-      "Skip trees that are projects"
-      (save-restriction
-        (widen)
-        (let ((subtree-end (save-excursion (org-end-of-subtree t))))
-          (cond
-           ((bh/is-project-p)
-            subtree-end)
-           ((org-is-habit-p)
-            subtree-end)
-           (t
-            nil)))))
-
-    (defun bh/skip-projects-and-habits-and-single-tasks ()
-      "Skip trees that are projects, tasks that are habits, single non-project tasks"
-      (save-restriction
-        (widen)
-        (let ((next-headline (save-excursion (or (outline-next-heading) (point-max)))))
-          (cond
-           ((org-is-habit-p)
-            next-headline)
-           ((and bh/hide-scheduled-and-waiting-next-tasks
-                 (member "WAITING" (org-get-tags-at)))
-            next-headline)
-           ((bh/is-project-p)
-            next-headline)
-           ((and (bh/is-task-p) (not (bh/is-project-subtree-p)))
-            next-headline)
-           (t
-            nil)))))
-
-    (defun bh/skip-project-tasks-maybe ()
-      "Show tasks related to the current restriction.
-When restricted to a project, skip project and sub project tasks,
-habits, NEXT tasks, and loose tasks. When not restricted, skip
-project and sub-project tasks, habits, and project related
-tasks."
-      (save-restriction
-        (widen)
-        (let* ((subtree-end (save-excursion (org-end-of-subtree t)))
-               (next-headline (save-excursion (or (outline-next-heading) (point-max))))
-               (limit-to-project (marker-buffer org-agenda-restrict-begin)))
-          (cond
-           ((bh/is-project-p)
-            next-headline)
-           ((org-is-habit-p)
-            subtree-end)
-           ((and (not limit-to-project)
-                 (bh/is-project-subtree-p))
-            subtree-end)
-           ((and limit-to-project
-                 (bh/is-project-subtree-p)
-                 (member (org-get-todo-state) (list "NEXT")))
-            subtree-end)
-           (t
-            nil)))))
-
-    (defun bh/skip-projects-and-habits ()
-      "Skip trees that are projects and tasks that are habits"
-      (save-restriction
-        (widen)
-        (let ((subtree-end (save-excursion (org-end-of-subtree t))))
-          (cond
-           ((bh/is-project-p)
-            subtree-end)
-           ((org-is-habit-p)
-            subtree-end)
-           (t
-            nil)))))
-
-    (defun bh/skip-non-subprojects ()
-      "Skip trees that are not projects"
-      (let ((next-headline (save-excursion (outline-next-heading))))
-        (if (bh/is-subproject-p)
-            nil
-          next-headline)))))
+            next-headline))))))
 
 #+END_SRC
 
@@ -1754,6 +1458,17 @@ Generating table of contents from org-mode files, see:
 #+BEGIN_SRC emacs-lisp
 (use-package org-toc
   :init (add-hook 'org-mode-hook 'org-toc-enable))
+#+END_SRC
+
+** Org-trello
+Interfacing with my org-trello account
+
+#+BEGIN_SRC emacs-lisp
+(use-package org-trello
+  :config
+  (progn
+
+    ))
 #+END_SRC
 
 ** ERC Configuration
@@ -1862,7 +1577,7 @@ if running in windowed mode, because I don't use ERC otherwise:
       (setq mu4e-mu-binary "/usr/local/bin/mu"
             smtpmail-smtp-server "smtp.example.org"
             ;;mu4e-sent-messages-behavior 'delete
-            ;; save attachments to the desktop
+            ;; save attachments to the Downloads folder
             mu4e-attachment-dir "~/Downloads"
             ;; attempt to show images
             mu4e-view-show-images t
@@ -1979,10 +1694,11 @@ passed in. Also supports ignoring the msg at the point."
                (user-mail-address   "lee.hinman@elasticsearch.com")
                (msmtp-account       "elasticsearch")
                (mu4e-sent-messages-behavior delete))
-              ("writequit"
-               (user-mail-address   "lee@writequit.org")
-               (msmtp-account       "writequit")
-               (mu4e-sent-messages-behavior sent)))
+              ;; ("writequit"
+              ;;  (user-mail-address   "lee@writequit.org")
+              ;;  (msmtp-account       "writequit")
+              ;;  (mu4e-sent-messages-behavior sent))
+              )
             ;; These are used when mu4e checks for new messages
             mu4e-my-email-addresses
             (mapcar (lambda (acct) (cadr (assoc 'user-mail-address (cdr acct))))
@@ -2009,7 +1725,7 @@ passed in. Also supports ignoring the msg at the point."
                   account-vars))))
       (add-hook 'mu4e-compose-pre-hook 'kdl-mu4e-set-compose-account)
 
-       ;; Send mail through msmtp (setq stuff is below)
+      ;; Send mail through msmtp (setq stuff is below)
       (defun kdl-msmtp ()
         "Add some arguments to the msmtp call in order to route the message
   through the right account."
@@ -2020,7 +1736,7 @@ passed in. Also supports ignoring the msg at the point."
                 (setq message-sendmail-extra-arguments (list "-a" msmtp-account))))))
       (add-hook 'message-send-mail-hook 'kdl-msmtp)
 
-       ;; Notification stuff
+      ;; Notification stuff
       (setq global-mode-string
             (if (string-match-p "kdl-mu4e-new-mail"
                                 (prin1-to-string global-mode-string))
@@ -2131,13 +1847,13 @@ passed in. Also supports ignoring the msg at the point."
             `((,(kdl-mu4e-unread-mail-query) "New messages"         ?b)
               ("date:today..now"             "Today's messages"     ?t)
               ("date:7d..now"                "Last 7 days"          ?W)
-              ("maildir:/writequit/INBOX"    "Writequit"            ?w)
+              ;;("maildir:/writequit/INBOX"    "Writequit"            ?w)
               ("subject:[elasticsearch]"     "ES Issues"            ?e)
               ("maildir:/elasticsearch/INBOX" "Elasticsearch"       ?s)
               ("maildir:/gmail/INBOX"        "Gmail"                ?g)
-              ("maildir:/writequit/INBOX OR maildir:/elasticsearch/INBOX OR maildir:/gmail/INBOX"
-               "All Mail" ?a)
-              ("mime:image/*"                "Messages with images" ?p)))
+              ;; ("maildir:/writequit/INBOX OR maildir:/elasticsearch/INBOX OR maildir:/gmail/INBOX"
+              ;;  "All Mail" ?a)
+              ("maildir:/elasticsearch/INBOX OR maildir:/gmail/INBOX" "All Mail" ?a)))
 
       ;; Skip the main mu4e screen and go right to unread
       (defun kdl-mu4e-view-unread ()
@@ -2174,16 +1890,6 @@ passed in. Also supports ignoring the msg at the point."
         (set-face-background 'mu4e-header-highlight-face "#e0e0e0"))))
 
   (global-set-key (kbd "C-c m") 'mu4e))
-#+END_SRC
-
-** Key-chord
-Pressing multiple keys to call a method. It's disabled right now because I'm not
-sure exactly how useful it is.
-
-#+BEGIN_SRC emacs-lisp
-(use-package key-chord
-  :disabled t
-  :init (key-chord-mode 1))
 #+END_SRC
 
 ** Ace-jump-mode
@@ -2563,6 +2269,7 @@ There are many helm things. I use it a lot.
    ("C-x C-i" . helm-semantic-or-imenu)
    ("C-c M-x" . helm-M-x)
    ("C-x C-b" . helm-buffers-list)
+   ("C-x b" . helm-buffers-list)
    ("C-x C-r" . helm-recentf)
    ("C-h t" . helm-world-time))
   :init (helm-mode 1)
@@ -3505,4 +3212,3 @@ A function to search/browse ES docs from Emacs using =eww=
     (global-set-key (kbd "C-c d") 'my/search-es-docs)
     (global-set-key (kbd "C-x d") 'my/search-es-docs)))
 #+END_SRC
-

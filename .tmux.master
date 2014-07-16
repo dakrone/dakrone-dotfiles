@@ -40,7 +40,7 @@ bind-key -n M-5 select-window -t 5
 bind-key -n M-6 select-window -t 6
 bind-key -n M-7 select-window -t 7
 bind-key -n M-8 select-window -t 8
-bind-key -n M-9 select-window -t 9
+#bind-key -n M-9 select-window -t 9
 
 ## Custom status bar, via https://github.com/myusuf3/dotfiles
 ## Powerline symbols: ⮂ ⮃ ⮀ ⮁ ⭤

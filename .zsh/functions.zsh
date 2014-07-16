@@ -267,6 +267,7 @@ function vping() {
     ping -c 8 $1 | grep "bytes from" | cut -d " " -f 8 | cut -d "=" -f 2 | spark
 }
 
+# Check if a URL is up
 function chk-url() {
     curl -sL -w "%{http_code} %{url_effective}\\n" "$1" -o /dev/null
 }
@@ -275,19 +276,28 @@ function pub() {
     scp $1 writequit:public_html/wq/pub/
 }
 
+# Check CLA status for ES pull requests
 function cla() {
     curl -I "http://54.204.36.1:3000/verify/nickname/$1"
 }
 
+# Tunnel ES from somewhere to here locally on port 9400
 function es-tunnel() {
     autossh -M0 $1 -L 9400:localhost:9200 -CNf
 }
 
+# Tunnel logstash/kibana locally
 function kibana-tunnel() {
     autossh -M0 $1 -L 9292:localhost:9292 -CNf
 }
 
+# Delete a branch locally and on my (dakrone) fork
 function del-branch() {
     git branch -d $1
     git push dakrone :$1
+}
+
+# Fuzzy-check-out, check out the first local branch that matches
+function fco() {
+    git checkout `git branch | grep -i $1 | head -1 | tr -d " "`
 }

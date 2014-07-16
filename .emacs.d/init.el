@@ -4,8 +4,6 @@
 (require 'package)
 
 (add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/"))
-;; for wanderlust
-(add-to-list 'package-archives '("e6h" . "http://www.e6h.org/packages/"))
 (package-initialize)
 (setq package-enable-at-startup nil)
 (let ((elapsed (float-time (time-subtract (current-time)

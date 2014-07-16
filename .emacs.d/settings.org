@@ -2780,10 +2780,12 @@ Kind of like Vim's folding, but manually done right now.
 
 #+BEGIN_SRC emacs-lisp
 (use-package hideshow
+  :bind (("C-c TAB" . hs-toggle-hiding)
+         ("C-\\" . hs-toggle-hiding)
+         ("M-\\" . hs-hide-all)
+         ("M-|" . hs-show-all))
   :config
   (progn
-    (define-key hs-minor-mode-map (kbd "C-c TAB") 'hs-toggle-hiding)
-    (define-key hs-minor-mode-map (kbd "M-c TAB") 'hs-hide-all-non-comment-function)
     (defvar hs-special-modes-alist
       (mapcar 'purecopy
               '((c-mode "{" "}" "/[*/]" nil nil)
@@ -2797,9 +2799,10 @@ Kind of like Vim's folding, but manually done right now.
   (interactive)
   (hs-minor-mode t))
 
-(add-hook 'javascript-mode-hook 'my/enable-hs-minor-mode)
-(add-hook 'js-mode-hook 'my/enable-hs-minor-mode)
-(add-hook 'java-mode-hook 'my/enable-hs-minor-mode)
+;; (add-hook 'javascript-mode-hook 'my/enable-hs-minor-mode)
+;; (add-hook 'js-mode-hook 'my/enable-hs-minor-mode)
+;; (add-hook 'java-mode-hook 'my/enable-hs-minor-mode)
+(add-hook 'prog-mode-hook 'my/enable-hs-minor-mode)
 #+END_SRC
 ** indent-guide
 A neat mode to show indention

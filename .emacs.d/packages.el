@@ -31,7 +31,8 @@
     ido-vertical-mode yasnippet idle-highlight-mode smart-tab anzu
     smartparens flx-ido projectile smooth-scrolling keyfreq
     prodigy column-marker highlight-symbol ace-jump-mode
-    multiple-cursors fancy-narrow easy-kill indent-guide
+    multiple-cursors fancy-narrow easy-kill indent-guide toggle-quotes
+    visible-mark
 
     ;; LaTeX
     auctex
@@ -62,7 +63,7 @@
     jedi hy-mode
 
     ;; ruby
-    ruby-mode ruby-test-mode inf-ruby
+    ruby-mode ruby-test-mode inf-ruby puppet-mode
 
     ;; rust
     rust-mode

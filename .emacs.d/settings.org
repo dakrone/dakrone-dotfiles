@@ -1011,8 +1011,7 @@ Bleh javascript.
 (setq-default js-indent-level 2)
 
 (use-package tern)
-
-(add-hook 'js-mode-hook (lambda () (tern-mode t)))
+;;(add-hook 'js-mode-hook (lambda () (tern-mode t)))
 #+END_SRC
 
 *** Elasticsearch
@@ -1147,7 +1146,7 @@ See a [[https://github-camo.global.ssl.fastly.net/585b59c2a71eb618b0bff59b3f5ca4
   (dakrone-light))
 #+END_SRC
 
-** Org-mode
+** org-mode
 I use org-mode a ton, so it get's its own page here.
 
 I am using the custom org-mode export to Github-flavored-markdown from:
@@ -1383,7 +1382,7 @@ settings are mine.
 
 #+END_SRC
 
-** Org-publishing
+** org-publishing
 Publishing org-mode files to my hosting provider:
 
 Both dropbox and non dropbox are included here, because symlinks suck.
@@ -1451,7 +1450,7 @@ Both dropbox and non dropbox are included here, because symlinks suck.
 Then, when I'm editing ~/org/es/feature-foo.org, I can hit =C-c C-e P f= and
 export the file to show up in http://p.writequit.org/org
 
-** Org-toc
+** org-toc
 Generating table of contents from org-mode files, see:
 [[https://github.com/snosov1/org-toc]]
 
@@ -1460,7 +1459,7 @@ Generating table of contents from org-mode files, see:
   :init (add-hook 'org-mode-hook 'org-toc-enable))
 #+END_SRC
 
-** Org-trello
+** org-trello
 Interfacing with my org-trello account
 
 #+BEGIN_SRC emacs-lisp
@@ -1892,7 +1891,7 @@ passed in. Also supports ignoring the msg at the point."
   (global-set-key (kbd "C-c m") 'mu4e))
 #+END_SRC
 
-** Ace-jump-mode
+** ace-jump-mode
 Jump quickly between words or lines, I mostly use it with eww.
 
 #+BEGIN_SRC emacs-lisp
@@ -1906,7 +1905,7 @@ Jump quickly between words or lines, I mostly use it with eww.
   (key-chord-define-global "kj" 'ace-jump-mode))
 #+END_SRC
 
-** Smooth-scrolling
+** smooth-scrolling
 Smooth scrolling means when you hit =C-n= to go to the next line at the bottom
 of the page, instead of doing a page-down, it shifts down by a single line. The
 margin means that much space is kept between the cursor and the bottom of the
@@ -1918,7 +1917,7 @@ buffer.
   (setq smooth-scroll-margin 4))
 #+END_SRC
 
-** Sublimity
+** sublimity
 Some fancy animations around page-up, page-down, etc, to give a little visual
 indication as to the direction the buffer is moving.
 
@@ -1936,7 +1935,7 @@ Disabled for now, as it's kind of a pain being slow
             sublimity-scroll-drift-length 3))))
 #+END_SRC
 
-** Yasnippet
+** yasnippet
 Snippets for coding, loading while idle so startup is faster.
 
 #+BEGIN_SRC emacs-lisp
@@ -1976,7 +1975,7 @@ And some niceties to allow choosing a snippet using helm:
       (custom-set-variables '(yas/prompt-functions '(my-yas/prompt))))))
 #+END_SRC
 
-** Paredit
+** paredit
 Paredit for all the lisps.
 
 #+BEGIN_SRC emacs-lisp
@@ -1992,7 +1991,7 @@ Paredit for all the lisps.
 (add-hook 'cider-repl-mode-hook (lambda () (paredit-mode t)))
 #+END_SRC
 
-** Smartparens
+** smartparens
 
 #+BEGIN_SRC emacs-lisp
 (use-package smartparens
@@ -2065,7 +2064,7 @@ Paredit for all the lisps.
             (show-smartparens-global-mode t)))
 #+END_SRC
 
-** Flycheck
+** flycheck
 
 #+BEGIN_SRC emacs-lisp
 (use-package flycheck
@@ -2086,7 +2085,7 @@ Paredit for all the lisps.
 
 #+END_SRC
 
-** Expand-region
+** expand-region
 
 #+BEGIN_SRC emacs-lisp
 (use-package expand-region
@@ -2094,7 +2093,7 @@ Paredit for all the lisps.
          ("C-M-@" . er/contract-region)))
 #+END_SRC
 
-** Magit
+** magit
 #+BEGIN_SRC emacs-lisp
 (use-package magit
   :bind ("M-g M-g" . magit-status)
@@ -2127,7 +2126,7 @@ Paredit for all the lisps.
     (custom-set-variables '(magit-set-upstream-on-push (quote dontask)))))
 #+END_SRC
 
-** Projectile
+** projectile
 Per-project navigation
 
 #+BEGIN_SRC emacs-lisp
@@ -2139,7 +2138,7 @@ Per-project navigation
     (defconst projectile-mode-line-lighter " P")))
 #+END_SRC
 
-** Prodigy
+** prodigy
 I basically use this to start up ES when I need to test something really quickly
 
 #+BEGIN_SRC emacs-lisp
@@ -2148,16 +2147,9 @@ I basically use this to start up ES when I need to test something really quickly
   :config
   (progn
     (prodigy-define-service
-      :name "Elasticsearch 1.2.0"
-      :cwd "~/ies/elasticsearch-1.2.0/"
-      :command "~/ies/elasticsearch-1.2.0/bin/elasticsearch"
-      :tags '(work test es)
-      :port 9200)
-
-    (prodigy-define-service
-      :name "Elasticsearch 1.2.1"
-      :cwd "~/ies/elasticsearch-1.2.1/"
-      :command "~/ies/elasticsearch-1.2.1/bin/elasticsearch"
+      :name "Elasticsearch 1.2.2"
+      :cwd "~/ies/elasticsearch-1.2.2/"
+      :command "~/ies/elasticsearch-1.2.2/bin/elasticsearch"
       :tags '(work test es)
       :port 9200)
 
@@ -2169,9 +2161,9 @@ I basically use this to start up ES when I need to test something really quickly
       :port 9200)
 
     (prodigy-define-service
-      :name "Elasticsearch 1.1.1"
-      :cwd "~/ies/elasticsearch-1.1.1/"
-      :command "~/ies/elasticsearch-1.1.1/bin/elasticsearch"
+      :name "Elasticsearch 1.0.3"
+      :cwd "~/ies/elasticsearch-1.0.3/"
+      :command "~/ies/elasticsearch-1.0.3/bin/elasticsearch"
       :tags '(work test es)
       :port 9200)
 
@@ -2181,17 +2173,10 @@ I basically use this to start up ES when I need to test something really quickly
       :command "~/ies/elasticsearch-0.90.13/bin/elasticsearch"
       :args '("-f")
       :tags '(work test es)
-      :port 9200)
-
-    (prodigy-define-service
-      :name "Elasticsearch 1.0.3"
-      :cwd "~/ies/elasticsearch-1.0.3/"
-      :command "~/ies/elasticsearch-1.0.3/bin/elasticsearch"
-      :tags '(work test es)
       :port 9200)))
 #+END_SRC
 
-** Git-gutter
+** git-gutter
 
 #+BEGIN_SRC emacs-lisp
 (use-package git-gutter
@@ -2206,7 +2191,7 @@ I basically use this to start up ES when I need to test something really quickly
 (add-hook 'prog-mode-hook (lambda () (git-gutter-mode t)))
 #+END_SRC
 
-** Highlight-symbol
+** highlight-symbol
 Jump to the next/prev symbol pretty easily
 
 #+BEGIN_SRC emacs-lisp
@@ -2215,7 +2200,7 @@ Jump to the next/prev symbol pretty easily
          ("M-p" . highlight-symbol-prev)))
 #+END_SRC
 
-** Anzu
+** anzu
 Anzu shows the number of search hits in the modeline, which is handy.
 
 It can also be used for a "refactor-like" thing similar to query-replace.
@@ -2242,13 +2227,13 @@ Also, add a thing for yanking the entire symbol into the query while searching:
 (define-key isearch-mode-map (kbd "C-M-w") 'isearch-yank-symbol)
 #+END_SRC
 
-** Easy-kill
+** easy-kill
 #+BEGIN_SRC emacs-lisp
 (use-package easy-kill
   :init (global-set-key [remap kill-ring-save] 'easy-kill))
 #+END_SRC
 
-** Helm
+** helm
 
 There are many helm things. I use it a lot.
 
@@ -2489,7 +2474,7 @@ There are many helm things. I use it a lot.
 
 #+END_SRC
 
-** Markdown
+** markdown-mode
 Various markdown-related settings.
 
 #+BEGIN_SRC emacs-lisp
@@ -2555,7 +2540,7 @@ Same, but with company-mode
 (add-hook 'prog-mode-hook 'global-company-mode)
 #+END_SRC
 
-** Smart-tab
+** smart-tab
 Used smart-tab to complete everywhere except for ERC, shell and mu4e.
 
 #+BEGIN_SRC emacs-lisp
@@ -2570,7 +2555,7 @@ Used smart-tab to complete everywhere except for ERC, shell and mu4e.
 (add-hook 'prog-mode-hook (lambda () (global-smart-tab-mode 1)))
 #+END_SRC
 
-** Undo-tree
+** undo-tree
 Undo-tree allows me to have sane undo defaults, as well as being able to
 visualize it in ascii art if needed.
 
@@ -2584,7 +2569,7 @@ visualize it in ascii art if needed.
     (define-key undo-tree-map (kbd "C-/") 'undo-tree-undo)))
 #+END_SRC
 
-** Popwin
+** popwin
 Popwin handles little popup windows at the bottom of the screen, which is very
 helpful for documentation buffers and so on.
 
@@ -2659,7 +2644,7 @@ helpful for documentation buffers and so on.
 
 #+END_SRC
 
-** Paren-face
+** paren-face
 Paren-face adds a face for parentheses, which is used by themes to darken the
 parens.
 
@@ -2668,10 +2653,12 @@ parens.
   :init (global-paren-face-mode))
 #+END_SRC
 
-** Ido-mode
-First, turn on ido-mode everywhere:
+** ido-mode
+First, turn on ido-mode everywhere, and if flx-ido is installed, enable it
+everywhere as well.
 
-And if flx-ido is installed, enable it everywhere
+Ido gives really nice completion while flx-ido makes everything more flexible
+instead of rigid completions
 
 #+BEGIN_SRC emacs-lisp
 (use-package ido
@@ -2697,7 +2684,33 @@ And if flx-ido is installed, enable it everywhere
 (use-package ido-ubiquitous)
 #+END_SRC
 
-** Multiple cursors
+** toggle-quotes
+Hot-key to toggle between single and double-quoted strings
+
+#+BEGIN_SRC emacs-lisp
+(use-package toggle-quotes
+  :bind ("M-\"" . toggle-quotes))
+#+END_SRC
+
+** visible-mark
+Shows the mark visibly, so I know where popping it will lead
+
+#+BEGIN_SRC emacs-lisp
+;; this has to go before the (require 'visible-mark)
+(defface visible-mark-active
+  '((((type tty) (class mono)))
+    (t (:background "magenta"))) "")
+
+(use-package visible-mark
+  :init (global-visible-mark-mode 1)
+  :disabled t
+  :config
+  (progn
+    (setq visible-mark-max 2)
+    (setq visible-mark-faces `(visible-mark-face1 my-visible-mark-face2))))
+#+END_SRC
+
+** multiple-cursors
 Mulitple cursors is like rectangular selection/insertion but on steroids
 
 #+BEGIN_SRC emacs-lisp
@@ -2708,7 +2721,7 @@ Mulitple cursors is like rectangular selection/insertion but on steroids
          ("C-c C-<" . mc/mark-all-like-this)))
 #+END_SRC
 
-** Twittering-mode
+** twittering-mode
 Load up twittering mode, but defer it since I'm probably not loading emacs to
 immediately use Twitter :P
 
@@ -2721,7 +2734,7 @@ immediately use Twitter :P
         twittering-use-master-password t)))
 #+END_SRC
 
-** Scpaste
+** scpaste
 scp-ing an HTML version of the current buffer somewhere
 
 #+BEGIN_SRC emacs-lisp
@@ -2731,32 +2744,46 @@ scp-ing an HTML version of the current buffer somewhere
         scpaste-scp-destination "writequit:public_html/wq/paste/"))
 #+END_SRC
 
-** Smex
+** smex
 #+BEGIN_SRC emacs-lisp
 (use-package smex
   :bind (("M-x" . smex)
          ("M-X" . smex-major-mode-commands)))
 #+END_SRC
 
-** Color-identifiers-mode
+** color-identifiers-mode
+Color-identifiers-mode gives colors to unique variables passed into functions.
+Can be really handy to see if you've misspelled a variable name.
+
 #+BEGIN_SRC emacs-lisp
 (use-package color-identifiers-mode)
 
-;;(add-hook 'prog-mode-hook (lambda () (color-identifiers-mode t)))
+(defun my/enable-color-identifiers ()
+  (interactive)
+  (color-identifiers-mode t))
+
+(add-hook 'java-mode-hook 'my/enable-color-identifiers)
+;;(add-hook 'prog-mode-hook 'my/enable-color-identifiers)
 #+END_SRC
 
-** Iedit
+** iedit
+Iedit is interactive edit, where if you are on a word and you enter iedit-mode,
+you're basically editing every instance of that word/variable in the buffer.
+
 #+BEGIN_SRC emacs-lisp
 (use-package iedit
   :bind ("C-;" . iedit-mode))
 #+END_SRC
 
-** Hideshow
+** hideshow
+Kind of like Vim's folding, but manually done right now.
+
 #+BEGIN_SRC emacs-lisp
 (use-package hideshow
   :config
   (progn
     (define-key hs-minor-mode-map (kbd "C-c TAB") 'hs-toggle-hiding)
+    (define-key hs-minor-mode-map (kbd "M-c TAB") 'hs-hide-all-non-comment-function)
     (defvar hs-special-modes-alist
       (mapcar 'purecopy
               '((c-mode "{" "}" "/[*/]" nil nil)
@@ -2766,17 +2793,15 @@ scp-ing an HTML version of the current buffer somewhere
                 (js-mode "{" "}" "/[*/]" nil)
                 (javascript-mode  "{" "}" "/[*/]" nil))))))
 
-(add-hook 'javascript-mode-hook
-          '(lambda ()
-             (hs-minor-mode t)
-             (define-key hs-minor-mode-map (kbd "C-c TAB") 'hs-toggle-hiding)))
+(defun my/enable-hs-minor-mode ()
+  (interactive)
+  (hs-minor-mode t))
 
-(add-hook 'js-mode-hook
-          '(lambda ()
-             (hs-minor-mode t)
-             (define-key hs-minor-mode-map (kbd "C-c TAB") 'hs-toggle-hiding)))
+(add-hook 'javascript-mode-hook 'my/enable-hs-minor-mode)
+(add-hook 'js-mode-hook 'my/enable-hs-minor-mode)
+(add-hook 'java-mode-hook 'my/enable-hs-minor-mode)
 #+END_SRC
-** Indent-guide
+** indent-guide
 A neat mode to show indention
 
 #+BEGIN_SRC emacs-lisp
@@ -2785,7 +2810,7 @@ A neat mode to show indention
 (add-hook 'prog-mode-hook (lambda () (indent-guide-mode t)))
 #+END_SRC
 
-** Abbreviations
+** abbrev
 
 #+BEGIN_SRC emacs-lisp
 (use-package abbrev
@@ -2794,7 +2819,8 @@ A neat mode to show indention
   (define-abbrev-table 'global-abbrev-table
     '(("elasticsearhc" "elasticsearch" nil 0)
       ("elastiscearch" "elasticsearch" nil 0)
-      ("elastiscearhc" "elasticsearch" nil 0))))
+      ("elastiscearhc" "elasticsearch" nil 0)
+      ("elatsicsearch" "elasticsearch" nil 0))))
 
 #+END_SRC
 

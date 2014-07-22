@@ -1168,15 +1168,19 @@ settings are mine.
   :bind (("C-c l" . org-store-link)
          ("C-c a" . org-agenda)
          ("C-c b" . org-iswitchb)
-         ("C-c c" . org-capture))
+         ("C-c c" . org-capture)
+         ("C-c M-p" . org-babel-previous-src-block)
+         ("C-c M-n" . org-babel-next-src-block)
+         ("C-c S" . org-babel-previous-src-block)
+         ("C-c s" . org-babel-next-src-block))
   :config
   (progn
     (use-package org-install)
     (add-hook 'org-mode-hook 'turn-on-auto-fill)
     (setq org-directory "~/org"
           org-startup-indented t
-          org-startup-truncated nil
           org-return-follows-link t
+          ;; allow changing between todo stats directly by hotkey
           org-use-fast-todo-selection t
           org-src-fontify-natively t
           org-fontify-whole-heading-line t
@@ -1189,55 +1193,18 @@ settings are mine.
           org-agenda-sticky t
           ;; show 4 agenda days
           org-agenda-span 4
-          org-cycle-separator-lines 0
           org-special-ctrl-a/e t
           org-special-ctrl-k t
           org-yank-adjusted-subtrees nil
           org-src-window-setup 'current-window
           ;; Overwrite the current window with the agenda
           org-agenda-window-setup 'current-window
-          org-todo-keywords
-          '((sequence "TODO(t)" "INPROGRESS(i)" "PENDING(p)" "NEEDSREVIEW(n)" "|" "DONE(d)")
-            (sequence "SOMEDAY(s)" "TODO(t)" "INPROGRESS(i)" "|" "DONE(d)"))
-          org-todo-keyword-faces
-          '(("TODO"        . (:foreground "red" :weight bold))
-            ("INPROGRESS"  . (:foreground "deep sky blue" :weight bold))
-            ("SOMEDAY"     . (:foreground "purple" :weight bold))
-            ("DONE"        . (:foreground "SpringGreen1" :weight bold))
-            ("PENDING"     . (:foreground "orange" :weight bold))
-            ("NEEDSREVIEW" . (:foreground "#edd400" :weight bold)))
-          org-agenda-files '("~/org/todo.org" "~/org/notes.org"
-                             "~/org/journal.org" "~/org/refile.org"
-                             "~/org/meetings.org")
-          org-refile-targets `((,(concat "~/org/todo.org") . (:level . 1))
-                               (,(concat "~/org/notes.org") . (:level . 1)))
-          org-tag-alist '(("oss" . ?o) ("home" . ?h) ("work" . ?w) ("book" . ?b))
-          org-capture-templates
-          '(("t" "Todo" entry (file+headline "~/org/todo.org" "Unsorted")
-             "* TODO %?\n")
-            ("e" "ES Todo" entry (file+headline "~/org/todo.org" "Elasticsearch")
-             "* TODO %? :work:\n")
-            ("o" "OSS Todo" entry (file+headline "~/org/todo.org"
-                                                 "Open Source Software")
-             "* TODO %? :oss:\n")
-            ("h" "Home Todo" entry (file+headline "~/org/todo.org" "Home")
-             "* TODO %? :home:\n")
-            ("b" "Book Todo" entry (file+headline "~/org/todo.org" "Book")
-             "* TODO %? :book:\n")
-            ("n" "Notes" entry (file+headline "~/org/notes.org" "Notes")
-             "* %? :NOTE:\n%U\n")
-            ("j" "Journal" entry (file+datetree "~/org/journal.org")
-             "* %?\n%U\n")
-            ("m" "Meeting" entry (file+headline "~/org/meetings.org" "Meetings")))
-          org-refile-targets (quote ((nil :maxlevel . 9)
-                                     (org-agenda-files :maxlevel . 9)))
           ;; Use full outline paths for refile targets - we file directly with IDO
           org-refile-use-outline-path t
           ;; Targets complete directly with IDO
           org-outline-path-complete-in-steps nil
           ;; Allow refile to create parent tasks with confirmation
           org-refile-allow-creating-parent-nodes (quote confirm)
-
           ;; Use IDO for both buffer and file completion and ido-everywhere to t
           ido-everywhere t
           ido-max-directory-size 100000
@@ -1258,29 +1225,16 @@ settings are mine.
           org-agenda-dim-blocked-tasks nil
           ;; Compact the block agenda view
           org-agenda-compact-blocks t
-          ;; Custom agenda command definitions
-          org-agenda-custom-commands
-          '((" " "Everything"
-             ((agenda "" nil)
-              (todo "INPROGRESS"
-                    ((org-agenda-overriding-header "Current work")))
-              (todo "NEEDSREVIEW"
-                    ((org-agenda-overriding-header "Waiting on reviews")))
-              (todo "PENDING"
-                    ((org-agenda-overriding-header "Waiting for feedback")))
-              (todo "TODO"
-                    ((org-agenda-overriding-header "Task list")
-                     (org-agenda-sorting-strategy '(category-keep))))
-              (tags "-REFILE-SOMEDAY/"
-                    ((org-agenda-overriding-header "Tasks for archive")
-                     (org-agenda-skip-function 'bh/skip-non-archivable-tasks))))
-             nil))
-
+          ;; Mark entries as done when archiving
           org-archive-mark-done nil
           org-archive-location "%s_archive::* Archived Tasks"
           ;; Sorting order for tasks on the agenda
           org-agenda-sorting-strategy
-          (quote ((agenda habit-down time-up user-defined-up priority-down effort-up category-keep)
+          (quote ((agenda habit-down time-up
+                          user-defined-up
+                          priority-down
+                          effort-up
+                          category-keep)
                   (todo category-up priority-down effort-up)
                   (tags category-up priority-down effort-up)
                   (search category-up)))
@@ -1294,14 +1248,102 @@ settings are mine.
           org-agenda-insert-diary-extract-time t
           org-agenda-repeating-timestamp-show-all t
           ;; Show all agenda dates - even if they are empty
-          org-agenda-show-all-dates t
-          )
+          org-agenda-show-all-dates t)
+
+    ;; Agenda org-mode files
+    (setq org-agenda-files
+          '("~/org/todo.org"
+            "~/org/elasticsearch.org"
+            "~/org/oss.org"
+            "~/org/book.org"
+            "~/org/notes.org"
+            "~/org/journal.org"
+            "~/org/refile.org"))
+    ;; Org todo keywords
+    (setq org-todo-keywords
+          (quote
+           ((sequence "SOMEDAY(s)" "TODO(t)" "NEXT(n)" "WAITING(w@/!)" "NEEDSREVIEW(r@/!)"
+                      "|" "DONE(d)")
+            (sequence "WAITING(w@/!)" "HOLD(h@/!)"
+                      "|" "CANCELLED(c@/!)"))))
+    ;; Org faces
+    (setq org-todo-keyword-faces
+          (quote (("TODO" :foreground "red" :weight bold)
+                  ("NEXT" :foreground "deep sky blue" :weight bold)
+                  ("SOMEDAY" :foreground "purple" :weight bold)
+                  ("NEEDSREVIEW" :foreground "#edd400" :weight bold)
+                  ("DONE" :foreground "forest green" :weight bold)
+                  ("WAITING" :foreground "orange" :weight bold)
+                  ("HOLD" :foreground "magenta" :weight bold)
+                  ("CANCELLED" :foreground "forest green" :weight bold))))
+    ;; add or remove tags on state change
+    (setq org-todo-state-tags-triggers
+          (quote (("CANCELLED" ("CANCELLED" . t))
+                  ("WAITING" ("WAITING" . t))
+                  ("HOLD" ("WAITING") ("HOLD" . t))
+                  (done ("WAITING") ("HOLD"))
+                  ("TODO" ("WAITING") ("CANCELLED") ("HOLD"))
+                  ("NEXT" ("WAITING") ("CANCELLED") ("HOLD"))
+                  ("DONE" ("WAITING") ("CANCELLED") ("HOLD")))))
+    ;; refile targets all level 1 headers in todo.org and notes.org
+    (setq org-refile-targets '((nil :maxlevel . 2)
+                               (org-agenda-files :maxlevel . 2)))
+    ;; quick access to common tags
+    (setq org-tag-alist
+          '(("oss" . ?o)
+            ("home" . ?h)
+            ("work" . ?w)
+            ("book" . ?b)
+            ("support" . ?s)
+            ("docs" . ?d)))
+    ;; capture templates
+    (setq org-capture-templates
+          (quote
+           (("t" "Todo" entry (file "~/org/refile.org")
+             "* TODO %?\n%U\n")
+            ("n" "Notes" entry (file+headline "~/org/notes.org" "Notes")
+             "* %? :NOTE:\n%U\n")
+            ("j" "Journal" entry (file+datetree "~/org/journal.org")
+             "* %?\n%U\n"))))
+    ;; Custom agenda command definitions
+    (setq org-agenda-custom-commands
+          (quote
+           (("N" "Notes" tags "NOTE"
+             ((org-agenda-overriding-header "Notes")
+              (org-tags-match-list-sublevels t)))
+            (" " "Agenda"
+             ((agenda "" nil)
+              (tags "REFILE"
+                    ((org-agenda-overriding-header "Tasks to Refile")
+                     (org-tags-match-list-sublevels nil)))
+              (todo "NEXT"
+                    ((org-agenda-overriding-header "Next work")))
+              (tags "support/!"
+                    ((org-agenda-overriding-header "Support cases")))
+              (todo "NEEDSREVIEW"
+                    ((org-agenda-overriding-header "Waiting on reviews")))
+              (todo "WAITING"
+                    ((org-agenda-overriding-header "Waiting for feedback")))
+              (todo "TODO"
+                    ((org-agenda-overriding-header "Task list")
+                     (org-agenda-sorting-strategy '(category-keep))))
+              (todo "HOLD"
+                    ((org-agenda-overriding-header "On-hold")))
+              (todo "DONE"
+                    ((org-agenda-overriding-header "Tasks for archive")
+                     (org-agenda-skip-function 'bh/skip-non-archivable-tasks))))
+             nil))))
 
     (ido-mode (quote both))
 
+    ;; Exclude DONE state tasks from refile targets
+    (defun my/verify-refile-target ()
+      "Exclude todo keywords with a done state from refile targets"
+      (not (member (nth 2 (org-heading-components)) org-done-keywords)))
+    (setq org-refile-target-verify-function 'my/verify-refile-target)
+
     (define-key org-mode-map (kbd "C-M-<return>") 'org-insert-todo-heading)
     (define-key org-mode-map (kbd "C-c t") 'org-todo)
-    (define-key org-mode-map (kbd "C-M-<tab>") 'show-all)
     (define-key org-mode-map (kbd "M-G") 'org-plot/gnuplot)
     (local-unset-key (kbd "M-S-<return>"))
 

@@ -30,10 +30,10 @@ global_excludes = Set{ "shift-cmd-tab",
 -- have to use "alt-w" to close a terminal window.
 
 apps = {
-   iTerm = { exclude = Set{ -- "cmd-1",
-                            -- "cmd-2",
-                            -- "cmd-3",
-                            -- "cmd-4",
+   iTerm = { exclude = Set{ "cmd-1",
+                            "cmd-2",
+                            "cmd-3",
+                            "cmd-4",
                             "cmd-`",
                             "cmd-c",
                             "cmd-t",

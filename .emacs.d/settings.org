@@ -2502,6 +2502,16 @@ Various markdown-related settings.
         ("fn"   "^\\[\\^\\(.+?\\)\\]" 1) ))))
 #+END_SRC
 
+** editorconfig
+EditorConfig is a per-project cross-editor way of specifying settings. See:
+http://editorconfig.org/
+
+Mainly used by non-Emacs people, but we should always try to play nice :)
+
+#+BEGIN_SRC emacs-lisp
+(use-package editorconfig)
+#+END_SRC
+
 ** Auto-completion (auto-complete & company)
 Standard auto-completion configuration
 

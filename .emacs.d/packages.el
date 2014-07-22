@@ -32,7 +32,7 @@
     smartparens flx-ido projectile smooth-scrolling keyfreq
     prodigy column-marker highlight-symbol ace-jump-mode
     multiple-cursors fancy-narrow easy-kill indent-guide toggle-quotes
-    visible-mark simple-call-tree simple-call-tree+
+    visible-mark simple-call-tree simple-call-tree+ editerconfig
 
     ;; LaTeX
     auctex

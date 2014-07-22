@@ -2233,7 +2233,6 @@ Also, add a thing for yanking the entire symbol into the query while searching:
 #+END_SRC
 
 ** helm
-
 There are many helm things. I use it a lot.
 
 #+BEGIN_SRC emacs-lisp
@@ -2241,7 +2240,7 @@ There are many helm things. I use it a lot.
   :bind
   (("C-M-z" . helm-resume)
    ("C-h b" . helm-descbinds)
-   ("C-x C-r" . helm-recentf)
+   ("C-x C-r" . helm-mini)
    ("C-x M-o" . helm-occur)
    ("C-x C-o" . helm-occur)
    ("M-y" . helm-show-kill-ring)
@@ -2253,9 +2252,10 @@ There are many helm things. I use it a lot.
    ("C-x C-i" . helm-semantic-or-imenu)
    ("C-c M-x" . helm-M-x)
    ("C-x C-b" . helm-buffers-list)
-   ("C-x b" . helm-buffers-list)
-   ("C-x C-r" . helm-recentf)
-   ("C-h t" . helm-world-time))
+   ;;("C-x b" . helm-buffers-list)
+   ("C-x b" . helm-mini)
+   ("C-h t" . helm-world-time)
+   ("C-h s" . helm-simple-call-tree))
   :init (helm-mode 1)
   :config
   (progn
@@ -2269,12 +2269,22 @@ There are many helm things. I use it a lot.
     (use-package helm-elisp)
     (use-package helm-imenu)
     (use-package helm-semantic)
+    (use-package helm-call-tree)
+    (use-package helm-ring)
     (use-package helm-projectile
       :bind (("C-x f" . helm-projectile)))
     (setq helm-idle-delay 0.1
           helm-exit-idle-delay 0.1
           helm-input-idle-delay 0
-          helm-candidate-number-limit 500)
+          helm-candidate-number-limit 500
+          helm-buffers-fuzzy-matching t
+          helm-grep-default-command
+          ;;"ggrep -a -d skip %e -n%cH -e %p %f"
+          "grep -a -d skip %e -n%cH -e %p %f"
+          helm-grep-default-recurse-command
+          ;;"ggrep -a -d recurse %e -n%cH -e %p %f"
+          "grep -a -d recurse %e -n%cH -e %p %f"
+          )
     (setq display-time-world-list '(("PST8PDT" "Los Altos")
                                     ("America/Denver" "Denver")
                                     ("EST5EDT" "Boston")

@@ -4,9 +4,8 @@
 #+STARTUP:  align fold nodlcheck
 #+OPTIONS:  H:4 num:nil toc:t \n:nil @:t ::t |:t ^:{} -:t f:t *:t
 #+OPTIONS:  skip:nil d:(HIDE) tags:not-in-toc
-#+PROPERTY: header-args :results none :noweb yes
+#+PROPERTY: header-args :results none :noweb yes :tangle init.el
 #+HTML_HEAD: <style type="text/css"> body {margin-right:15%; margin-left:15%;} </style>
-#+HTML_HEAD: <style> pre.src {background-color: #303347; color: #e5e5e5;} </style>
 #+LANGUAGE: en
 
 * Configuration
@@ -53,6 +52,66 @@
                                             emacs-start-time))))
     (message "Loading settings...done (%.3fs)" elapsed))
   #+END_SRC
+
+But, I tend to manually tangle the file and use this alternative instead:
+
+  #+BEGIN_SRC
+  ;; Keep track of loading time
+  (defconst emacs-start-time (current-time))
+  ;; initalize all ELPA packages
+  (require 'package)
+
+  (add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/"))
+  ;; for wanderlust
+  (add-to-list 'package-archives '("e6h" . "http://www.e6h.org/packages/"))
+  (package-initialize)
+  (setq package-enable-at-startup nil)
+  (let ((elapsed (float-time (time-subtract (current-time)
+                                            emacs-start-time))))
+    (message "Loaded packages in %.3fs" elapsed))
+
+  ;; Dvorak nicety, regardless of loading settings
+  (define-key key-translation-map "\C-t" "\C-x")
+  ;; Load use-package, used for loading packages
+  (require 'use-package)
+
+  ;; keep customize settings in their own file
+  (setq custom-file "~/.emacs.d/custom.el")
+  (when (file-exists-p custom-file)
+    (load custom-file))
+
+  (load "~/.emacs.d/settings.el")
+
+  ;; Message how long it took to load everything (minus packages)
+  (let ((elapsed (float-time (time-subtract (current-time)
+                                            emacs-start-time))))
+    (message "Loading settings...done (%.3fs)" elapsed))
+  #+END_SRC
+
+** Pre-amble
+#+BEGIN_SRC emacs-lisp
+;; Keep track of loading time
+(defconst emacs-start-time (current-time))
+;; initalize all ELPA packages
+(require 'package)
+
+(add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/"))
+(package-initialize)
+(setq package-enable-at-startup nil)
+(let ((elapsed (float-time (time-subtract (current-time)
+                                          emacs-start-time))))
+  (message "Loaded packages in %.3fs" elapsed))
+
+;; Dvorak nicety, regardless of loading settings
+(define-key key-translation-map "\C-t" "\C-x")
+;; Load use-package, used for loading packages
+(require 'use-package)
+
+;; keep customize settings in their own file
+(setq custom-file "~/.emacs.d/custom.el")
+(when (file-exists-p custom-file)
+  (load custom-file))
+#+END_SRC
 
 ** Basics and settings used everywhere
 
@@ -118,13 +177,18 @@ marks (the lines are cleaned up automatically anyway)
 Turn off all kinds of modes, I don't need the menu bar, or the tool bar:
 
 #+BEGIN_SRC emacs-lisp
-(menu-bar-mode -1)
-(when (window-system)
-  (set-scroll-bar-mode 'nil)
-  (mouse-wheel-mode t)
+(when (functionp 'menu-bar-mode)
+  (menu-bar-mode -1))
+(when (functionp 'set-scroll-bar-mode)
+  (set-scroll-bar-mode 'nil))
+(when (functionp 'mouse-wheel-mode)
+  (mouse-wheel-mode -1))
+(when (functionp 'tooltip-mode)
   (tooltip-mode -1))
-(tool-bar-mode -1)
-(blink-cursor-mode -1)
+(when (functionp 'tool-bar-mode)
+  (tool-bar-mode -1))
+(when (functionp 'blink-cursor-mode)
+  (blink-cursor-mode -1))
 #+END_SRC
 
 Don't beep. Just don't. Also, don't show the startup message, I
@@ -190,28 +254,6 @@ Require a newline at the end of files:
 (setq require-final-newline t)
 #+END_SRC
 
-
-This is some code to auto-save files, but I turn it off by default
-because it's annoying in org-mode buffers when
-auto-whitespace-cleanup happens, so there's a function to enable it:
-
-#+BEGIN_SRC emacs-lisp
-(defun my/auto-save-buffers ()
-  (save-excursion
-    (dolist (buffer (buffer-list))
-      (set-buffer buffer)
-      (when (and (buffer-file-name)
-                 (buffer-modified-p)
-                 (not buffer-read-only)
-                 (file-writable-p (buffer-file-name)))
-        (save-buffer)))))
-
-;; interactive function to enable auto-save every 10 seconds if desired
-(defun my/enable-auto-save ()
-  (interactive)
-  (run-with-idle-timer 10 t 'my/auto-save-buffers))
-#+END_SRC
-
 Uniquify buffers, using angle brackets, so you get =foo= and
 =foo<2>=:
 
@@ -230,44 +272,10 @@ usually what I want to do:
 (global-set-key (kbd "M-%") 'query-replace-regexp)
 #+END_SRC
 
-Vim has a really nice 'f' command (just to the next occurance of a
-character in the line), so mimic it with =C-M-r=:
-
-#+BEGIN_SRC emacs-lisp
-(defun my/move-specified-char (arg)
-  (interactive "p")
-  (let ((regexp (char-to-string (read-char))))
-    (cond ((and current-prefix-arg (listp current-prefix-arg))
-           (re-search-backward regexp nil t))
-          (t
-           (forward-char 1)
-           (re-search-forward regexp nil t arg)
-           (backward-char 1)))))
-
-(global-set-key (kbd "C-M-r") 'my/move-specified-char)
-#+END_SRC
-
 Single space still ends a sentence:
 
 #+BEGIN_SRC emacs-lisp
 (setq sentence-end-double-space nil)
-#+END_SRC
-
-Before saving, clean up training whitespace and blank lines at the
-end of a file:
-
-#+BEGIN_SRC emacs-lisp
-(defun my/cleanup-for-spaces ()
-  (interactive)
-  (delete-trailing-whitespace)
-  (save-excursion
-    (save-restriction
-      (widen)
-      (goto-char (point-max))
-      (delete-blank-lines))))
-
-;; disabled
-;;(add-hook 'before-save-hook 'my/cleanup-for-spaces)
 #+END_SRC
 
 Split windows a bit better (don't split horizontally, I have a
@@ -303,13 +311,6 @@ Seed the random number generator:
 (random t)
 #+END_SRC
 
-Ignore java .class files for grepping:
-
-#+BEGIN_SRC emacs-lisp
-(use-package grep
-  :config (add-to-list 'grep-find-ignored-files "*.class"))
-#+END_SRC
-
 Switch to unified diffs by default:
 
 #+BEGIN_SRC emacs-lisp
@@ -338,14 +339,6 @@ Bury the =*scratch*= buffer, never kill it:
       ad-do-it)))
 #+END_SRC
 
-
-Finally, enable some usually-disabled things:
-
-#+BEGIN_SRC emacs-lisp
-(put 'upcase-region 'disabled nil)
-(put 'narrow-to-region 'disabled nil)
-#+END_SRC
-
 These are some settings for version control stuff.
 
 Automatically revert file if it's changed on disk:
@@ -364,10 +357,9 @@ Follow symlinks and update VCS info on revert:
 Remove fringe things
 
 #+BEGIN_SRC emacs-lisp
-(when (window-system)
+(when (functionp 'set-fringe-style)
   (set-fringe-style 0))
 #+END_SRC
-
 
 *** OS-specific settings
 These are settings that are applied depending on what OS I'm
@@ -420,16 +412,16 @@ Change the clipboard settings to better integrate into Linux:
 Settings for what to do with temporary files.
 
 #+BEGIN_SRC emacs-lisp
-(when (file-exists-p "/mnt/ramdisk")
-  (setq temporary-file-directory "/mnt/ramdisk/"))
-;; saveplace
-(savehist-mode 1)
-(load "saveplace")
+;; savehist
+(setq savehist-additional-variables
+      ;; also save my search entries
+      '(search-ring regexp-search-ring)
+      savehist-file "~/.emacs.d/savehist")
+(savehist-mode t)
 (setq-default save-place t)
-;; don't create backup file
-(setq backup-inhibited t
-      delete-auto-save-files t)
 
+;; delete-auto-save-files
+(setq delete-auto-save-files t)
 (setq backup-directory-alist
       `((".*" . ,temporary-file-directory)))
 (setq auto-save-file-name-transforms
@@ -448,6 +440,9 @@ Also, after eshell has loaded its options, let's load some other niceties like
 completion, prompt and term settings:
 
 #+BEGIN_SRC emacs-lisp
+(when (cl-equalp "DUMB" (getenv "TERM"))
+  (setenv "PAGER" "cat"))
+
 (use-package eshell
   :config
   (progn
@@ -554,14 +549,10 @@ top. Always copy and delete recursively. Also enable
 Let's make sure to start up a server!
 
 #+BEGIN_SRC emacs-lisp
-(when (not (window-system))
-  (use-package server
-    :init
-    (unless (server-running-p)
-      (server-start))))
+;; Disabled, I actually start up a background emacs --daemon for this
 #+END_SRC
 
-*** Recent file editing
+*** recentf
 Set up keeping track of recent files, up to 2000 of them.
 
 If emacs has been idle for 10 minutes, clean up the recent files.
@@ -571,52 +562,14 @@ This also only enables recentf-mode if idle, so that emacs starts up faster.
 
 #+BEGIN_SRC emacs-lisp
 (use-package recentf
-  :init (when (not noninteractive) (recentf-mode 1))
-  :config
+  :init
   (progn
     (setq recentf-max-saved-items 300
           recentf-exclude '("/auto-install/" ".recentf" "/repos/" "/elpa/"
                             "\\.mime-example" "\\.ido.last" "COMMIT_EDITMSG"
                             ".gz")
           recentf-auto-cleanup 600)
-
-    (defun recentf-save-list ()
-      "Save the recent list.
-Load the list from the file specified by `recentf-save-file',
-merge the changes of your current session, and save it back to
-the file."
-      (interactive)
-      (let ((instance-list (copy-list recentf-list)))
-        (recentf-load-list)
-        (recentf-merge-with-default-list instance-list)
-        (recentf-write-list-to-file)))
-
-    (defun recentf-merge-with-default-list (other-list)
-      "Add all items from `other-list' to `recentf-list'."
-      (dolist (oitem other-list)
-        ;; add-to-list already checks for equal'ity
-        (add-to-list 'recentf-list oitem)))
-
-    (defun recentf-write-list-to-file ()
-      "Write the recent files list to file.
-Uses `recentf-list' as the list and `recentf-save-file' as the
-file to write to."
-      (condition-case error
-          (with-temp-buffer
-            (erase-buffer)
-            (set-buffer-file-coding-system recentf-save-file-coding-system)
-            (insert (format recentf-save-file-header (current-time-string)))
-            (recentf-dump-variable 'recentf-list recentf-max-saved-items)
-            (recentf-dump-variable 'recentf-filter-changer-current)
-            (insert "\n \n;;; Local Variables:\n"
-                    (format ";;; coding: %s\n" recentf-save-file-coding-system)
-                    ";;; End:\n")
-            (write-file (expand-file-name recentf-save-file))
-            (when recentf-save-file-modes
-              (set-file-modes recentf-save-file recentf-save-file-modes))
-            nil)
-        (error
-         (warn "recentf mode: %s" (error-message-string error)))))))
+    (when (not noninteractive) (recentf-mode 1))))
 #+END_SRC
 
 ** Programming language-specific configuration
@@ -630,15 +583,13 @@ Some general settings that should apply to all programming modes, turning
 on subword mode and idle-highlight-mode:
 
 #+BEGIN_SRC emacs-lisp
-(use-package column-marker)
-
-(use-package idle-highlight-mode)
-
 (add-hook 'prog-mode-hook
           (lambda ()
+            (use-package column-marker)
+            (use-package idle-highlight-mode
+              :init (idle-highlight-mode t))
             (setq show-trailing-whitespace t)
-            (subword-mode t)
-            (idle-highlight-mode t)))
+            (subword-mode t)))
 #+END_SRC
 
 In programming modes, make sure things like FIXME and TODO are
@@ -765,6 +716,17 @@ it!) as well as not blinking the matching paren.
             (setq blink-matching-paren nil)))
 
 (add-to-list 'auto-mode-alist '("\\.zsh$" . shell-script-mode))
+
+;;; Shell mode
+(setq ansi-color-names-vector ; better contrast colors
+      ["black" "red4" "green4" "yellow4"
+       "blue3" "magenta4" "cyan4" "white"])
+(add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on)
+
+(add-hook 'shell-mode-hook 
+     '(lambda () (toggle-truncate-lines 1)))
+(setq comint-prompt-read-only t)
+
 #+END_SRC
 
 *** Elisp
@@ -853,13 +815,6 @@ keys, the custom hook only loads jedi when editing python files:
                             :foreground "green")
         (define-key python-mode-map (kbd "C-c C-l") 'jedi:get-in-function-call)))
     (add-hook 'python-mode-hook (lambda () (jedi-mode t)))))
-#+END_SRC
-
-*** Ruby
-Not much to say about ruby, although I may add to this in the future.
-
-#+BEGIN_SRC emacs-lisp
-(use-package ruby-mode)
 #+END_SRC
 
 *** Java
@@ -970,14 +925,6 @@ Not much to say about C/C++, it's mostly for reading code anyway:
 (add-hook 'c++-mode-hook #'my/c-mode-init)
 #+END_SRC
 
-*** Yaml
-
-#+BEGIN_SRC emacs-lisp
-(add-hook 'yaml-mode-hook
-          '(lambda ()
-             (define-key yaml-mode-map "\C-m" 'newline-and-indent)))
-#+END_SRC
-
 *** Html
 A nicety to insert a =<br />= when needed:
 
@@ -1029,7 +976,7 @@ Bleh javascript.
      '((elasticsearch . t)))))
 #+END_SRC
 
-** Theme
+** theme
 Misc settings for fonts, depending on the OS:
 
 #+BEGIN_SRC emacs-lisp
@@ -1154,16 +1101,16 @@ I use org-mode a ton, so it get's its own page here.
 I am using the custom org-mode export to Github-flavored-markdown from:
 https://lists.gnu.org/archive/html/emacs-orgmode/2014-04/msg00241.html
 
-#+BEGIN_SRC emacs-lisp
-(when (file-exists-p "~/.emacs.d/ox-gfm.el")
-    (load-file "~/.emacs.d/ox-gfm.el"))
-#+END_SRC
-
 A great lot of this was taken from http://doc.norang.ca/org-mode.html, to which
 I owe almost all of the agenda configuration. The capture stuff and regular org
 settings are mine.
 
 #+BEGIN_SRC emacs-lisp
+(defun my/load-github-flavored-markdown ()
+  (interactive)
+  (when (file-exists-p "~/.emacs.d/ox-gfm.el")
+    (load-file "~/.emacs.d/ox-gfm.el")))
+
 (use-package org
   :bind (("C-c l" . org-store-link)
          ("C-c a" . org-agenda)
@@ -1176,6 +1123,7 @@ settings are mine.
   :config
   (progn
     (use-package org-install)
+    ;; load github-flavored-markdown
     (add-hook 'org-mode-hook 'turn-on-auto-fill)
     (setq org-directory "~/org"
           org-startup-indented t
@@ -1230,14 +1178,15 @@ settings are mine.
           org-archive-location "%s_archive::* Archived Tasks"
           ;; Sorting order for tasks on the agenda
           org-agenda-sorting-strategy
-          (quote ((agenda habit-down time-up
-                          user-defined-up
+          (quote ((agenda habit-down
+                          time-up
                           priority-down
+                          user-defined-up
                           effort-up
                           category-keep)
-                  (todo category-up priority-down effort-up)
-                  (tags category-up priority-down effort-up)
-                  (search category-up)))
+                  (todo priority-down category-up effort-up)
+                  (tags priority-down category-up effort-up)
+                  (search priority-down category-up)))
 
           ;; Enable display of the time grid so we can see the marker for the current time
           org-agenda-time-grid (quote ((daily today remove-match)
@@ -1262,14 +1211,14 @@ settings are mine.
     ;; Org todo keywords
     (setq org-todo-keywords
           (quote
-           ((sequence "SOMEDAY(s)" "TODO(t)" "NEXT(n)" "WAITING(w@/!)" "NEEDSREVIEW(r@/!)"
+           ((sequence "SOMEDAY(s)" "TODO(t)" "INPROGRESS(i)" "WAITING(w@/!)" "NEEDSREVIEW(n@/!)"
                       "|" "DONE(d)")
             (sequence "WAITING(w@/!)" "HOLD(h@/!)"
                       "|" "CANCELLED(c@/!)"))))
     ;; Org faces
     (setq org-todo-keyword-faces
           (quote (("TODO" :foreground "red" :weight bold)
-                  ("NEXT" :foreground "deep sky blue" :weight bold)
+                  ("INPROGRESS" :foreground "deep sky blue" :weight bold)
                   ("SOMEDAY" :foreground "purple" :weight bold)
                   ("NEEDSREVIEW" :foreground "#edd400" :weight bold)
                   ("DONE" :foreground "forest green" :weight bold)
@@ -1283,7 +1232,7 @@ settings are mine.
                   ("HOLD" ("WAITING") ("HOLD" . t))
                   (done ("WAITING") ("HOLD"))
                   ("TODO" ("WAITING") ("CANCELLED") ("HOLD"))
-                  ("NEXT" ("WAITING") ("CANCELLED") ("HOLD"))
+                  ("INPROGRESS" ("WAITING") ("CANCELLED") ("HOLD"))
                   ("DONE" ("WAITING") ("CANCELLED") ("HOLD")))))
     ;; refile targets all level 1 headers in todo.org and notes.org
     (setq org-refile-targets '((nil :maxlevel . 2)
@@ -1313,22 +1262,31 @@ settings are mine.
               (org-tags-match-list-sublevels t)))
             (" " "Agenda"
              ((agenda "" nil)
+              ;; All items with the "REFILE" tag, everything in refile.org
+              ;; automatically gets that applied
               (tags "REFILE"
                     ((org-agenda-overriding-header "Tasks to Refile")
                      (org-tags-match-list-sublevels nil)))
-              (todo "NEXT"
-                    ((org-agenda-overriding-header "Next work")))
+              ;; All "INPROGRESS" todo items
+              (todo "INPROGRESS"
+                    ((org-agenda-overriding-header "Current work")))
+              ;; All headings with the "support" tag
               (tags "support/!"
                     ((org-agenda-overriding-header "Support cases")))
+              ;; All "NEESREVIEW" todo items
               (todo "NEEDSREVIEW"
                     ((org-agenda-overriding-header "Waiting on reviews")))
-              (todo "WAITING"
+              ;; All "WAITING" items without a "support" tag
+              (tags "WAITING-support"
                     ((org-agenda-overriding-header "Waiting for feedback")))
+              ;; All TODO items
               (todo "TODO"
                     ((org-agenda-overriding-header "Task list")
                      (org-agenda-sorting-strategy '(category-keep))))
+              ;; Everything on hold
               (todo "HOLD"
                     ((org-agenda-overriding-header "On-hold")))
+              ;; Everything that's done and archivable
               (todo "DONE"
                     ((org-agenda-overriding-header "Tasks for archive")
                      (org-agenda-skip-function 'bh/skip-non-archivable-tasks))))
@@ -1939,11 +1897,6 @@ Jump quickly between words or lines, I mostly use it with eww.
 (use-package ace-jump-mode
   :bind (("C-c SPC" . ace-jump-mode)
          ("C-c M-SPC" . ace-jump-line-mode)))
-
-(use-package key-chord
-  :disabled t
-  :config
-  (key-chord-define-global "kj" 'ace-jump-mode))
 #+END_SRC
 
 ** smooth-scrolling
@@ -1956,24 +1909,6 @@ buffer.
 (use-package smooth-scrolling
   :config
   (setq smooth-scroll-margin 4))
-#+END_SRC
-
-** sublimity
-Some fancy animations around page-up, page-down, etc, to give a little visual
-indication as to the direction the buffer is moving.
-
-Disabled for now, as it's kind of a pain being slow
-
-#+BEGIN_SRC emacs-lisp
-(use-package sublimity
-  :idle (sublimity-mode 1)
-  :disabled t
-  :config
-  (progn
-    (when (window-system)
-      (use-package sublimity-scroll)
-      (setq sublimity-scroll-weight 3
-            sublimity-scroll-drift-length 3))))
 #+END_SRC
 
 ** yasnippet
@@ -2188,6 +2123,13 @@ I basically use this to start up ES when I need to test something really quickly
   :config
   (progn
     (prodigy-define-service
+      :name "Elasticsearch 1.3.0"
+      :cwd "~/ies/elasticsearch-1.3.0/"
+      :command "~/ies/elasticsearch-1.3.0/bin/elasticsearch"
+      :tags '(work test es)
+      :port 9200)
+
+    (prodigy-define-service
       :name "Elasticsearch 1.2.2"
       :cwd "~/ies/elasticsearch-1.2.2/"
       :command "~/ies/elasticsearch-1.2.2/bin/elasticsearch"
@@ -2298,7 +2240,7 @@ There are many helm things. I use it a lot.
    ("C-x b" . helm-mini)
    ("C-h t" . helm-world-time)
    ("C-h s" . helm-simple-call-tree))
-  :init (helm-mode 1)
+  :idle (helm-mode 1)
   :config
   (progn
     (use-package helm-config)
@@ -2878,7 +2820,6 @@ A neat mode to show indention
 
 #+BEGIN_SRC emacs-lisp
 (use-package abbrev
-  :init (abbrev-mode 1)
   :config
   (define-abbrev-table 'global-abbrev-table
     '(("elasticsearhc" "elasticsearch" nil 0)
@@ -2886,6 +2827,12 @@ A neat mode to show indention
       ("elastiscearhc" "elasticsearch" nil 0)
       ("elatsicsearch" "elasticsearch" nil 0))))
 
+(defun my/enable-abbrev-mode ()
+  (interactive)
+  (abbrev-mode t))
+
+(add-hook 'prog-mode-hook 'my/enable-abbrev-mode)
+(add-hook 'org-mode-hook 'my/enable-abbrev-mode)
 #+END_SRC
 
 ** modeline
@@ -3292,16 +3239,21 @@ Used more often than you'd think...
 A function to search/browse ES docs from Emacs using =eww=
 
 #+BEGIN_SRC emacs-lisp
-(use-package w3m
-  :init
-  (progn
-    (defun my/search-es-docs (text)
-      "Search ES docs for `text'."
-      (interactive (list (read-string "Search for: ")))
-      (w3m-goto-url-new-session
-       (url-encode-url
-        (format "http://www.elasticsearch.org/?s=%s" text))))
+(defun my/search-es-docs (text)
+  "Search ES docs for `text'."
+  (interactive (list (read-string "Search for: ")))
+  (use-package w3m)
+  (w3m-goto-url-new-session
+   (url-encode-url
+    (format "http://www.elasticsearch.org/?s=%s" text))))
 
-    (global-set-key (kbd "C-c d") 'my/search-es-docs)
-    (global-set-key (kbd "C-x d") 'my/search-es-docs)))
+(global-set-key (kbd "C-c d") 'my/search-es-docs)
+(global-set-key (kbd "C-x d") 'my/search-es-docs)
+#+END_SRC
+** Post-amble
+#+BEGIN_SRC emacs-lisp
+;; Message how long it took to load everything (minus packages)
+(let ((elapsed (float-time (time-subtract (current-time)
+                                          emacs-start-time))))
+  (message "Loading settings...done (%.3fs)" elapsed))
 #+END_SRC

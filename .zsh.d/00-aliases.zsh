@@ -1,9 +1,5 @@
 # Aliases
 
-# no spelling correction on mv
-alias mv='nocorrect mv'
-alias cp='nocorrect cp'
-alias mkdir='nocorrect mkdir'
 # colorful ls for whichever platform
 if ls -F --color=auto >&/dev/null; then
     alias ls="ls --color=auto -F"
@@ -26,33 +22,18 @@ alias j='z'
 alias jl='j --l'
 alias jr='j --r'
 alias js='j --s'
-# don't page unless needed
-alias less='less -FRX'
 # colorize greps
 alias grep='grep --color=auto'
 alias egrep='egrep --color=auto'
 alias fgrep='fgrep --color=auto'
 alias g='fgrep -i --color=auto'
-alias gn='fgrep -i -n --color=auto'
-alias ag='ag --pager "less -FRX"'
-alias kat='pygmentize -f terminal -g'
+
+if [[ "$TERM" != "dumb" ]]; then
+    alias ag="ag --pager='less -FRX'"
+fi
 
 # cd helpers
-alias cd..='cd ..'
 alias ..='cd ..'
-alias bd='. bd -s'
-alias dc='. bd -s'
-# jump to nsm-console
-alias nsmc='cd ~/src/ruby/nsm-console && ./nsm'
-# look up a service port
-alias serv='cat /etc/services | grep'
-# look up a process quickly
-function pg {
-    # doing it again afterwards for the coloration
-    ps aux | fgrep -i $1 | fgrep -v fgrep | fgrep -i $1
-}
-# eh, who likes typing sudo anyway?
-alias dmesg='sudo dmesg'
 # various port forwarding and hole-punching
 alias remhex='ssh -i ~/.ssh/id_rawpacket dakrone@localhost -p 6666'
 alias remblack='ssh -i ~/.ssh/id_rawpacket hinmanm@localhost -p 7777'
@@ -78,28 +59,8 @@ alias autoprox='autossh -M 22000 -nNT -R 4444:localhost:22 localhost'
 alias recon='autossh -M 21234 ssh corinth'
 # tcpdump default opts
 alias tcpdump='tcpdump -ttttnnn'
-# vim less options
-alias vless=/usr/share/vim/vim72/macros/less.sh
-# correct mistypes for gvim
-alias givm='gvim'
-# remote gvim tab
-alias rvim='gvim --remote-tab-silent'
-# better rsync defaults
-alias rsynco='rsync --checksum --delete -aPhSImi'
-# fix ssh agent
-alias fa=fix-agent
-# always try to fix our agent if we can before sshing
-#alias ssh="fix-agent; ssh"
-# Colored rspec
-alias cspec='spec -c --format specdoc'
-# screen, although who uses screen anymore?
-alias screen='TERM=xterm-color && /opt/local/bin/screen'
-# open work file really quickly
-alias todo='ec -n ~/work.org'
 # open elinks quickly
 alias el='TERM=xterm-color elinks'
-# autossh stuff
-alias -g ash='autossh'
 ## ledger aliases
 # balance
 alias bal='ledger -s -V bal'
@@ -112,20 +73,7 @@ alias uc='ledger -U reg'
 alias budget='ledger --budget -b Mar -M reg expenses'
 # classpath reading! (wheeeeeee...)
 alias rcp="tr ':' '\n'"
-# lein aliases
-alias lr='lein repl'
-alias ldt='lein difftest'
 
-# knife stuff
-alias -g kssh='knife sq ssh'
-alias -g kps='knife sq ps'
-alias -g kst='knife sq status'
-alias -g kex='knife sq exec'
-
-# get source deps
-alias getsource='lein pom && maven dependency:sources'
-
-alias -g nn='notify'
 # start a master tmux
 alias tm='tmux -2 -u -S /tmp/mastermux -f .tmux.master'
 

@@ -226,17 +226,6 @@ compdef _simple_extract simple-extract
 alias et=simple-extract
 alias se=simple-extract
 
-# function used to display some thing on shell start
-function startup () {
-    echo "› $({uptime}) "
-    if dfc >&/dev/null; then
-        dfc -n | awk '{ print "› " $0 }'
-    else
-        df -Ph | grep --colour=never '^\/' | awk '{ print "› " $0 }'
-    fi
-    echo "› $(ps aux | fgrep gpg-agent | fgrep -v fgrep | wc -l | tr -d ' ') gpg-agents running"
-}
-
 # define a word
 function define(){
     if [[ $# -ge 2 ]] then
@@ -247,25 +236,7 @@ function define(){
     fi
 }
 
-# Notifications to SQS as a shell fn
-function notify-fn() {
-    if [[ $QUEUENAME = '' ]]; then
-        export QUEUENAME=`aws sqs list-queues | fgrep norad | tr -d ' ' | tr -d "\""`
-    fi
-    # echo "Notifying to $QUEUENAME"
-    aws sqs send-message --queue-url $QUEUENAME --message-body \
-        "{:queue \"queue.notifications\" :msg \"$*\"}"
-}
-
-# youtube-dl
-function ydl() {
-    curl -s localhost:8080/metube -d"$1"
-}
-
-# visual ping!
-function vping() {
-    ping -c 8 $1 | grep "bytes from" | cut -d " " -f 8 | cut -d "=" -f 2 | spark
-}
+## TODO make these scripts instead of functions
 
 # Check if a URL is up
 function chk-url() {
@@ -300,4 +271,10 @@ function del-branch() {
 # Fuzzy-check-out, check out the first local branch that matches
 function fco() {
     git checkout `git branch | grep -i $1 | head -1 | tr -d " "`
+}
+
+# look up a process quickly
+function pg {
+    # doing it again afterwards for the coloration
+    ps aux | fgrep -i $1 | fgrep -v fgrep | fgrep -i $1
 }

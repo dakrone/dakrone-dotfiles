@@ -3,9 +3,10 @@
 echo "Gathering dotfiles..."
 
 cp -f ~/.vimrc .
+cp -f ~/.zshenv .
 cp -f ~/.zshrc .
-mkdir -p .zsh
-cp -f -r ~/.zsh .
+mkdir -p .zsh.d
+cp -f -r ~/.zsh.d .
 cp -f ~/.important_commands .
 cp -f ~/.screenrc .
 mkdir -p .vim

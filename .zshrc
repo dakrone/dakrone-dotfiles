@@ -1,57 +1,20 @@
-OS=$(uname)
+echo -n "+++Reading .zshrc"
+[[ -o interactive ]] && echo -n " (for interactive use)"
+echo .
+
+# Used for reporting how load loading takes
+zmodload zsh/datetime
+start=$EPOCHREALTIME
 
 # path
-export PATH=/usr/local/bin:$PATH
-export PATH=$PATH:/usr/local/sbin:/usr/libexec:/opt/local/sbin
-export PATH=~/.cabal/bin:$PATH
-export PATH=$PATH:/usr/local/git/libexec/git-core
-# Always override with my personal bin
-export PATH=~/bin:$PATH
-
-# plan9
-export PLAN9=/Users/hinmanm/src/plan9
-export PATH=$PATH:$PLAN9/bin
-export MANPATH=$MANPATH:$PLAN9/man
-
-# go
-export GOROOT=/usr/local/go
-export GOPATH=~/.go
-export PATH=$PATH:$GOPATH/bin
-
-# node things
-export PATH=$PATH:~/node_modules/.bin/
-
-# crazy pip/homebrew things
-export PATH=$PATH:/usr/local/share/python
-export PYTHONSTARTUP=~/.pythonstartup
-
-# haskell
-export PATH=$PATH:~/Library/Haskell/bin
-
-# Maven opts
-export MAVEN_OPTS="-Xmx512m"
-
-# manpath
-export MANPATH=$MANPATH:/usr/local/man
+export PATH=~/bin:/usr/local/bin:$PATH
 
 # abbreviation
-export EDITOR=emacs
+export EDITOR=nano # to be overwritten later
 export PAGER=less
 
-# report things that take a while
+# report things that take more than 5 seconds
 export REPORTTIME=5
-
-# CVS options
-export CVSEDITOR=emacs
-
-# RSPEC for autotest
-export RSPEC=true
-
-# ledger
-export LEDGER_FILE=~/data/ledger.dat
-
-# IRBRC for RVM
-export IRBRC=~/.irbrc
 
 # 10 second poll time for autossh
 export AUTOSSH_POLL=10
@@ -62,19 +25,10 @@ export SHOW_LOAD=false
 # start with a pre-title of nothing
 export PRETITLE=""
 
-# AWS stuff
-export AWS_CONFIG_FILE=~/.notify-aws-creds
-export AWS_DEFAULT_REGION=us-east-1
-export QUEUENAME=''
-
-# Nix stuff
-if [ -s ~/.nix-profile/etc/profile.d/nix.sh ] ; then
-    source ~/.nix-profile/etc/profile.d/nix.sh
-fi
-
 # word chars
 # default is: *?_-.[]~=/&;!#$%^(){}<>
-export WORDCHARS="*?_-.[]~=&;!#$%^(){}<>\\"
+# other: "*?_-.[]~=&;!#$%^(){}<>\\"
+export WORDCHARS='*?_[]~=&;!#$%^(){}'
 
 # history
 HISTFILE=$HOME/.zsh-history
@@ -95,19 +49,23 @@ export LESS_TERMCAP_so=$'\E[01;44;33m'
 export LESS_TERMCAP_ue=$'\E[0m'
 export LESS_TERMCAP_us=$'\E[01;32m'
 
-
-
 # zsh completion
 if [ -d ~/.zsh/zsh-completions ] ; then
     fpath=(~/.zsh/zsh-completions/src $fpath)
 fi
-# additional completions
-if [ -d ~/.zsh/completions ] ; then
-    fpath=(~/.zsh/completions $fpath)
-fi
 
-zmodload zsh/complist
-autoload -U compinit && compinit
+autoload -U compinit zrecompile
+
+zsh_cache=${HOME}/.zsh-cache
+if [ $UID -eq 0 ]; then
+    compinit
+else
+    compinit -d $zsh_cache/zcomp-$HOST
+
+    for f in ~/.zshrc $zsh_cache/zcomp-$HOST; do
+        zrecompile -p $f && rm -f $f.zwc.old
+    done
+fi
 
 zstyle ':completion:::::' completer _complete _approximate
 zstyle ':completion:*' use-cache on
@@ -128,8 +86,6 @@ zstyle ':completion:*' file-list list=20 insert=10
 
 
 ### OPTIONS ###
-unsetopt bg_nice             # do NOT nice bg commands
-unsetopt correct_all         # don't correct me, I know what I'm doing
 setopt multios               # allow pipes to be split/duplicated
 # ^^ try this: cat foo.clj > >(fgrep java | wc -l) > >(fgrep copy | wc -l)
 setopt auto_cd
@@ -143,11 +99,6 @@ setopt longlistjobs
 setopt notify
 # I use dvorak, so correct spelling mistakes that a dvorak user would make
 setopt dvorak
-#setopt correct                # Spelling correction
-
-# Nice renaming
-autoload -U zmv
-alias mmv='noglob zmv -W'
 
 autoload -U url-quote-magic
 zle -N self-insert url-quote-magic
@@ -174,15 +125,8 @@ bindkey -r '^j' #unbind ctrl-j, I hit it all the time accidentaly
 bindkey -r '^[x' # remove M-x for emacs-things
 
 
-## GPG
-# brew install gpg gpg-agent keychain
-which keychain 2>&1 > /dev/null
-if [[ $? -eq 0 ]]; then
-    eval `keychain --eval --agents gpg,ssh --inherit any id_rsa`
-fi
-
-
-## Sourcing things
+## Sourcing OS-specific things
+[[ -f ~/.zsh.d/zsh.${OS} ]] && source ~/.zsh.d/zsh.${OS}
 
 # Source z.sh if available
 if [ -s ~/bin/z.sh ] ; then
@@ -194,29 +138,23 @@ if [ -s ~/.zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh ] ; then
     source ~/.zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 fi
 
-# Use zsh-functional if available
-if [ -s ~/.zsh/zsh-functional/functional.plugin.zsh ] ; then
-    source ~/.zsh/zsh-functional/functional.plugin.zsh
+# Source ~/.zsh.d/*
+setopt EXTENDED_GLOB
+for zshrc in ~/.zsh.d/[0-9][0-9]*[^~] ; do
+    if [[ ! -z $ZSHDEBUG ]]; then
+        echo +++ $(basename $zshrc)
+    fi
+    source $zshrc
+done
+unsetopt EXTENDED_GLOB
+
+## GPG
+# brew install gpg gpg-agent keychain
+which keychain 2>&1 > /dev/null
+if [[ $? -eq 0 ]]; then
+    eval `keychain -q --eval --agents gpg,ssh --inherit any id_rsa`
 fi
 
-# Alias things
-source ~/.zsh/aliases.zsh
-# Functions
-source ~/.zsh/functions.zsh
-# Set prompt
-source ~/.zsh/prompt.zsh
-# ES helpers
-source ~/.zsh/elasticsearch.zsh
-# Sonian helpers
-source ~/.zsh/sonian.zsh
-# Linux commands
-source ~/.zsh/linux.zsh
-# OSX commands
-source ~/.zsh/osx.zsh
-# Setting tmux titles
-source ~/.zsh/title.zsh
-# Ruby-related stuff
-source ~/.zsh/rvm.zsh
+end=$EPOCHREALTIME
 
-# run the startup commands
-startup
+printf "+++Loaded files in %0.4f seconds\n" $(($end-$start))

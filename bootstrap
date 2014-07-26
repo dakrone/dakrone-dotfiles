@@ -5,12 +5,15 @@
 
 IAM=$(whoami)
 
-rm -rf ~/.zsh
+# create directories
+rm -rf ~/.zsh ~/.zsh.d
 rm -rf ~/.dakrone
 mkdir ~/.zsh
+mkdir ~/.zsh.d
+
+# zsh plugins
 cd ~/.zsh && git clone --depth 1 -q git://github.com/zsh-users/zsh-syntax-highlighting.git
 cd ~/.zsh && git clone --depth 1 -q git://github.com/zsh-users/zsh-completions.git
-cd ~/.zsh && git clone --depth 1 -q git://github.com/Tarrasch/zsh-functional.git
 
 git clone --depth 1 -q git://github.com/dakrone/dakrone-dotfiles.git ~/.dakrone
 
@@ -27,8 +30,9 @@ mkdir -p ~/bin
 cp ~/.dakrone/bin/* ~/bin/
 
 cp -f ~/.dakrone/.zshrc ~/
+cp -f ~/.dakrone/.zshenv ~/
 cp -f ~/.dakrone/.important_commands ~/
-cp -R ~/.dakrone/.zsh ~/
+cp -R ~/.dakrone/.zsh.d ~/
 cp -f ~/.dakrone/.gitconfig ~/
 cp -f ~/.dakrone/.tmux.* ~/
 cp -f ~/.dakrone/.cmd-key-happy.lua ~/

@@ -155,6 +155,13 @@ if [[ $? -eq 0 ]]; then
     eval `keychain -q --eval --agents gpg,ssh --inherit any id_rsa`
 fi
 
+if in_emacs; then
+    unsetopt zle
+    export DISABLE_AUTO_TITLE=true
+    export ZSH_HIGHLIGHT_MAXLENGTH=0
+    export TERM=xterm
+fi
+
 end=$EPOCHREALTIME
 
 printf "+++Loaded files in %0.4f seconds\n" $(($end-$start))

@@ -357,13 +357,15 @@
 (add-to-list 'auto-mode-alist '("\\.zsh$" . shell-script-mode))
 
 ;;; Shell mode
-(setq ansi-color-names-vector ; better contrast colors
-      ["black" "red4" "green4" "yellow4"
-       "blue3" "magenta4" "cyan4" "white"])
-(add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on)
+;; (setq ansi-color-names-vector ; better contrast colors
+;;       ["black" "red4" "green4" "yellow4"
+;;        "blue3" "magenta4" "cyan4" "white"])
 
-(add-hook 'shell-mode-hook 
-     '(lambda () (toggle-truncate-lines 1)))
+(add-hook 'shell-mode-hook
+          '(lambda ()
+             (ansi-color-for-comint-mode-on)
+             (toggle-truncate-lines 1)
+             (setenv "PAGER" "cat")))
 (setq comint-prompt-read-only t)
 
 (add-hook 'emacs-lisp-mode-hook 'turn-on-eldoc-mode)

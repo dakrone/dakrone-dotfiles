@@ -278,3 +278,7 @@ function pg {
     # doing it again afterwards for the coloration
     ps aux | fgrep -i $1 | fgrep -v fgrep | fgrep -i $1
 }
+
+function in_emacs {
+  [[ -n $EMACS ]]
+}

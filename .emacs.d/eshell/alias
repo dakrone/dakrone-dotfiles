@@ -14,7 +14,6 @@ alias f find $*
 alias fa fix-agent
 alias gemacs find-file $1
 alias get curl -s -XGET $*
-alias gps ps -c -r -ax -o command,pid,pcpu,time | sed 's/\(PID *\)%/\1 %/' | head -n 11 && echo && ps -c -m -ax -o command,pid,pmem,rss=RSIZE | sed 's/\(.\{23\}\)/\1 /' | head -n 9
 alias l ls -lh $*
 alias l. ls -d .* $*
 alias la ls -alh $*

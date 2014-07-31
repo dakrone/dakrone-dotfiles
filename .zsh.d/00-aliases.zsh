@@ -16,21 +16,12 @@ alias ll='ls -lh'
 alias l='ls -lh'
 alias la='ls -alh'
 alias lr='ls -lR'
-# quickjump to directories
-alias j='z'
-# various jump options
-alias jl='j --l'
-alias jr='j --r'
-alias js='j --s'
 # colorize greps
 alias grep='grep --color=auto'
 alias egrep='egrep --color=auto'
 alias fgrep='fgrep --color=auto'
-alias g='fgrep -i --color=auto'
 
-if [[ "$TERM" != "dumb" ]]; then
-    alias ag="ag --pager='less -FRX'"
-fi
+alias less='less -RX'
 
 # cd helpers
 alias ..='cd ..'

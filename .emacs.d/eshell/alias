@@ -1,0 +1,31 @@
+alias .. cd .. $*
+alias bdt gdate "+%Y%m%dT%H%M%S.%3N%z" $*
+alias c curl -s $*
+alias d dired $1
+alias delete curl -s -XDELETE $*
+alias dt gdate "+%Y-%m-%dT%H:%M:%S.%3N%zZ" $*
+alias e find-file $1
+alias ec find-file $1
+alias el w3m-browse-url $1
+alias emacs find-file $1
+alias epoch date +%s $*
+alias et simple-extract
+alias f find $*
+alias fa fix-agent
+alias gemacs find-file $1
+alias get curl -s -XGET $*
+alias gps ps -c -r -ax -o command,pid,pcpu,time | sed 's/\(PID *\)%/\1 %/' | head -n 11 && echo && ps -c -m -ax -o command,pid,pmem,rss=RSIZE | sed 's/\(.\{23\}\)/\1 /' | head -n 9
+alias l ls -lh $*
+alias l. ls -d .* $*
+alias la ls -alh $*
+alias less less -FRX $*
+alias ll ls -lh $*
+alias lr lein repl $*
+alias lrt lrtest
+alias ls ls -GF $*
+alias lt ltest $*
+alias pj python -mjson.tool $*
+alias post curl -s -XPOST $*
+alias put curl -s -XPUT $*
+alias rcp tr ':' '\n'\ $*
+alias se simple-extract

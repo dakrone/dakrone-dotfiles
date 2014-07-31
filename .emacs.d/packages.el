@@ -24,7 +24,7 @@
     erc-hl-nicks ercn todochiku twittering-mode
 
     ;; for auto-complete
-    auto-complete fuzzy popup ac-nrepl company company-cider
+    fuzzy popup company company-cider
 
     ;; editing utilities
     expand-region smex windresize ag undo-tree iedit ido-ubiquitous
@@ -41,7 +41,7 @@
     htmlize gnuplot-mode gnuplot org-toc
 
     ;; buffer utils
-    popwin
+    popwin dired+
 
     ;; haskell
     haskell-mode ghc ghci-completion
@@ -60,10 +60,10 @@
     cperl-mode
 
     ;; python
-    jedi hy-mode
+    hy-mode
 
     ;; ruby
-    ruby-mode ruby-test-mode inf-ruby puppet-mode
+    ruby-mode ruby-test-mode inf-ruby puppet-mode rbenv
 
     ;; rust
     rust-mode
@@ -87,7 +87,7 @@
     helm helm-descbinds helm-ag helm-projectile helm-swoop
 
     ;; git
-    magit git-gutter
+    magit git-gutter git-timemachine
     ))
 
 ;; org-mode is forced manually

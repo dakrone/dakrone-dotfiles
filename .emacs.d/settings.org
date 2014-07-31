@@ -1,11 +1,11 @@
 #+TITLE:    Lee's emacs settings file
 #+AUTHOR:   Lee Hinman
 #+EMAIL:    lee [at] writequit [dot] org
-#+STARTUP:  align fold nodlcheck
+#+STARTUP:  align fold nodlcheck content
 #+OPTIONS:  H:4 num:nil toc:t \n:nil @:t ::t |:t ^:{} -:t f:t *:t
 #+OPTIONS:  skip:nil d:(HIDE) tags:not-in-toc
-#+PROPERTY: header-args :results none :noweb yes :tangle init.el
-#+HTML_HEAD: <style type="text/css"> body {margin-right:15%; margin-left:15%;} </style>
+#+PROPERTY: header-args :results none :noweb yes
+#+HTML_HEAD: <link rel="stylesheet" href="http://dakrone.github.io/org.css" type="text/css" />
 #+LANGUAGE: en
 
 * Configuration
@@ -24,8 +24,6 @@
   (require 'package)
 
   (add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/"))
-  ;; for wanderlust
-  (add-to-list 'package-archives '("e6h" . "http://www.e6h.org/packages/"))
   (package-initialize)
   (setq package-enable-at-startup nil)
   (let ((elapsed (float-time (time-subtract (current-time)
@@ -53,7 +51,7 @@
     (message "Loading settings...done (%.3fs)" elapsed))
   #+END_SRC
 
-But, I tend to manually tangle the file and use this alternative instead:
+Or, you can manually tangle the file and use this alternative instead:
 
   #+BEGIN_SRC
   ;; Keep track of loading time
@@ -87,31 +85,6 @@ But, I tend to manually tangle the file and use this alternative instead:
                                             emacs-start-time))))
     (message "Loading settings...done (%.3fs)" elapsed))
   #+END_SRC
-
-** Pre-amble
-#+BEGIN_SRC emacs-lisp
-;; Keep track of loading time
-(defconst emacs-start-time (current-time))
-;; initalize all ELPA packages
-(require 'package)
-
-(add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/"))
-(package-initialize)
-(setq package-enable-at-startup nil)
-(let ((elapsed (float-time (time-subtract (current-time)
-                                          emacs-start-time))))
-  (message "Loaded packages in %.3fs" elapsed))
-
-;; Dvorak nicety, regardless of loading settings
-(define-key key-translation-map "\C-t" "\C-x")
-;; Load use-package, used for loading packages
-(require 'use-package)
-
-;; keep customize settings in their own file
-(setq custom-file "~/.emacs.d/custom.el")
-(when (file-exists-p custom-file)
-  (load custom-file))
-#+END_SRC
 
 ** Basics and settings used everywhere
 
@@ -361,6 +334,30 @@ Remove fringe things
   (set-fringe-style 0))
 #+END_SRC
 
+Start a server if not running, but a different server for GUI versus text-only:
+
+#+BEGIN_SRC emacs-lisp
+(require 'server)
+(if (window-system)
+    (if (server-running-p server-name)
+        nil
+      (progn
+        (setq server-name "server-gui")
+        (server-start)))
+  (if (server-running-p server-name)
+      nil
+    (progn
+      (setq server-name "server-nw")
+      (server-start))))
+#+END_SRC
+
+GUI-specific thing:
+
+#+BEGIN_SRC emacs-lisp
+(when (window-system)
+  (setenv "EMACS_GUI" "t"))
+#+END_SRC
+
 *** OS-specific settings
 These are settings that are applied depending on what OS I'm
 currently running on. First, we need a way to tell what kind of
@@ -428,6 +425,89 @@ Settings for what to do with temporary files.
       `((".*" ,temporary-file-directory t)))
 #+END_SRC
 
+*** Shell settings
+Things for running shells inside of emacs
+
+#+BEGIN_SRC emacs-lisp
+(defvar my-local-shells
+  '("*shell*"))
+(defvar my-remote-shells
+  '())
+(defvar my-shells (append my-local-shells my-remote-shells))
+
+(custom-set-variables
+ '(comint-scroll-to-bottom-on-input t)  ; always insert at the bottom
+ '(comint-scroll-to-bottom-on-output nil) ; always add output at the bottom
+ '(comint-scroll-show-maximum-output t) ; scroll to show max possible output
+ ;; '(comint-completion-autolist t)     ; show completion list when ambiguous
+ '(comint-input-ignoredups t)           ; no duplicates in command history
+ '(comint-completion-addsuffix t)       ; insert space/slash after file completion
+ '(comint-buffer-maximum-size 20000)    ; max length of the buffer in lines
+ '(comint-prompt-read-only nil)         ; if this is t, it breaks shell-command
+ '(comint-get-old-input (lambda () "")) ; what to run when i press enter on a
+                                        ; line above the current prompt
+ '(comint-input-ring-size 5000)         ; max shell history size
+ '(protect-buffer-bury-p nil)
+ )
+
+(setenv "PAGER" "cat")
+
+;; truncate buffers continuously
+(add-hook 'comint-output-filter-functions 'comint-truncate-buffer)
+
+(defun make-my-shell-output-read-only (text)
+  "Add to comint-output-filter-functions to make stdout read only in my shells."
+  (if (member (buffer-name) my-shells)
+      (let ((inhibit-read-only t)
+            (output-end (process-mark (get-buffer-process (current-buffer)))))
+        (put-text-property comint-last-output-start output-end 'read-only t))))
+(add-hook 'comint-output-filter-functions 'make-my-shell-output-read-only)
+
+(defun my-dirtrack-mode ()
+  "Add to shell-mode-hook to use dirtrack mode in my shell buffers."
+  (when (member (buffer-name) my-shells)
+    (shell-dirtrack-mode 0)
+    (set-variable 'dirtrack-list '("^.*[^ ]+:\\(.*\\)>" 1 nil))
+    (dirtrack-mode 1)))
+(add-hook 'shell-mode-hook 'my-dirtrack-mode)
+
+;; interpret and use ansi color codes in shell output windows
+(add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on)
+
+(defun set-scroll-conservatively ()
+  "Add to shell-mode-hook to prevent jump-scrolling on newlines in shell buffers."
+  (set (make-local-variable 'scroll-conservatively) 10))
+(add-hook 'shell-mode-hook 'set-scroll-conservatively)
+
+(defun make-comint-directory-tracking-work-remotely ()
+  "Add this to comint-mode-hook to make directory tracking work
+while sshed into a remote host, e.g. for remote shell buffers
+started in tramp. (This is a bug fix backported from Emacs 24:
+http://comments.gmane.org/gmane.emacs.bugs/39082"
+  (set (make-local-variable 'comint-file-name-prefix)
+       (or (file-remote-p default-directory) "")))
+(add-hook 'comint-mode-hook 'make-comint-directory-tracking-work-remotely)
+
+(defun enter-again-if-enter ()
+  "Make the return key select the current item in minibuf and shell history isearch.
+An alternate approach would be after-advice on isearch-other-meta-char."
+  (when (and (not isearch-mode-end-hook-quit)
+             (equal (this-command-keys-vector) [13])) ; == return
+    (cond ((active-minibuffer-window) (minibuffer-complete-and-exit))
+          ((member (buffer-name) my-shells) (comint-send-input)))))
+(add-hook 'isearch-mode-end-hook 'enter-again-if-enter)
+
+(defadvice comint-previous-matching-input
+    (around suppress-history-item-messages activate)
+  "Suppress the annoying 'History item : NNN' messages from shell history isearch.
+If this isn't enough, try the same thing with
+comint-replace-by-expanded-history-before-point."
+  (let ((old-message (symbol-function 'message)))
+    (unwind-protect
+        (progn (fset 'message 'ignore) ad-do-it)
+      (fset 'message old-message))))
+#+END_SRC
+
 *** Eshell settings
 Eshell is great for one-off shell things, but I use ZSH too much for it to be a
 full replacement. Regardless, it needs some tweaks in order to be fully useful.
@@ -447,6 +527,7 @@ completion, prompt and term settings:
   :config
   (progn
     (defalias 'emacs 'find-file)
+    (defalias 'ec 'find-file)
     (setenv "TERM" "xterm-256color")
     (setenv "PAGER" "cat")
     (use-package esh-opt
@@ -455,7 +536,159 @@ completion, prompt and term settings:
         ;; (set-face-attribute 'eshell-prompt nil :foreground "turquoise1")
         (use-package em-cmpl)
         (use-package em-prompt)
-        (use-package em-term)))))
+        (use-package em-term)
+
+        ;; Taken from Phil's config
+        (setq eshell-cmpl-cycle-completions nil)
+        (add-hook 'eshell-mode-hook (defun pnh-eshell-term-dumb ()
+                                      (eshell/export "TERM" "dumb")))
+
+        (when (not (functionp 'eshell/rgrep))
+          (defun eshell/rgrep (&rest args)
+            "Use Emacs grep facility instead of calling external grep."
+            (eshell-grep "rgrep" args t)))
+
+        (defun eshell/cdg ()
+          "Change directory to the project's root."
+          (eshell/cd (locate-dominating-file default-directory ".git")))
+
+        ;; thanks johnw: https://gist.github.com/1198329
+        (defun find-grep-in-project (command-args)
+          (interactive
+           (progn
+             (list (read-shell-command "Run find (like this): "
+                                       '("git ls-files -z | xargs -0 egrep -nH -e " . 41)
+                                       'grep-find-history))))
+          (when command-args
+            (let ((null-device nil)) ; see grep
+              (grep command-args))))
+
+        (defun eshell/export-env (&optional env-file)
+          (interactive)
+          (let ((original-buffer (current-buffer)))
+            (with-temp-buffer
+              (insert-file (or env-file ".env"))
+              (goto-char (point-min))
+              (while (< (point) (point-max))
+                (let ((line (substring (thing-at-point 'line) 0 -1)))
+                  (with-current-buffer original-buffer
+                    (eshell/export line)))
+                (next-line)))))
+
+        (eval-after-load 'em-term
+          '(add-to-list 'eshell-visual-commands "ssh"))
+
+        (defalias 'eshell/ee 'eshell/export-env)))
+
+    (setq eshell-prompt-regexp "^[^#$]*[\$$] ")
+    (add-to-list 'eshell-visual-commands "el")
+    (add-to-list 'eshell-visual-commands "elinks")
+    (add-to-list 'eshell-visual-commands "htop")
+
+    ;; So the history vars are defined
+    (require 'em-hist)
+    (if (boundp 'eshell-save-history-on-exit)
+        ;; Don't ask, just save
+        (setq eshell-save-history-on-exit t))
+    ;;(message "eshell-ask-to-save-history is %s" eshell-ask-to-save-history)
+    (if (boundp 'eshell-ask-to-save-history)
+        ;; For older(?) version
+        (setq eshell-ask-to-save-history 'always))
+    ;;(message "eshell-ask-to-save-history is %s" eshell-ask-to-save-history)
+
+    (defun eshell/ef (fname-regexp &rest dir) (ef fname-regexp default-directory))
+
+
+;;; ---- path manipulation
+
+    (defun pwd-repl-home (pwd)
+      (interactive)
+      (let* ((home (expand-file-name (getenv "HOME")))
+             (home-len (length home)))
+        (if (and
+             (>= (length pwd) home-len)
+             (equal home (substring pwd 0 home-len)))
+            (concat "~" (substring pwd home-len))
+          pwd)))
+
+    (defun curr-dir-git-repo-dirty (pwd)
+      "Is the `pwd' dirty from Git's perspective?"
+      (interactive)
+      (when (and (eshell-search-path "git")
+                 (locate-dominating-file pwd ".git"))
+        (let ((dirty-output
+               (shell-command-to-string
+                (concat "cd "
+                        pwd
+                        " && git diff-index --quiet HEAD -- || echo -n 'Ϟ'"))))
+          (when (> (length dirty-output) 0)
+            (propertize
+             (concat " " dirty-output " ")
+             'face `(:foreground "red"))))))
+
+    (defun curr-dir-git-branch-string (pwd)
+      "Returns current git branch as a string, or the empty string if
+PWD is not in a git repo (or the git command is not found)."
+      (interactive)
+      (when (and (eshell-search-path "git")
+                 (locate-dominating-file pwd ".git"))
+        (let ((git-output
+               (shell-command-to-string
+                (concat "cd "
+                        pwd
+                        " && git symbolic-ref HEAD | cut -d'/' -f3-10"))))
+          (propertize
+           (concat "["
+                   (if (> (length git-output) 0)
+                       (substring git-output 0 -1)
+                     "(no branch)")
+                   "]")
+           'face `(:foreground "green")))))
+
+    (setq eshell-prompt-function
+          (lambda ()
+            (concat
+             (propertize ((lambda (p-lst)
+                            (if (> (length p-lst) 3)
+                                (concat
+                                 (mapconcat (lambda (elm)
+                                              (if (zerop (length elm)) ""
+                                                (substring elm 0 1)))
+                                            (butlast p-lst 3)
+                                            "/")
+                                 "/"
+                                 (mapconcat (lambda (elm) elm)
+                                            (last p-lst 3)
+                                            "/"))
+                              (mapconcat (lambda (elm) elm)
+                                         p-lst
+                                         "/")))
+                          (split-string (pwd-repl-home (eshell/pwd)) "/"))
+                         'face `(:foreground "blue"))
+             (or (curr-dir-git-branch-string (eshell/pwd)))
+             (or (curr-dir-git-repo-dirty (eshell/pwd)))
+             (propertize "$ " 'face 'default))))
+
+    (setq eshell-highlight-prompt nil)
+
+    (defun eshell/magit ()
+      "Function to open magit-status for the current directory"
+      (interactive)
+      (magit-status default-directory)
+      nil)))
+
+(add-hook 'eshell-mode-hook
+          (lambda ()
+            (local-set-key
+             (kbd "C-c h")
+             (lambda ()
+               (interactive)
+               (insert
+                (ido-completing-read
+                 "Eshell history: "
+                 (delete-dups
+                  (ring-elements eshell-history-ring))))))
+            (local-set-key (kbd "C-c C-h") 'eshell-list-history)))
 #+END_SRC
 
 *** Spellcheck and flyspell settings
@@ -535,7 +768,11 @@ top. Always copy and delete recursively. Also enable
   :bind ("C-x C-j" . dired-jump)
   :config
   (progn
-    (use-package dired-x)
+    (use-package dired-x
+      :init (setq-default dired-omit-files-p t))
+    (use-package dired+
+      :init
+      (setq-default diredp-hide-details-initially-flag nil))
     (put 'dired-find-alternate-file 'disabled nil)
     (define-key dired-mode-map (kbd "RET") 'dired-find-alternate-file)
     (setq ls-lisp-dirs-first t)
@@ -569,7 +806,45 @@ This also only enables recentf-mode if idle, so that emacs starts up faster.
                             "\\.mime-example" "\\.ido.last" "COMMIT_EDITMSG"
                             ".gz")
           recentf-auto-cleanup 600)
-    (when (not noninteractive) (recentf-mode 1))))
+    (when (not noninteractive) (recentf-mode 1))
+
+    (defun recentf-save-list ()
+      "Save the recent list.
+Load the list from the file specified by `recentf-save-file',
+merge the changes of your current session, and save it back to
+the file."
+      (interactive)
+      (let ((instance-list (copy-list recentf-list)))
+        (recentf-load-list)
+        (recentf-merge-with-default-list instance-list)
+        (recentf-write-list-to-file)))
+
+    (defun recentf-merge-with-default-list (other-list)
+      "Add all items from `other-list' to `recentf-list'."
+      (dolist (oitem other-list)
+        ;; add-to-list already checks for equal'ity
+        (add-to-list 'recentf-list oitem)))
+
+    (defun recentf-write-list-to-file ()
+      "Write the recent files list to file.
+Uses `recentf-list' as the list and `recentf-save-file' as the
+file to write to."
+      (condition-case error
+          (with-temp-buffer
+            (erase-buffer)
+            (set-buffer-file-coding-system recentf-save-file-coding-system)
+            (insert (format recentf-save-file-header (current-time-string)))
+            (recentf-dump-variable 'recentf-list recentf-max-saved-items)
+            (recentf-dump-variable 'recentf-filter-changer-current)
+            (insert "\n \n;;; Local Variables:\n"
+                    (format ";;; coding: %s\n" recentf-save-file-coding-system)
+                    ";;; End:\n")
+            (write-file (expand-file-name recentf-save-file))
+            (when recentf-save-file-modes
+              (set-file-modes recentf-save-file recentf-save-file-modes))
+            nil)
+        (error
+         (warn "recentf mode: %s" (error-message-string error)))))))
 #+END_SRC
 
 ** Programming language-specific configuration
@@ -716,18 +991,6 @@ it!) as well as not blinking the matching paren.
             (setq blink-matching-paren nil)))
 
 (add-to-list 'auto-mode-alist '("\\.zsh$" . shell-script-mode))
-
-;;; Shell mode
-;; (setq ansi-color-names-vector ; better contrast colors
-;;       ["black" "red4" "green4" "yellow4"
-;;        "blue3" "magenta4" "cyan4" "white"])
-
-(add-hook 'shell-mode-hook
-          '(lambda ()
-             (ansi-color-for-comint-mode-on)
-             (toggle-truncate-lines 1)
-             (setenv "PAGER" "cat")))
-(setq comint-prompt-read-only t)
 #+END_SRC
 
 *** Elisp
@@ -867,15 +1130,12 @@ with the arguments on the previous line
   (use-package malabar-mode
     :config
     (progn
-      (use-package malabar-mode
+      (use-package cedet)
+      (use-package semantic
         :config
         (progn
-          (use-package cedet)
-          (use-package semantic
-            :config
-            (progn
-              (load "semantic/loaddefs.el")
-              (semantic-mode 1)))))))
+          (load "semantic/loaddefs.el")
+          (semantic-mode 1)))))
   ;; Generic java stuff things
   (setq whitespace-line-column 140)
   (use-package column-marker
@@ -891,6 +1151,14 @@ with the arguments on the previous line
   (c-set-offset 'arglist-cont-nonempty '++))
 
 (add-hook 'java-mode-hook 'setup-java)
+#+END_SRC
+
+*** Ruby
+Using rbenv, set it up correctly when idle
+
+#+BEGIN_SRC emacs-lisp
+(use-package rbenv
+  :idle (global-rbenv-mode t))
 #+END_SRC
 
 *** Haskell
@@ -1326,6 +1594,12 @@ settings are mine.
        (python . t)
        (gnuplot . t)))
 
+    ;; Use org.css from the :wq website for export document stylesheets
+    (setq org-html-head-extra
+          "<link rel=\"stylesheet\" href=\"http://dakrone.github.io/org.css\" type=\"text/css\" />")
+    (setq org-html-head-include-default-style nil)
+
+
     ;; ensure this variable is defined
     (unless (boundp 'org-babel-default-header-args:sh)
       (setq org-babel-default-header-args:sh '()))
@@ -1381,7 +1655,23 @@ settings are mine.
                         subtree-end ; Has a date in this month or last month, skip it
                       nil))  ; available to archive
                 (or subtree-end (point-max)))
-            next-headline))))))
+            next-headline))))
+
+    (defun my/save-all-agenda-buffers ()
+      "Function used to save all agenda buffers that are
+currently open, based on `org-agenda-files'."
+      (interactive)
+      (require 'dash)
+      (save-current-buffer
+        (dolist (buffer (buffer-list t))
+          (set-buffer buffer)
+          (when (member (buffer-file-name)
+                        (-map 'expand-file-name (org-agenda-files t)))
+            (save-buffer)))))
+
+    ;; save all the agenda files after each capture
+    (add-hook 'org-capture-after-finalize-hook 'my/save-all-agenda-buffers)
+    ))
 
 #+END_SRC
 
@@ -1963,7 +2253,8 @@ Paredit for all the lisps.
     (define-key paredit-mode-map (kbd "M-)") 'paredit-forward-slurp-sexp)
     (define-key paredit-mode-map (kbd "C-(") 'paredit-forward-barf-sexp)
     (define-key paredit-mode-map (kbd "C-)") 'paredit-forward-slurp-sexp)
-    (define-key paredit-mode-map (kbd ")") 'paredit-close-parenthesis)))
+    (define-key paredit-mode-map (kbd ")") 'paredit-close-parenthesis)
+    (define-key paredit-mode-map (kbd "M-\"") 'my/other-window-backwards)))
 
 (add-hook 'cider-repl-mode-hook (lambda () (paredit-mode t)))
 #+END_SRC
@@ -2100,7 +2391,9 @@ Paredit for all the lisps.
                 (lambda ()
                   (set-face-attribute 'magit-item-highlight nil
                                       :background "#262626"))))
-    (custom-set-variables '(magit-set-upstream-on-push (quote dontask)))))
+    (custom-set-variables '(magit-set-upstream-on-push (quote dontask)))
+
+    (setq magit-completing-read-function 'magit-ido-completing-read)))
 #+END_SRC
 
 ** projectile
@@ -2124,9 +2417,9 @@ I basically use this to start up ES when I need to test something really quickly
   :config
   (progn
     (prodigy-define-service
-      :name "Elasticsearch 1.3.0"
-      :cwd "~/ies/elasticsearch-1.3.0/"
-      :command "~/ies/elasticsearch-1.3.0/bin/elasticsearch"
+      :name "Elasticsearch 1.3.1"
+      :cwd "~/ies/elasticsearch-1.3.1/"
+      :command "~/ies/elasticsearch-1.3.1/bin/elasticsearch"
       :tags '(work test es)
       :port 9200)
 
@@ -2164,6 +2457,7 @@ I basically use this to start up ES when I need to test something really quickly
 
 #+BEGIN_SRC emacs-lisp
 (use-package git-gutter
+  :idle (global-git-gutter-mode t)
   :bind (;;("C-x C-a" . git-gutter:toggle)
          ("C-x =" . git-gutter:popup-hunk)
          ("C-c P" . git-gutter:previous-hunk)
@@ -2171,8 +2465,6 @@ I basically use this to start up ES when I need to test something really quickly
          ("C-x p" . git-gutter:previous-hunk)
          ("C-x n" . git-gutter:next-hunk)
          ("C-c G" . git-gutter:popup-hunk)))
-
-(add-hook 'prog-mode-hook (lambda () (git-gutter-mode t)))
 #+END_SRC
 
 ** highlight-symbol
@@ -2241,7 +2533,7 @@ There are many helm things. I use it a lot.
    ("C-x b" . helm-mini)
    ("C-h t" . helm-world-time)
    ("C-h s" . helm-simple-call-tree))
-  :idle (helm-mode 1)
+  ;;:idle (helm-mode 1)
   :config
   (progn
     (use-package helm-config)
@@ -2325,7 +2617,7 @@ There are many helm things. I use it a lot.
 
     ;; helm-mini instead of recentf
     (global-set-key (kbd "C-x C-r") 'helm-mini)
-    (global-set-key (kbd "C-x C-f") 'helm-find-files)
+    ;;(global-set-key (kbd "C-x C-f") 'helm-find-files)
     (global-set-key (kbd "C-c h s") 'helm-semantic-or-imenu)
     (global-set-key (kbd "C-c h m") 'helm-man-woman)
     (global-set-key (kbd "C-c h g") 'helm-do-grep)
@@ -2507,30 +2799,8 @@ Mainly used by non-Emacs people, but we should always try to play nice :)
 (use-package editorconfig)
 #+END_SRC
 
-** Auto-completion (auto-complete & company)
-Standard auto-completion configuration
-
-#+BEGIN_SRC emacs-lisp
-(use-package auto-complete
-  :disabled t
-  :defer t
-  :init (progn
-          (use-package popup)
-          (use-package fuzzy)
-          (use-package auto-complete-config)
-          ;; Enable auto-complete mode other than default enable modes
-          (add-to-list 'ac-modes 'cider-repl-mode)
-          (global-auto-complete-mode t)
-          (ac-config-default))
-  :config
-  (progn
-    (define-key ac-complete-mode-map (kbd "M-n") 'ac-next)
-    (define-key ac-complete-mode-map (kbd "M-p") 'ac-previous)
-    (define-key ac-complete-mode-map (kbd "C-s") 'ac-isearch)
-    (define-key ac-completing-map (kbd "<tab>") 'ac-complete)))
-#+END_SRC
-
-Same, but with company-mode
+** Auto-completion (company-mode)
+Standard auto-completion configuration with company-mode
 
 #+BEGIN_SRC emacs-lisp
 (use-package company
@@ -2578,73 +2848,74 @@ Popwin handles little popup windows at the bottom of the screen, which is very
 helpful for documentation buffers and so on.
 
 #+BEGIN_SRC emacs-lisp
-(use-package popwin
-  :bind ("C-'" . popwin:keymap)
-  :config
-  (progn
-    (defvar popwin:special-display-config-backup popwin:special-display-config)
-    (setq display-buffer-function 'popwin:display-buffer)
+(require 'popwin)
+(defvar popwin:special-display-config-backup popwin:special-display-config)
+(setq display-buffer-function 'popwin:display-buffer)
 
-    ;; basic
-    (push '("*Help*" :stick t :noselect t) popwin:special-display-config)
-    (push '("*helm world time*" :stick t :noselect t) popwin:special-display-config)
+;; basic
+(push '("*Help*" :stick t :noselect t) popwin:special-display-config)
+(push '("*helm world time*" :stick t :noselect t) popwin:special-display-config)
 
-    ;; magit
-    (push '("*magit-process*" :stick t) popwin:special-display-config)
+;; magit
+(push '("*magit-process*" :stick t) popwin:special-display-config)
 
-    ;; quickrun
-    (push '("*quickrun*" :stick t) popwin:special-display-config)
+;; quickrun
+(push '("*quickrun*" :stick t) popwin:special-display-config)
 
-    ;; dictionaly
-    (push '("*dict*" :stick t) popwin:special-display-config)
-    (push '("*sdic*" :stick t) popwin:special-display-config)
+;; dictionaly
+(push '("*dict*" :stick t) popwin:special-display-config)
+(push '("*sdic*" :stick t) popwin:special-display-config)
 
-    ;; popwin for slime
-    (push '(slime-repl-mode :stick t) popwin:special-display-config)
+;; popwin for slime
+(push '(slime-repl-mode :stick t) popwin:special-display-config)
 
-    ;; man
-    (push '(Man-mode :stick t :height 20) popwin:special-display-config)
+;; man
+(push '(Man-mode :stick t :height 20) popwin:special-display-config)
 
-    ;; Elisp
-    (push '("*ielm*" :stick t) popwin:special-display-config)
-    (push '("*eshell pop*" :stick t) popwin:special-display-config)
+;; Elisp
+(push '("*ielm*" :stick t) popwin:special-display-config)
+(push '("*eshell pop*" :stick t) popwin:special-display-config)
 
-    ;; pry
-    (push '(inf-ruby-mode :stick t :height 20) popwin:special-display-config)
+;; pry
+(push '(inf-ruby-mode :stick t :height 20) popwin:special-display-config)
 
-    ;; python
-    (push '("*Python*"   :stick t) popwin:special-display-config)
-    (push '("*Python Help*" :stick t :height 20) popwin:special-display-config)
-    (push '("*jedi:doc*" :stick t :noselect t) popwin:special-display-config)
+;; python
+(push '("*Python*"   :stick t) popwin:special-display-config)
+(push '("*Python Help*" :stick t :height 20) popwin:special-display-config)
+(push '("*jedi:doc*" :stick t :noselect t) popwin:special-display-config)
 
-    ;; Haskell
-    (push '("*haskell*" :stick t) popwin:special-display-config)
-    (push '("*GHC Info*") popwin:special-display-config)
+;; Haskell
+(push '("*haskell*" :stick t) popwin:special-display-config)
+(push '("*GHC Info*") popwin:special-display-config)
 
-    ;; sgit
-    (push '("*sgit*" :position right :width 0.5 :stick t)
-          popwin:special-display-config)
+;; sgit
+(push '("*sgit*" :position right :width 0.5 :stick t)
+      popwin:special-display-config)
 
-    ;; git-gutter
-    (push '("*git-gutter:diff*" :width 0.5 :stick t)
-          popwin:special-display-config)
+;; git-gutter
+(push '("*git-gutter:diff*" :width 0.5 :stick t)
+      popwin:special-display-config)
 
-    ;; direx
-    (push '(direx:direx-mode :position left :width 40 :dedicated t)
-          popwin:special-display-config)
+;; direx
+(push '(direx:direx-mode :position left :width 40 :dedicated t)
+      popwin:special-display-config)
 
-    (push '("*Occur*" :stick t) popwin:special-display-config)
+(push '("*Occur*" :stick t) popwin:special-display-config)
 
-    ;; prodigy
-    (push '("*prodigy*" :stick t) popwin:special-display-config)
+;; prodigy
+(push '("*prodigy*" :stick t) popwin:special-display-config)
 
-    ;; malabar-mode
-    (push '("*Malabar Compilation*" :stick t :height 30)
-          popwin:special-display-config)
+;; malabar-mode
+(push '("*Malabar Compilation*" :stick t :height 30)
+      popwin:special-display-config)
 
-    ;; org-mode
-    (push '("*Org tags*" :stick t :height 30)
-          popwin:special-display-config)))
+;; org-mode
+(push '("*Org tags*" :stick t :height 30)
+      popwin:special-display-config)
+
+;; Completions
+(push '("*Completions*" :stick t :noselect t) popwin:special-display-config)
+
 
 #+END_SRC
 
@@ -2821,6 +3092,7 @@ A neat mode to show indention
 
 #+BEGIN_SRC emacs-lisp
 (use-package abbrev
+  :diminish ""
   :config
   (define-abbrev-table 'global-abbrev-table
     '(("elasticsearhc" "elasticsearch" nil 0)
@@ -2997,6 +3269,18 @@ really fit in anywhere else.
 
 (global-set-key (kbd "C-x C-l") 'toggle-truncate-lines)
 
+;; Via: http://endlessparentheses.com/the-toggle-map-and-wizardry.html
+(define-prefix-command 'my/toggle-map)
+;; The manual recommends C-c for user keys, but C-x t is
+;; always free, whereas C-c t is used by some modes.
+(define-key ctl-x-map "t" 'my/toggle-map)
+(define-key my/toggle-map "d" 'toggle-debug-on-error)
+(define-key my/toggle-map "f" 'auto-fill-mode)
+(define-key my/toggle-map "l" 'toggle-truncate-lines)
+(define-key my/toggle-map "q" 'toggle-debug-on-quit)
+(define-key my/toggle-map "r" 'toggle-read-only)
+(define-key my/toggle-map "n" 'narrow-or-widen-dwim)
+
 ;; join on killing lines
 (defun kill-and-join-forward (&optional arg)
   "If at end of line, join with following; otherwise kill line.
@@ -3050,13 +3334,15 @@ Deletes whitespace at join."
       (occur (if isearch-regexp isearch-string (regexp-quote isearch-string))))))
 
 ;; ==== Window switching ====
+(defun my/other-window-backwards ()
+  (interactive)
+  (other-window -1))
+
 (global-set-key (kbd "M-'") 'other-window)
+(global-set-key (kbd "M-\"") 'my/other-window-backwards)
 (global-set-key (kbd "H-'") 'other-window)
 (global-set-key [C-tab] 'other-window)
-(global-set-key [C-S-tab]
-                (lambda ()
-                  (interactive)
-                  (other-window -1)))
+(global-set-key [C-S-tab] 'my/other-window-backwards)
 
 ;; ==== transpose buffers ====
 (defun transpose-buffers (arg)
@@ -3251,10 +3537,22 @@ A function to search/browse ES docs from Emacs using =eww=
 (global-set-key (kbd "C-c d") 'my/search-es-docs)
 (global-set-key (kbd "C-x d") 'my/search-es-docs)
 #+END_SRC
-** Post-amble
+
+*** Narrow-widen DWIM (do what I mean)
+
 #+BEGIN_SRC emacs-lisp
-;; Message how long it took to load everything (minus packages)
-(let ((elapsed (float-time (time-subtract (current-time)
-                                          emacs-start-time))))
-  (message "Loading settings...done (%.3fs)" elapsed))
+(defun my/narrow-or-widen-dwim (p)
+  "If the buffer is narrowed, it widens. Otherwise, it narrows intelligently.
+Intelligently means: region, subtree, or defun, whichever applies
+first.
+
+With prefix P, don't widen, just narrow even if buffer is already
+narrowed."
+  (interactive "P")
+  (declare (interactive-only))
+  (cond ((and (buffer-narrowed-p) (not p)) (widen))
+        ((region-active-p)
+         (narrow-to-region (region-beginning) (region-end)))
+        ((derived-mode-p 'org-mode) (org-narrow-to-subtree))
+        (t (narrow-to-defun))))
 #+END_SRC

@@ -4,7 +4,6 @@
   signingkey = 3ACECAE0
 
 [core]
-  pager = less -FRSX
   excludesfile = /Users/hinmanm/.gitignore
 
 [color]
@@ -42,18 +41,6 @@
 
 [push]
   default = tracking
-
-[diff]
-  tool = ediff
-
-[merge]
-  tool = ediff
-
-[mergetool "ediff"]
-  cmd = emacsclient -c -a \"\" --eval \"(ediff-merge-files-with-ancestor \\\"$LOCAL\\\" \\\"$REMOTE\\\" \\\"$BASE\\\" nil \\\"$MERGED\\\")\"
-
-[difftool "p4merge"]
-  cmd = "/Applications/p4merge.app/Contents/MacOS/p4merge $LOCAL $REMOTE"
 
 [ghi]
   token = !cat ~/.github.token

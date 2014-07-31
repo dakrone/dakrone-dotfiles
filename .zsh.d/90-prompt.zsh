@@ -1,3 +1,4 @@
+autoload -U add-zsh-hook
 autoload -U colors && colors
 autoload -Uz vcs_info
 setopt prompt_subst
@@ -93,25 +94,14 @@ function colorSetup {
 # Initialize colors for setprompt2
 colorSetup
 
-function setprompt {
-    #local return_code="%(?..%{$fg[red]%}%? ↵%{$reset_color%})"
-    PROMPT='$FG[032]%~ $FG[237]${vcs_info_msg_0_}
+PROMPT='$FG[032]%~ $FG[237]${vcs_info_msg_0_}
 $FG[105]%(?..${red}%?$FG[105] )%(!.#.»)%{$reset_color%} '
-}
 
-function precmd {
+function jump-setup {
     if [ -s ~/bin/z.sh ] ; then
         z --add "$(pwd -P)"
     fi
-
-    # Initialize vcs info for the prompt
-    vcs_info
-    # Set up the prompt
-    setprompt
-
-    if [[ "$TERM" == "dumb" ]]; then
-        unsetopt zle
-        export DISABLE_AUTO_TITLE=true
-        export ZSH_HIGHLIGHT_MAXLENGTH=0
-    fi
 }
+
+add-zsh-hook precmd vcs_info
+#add-zsh-hook precmd jump-setup

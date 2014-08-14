@@ -38,7 +38,7 @@
     auctex
 
     ;; org-mode
-    htmlize gnuplot-mode gnuplot org-toc
+    htmlize gnuplot-mode gnuplot org-toc org-eldoc
 
     ;; buffer utils
     popwin dired+

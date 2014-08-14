@@ -1,4 +1,5 @@
 alias .. cd .. $*
+alias ag ag --nocolor $*
 alias bdt gdate "+%Y%m%dT%H%M%S.%3N%z" $*
 alias c curl -s $*
 alias d dired $1
@@ -27,4 +28,4 @@ alias pj python -mjson.tool $*
 alias post curl -s -XPOST $*
 alias put curl -s -XPUT $*
 alias rcp tr ':' '\n'\ $*
-alias se simple-extract
+alias se tar zxvf $*

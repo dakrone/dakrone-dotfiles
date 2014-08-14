@@ -119,6 +119,11 @@ would like to by default, so set the threshold up higher:
 
 #+BEGIN_SRC emacs-lisp
 (setq gc-cons-threshold 20000000)
+;; Allow font-lock-mode to do background parsing
+(setq jit-lock-stealth-time 1
+      jit-lock-stealth-load 100
+      jit-lock-chunk-size 1000
+      jit-lock-defer-time 0.01)
 #+END_SRC
 
 Echo commands I haven't finished quicker than the default of 1 second:
@@ -294,6 +299,11 @@ Turn on auto-fill mode in text buffers:
 
 #+BEGIN_SRC emacs-lisp
 (add-hook 'text-mode-hook 'turn-on-auto-fill)
+
+(use-package diminish
+  :init
+  (progn
+    (diminish 'auto-fill-function (string 32 #xa7))))
 #+END_SRC
 
 Set the internal calculator not to go to scientific form quite so quickly:
@@ -320,13 +330,6 @@ Automatically revert file if it's changed on disk:
 (global-auto-revert-mode 1)
 #+END_SRC
 
-Follow symlinks and update VCS info on revert:
-
-#+BEGIN_SRC emacs-lisp
-(setq vc-follow-symlinks t)
-(setq auto-revert-check-vc-info t)
-#+END_SRC
-
 Remove fringe things
 
 #+BEGIN_SRC emacs-lisp
@@ -337,18 +340,18 @@ Remove fringe things
 Start a server if not running, but a different server for GUI versus text-only:
 
 #+BEGIN_SRC emacs-lisp
-(require 'server)
-(if (window-system)
-    (if (server-running-p server-name)
-        nil
-      (progn
-        (setq server-name "server-gui")
-        (server-start)))
-  (if (server-running-p server-name)
-      nil
-    (progn
-      (setq server-name "server-nw")
-      (server-start))))
+(use-package server
+  :config
+  (progn
+    (if (window-system)
+        (if (server-running-p server-name)
+            nil
+          (progn
+            (setq server-name "server-gui")
+            (server-start)))
+      (if (server-running-p server-name)
+          nil
+        (server-start)))))
 #+END_SRC
 
 GUI-specific thing:
@@ -548,20 +551,9 @@ completion, prompt and term settings:
             "Use Emacs grep facility instead of calling external grep."
             (eshell-grep "rgrep" args t)))
 
-        (defun eshell/cdg ()
+        (defun eshell/cds ()
           "Change directory to the project's root."
           (eshell/cd (locate-dominating-file default-directory ".git")))
-
-        ;; thanks johnw: https://gist.github.com/1198329
-        (defun find-grep-in-project (command-args)
-          (interactive
-           (progn
-             (list (read-shell-command "Run find (like this): "
-                                       '("git ls-files -z | xargs -0 egrep -nH -e " . 41)
-                                       'grep-find-history))))
-          (when command-args
-            (let ((null-device nil)) ; see grep
-              (grep command-args))))
 
         (defun eshell/export-env (&optional env-file)
           (interactive)
@@ -580,6 +572,7 @@ completion, prompt and term settings:
 
         (defalias 'eshell/ee 'eshell/export-env)))
 
+    ;; See eshell-prompt-function below
     (setq eshell-prompt-regexp "^[^#$]*[\$$] ")
     (add-to-list 'eshell-visual-commands "el")
     (add-to-list 'eshell-visual-commands "elinks")
@@ -648,6 +641,15 @@ PWD is not in a git repo (or the git command is not found)."
     (setq eshell-prompt-function
           (lambda ()
             (concat
+            ;;  (propertize
+            ;;   (concat
+            ;;    ;; username
+            ;;    (user-login-name)
+            ;;    "@"
+            ;;    ;; hostname
+            ;;    (car (split-string (system-name) "\\." t))
+            ;;    " ")
+            ;;   'face `(:foreground "blue"))
              (propertize ((lambda (p-lst)
                             (if (> (length p-lst) 3)
                                 (concat
@@ -691,6 +693,27 @@ PWD is not in a git repo (or the git command is not found)."
             (local-set-key (kbd "C-c C-h") 'eshell-list-history)))
 #+END_SRC
 
+*** Tramp settings
+#+BEGIN_SRC emacs-lisp
+(use-package tramp
+  :config
+  (progn
+    (setq tramp-default-user-alist '(("\\`su\\(do\\)?\\'" nil "root"))
+          tramp-backup-directory-alist backup-directory-alist
+          backup-enable-predicate
+          (lambda (name)
+            (and (normal-backup-enable-predicate name)
+                 (not (let ((method (file-remote-p name 'method)))
+                        (when (stringp method)
+                          (member method '("su" "sudo"))))))))
+
+    (use-package tramp-sh
+      :config
+      (progn
+        (add-to-list 'tramp-remote-path "/usr/local/sbin")
+        (add-to-list 'tramp-remote-path "~/bin")))))
+#+END_SRC
+
 *** Spellcheck and flyspell settings
 I use aspell for spellcheck, ignoring words under 3 characters and
 running very quickly. My personal word dictionary is at
@@ -708,6 +731,10 @@ running very quickly. My personal word dictionary is at
   (define-key flyspell-mode-map (kbd "M-n") 'flyspell-goto-next-error)
   (define-key flyspell-mode-map (kbd "M-.") 'ispell-word))
 
+(use-package diminish
+  :init
+  (progn
+    (diminish 'flyspell-mode (string 32 #x2708))))
 #+END_SRC
 
 *** View-mode
@@ -770,9 +797,6 @@ top. Always copy and delete recursively. Also enable
   (progn
     (use-package dired-x
       :init (setq-default dired-omit-files-p t))
-    (use-package dired+
-      :init
-      (setq-default diredp-hide-details-initially-flag nil))
     (put 'dired-find-alternate-file 'disabled nil)
     (define-key dired-mode-map (kbd "RET") 'dired-find-alternate-file)
     (setq ls-lisp-dirs-first t)
@@ -906,20 +930,6 @@ test/foo.clj instead of foo_test.clj
             (mapconcat 'identity impl-segments "/"))))
 #+END_SRC
 
-Also define a function that pops up documentation for the symbol
-to be used for nrepl buffers:
-
-#+BEGIN_SRC emacs-lisp
-(defun nrepl-popup-tip-symbol-at-point ()
-  "show docs for the symbol at point -- AWESOMELY"
-  (interactive)
-  (popup-tip (ac-nrepl-documentation (symbol-at-point))
-             :point (ac-nrepl-symbol-start-pos)
-             :around t
-             :scroll-bar t
-             :margin t))
-#+END_SRC
-
 Other Clojure-specific settings:
 
 #+BEGIN_SRC emacs-lisp
@@ -950,7 +960,7 @@ ac-nrepl packages:
 (defun setup-clojure-cider ()
   (lambda ()
     (define-key cider-mode-map (kbd "C-c C-d")
-      'ac-nrepl-popup-doc)
+      'ac-cider-popup-doc)
     (paredit-mode 1)
     (setq cider-history-file "~/.nrepl-history"
           cider-hide-special-buffers t
@@ -967,14 +977,14 @@ And then finally use them if cider and ac-nrepl packages are available:
   (progn
     (add-hook 'cider-mode-hook 'setup-clojure-cider)
     (add-hook 'cider-repl-mode-hook 'setup-clojure-cider)
-    (use-package ac-nrepl
+    (use-package ac-cider
       :config
       (progn
-        (add-hook 'cider-mode-hook 'ac-nrepl-setup)
-        (add-hook 'cider-repl-mode-hook 'ac-nrepl-setup)
-        (add-hook 'auto-complete-mode-hook
-                  'set-auto-complete-as-completion-at-point-function)
-        (add-to-list 'ac-modes 'cider-repl-mode)))))
+        (add-hook 'cider-mode-hook 'ac-flyspell-workaround)
+        (add-hook 'cider-mode-hook 'ac-cider-setup)
+        (add-hook 'cider-repl-mode-hook 'ac-cider-setup)
+        (eval-after-load "auto-complete"
+          '(add-to-list 'ac-modes 'cider-mode))))))
 #+END_SRC
 
 *** Shell
@@ -1011,6 +1021,8 @@ And some various eldoc settings:
 (use-package eldoc
   :config
   (progn
+    (use-package diminish
+      :init (diminish 'eldoc-mode "ed"))
     (setq eldoc-idle-delay 0.2)
     (set-face-attribute 'eldoc-highlight-function-argument nil
                         :underline t :foreground "green"
@@ -1142,7 +1154,7 @@ with the arguments on the previous line
     :config
     (progn
       (column-marker-1 140)
-      (column-marker-2 80)))
+      (column-marker-2 100)))
   (c-add-style "ECLIPSE" eclipse-java-style)
   (customize-set-variable 'c-default-style
                           (quote ((java-mode . "eclipse")
@@ -1392,6 +1404,8 @@ settings are mine.
   :config
   (progn
     (use-package org-install)
+    (use-package org-eldoc
+      :init (org-eldoc-hook-setup))
     ;; load github-flavored-markdown
     (add-hook 'org-mode-hook 'turn-on-auto-fill)
     (setq org-directory "~/org"
@@ -1558,7 +1572,7 @@ settings are mine.
               ;; Everything that's done and archivable
               (todo "DONE"
                     ((org-agenda-overriding-header "Tasks for archive")
-                     (org-agenda-skip-function 'bh/skip-non-archivable-tasks))))
+                     (org-agenda-skip-function 'my/skip-non-archivable-tasks))))
              nil))))
 
     (ido-mode (quote both))
@@ -1589,6 +1603,7 @@ settings are mine.
      'org-babel-load-languages
      '((emacs-lisp . t)
        (clojure . t)
+       (dot . t)
        (sh . t)
        (ruby . t)
        (python . t)
@@ -1628,31 +1643,29 @@ settings are mine.
                (t (message "Unknown :results type!"))))))
 
     ;; Function declarations
-    (defun bh/skip-non-archivable-tasks ()
+    (defun my/skip-non-archivable-tasks ()
       "Skip trees that are not available for archiving"
       (save-restriction
         (widen)
         ;; Consider only tasks with done todo headings as archivable candidates
-        (let ((next-headline (save-excursion (or (outline-next-heading) (point-max))))
+        (let ((next-headline (save-excursion
+                               (or (outline-next-heading) (point-max))))
               (subtree-end (save-excursion (org-end-of-subtree t))))
           (if (member (org-get-todo-state) org-todo-keywords-1)
               (if (member (org-get-todo-state) org-done-keywords)
-                  (let* ((daynr (string-to-int (format-time-string "%d" (current-time))))
+                  (let* ((daynr (string-to-int
+                                 (format-time-string "%d" (current-time))))
                          (a-month-ago (* 60 60 24 (+ daynr 1)))
-                         (last-month
-                          (format-time-string
-                           "%Y-%m-"
-                           (time-subtract (current-time) (seconds-to-time a-month-ago))))
-                         (this-month (format-time-string "%Y-%m-" (current-time)))
+                         (this-month
+                          (format-time-string "%Y-%m-" (current-time)))
                          (subtree-is-current
                           (save-excursion
                             (forward-line 1)
                             (and (< (point) subtree-end)
-                                 (re-search-forward
-                                  (concat last-month "\\|" this-month)
-                                  subtree-end t)))))
+                                 (re-search-forward this-month
+                                                    subtree-end t)))))
                     (if subtree-is-current
-                        subtree-end ; Has a date in this month or last month, skip it
+                        subtree-end ; Has a date in this month, skip it
                       nil))  ; available to archive
                 (or subtree-end (point-max)))
             next-headline))))
@@ -2181,6 +2194,20 @@ passed in. Also supports ignoring the msg at the point."
   (global-set-key (kbd "C-c m") 'mu4e))
 #+END_SRC
 
+** Email (gnus) configuration
+See: ~/.gnus.el
+
+#+BEGIN_SRC emacs-lisp
+(defun my/gnus-group-list-subscribed-groups ()
+  "List all subscribed groups with or without un-read messages"
+  (interactive)
+  (gnus-group-list-all-groups 5))
+
+(add-hook 'gnus-group-mode-hook
+          ;; list all the subscribed groups even they contain zero un-read messages
+          (lambda () (local-set-key "o" 'my/gnus-group-list-subscribed-groups )))
+#+END_SRC
+
 ** ace-jump-mode
 Jump quickly between words or lines, I mostly use it with eww.
 
@@ -2340,6 +2367,7 @@ Paredit for all the lisps.
          ("M-g M-p" . flycheck-previous-error)
          ("M-g M-=" . flycheck-list-errors))
   :idle (global-flycheck-mode)
+  :diminish " ✓"
   :config
   (progn
     (setq-default flycheck-disabled-checkers
@@ -2394,6 +2422,8 @@ Paredit for all the lisps.
     (custom-set-variables '(magit-set-upstream-on-push (quote dontask)))
 
     (setq magit-completing-read-function 'magit-ido-completing-read)))
+
+(use-package magit-gh-pulls)
 #+END_SRC
 
 ** projectile
@@ -2417,16 +2447,16 @@ I basically use this to start up ES when I need to test something really quickly
   :config
   (progn
     (prodigy-define-service
-      :name "Elasticsearch 1.3.1"
-      :cwd "~/ies/elasticsearch-1.3.1/"
-      :command "~/ies/elasticsearch-1.3.1/bin/elasticsearch"
+      :name "Elasticsearch 1.3.2"
+      :cwd "~/ies/elasticsearch-1.3.2/"
+      :command "~/ies/elasticsearch-1.3.2/bin/elasticsearch"
       :tags '(work test es)
       :port 9200)
 
     (prodigy-define-service
-      :name "Elasticsearch 1.2.2"
-      :cwd "~/ies/elasticsearch-1.2.2/"
-      :command "~/ies/elasticsearch-1.2.2/bin/elasticsearch"
+      :name "Elasticsearch 1.2.4"
+      :cwd "~/ies/elasticsearch-1.2.4/"
+      :command "~/ies/elasticsearch-1.2.4/bin/elasticsearch"
       :tags '(work test es)
       :port 9200)
 
@@ -2457,9 +2487,7 @@ I basically use this to start up ES when I need to test something really quickly
 
 #+BEGIN_SRC emacs-lisp
 (use-package git-gutter
-  :idle (global-git-gutter-mode t)
-  :bind (;;("C-x C-a" . git-gutter:toggle)
-         ("C-x =" . git-gutter:popup-hunk)
+  :bind (("C-x =" . git-gutter:popup-hunk)
          ("C-c P" . git-gutter:previous-hunk)
          ("C-c N" . git-gutter:next-hunk)
          ("C-x p" . git-gutter:previous-hunk)
@@ -2809,7 +2837,8 @@ Standard auto-completion configuration with company-mode
   (progn
     (setq company-idle-delay 0.2
           ;; min prefix of 3 chars
-          company-minimum-prefix-length 3)))
+          company-minimum-prefix-length 3
+          company-dabbrev-downcase nil)))
 
 (add-hook 'prog-mode-hook 'global-company-mode)
 #+END_SRC
@@ -3083,9 +3112,10 @@ Kind of like Vim's folding, but manually done right now.
 A neat mode to show indention
 
 #+BEGIN_SRC emacs-lisp
-(use-package indent-guide)
+(use-package indent-guide
+  :disabled t)
 
-(add-hook 'prog-mode-hook (lambda () (indent-guide-mode t)))
+;; (add-hook 'prog-mode-hook (lambda () (indent-guide-mode t)))
 #+END_SRC
 
 ** abbrev
@@ -3274,6 +3304,7 @@ really fit in anywhere else.
 ;; The manual recommends C-c for user keys, but C-x t is
 ;; always free, whereas C-c t is used by some modes.
 (define-key ctl-x-map "t" 'my/toggle-map)
+(define-key my/toggle-map "g" 'git-gutter:toggle)
 (define-key my/toggle-map "d" 'toggle-debug-on-error)
 (define-key my/toggle-map "f" 'auto-fill-mode)
 (define-key my/toggle-map "l" 'toggle-truncate-lines)

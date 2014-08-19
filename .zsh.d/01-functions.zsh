@@ -1,5 +1,13 @@
 # Zsh functions
 
+not_in_emacs() {
+  [[ ! -n $EMACS ]]
+}
+
+not_in_cloud() {
+  ! fgrep -q ami_id /etc/motd 2>/dev/null
+}
+
 # this function checks if a command exists and returns either true
 # or false. This avoids using 'which' and 'whence', which will
 # avoid problems with aliases for which on certain weird systems. :-)

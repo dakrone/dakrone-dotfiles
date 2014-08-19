@@ -54,13 +54,13 @@
 
     ;; clojure
     clojure-mode cider paredit paren-face kibit-mode clojure-test-mode
-    cider-tracing cider-decompile company-cider
+    cider-tracing cider-decompile company-cider ac-cider
 
     ;; perl
     cperl-mode
 
     ;; python
-    hy-mode
+    hy-mode jedi
 
     ;; ruby
     ruby-mode ruby-test-mode inf-ruby puppet-mode rbenv
@@ -87,7 +87,10 @@
     helm helm-descbinds helm-ag helm-projectile helm-swoop
 
     ;; git
-    magit git-gutter git-timemachine
+    magit git-gutter git-timemachine magit-gh-pulls
+
+    ;; eshell
+    eshell-prompt-extras
     ))
 
 ;; org-mode is forced manually

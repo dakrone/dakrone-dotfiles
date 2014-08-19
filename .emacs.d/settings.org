@@ -573,7 +573,7 @@ completion, prompt and term settings:
         (defalias 'eshell/ee 'eshell/export-env)))
 
     ;; See eshell-prompt-function below
-    (setq eshell-prompt-regexp "^[^#$]*[\$$] ")
+    (setq eshell-prompt-regexp "^[^#$\n]* [#$] ")
     (add-to-list 'eshell-visual-commands "el")
     (add-to-list 'eshell-visual-commands "elinks")
     (add-to-list 'eshell-visual-commands "htop")
@@ -613,10 +613,10 @@ completion, prompt and term settings:
                (shell-command-to-string
                 (concat "cd "
                         pwd
-                        " && git diff-index --quiet HEAD -- || echo -n 'Ϟ'"))))
+                        " && git diff-index --quiet HEAD -- || echo -n ' Ϟ'"))))
           (when (> (length dirty-output) 0)
             (propertize
-             (concat " " dirty-output " ")
+             dirty-output
              'face `(:foreground "red"))))))
 
     (defun curr-dir-git-branch-string (pwd)
@@ -641,15 +641,15 @@ PWD is not in a git repo (or the git command is not found)."
     (setq eshell-prompt-function
           (lambda ()
             (concat
-            ;;  (propertize
-            ;;   (concat
-            ;;    ;; username
-            ;;    (user-login-name)
-            ;;    "@"
-            ;;    ;; hostname
-            ;;    (car (split-string (system-name) "\\." t))
-            ;;    " ")
-            ;;   'face `(:foreground "blue"))
+             ;;  (propertize
+             ;;   (concat
+             ;;    ;; username
+             ;;    (user-login-name)
+             ;;    "@"
+             ;;    ;; hostname
+             ;;    (car (split-string (system-name) "\\." t))
+             ;;    " ")
+             ;;   'face `(:foreground "blue"))
              (propertize ((lambda (p-lst)
                             (if (> (length p-lst) 3)
                                 (concat
@@ -669,7 +669,15 @@ PWD is not in a git repo (or the git command is not found)."
                          'face `(:foreground "blue"))
              (or (curr-dir-git-branch-string (eshell/pwd)))
              (or (curr-dir-git-repo-dirty (eshell/pwd)))
-             (propertize "$ " 'face 'default))))
+             (propertize " $ " 'face 'default))))
+
+    ;; See: https://github.com/kaihaosw/eshell-prompt-extras
+    (use-package eshell-prompt-extras
+      :init
+      (progn
+        (setq eshell-prompt-regexp "^[^#\n|]*[#|] "
+              eshell-highlight-prompt nil
+              eshell-prompt-function 'epe-theme-lambda)))
 
     (setq eshell-highlight-prompt nil)
 
@@ -2971,6 +2979,7 @@ instead of rigid completions
   (progn
     (setq ido-use-virtual-buffers nil
           ido-enable-prefix nil
+          ido-enable-tramp-completion nil
           ido-enable-flex-matching t
           ido-auto-merge-work-directories-length nil
           ido-create-new-buffer 'always
@@ -3478,19 +3487,19 @@ fantastic for ERC buffers. I bind this to =C-c u= because I use it
 a lot.
 
 #+BEGIN_SRC emacs-lisp
-    (defun browse-last-url-in-brower ()
-      (interactive)
-      (save-excursion
-        (let ((ffap-url-regexp
-               (concat
-                "\\("
-                "news\\(post\\)?:\\|mailto:\\|file:"
-                "\\|"
-                "\\(ftp\\|https?\\|telnet\\|gopher\\|www\\|wais\\)://"
-                "\\).")))
-          (ffap-next t t))))
+(defun browse-last-url-in-brower ()
+  (interactive)
+  (save-excursion
+    (let ((ffap-url-regexp
+           (concat
+            "\\("
+            "news\\(post\\)?:\\|mailto:\\|file:"
+            "\\|"
+            "\\(ftp\\|https?\\|telnet\\|gopher\\|www\\|wais\\)://"
+            "\\).")))
+      (ffap-next t t))))
 
-    (global-set-key (kbd "C-c u") 'browse-last-url-in-brower)
+(global-set-key (kbd "C-c u") 'browse-last-url-in-brower)
 #+END_SRC
 
 *** Numbering rectangles

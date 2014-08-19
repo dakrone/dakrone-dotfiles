@@ -150,12 +150,12 @@ unsetopt EXTENDED_GLOB
 
 ## GPG
 # brew install gpg gpg-agent keychain
-if [[ -o interactive ]]; then
-    which keychain 2>&1 > /dev/null
-    if [[ $? -eq 0 ]]; then
-        eval `keychain -q --eval --agents gpg,ssh --inherit any id_rsa`
-    fi
-fi
+# if [[ -o interactive ]]; then
+#     which keychain 2>&1 > /dev/null
+#     if [[ $? -eq 0 ]]; then
+#         eval `keychain -q --eval --agents gpg,ssh --inherit any id_rsa`
+#     fi
+# fi
 
 if in_emacs; then
     unsetopt zle

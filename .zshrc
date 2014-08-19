@@ -126,7 +126,12 @@ bindkey -r '^[x' # remove M-x for emacs-things
 
 
 ## Sourcing OS-specific things
-[[ -f ~/.zsh.d/zsh.${OS} ]] && source ~/.zsh.d/zsh.${OS}
+if [[ -f ~/.zsh.d/zsh.${OS} ]]; then
+    if [[ ! -z $ZSHDEBUG ]]; then
+        echo +++ ~/.zsh.d/zsh.${OS}
+    fi
+    source ~/.zsh.d/zsh.${OS}
+fi
 
 # Source z.sh if available
 if [ -s ~/bin/z.sh ] ; then
@@ -134,9 +139,9 @@ if [ -s ~/bin/z.sh ] ; then
 fi
 
 # Use zsh syntax highlighting if available
-if [ -s ~/.zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh ] ; then
-    source ~/.zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
-fi
+# if [ -s ~/.zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh ] ; then
+#     source ~/.zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+# fi
 
 # Source ~/.zsh.d/*
 setopt EXTENDED_GLOB

@@ -139,9 +139,9 @@ if [ -s ~/bin/z.sh ] ; then
 fi
 
 # Use zsh syntax highlighting if available
-# if [ -s ~/.zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh ] ; then
-#     source ~/.zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
-# fi
+if [ -s ~/.zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh ] ; then
+    source ~/.zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+fi
 
 # Source ~/.zsh.d/*
 setopt EXTENDED_GLOB

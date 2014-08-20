@@ -3,11 +3,6 @@
 autoload colors
 colors
 
-export GIT_AUTHOR_NAME="${FULLNAME}"
-export GIT_AUTHOR_EMAIL="${EMAIL}"
-export GIT_COMMITTER_NAME="${FULLNAME}"
-export GIT_COMMITTER_EMAIL="${EMAIL}"
-
 versionize() {
     local file=$1
     local ver=$(git log --pretty=format:"%ai %h" -1 | perl -pe 's,(\d\d\d\d)-(\d\d)-(\d\d) (\d\d):(\d\d):(\d\d) [^ ]+ ([a-z0-9]+),\1\2\3\4\5\6+\7,')

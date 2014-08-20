@@ -536,13 +536,14 @@ completion, prompt and term settings:
     (use-package esh-opt
       :config
       (progn
-        ;; (set-face-attribute 'eshell-prompt nil :foreground "turquoise1")
         (use-package em-cmpl)
         (use-package em-prompt)
         (use-package em-term)
 
         ;; Taken from Phil's config
-        (setq eshell-cmpl-cycle-completions nil)
+        (setq eshell-cmpl-cycle-completions nil
+              eshell-history-size 20480
+              eshell-buffer-shorthand t)
         (add-hook 'eshell-mode-hook (defun pnh-eshell-term-dumb ()
                                       (eshell/export "TERM" "dumb")))
 
@@ -554,6 +555,12 @@ completion, prompt and term settings:
         (defun eshell/cds ()
           "Change directory to the project's root."
           (eshell/cd (locate-dominating-file default-directory ".git")))
+
+        (defun eshell/clear ()
+          "Clear the eshell buffer"
+          (interactive)
+          (let ((eshell-buffer-maximum-lines 0))
+            (eshell-truncate-buffer)))
 
         (defun eshell/export-env (&optional env-file)
           (interactive)
@@ -594,90 +601,14 @@ completion, prompt and term settings:
 
 ;;; ---- path manipulation
 
-    (defun pwd-repl-home (pwd)
-      (interactive)
-      (let* ((home (expand-file-name (getenv "HOME")))
-             (home-len (length home)))
-        (if (and
-             (>= (length pwd) home-len)
-             (equal home (substring pwd 0 home-len)))
-            (concat "~" (substring pwd home-len))
-          pwd)))
-
-    (defun curr-dir-git-repo-dirty (pwd)
-      "Is the `pwd' dirty from Git's perspective?"
-      (interactive)
-      (when (and (eshell-search-path "git")
-                 (locate-dominating-file pwd ".git"))
-        (let ((dirty-output
-               (shell-command-to-string
-                (concat "cd "
-                        pwd
-                        " && git diff-index --quiet HEAD -- || echo -n ' Ϟ'"))))
-          (when (> (length dirty-output) 0)
-            (propertize
-             dirty-output
-             'face `(:foreground "red"))))))
-
-    (defun curr-dir-git-branch-string (pwd)
-      "Returns current git branch as a string, or the empty string if
-PWD is not in a git repo (or the git command is not found)."
-      (interactive)
-      (when (and (eshell-search-path "git")
-                 (locate-dominating-file pwd ".git"))
-        (let ((git-output
-               (shell-command-to-string
-                (concat "cd "
-                        pwd
-                        " && git symbolic-ref HEAD | cut -d'/' -f3-10"))))
-          (propertize
-           (concat "["
-                   (if (> (length git-output) 0)
-                       (substring git-output 0 -1)
-                     "(no branch)")
-                   "]")
-           'face `(:foreground "green")))))
-
-    (setq eshell-prompt-function
-          (lambda ()
-            (concat
-             ;;  (propertize
-             ;;   (concat
-             ;;    ;; username
-             ;;    (user-login-name)
-             ;;    "@"
-             ;;    ;; hostname
-             ;;    (car (split-string (system-name) "\\." t))
-             ;;    " ")
-             ;;   'face `(:foreground "blue"))
-             (propertize ((lambda (p-lst)
-                            (if (> (length p-lst) 3)
-                                (concat
-                                 (mapconcat (lambda (elm)
-                                              (if (zerop (length elm)) ""
-                                                (substring elm 0 1)))
-                                            (butlast p-lst 3)
-                                            "/")
-                                 "/"
-                                 (mapconcat (lambda (elm) elm)
-                                            (last p-lst 3)
-                                            "/"))
-                              (mapconcat (lambda (elm) elm)
-                                         p-lst
-                                         "/")))
-                          (split-string (pwd-repl-home (eshell/pwd)) "/"))
-                         'face `(:foreground "blue"))
-             (or (curr-dir-git-branch-string (eshell/pwd)))
-             (or (curr-dir-git-repo-dirty (eshell/pwd)))
-             (propertize " $ " 'face 'default))))
-
     ;; See: https://github.com/kaihaosw/eshell-prompt-extras
     (use-package eshell-prompt-extras
       :init
       (progn
-        (setq eshell-prompt-regexp "^[^#\n|]*[#|] "
-              eshell-highlight-prompt nil
-              eshell-prompt-function 'epe-theme-lambda)))
+        (setq eshell-highlight-prompt nil
+              ;; epe-git-dirty-char "Ϟ"
+              epe-git-dirty-char "*"
+              eshell-prompt-function 'epe-theme-dakrone)))
 
     (setq eshell-highlight-prompt nil)
 

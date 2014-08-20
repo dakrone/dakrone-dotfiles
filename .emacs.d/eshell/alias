@@ -15,14 +15,9 @@ alias f find $*
 alias fa fix-agent
 alias gemacs find-file $1
 alias get curl -s -XGET $*
-alias l ls -lh $*
-alias l. ls -d .* $*
-alias la ls -alh $*
 alias less less -FRX $*
-alias ll ls -lh $*
 alias lr lein repl $*
 alias lrt lrtest
-alias ls ls -GF $*
 alias lt ltest $*
 alias pj python -mjson.tool $*
 alias post curl -s -XPOST $*

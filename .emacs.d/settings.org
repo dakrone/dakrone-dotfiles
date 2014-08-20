@@ -556,6 +556,10 @@ completion, prompt and term settings:
           "Change directory to the project's root."
           (eshell/cd (locate-dominating-file default-directory ".git")))
 
+        (defun eshell/l () "Same as `ls -lh'" (eshell/ls "-lh"))
+        (defun eshell/ll () "Same as `ls -lh'" (eshell/ls "-lh"))
+        (defun eshell/la () "Same as `ls -alh'" (eshell/ls "-alh"))
+
         (defun eshell/clear ()
           "Clear the eshell buffer"
           (interactive)
@@ -1109,6 +1113,7 @@ Using rbenv, set it up correctly when idle
 
 #+BEGIN_SRC emacs-lisp
 (use-package rbenv
+  :disabled t
   :idle (global-rbenv-mode t))
 #+END_SRC
 

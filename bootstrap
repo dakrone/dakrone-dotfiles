@@ -29,6 +29,7 @@ fi
 mkdir -p ~/bin
 cp ~/.dakrone/bin/* ~/bin/
 
+mkdir -p ~/.zsh-cache
 cp -f ~/.dakrone/.zshrc ~/
 cp -f ~/.dakrone/.zshenv ~/
 cp -f ~/.dakrone/.important_commands ~/

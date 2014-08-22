@@ -368,7 +368,6 @@ system we're on:
 
 #+BEGIN_SRC emacs-lisp
 (when (eq system-type 'gnu/linux)
-  (use-package notificatons)
   (defun yank-to-x-clipboard ()
     (interactive)
     (if (region-active-p)
@@ -1083,6 +1082,7 @@ with the arguments on the previous line
 
   ;; Malabar things
   (use-package malabar-mode
+    :disabled t
     :config
     (progn
       (use-package cedet)
@@ -1717,7 +1717,7 @@ Interfacing with my org-trello account
   :disabled t)
 #+END_SRC
 
-** ERC Configuration
+** ERC Configuration (IRC)
 ERC (IRC) configuration, requires the ERC package
 
 First, set the SSL program to something sane. I use a cert at
@@ -1803,6 +1803,7 @@ if running in windowed mode, because I don't use ERC otherwise:
   (defun start-irc ()
     "Connect to IRC."
     (interactive)
+    (setup-irc)
     (erc-tls :server "freenode" :port 31425
              :nick "dakrone" :password znc-pass)))
 #+END_SRC
@@ -2323,6 +2324,35 @@ Paredit for all the lisps.
                   (global-set-key (kbd "C-c C-n") 'flycheck-tip-cycle)
                   (global-set-key (kbd "C-c C-p") 'flycheck-tip-cycle-reverse))))))
 
+#+END_SRC
+
+** ggtags
+See: https://github.com/leoliu/ggtags
+
+If on OSX, you'll need to:
+
+: brew install ctags
+: wget -c http://tamacom.com/global/global-6.3.1.tar.gz
+: tar zxvf global-6.3.1.tar.gz
+: cd global-6.3.1
+: ./configure --prefix=/usr/local --with-exuberant-ctags=/usr/local/bin/ctags
+: make install
+
+In order to get this to work also
+
+#+BEGIN_SRC emacs-lisp
+(use-package ggtags
+  :init
+  (progn
+    (add-hook 'c-mode-common-hook
+              (lambda ()
+                (when (derived-mode-p 'c-mode 'c++-mode 'java-mode)
+                  (ggtags-mode 1)
+                  (setq-local eldoc-documentation-function
+                              #'ggtags-eldoc-function)
+                  (setq-local hippie-expand-try-functions-list
+                              (cons 'ggtags-try-complete-tag
+                                    hippie-expand-try-functions-list)))))))
 #+END_SRC
 
 ** expand-region
@@ -3011,7 +3041,7 @@ Can be really handy to see if you've misspelled a variable name.
   (interactive)
   (color-identifiers-mode t))
 
-(add-hook 'java-mode-hook 'my/enable-color-identifiers)
+;;(add-hook 'java-mode-hook 'my/enable-color-identifiers)
 ;;(add-hook 'prog-mode-hook 'my/enable-color-identifiers)
 #+END_SRC
 

@@ -1734,7 +1734,6 @@ And finally the giant setting of ERC configuration variables, only
 if running in windowed mode, because I don't use ERC otherwise:
 
 #+BEGIN_SRC emacs-lisp
-;; ERC is only loaded for GUI emacs
 (defun setup-irc ()
   (interactive)
   (when (file-exists-p "~/.ercpass")
@@ -1798,21 +1797,25 @@ if running in windowed mode, because I don't use ERC otherwise:
           (add-to-list 'erc-modules 'spelling)
           (erc-services-mode 1)
           (erc-spelling-mode 1)))
-      (erc-update-modules)))
+      (erc-update-modules))))
 
-  (defun start-irc ()
-    "Connect to IRC."
-    (interactive)
-    (setup-irc)
-    (erc-tls :server "freenode" :port 31425
-             :nick "dakrone" :password znc-pass)))
+(defun start-irc ()
+  "Connect to IRC."
+  (interactive)
+  (setup-irc)
+  (erc-tls :server "freenode" :port 31425
+           :nick "dakrone" :password znc-pass))
 #+END_SRC
 
 ** Email (mu4e) Configuration
+I usually install [[http://www.djcbsoftware.nl/code/mu/][mu]] from source, with =./configure --prefix=/usr/local=, I
+unpack it to ~/src/mu-0.9.9.6 (or whatever version) so I can reference the mu4e
+elisp files.
+
 #+BEGIN_SRC emacs-lisp
 (defun mail ()
   (interactive)
-  (add-to-list 'load-path "~/src/mu-0.9.9.5/mu4e")
+  (add-to-list 'load-path "~/src/mu-0.9.9.6/mu4e")
   (use-package mu4e
     :config
     (progn
@@ -1822,7 +1825,6 @@ if running in windowed mode, because I don't use ERC otherwise:
 
       ;; Various mu4e settings
       (setq mu4e-mu-binary "/usr/local/bin/mu"
-            smtpmail-smtp-server "smtp.example.org"
             ;;mu4e-sent-messages-behavior 'delete
             ;; save attachments to the Downloads folder
             mu4e-attachment-dir "~/Downloads"
@@ -1855,12 +1857,13 @@ if running in windowed mode, because I don't use ERC otherwise:
             mu4e-use-fancy-chars nil
             ;; use the python html2text shell command to strip html
             ;; brew/apt-get install html2text
+            ;; brew/apt-get install elinks
             mu4e-html2text-command "/usr/local/bin/elinks -dump"
             ;; mu4e-html2text-command "/usr/local/bin/html2text -nobs"
             ;; mu4e-html2text-command
             ;; "/usr/bin/html2markdown | fgrep -v '&nbsp_place_holder;'"
-            ;; check for new messages ever 600 seconds (10 min)
-            mu4e-update-interval 600)
+            ;; check for new messages ever 300 seconds (5 min)
+            mu4e-update-interval 300)
 
       (add-hook 'dired-mode-hook 'turn-on-gnus-dired-mode)
       (use-package gnus-dired
@@ -2092,10 +2095,11 @@ passed in. Also supports ignoring the msg at the point."
       ;; The bookmarks for the main screen
       (setq mu4e-bookmarks
             `((,(kdl-mu4e-unread-mail-query) "New messages"         ?b)
+              ("maildir:/elasticsearch/build" "Build failures"      ?B)
               ("date:today..now"             "Today's messages"     ?t)
               ("date:7d..now"                "Last 7 days"          ?W)
               ;;("maildir:/writequit/INBOX"    "Writequit"            ?w)
-              ("subject:[elasticsearch]"     "ES Issues"            ?e)
+              ("subject:elasticsearch"       "ES Issues"            ?e)
               ("maildir:/elasticsearch/INBOX" "Elasticsearch"       ?s)
               ("maildir:/gmail/INBOX"        "Gmail"                ?g)
               ;; ("maildir:/writequit/INBOX OR maildir:/elasticsearch/INBOX OR maildir:/gmail/INBOX"

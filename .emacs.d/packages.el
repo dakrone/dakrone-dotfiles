@@ -91,6 +91,9 @@
 
     ;; eshell
     eshell-prompt-extras
+
+    ;; gnus
+    gnus-x-gm-raw
     ))
 
 ;; org-mode is forced manually

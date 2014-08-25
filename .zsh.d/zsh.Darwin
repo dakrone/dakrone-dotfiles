@@ -39,6 +39,7 @@ if [[ $OS == "Darwin" ]]; then
 
     export EMACS_HOME="/Applications/Emacs.app/Contents/MacOS"
     export ERC_HOME="/Applications/ERC.app/Contents/MacOS"
+    export GNUS_HOME="/Applications/Gnus.app/Contents/MacOS"
 
     if [ -s /usr/local/bin/emacs ]; then
         alias emacs='TERM=xterm-256color emacs'
@@ -55,6 +56,7 @@ if [[ $OS == "Darwin" ]]; then
     alias emacs="TERM=xterm-256color PATH=$EMACS_HOME/bin:$PATH $EMACS_HOME/Emacs -nw"
     alias gemacs="TERM=xterm-256color PATH=$EMACS_HOME/bin:$PATH $EMACS_HOME/Emacs 2>&1 > /dev/null &"
     alias erc="TERM=xterm-256color PATH=$ERC_HOME/bin:$PATH $ERC_HOME/Emacs 2>&1 > /dev/null &"
+    alias gnus="TERM=xterm-256color PATH=$GNUS_HOME/bin:$PATH $GNUS_HOME/Emacs 2>&1 > /dev/null &"
 
     # for a separate emacs instance
     # export EDITOR="TERM=xterm-256color PATH=$EMACS_HOME/bin:$PATH $EMACS_HOME/Emacs -nw"

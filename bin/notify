@@ -1,10 +1,20 @@
 #!/usr/bin/env zsh
 
-# check for a local screamy running first
-netstat -na | fgrep 127.0.0.1:8080 > /dev/null
+# A generic notification script that will either use the local HTTP interface
+# for sending a notification, or enqueue it into SQS to be consumed by a remote
+# norad instance. Requires the awscli to be set up:
+#
+# OSX: brew install awscli
+# Linux: apt-get install awscli
+#
+# Then `aws configure`, make sure to pick 'us-east-1' for the region
+
+# check for a local norad running first
+netstat -na | egrep '127\.0\.0\.1.8080' > /dev/null
 if [[ $? -eq 0 ]]; then
-    curl -s http://localhost:8080/screamy -d"$*" > /dev/null
+    curl -s http://localhost:8080/ -d"$*" > /dev/null
 else
+    # basically memoizes detecting the queue name if running in zsh
     if [[ $QUEUENAME = '' ]]; then
         export QUEUENAME=`aws sqs list-queues | fgrep norad | tr -d ' ' | tr -d "\""`
     fi
@@ -12,4 +22,3 @@ else
     aws sqs send-message --queue-url $QUEUENAME --message-body \
         "{:queue \"queue.notifications\" :msg \"$*\"}" > /dev/null
 fi
-

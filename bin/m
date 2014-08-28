@@ -1,0 +1,14 @@
+#!/usr/bin/env zsh
+
+# A wrapper for maven that notifies when it completes
+
+mvn $*
+STATUS=$?
+if [[ $STATUS -eq 0 ]]; then
+    MSG="SUCCESS: "
+else
+    MSG="FAILURE ($STATUS): "
+fi
+
+# Send the notification using the notify script
+notify "$MSG mvn $*"

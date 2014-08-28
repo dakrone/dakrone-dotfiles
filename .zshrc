@@ -9,6 +9,10 @@ start=$EPOCHREALTIME
 # path
 export PATH=~/bin:/usr/local/bin:$PATH
 
+# JBoss (brew install wildfly-as)
+export JBOSS_HOME=/usr/local/opt/wildfly-as/libexec
+export PATH=${PATH}:${JBOSS_HOME}/bin
+
 # abbreviation
 export EDITOR=nano # to be overwritten later
 export PAGER=less

@@ -361,6 +361,19 @@ GUI-specific thing:
   (setenv "EMACS_GUI" "t"))
 #+END_SRC
 
+Prettify all the symbols, if available (an Emacs 24.4 feature):
+
+#+BEGIN_SRC emacs-lisp
+(when (boundp 'global-prettify-symbols-mode)
+  (add-hook 'emacs-lisp-mode-hook
+            (lambda ()
+              (push '("lambda" . ?λ) prettify-symbols-alist)))
+  (add-hook 'clojure-mode-hook
+            (lambda ()
+              (push '("fn" . ?ƒ) prettify-symbols-alist)))
+  (global-prettify-symbols-mode +1))
+#+END_SRC
+
 *** OS-specific settings
 These are settings that are applied depending on what OS I'm
 currently running on. First, we need a way to tell what kind of
@@ -384,7 +397,13 @@ system we're on:
   (setq insert-directory-program "gls")
   (setq dired-listing-switches "-aBhl --group-directories-first")
   (defun copy-from-osx ()
-    (shell-command-to-string "/usr/bin/pbpaste"))
+    "Handle copy/paste intelligently on osx."
+    (let ((pbpaste (purecopy "/usr/bin/pbpaste")))
+      (if (and (eq system-type 'darwin)
+               (file-exists-p pbpaste))
+          (let ((tramp-mode nil)
+                (default-directory "~"))
+            (shell-command-to-string pbpaste)))))
 
   (defun paste-to-osx (text &optional push)
     (let ((process-connection-type nil))
@@ -1204,31 +1223,29 @@ Bleh javascript.
 ** theme
 Misc settings for fonts, depending on the OS:
 
+I've been using [[https://github.com/belluzj/fantasque-sans][Fantasque Sans Mono]] lately, it looks pretty nice to me. On Linux
+I've been using Bitstream Vera Sans Mono.
+
 #+BEGIN_SRC emacs-lisp
 (when (eq window-system 'ns)
   (set-fontset-font "fontset-default" 'symbol "Monaco")
-  (set-default-font "Inconsolata")
-  (set-face-attribute 'default nil :height 115)
-  (set-face-attribute 'fixed-pitch nil :height 115))
-(when (eq window-system 'mac)
-  (set-fontset-font "fontset-default" 'symbol "Monaco")
-  (set-default-font "Anonymous Pro")
-  (set-face-attribute 'default nil :height 125))
+  (set-default-font "Fantasque Sans Mono")
+  (set-face-attribute 'default nil :height 120)
+  (set-face-attribute 'fixed-pitch nil :height 120))
 (when (eq window-system 'x)
   ;; Font family
   (set-fontset-font "fontset-default" 'symbol "Bitstream Vera Sans Mono")
   (set-default-font "Bitstream Vera Sans Mono")
   ;; Font size
-  ;; 100 is too small, 105 is too big, 103 is juuuuuust right
   (set-face-attribute 'default nil :height 90))
 ;; Anti-aliasing
 (setq mac-allow-anti-aliasing t)
 #+END_SRC
 
 For light-colored backgrounds, I used [[https://github.com/fniessen/emacs-leuven-theme][leuven-theme]]. For dark-colored
-backgrounds (most of the time), I use my own custom theme, called [[https://github.com/dakrone/dakrone-theme][dakrone-theme]]:
-
-See a [[https://github-camo.global.ssl.fastly.net/585b59c2a71eb618b0bff59b3f5ca4ae99d7ae81/687474703a2f2f692e696d6775722e636f6d2f7753644f6e544d2e706e67][screenshot]].
+backgrounds (most of the time), I use my own custom theme, called [[https://github.com/dakrone/dakrone-theme][dakrone-theme]].
+Sometimes I use [[https://github.com/kuanyui/moe-theme.el][moe-theme]] for a dark background also, although the magenta text
+annoys me somewhat.
 
 #+BEGIN_SRC emacs-lisp
 (setq ns-use-srgb-colorspace t)
@@ -1287,9 +1304,6 @@ See a [[https://github-camo.global.ssl.fastly.net/585b59c2a71eb618b0bff59b3f5ca4
   (interactive)
   ;; https://github.com/fniessen/emacs-leuven-theme
   (load-theme 'leuven t)
-  ;;(load-theme 'flatui t)
-  ;; (use-package moe-theme
-  ;;   :init (moe-light))
   (defclojureface clojure-parens       "#696969"   "Clojure parens")
   (defclojureface clojure-braces       "#696969"   "Clojure braces")
   (defclojureface clojure-brackets     "#4682b4"   "Clojure brackets")
@@ -1348,8 +1362,6 @@ settings are mine.
   :config
   (progn
     (use-package org-install)
-    (use-package org-eldoc
-      :init (org-eldoc-hook-setup))
     ;; load github-flavored-markdown
     (add-hook 'org-mode-hook 'turn-on-auto-fill)
     (setq org-directory "~/org"
@@ -1763,7 +1775,8 @@ if running in windowed mode, because I don't use ERC otherwise:
                        "technomancy" "yazirian" "danielglauser")
             erc-pal-highlight-type 'nil
             erc-keywords '("dakrone" "dakrone_" "clj-http" "cheshire"
-                           "clojure-opennlp" "opennlp" "circuit breaker")
+                           "clojure-opennlp" "opennlp" "circuit breaker"
+                           "groovy" "es-mode" "simple_query_string")
             erc-ignore-list '()
             erc-track-exclude-types '("JOIN" "NICK" "PART" "QUIT" "MODE"
                                       "324" "329" "332" "333" "353" "477")
@@ -2923,7 +2936,8 @@ helpful for documentation buffers and so on.
 ;; Completions
 (push '("*Completions*" :stick t :noselect t) popwin:special-display-config)
 
-
+;; ggtags
+(push '("*ggtags-global*" :stick t :noselect t :height 30) popwin:special-display-config)
 #+END_SRC
 
 ** paren-face
@@ -3066,7 +3080,7 @@ Kind of like Vim's folding, but manually done right now.
   :bind (("C-c TAB" . hs-toggle-hiding)
          ("C-\\" . hs-toggle-hiding)
          ("M-\\" . hs-hide-all)
-         ("M-|" . hs-show-all))
+         ("M-+" . hs-show-all))
   :config
   (progn
     (defvar hs-special-modes-alist
@@ -3258,7 +3272,6 @@ http://amitp.blogspot.nl/2011/08/emacs-custom-mode-line.html
 (when (eq my/background 'dark)
   (amit-modeline))
 #+END_SRC
-
 
 ** Bindings
 These are miscellaneous bindings used all over the place that don't
@@ -3565,4 +3578,29 @@ narrowed."
          (narrow-to-region (region-beginning) (region-end)))
         ((derived-mode-p 'org-mode) (org-narrow-to-subtree))
         (t (narrow-to-defun))))
+#+END_SRC
+
+*** Move by block of text
+See: http://ergoemacs.org/emacs/emacs_move_by_paragraph.html
+
+#+BEGIN_SRC emacs-lisp
+(defun xah-forward-block (&optional φn)
+  "Move cursor forward to the beginning of next text block.
+A text block is separated by blank lines. In most major modes,
+this is similar to `forward-paragraph', but this command's
+behavior is the same regardless of syntax table."
+  (interactive "p")
+  (search-forward-regexp "\n[\t\n ]*\n+" nil "NOERROR" φn))
+
+(defun xah-backward-block (&optional φn)
+  "Move cursor backward to previous text block.
+See: `xah-forward-block'"
+  (interactive "p")
+  (dotimes (ξn φn) (if (search-backward-regexp "\n[\t\n ]*\n+" nil "NOERROR")
+                       (progn
+                         (skip-chars-backward "\n\t "))
+                     (progn (goto-char (point-min))))))
+
+(global-set-key (kbd "<C-up>") 'xah-backward-block)
+(global-set-key (kbd "<C-down>") 'xah-forward-block)
 #+END_SRC

@@ -12,7 +12,7 @@
 # check for a local norad running first
 netstat -na | egrep '127\.0\.0\.1.8080' > /dev/null
 if [[ $? -eq 0 ]]; then
-    curl -s http://localhost:8080/ -d"$*" > /dev/null
+    curl -s http://localhost:8080/norad -d"$*" > /dev/null
 else
     # basically memoizes detecting the queue name if running in zsh
     if [[ $QUEUENAME = '' ]]; then

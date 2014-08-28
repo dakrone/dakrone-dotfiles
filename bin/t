@@ -1,0 +1,14 @@
+#!/usr/bin/env zsh
+
+# A wrapper for an arbitrary command that notifies when it completes
+
+$*
+STATUS=$?
+if [[ $STATUS -eq 0 ]]; then
+    MSG="SUCCESS [${SECONDS}s]:"
+else
+    MSG="FAILURE [${SECONDS}s] ($STATUS):"
+fi
+
+# Send the notification using the notify script
+notify "$MSG $*"

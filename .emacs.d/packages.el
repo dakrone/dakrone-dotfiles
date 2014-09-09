@@ -15,7 +15,7 @@
     ;; themeing
     rainbow-mode leuven-theme dakrone-theme smart-mode-line
     color-identifiers-mode subatomic-theme subatomic256-theme
-    moe-theme powerline nyan-mode
+    moe-theme powerline nyan-mode spacegray-theme
 
     ;; misc
     diminish yagist es-mode scpaste w3m
@@ -53,7 +53,7 @@
     flycheck flycheck-tip
 
     ;; clojure
-    clojure-mode cider paredit paren-face kibit-mode clojure-test-mode
+    clojure-mode cider paredit paren-face kibit-mode
     cider-tracing cider-decompile company-cider ac-cider
 
     ;; perl
@@ -85,6 +85,7 @@
 
     ;; helm
     helm helm-descbinds helm-ag helm-projectile helm-swoop
+    helm-gtags
 
     ;; git
     magit git-gutter git-timemachine magit-gh-pulls

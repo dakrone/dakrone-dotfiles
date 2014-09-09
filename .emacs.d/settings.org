@@ -95,8 +95,8 @@ depending on whatever I'm in the mood for. This is used later on for the
 modeline theme, as well as the general theme for things.
 
 #+BEGIN_SRC emacs-lisp
-(defvar my/background 'light)
-;;(defvar my/background 'dark)
+;;(defvar my/background 'light)
+(defvar my/background 'dark)
 #+END_SRC
 
 Always, *always*, prefer UTF-8, anything else is insanity
@@ -849,6 +849,7 @@ on subword mode and idle-highlight-mode:
             (use-package idle-highlight-mode
               :init (idle-highlight-mode t))
             (setq show-trailing-whitespace t)
+            (semantic-mode t)
             (subword-mode t)))
 #+END_SRC
 
@@ -1109,7 +1110,7 @@ with the arguments on the previous line
         :config
         (progn
           (load "semantic/loaddefs.el")
-          (semantic-mode 1)))))
+          (semantic-mode t)))))
   ;; Generic java stuff things
   (setq whitespace-line-column 140)
   (use-package column-marker
@@ -1267,38 +1268,26 @@ annoys me somewhat.
 
 (defun dakrone-dark ()
   (interactive)
-  (if (window-system)
-      (progn
-        ;; https://github.com/dakrone/dakrone-theme
-        ;;(load-theme 'dakrone t)
-        ;; (set-background-color "#262626")
-
-        ;; https://github.com/cryon/subatomic
-        ;;(load-theme 'subatomic t)
-
-        ;; https://github.com/kuanyui/moe-theme.el
-        (use-package moe-theme
-          :init (moe-dark)
-          :config
-          (progn
-            ;;(setq moe-theme-mode-line-color 'orange)
-            ;;(powerline-moe-theme)
-            ))
-        )
-    (progn
-      ;; https://github.com/d11wtq/subatomic256
-      ;;(load-theme 'subatomic256 t)
-
-      (load-theme 'dakrone t)
-
-      ;; (use-package moe-theme
-      ;;   :init (moe-dark)
-      ;;   :config
-      ;;   (progn
-      ;;     ;;(setq moe-theme-mode-line-color 'orange)
-      ;;     ;;(powerline-moe-theme)
-      ;;     ))
-      )))
+  (progn
+    ;; https://github.com/dakrone/dakrone-theme
+    ;;(load-theme 'dakrone t)
+    ;; (set-background-color "#262626")
+    ;; https://github.com/cryon/subatomic
+    ;;(load-theme 'subatomic t)
+    ;; https://github.com/d11wtq/subatomic256
+    ;;(load-theme 'subatomic256 t)
+    ;; https://github.com/kuanyui/moe-theme.el
+    ;; (use-package moe-theme
+    ;;   :init (moe-dark)
+    ;;   :config
+    ;;   (progn
+    ;;     ;;(setq moe-theme-mode-line-color 'orange)
+    ;;     ;;(powerline-moe-theme)
+    ;;     ))
+    ;; https://github.com/bruce/emacs-spacegray-theme
+    (load-theme 'spacegray t)
+    (global-hl-line-mode t)
+    ))
 
 (defun dakrone-light ()
   (interactive)
@@ -1863,6 +1852,8 @@ elisp files.
             user-mail-address  "lee@writequit.org"
             user-full-name     "Lee Hinman"
             mail-host-address  "writequit.org"
+            ;; no signature
+            mu4e-compose-signature nil
             ;; mu4e defaults
             mu4e-maildir       "~/.mail"
             ;; misc mu settings
@@ -2355,16 +2346,43 @@ If on OSX, you'll need to:
 : ./configure --prefix=/usr/local --with-exuberant-ctags=/usr/local/bin/ctags
 : make install
 
+I also add this to my shell configuration:
+
+: export GTAGSCONF=/usr/local/share/gtags/gtags.conf
+: export GTAGSLABEL=ctags
+
 In order to get this to work also
 
 #+BEGIN_SRC emacs-lisp
+(defun my/setup-helm-gtags ()
+  (interactive)
+  ;; this variables must be set before load helm-gtags
+  ;; you can change to any prefix key of your choice
+  (setq helm-gtags-prefix-key "\C-cg")
+  (require 'helm-gtags)
+  (helm-gtags-mode t)
+  (setq helm-gtags-ignore-case t
+        helm-gtags-auto-update t
+        helm-gtags-use-input-at-cursor t
+        helm-gtags-pulse-at-cursor t
+        helm-gtags-suggested-key-mapping t)
+
+  ;; key bindings
+  (define-key helm-gtags-mode-map (kbd "M-s") 'helm-gtags-select)
+  (define-key helm-gtags-mode-map (kbd "M-.") 'helm-gtags-dwim)
+  (define-key helm-gtags-mode-map (kbd "M-,") 'helm-gtags-pop-stack)
+  (define-key helm-gtags-mode-map (kbd "C-c <") 'helm-gtags-previous-history)
+  (define-key helm-gtags-mode-map (kbd "C-c >") 'helm-gtags-next-history))
+
 (use-package ggtags
   :init
   (progn
     (add-hook 'c-mode-common-hook
               (lambda ()
-                (when (derived-mode-p 'c-mode 'c++-mode 'java-mode)
-                  (ggtags-mode 1)
+                (when (derived-mode-p 'c-mode 'c++-mode 'java-mode 'asm-mode)
+                  (semantic-mode t)
+                  (my/setup-helm-gtags)
+                  ;;(ggtags-mode 1) ;; using helm-gtags above instead
                   (setq-local eldoc-documentation-function
                               #'ggtags-eldoc-function)
                   (setq-local hippie-expand-try-functions-list
@@ -2558,17 +2576,20 @@ There are many helm things. I use it a lot.
     (use-package helm-config)
     (use-package helm-files)
     (use-package helm-grep)
-    (use-package helm-eshell)
     (use-package helm-man)
     (use-package helm-misc)
     (use-package helm-aliases)
     (use-package helm-elisp)
     (use-package helm-imenu)
     (use-package helm-semantic)
-    (use-package helm-call-tree)
     (use-package helm-ring)
     (use-package helm-projectile
       :bind (("C-x f" . helm-projectile)))
+    (use-package helm-eshell
+      :init (add-hook 'eshell-mode-hook
+                      (lambda ()
+                        (define-key eshell-mode-map (kbd "M-l")
+                          'helm-eshell-history))))
     (setq helm-idle-delay 0.1
           helm-exit-idle-delay 0.1
           helm-input-idle-delay 0
@@ -2826,7 +2847,7 @@ Standard auto-completion configuration with company-mode
   :diminish ""
   :config
   (progn
-    (setq company-idle-delay 0.2
+    (setq company-idle-delay 0.4
           ;; min prefix of 3 chars
           company-minimum-prefix-length 3
           company-dabbrev-downcase nil)))
@@ -3302,7 +3323,7 @@ really fit in anywhere else.
 (define-key my/toggle-map "l" 'toggle-truncate-lines)
 (define-key my/toggle-map "q" 'toggle-debug-on-quit)
 (define-key my/toggle-map "r" 'toggle-read-only)
-(define-key my/toggle-map "n" 'narrow-or-widen-dwim)
+(define-key my/toggle-map "n" 'my/narrow-or-widen-dwim)
 
 ;; join on killing lines
 (defun kill-and-join-forward (&optional arg)
@@ -3566,8 +3587,9 @@ A function to search/browse ES docs from Emacs using =eww=
 #+BEGIN_SRC emacs-lisp
 (defun my/narrow-or-widen-dwim (p)
   "If the buffer is narrowed, it widens. Otherwise, it narrows intelligently.
-Intelligently means: region, subtree, or defun, whichever applies
-first.
+Intelligently means: region, org-src-block, org-subtree, or defun,
+whichever applies first.
+Narrowing to org-src-block actually calls `org-edit-src-code'.
 
 With prefix P, don't widen, just narrow even if buffer is already
 narrowed."
@@ -3576,7 +3598,15 @@ narrowed."
   (cond ((and (buffer-narrowed-p) (not p)) (widen))
         ((region-active-p)
          (narrow-to-region (region-beginning) (region-end)))
-        ((derived-mode-p 'org-mode) (org-narrow-to-subtree))
+        ((derived-mode-p 'org-mode)
+         ;; `org-edit-src-code' is not a real narrowing command.
+         ;; Remove this first conditional if you don't want it.
+         (cond ((org-in-src-block-p)
+                (org-edit-src-code)
+                (delete-other-windows))
+               ((org-at-block-p)
+                (org-narrow-to-block))
+               (t (org-narrow-to-subtree))))
         (t (narrow-to-defun))))
 #+END_SRC
 

@@ -18,7 +18,10 @@
     moe-theme powerline nyan-mode spacegray-theme
 
     ;; misc
-    diminish yagist es-mode scpaste w3m
+    diminish gist scpaste w3m
+
+    ;; es-mode
+    es-mode
 
     ;; IRC/ERC and social stuff
     erc-hl-nicks ercn todochiku twittering-mode

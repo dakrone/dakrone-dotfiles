@@ -95,8 +95,8 @@ depending on whatever I'm in the mood for. This is used later on for the
 modeline theme, as well as the general theme for things.
 
 #+BEGIN_SRC emacs-lisp
-;;(defvar my/background 'light)
-(defvar my/background 'dark)
+(defvar my/background 'light)
+;;(defvar my/background 'dark)
 #+END_SRC
 
 Always, *always*, prefer UTF-8, anything else is insanity
@@ -601,6 +601,11 @@ completion, prompt and term settings:
 
         (defalias 'eshell/ee 'eshell/export-env)))
 
+    (add-hook 'eshell-mode-hook
+              (lambda ()
+                (define-key eshell-mode-map (kbd "M-l")
+                  'helm-eshell-history)))
+
     ;; See eshell-prompt-function below
     (setq eshell-prompt-regexp "^[^#$\n]* [#$] ")
     (add-to-list 'eshell-visual-commands "el")
@@ -838,6 +843,27 @@ generally only have configuration for languages I use, but the
 "order of usage" usually goes =clojure & shell > elisp > python >
 ruby > java > everything else=.
 
+*** Semantic-mode
+Basic semantic-mode things
+
+#+BEGIN_SRC emacs-lisp
+(defun my/setup-semantic-mode ()
+  (interactive)
+  (use-package semantic)
+  (setq semantic-default-submodes
+        '(global-semantic-idle-scheduler-mode
+          global-semanticdb-minor-mode
+          global-semantic-idle-summary-mode))
+  (semantic-mode t)
+  (local-set-key [(control return)] 'semantic-ia-complete-symbol)
+  (local-set-key "\C-c>" 'semantic-complete-analyze-inline)
+  (local-set-key "\C-c?" 'semantic-analyze-proto-impl-toggle))
+
+(add-hook 'prog-mode-hook
+          (lambda ()
+            (my/setup-semantic-mode)))
+#+END_SRC
+
 *** General prog-mode hooks
 Some general settings that should apply to all programming modes, turning
 on subword mode and idle-highlight-mode:
@@ -849,7 +875,6 @@ on subword mode and idle-highlight-mode:
             (use-package idle-highlight-mode
               :init (idle-highlight-mode t))
             (setq show-trailing-whitespace t)
-            (semantic-mode t)
             (subword-mode t)))
 #+END_SRC
 
@@ -916,37 +941,24 @@ Let's define a couple of helper functions for setting up the cider and
 ac-nrepl packages:
 
 #+BEGIN_SRC emacs-lisp
-(defun set-auto-complete-as-completion-at-point-function ()
-  (setq completion-at-point-functions '(auto-complete)))
-
 (defun setup-clojure-cider ()
   (lambda ()
-    (define-key cider-mode-map (kbd "C-c C-d")
-      'ac-cider-popup-doc)
     (paredit-mode 1)
     (setq cider-history-file "~/.nrepl-history"
           cider-hide-special-buffers t
           cider-repl-history-size 10000
-          cider-popup-stacktraces-in-repl t)
-    (set-auto-complete-as-completion-at-point-function)))
+          cider-prefer-local-resources t
+          cider-popup-stacktraces-in-repl t)))
 #+END_SRC
 
 And then finally use them if cider and ac-nrepl packages are available:
 
 #+BEGIN_SRC emacs-lisp
 (use-package cider
-  :config
+  :init
   (progn
     (add-hook 'cider-mode-hook 'setup-clojure-cider)
-    (add-hook 'cider-repl-mode-hook 'setup-clojure-cider)
-    (use-package ac-cider
-      :config
-      (progn
-        (add-hook 'cider-mode-hook 'ac-flyspell-workaround)
-        (add-hook 'cider-mode-hook 'ac-cider-setup)
-        (add-hook 'cider-repl-mode-hook 'ac-cider-setup)
-        (eval-after-load "auto-complete"
-          '(add-to-list 'ac-modes 'cider-mode))))))
+    (add-hook 'cider-repl-mode-hook 'setup-clojure-cider)))
 #+END_SRC
 
 *** Shell
@@ -1103,14 +1115,7 @@ with the arguments on the previous line
   ;; Malabar things
   (use-package malabar-mode
     :disabled t
-    :config
-    (progn
-      (use-package cedet)
-      (use-package semantic
-        :config
-        (progn
-          (load "semantic/loaddefs.el")
-          (semantic-mode t)))))
+    :config (use-package cedet))
   ;; Generic java stuff things
   (setq whitespace-line-column 140)
   (use-package column-marker
@@ -1230,7 +1235,8 @@ I've been using Bitstream Vera Sans Mono.
 #+BEGIN_SRC emacs-lisp
 (when (eq window-system 'ns)
   (set-fontset-font "fontset-default" 'symbol "Monaco")
-  (set-default-font "Fantasque Sans Mono")
+  ;; (set-default-font "Fantasque Sans Mono")
+  (set-default-font "Inconsolata")
   (set-face-attribute 'default nil :height 120)
   (set-face-attribute 'fixed-pitch nil :height 120))
 (when (eq window-system 'x)
@@ -1268,26 +1274,29 @@ annoys me somewhat.
 
 (defun dakrone-dark ()
   (interactive)
-  (progn
-    ;; https://github.com/dakrone/dakrone-theme
-    ;;(load-theme 'dakrone t)
-    ;; (set-background-color "#262626")
-    ;; https://github.com/cryon/subatomic
-    ;;(load-theme 'subatomic t)
-    ;; https://github.com/d11wtq/subatomic256
-    ;;(load-theme 'subatomic256 t)
-    ;; https://github.com/kuanyui/moe-theme.el
-    ;; (use-package moe-theme
-    ;;   :init (moe-dark)
-    ;;   :config
-    ;;   (progn
-    ;;     ;;(setq moe-theme-mode-line-color 'orange)
-    ;;     ;;(powerline-moe-theme)
-    ;;     ))
-    ;; https://github.com/bruce/emacs-spacegray-theme
-    (load-theme 'spacegray t)
-    (global-hl-line-mode t)
-    ))
+  (if window-system
+      (progn
+        ;; https://github.com/bruce/emacs-spacegray-theme
+        (load-theme 'spacegray t)
+        (global-hl-line-mode t))
+    (progn
+      (load-theme 'subatomic256 t)))
+  ;; https://github.com/dakrone/dakrone-theme
+  ;;(load-theme 'dakrone t)
+  ;; (set-background-color "#262626")
+  ;; https://github.com/cryon/subatomic
+  ;;(load-theme 'subatomic t)
+  ;; https://github.com/d11wtq/subatomic256
+  ;;(load-theme 'subatomic256 t)
+  ;; https://github.com/kuanyui/moe-theme.el
+  ;; (use-package moe-theme
+  ;;   :init (moe-dark)
+  ;;   :config
+  ;;   (progn
+  ;;     ;;(setq moe-theme-mode-line-color 'orange)
+  ;;     ;;(powerline-moe-theme)
+  ;;     ))
+  )
 
 (defun dakrone-light ()
   (interactive)
@@ -2359,14 +2368,14 @@ In order to get this to work also
   ;; this variables must be set before load helm-gtags
   ;; you can change to any prefix key of your choice
   (setq helm-gtags-prefix-key "\C-cg")
-  (require 'helm-gtags)
-  (helm-gtags-mode t)
   (setq helm-gtags-ignore-case t
         helm-gtags-auto-update t
         helm-gtags-use-input-at-cursor t
         helm-gtags-pulse-at-cursor t
         helm-gtags-suggested-key-mapping t)
-
+  (use-package helm-gtags
+    :init (helm-gtags-mode t)
+    :diminish "hg")
   ;; key bindings
   (define-key helm-gtags-mode-map (kbd "M-s") 'helm-gtags-select)
   (define-key helm-gtags-mode-map (kbd "M-.") 'helm-gtags-dwim)
@@ -2374,20 +2383,28 @@ In order to get this to work also
   (define-key helm-gtags-mode-map (kbd "C-c <") 'helm-gtags-previous-history)
   (define-key helm-gtags-mode-map (kbd "C-c >") 'helm-gtags-next-history))
 
+(defun my/setup-ggtags ()
+  (interactive)
+  (ggtags-mode 1)
+  ;; turn on eldoc with ggtags
+  (setq-local eldoc-documentation-function #'ggtags-eldoc-function)
+  ;; add ggtags to the hippie completion
+  (setq-local hippie-expand-try-functions-list
+              (cons 'ggtags-try-complete-tag
+                    hippie-expand-try-functions-list))
+  ;; use helm for completion
+  (setq ggtags-completing-read-function nil))
+
 (use-package ggtags
   :init
   (progn
     (add-hook 'c-mode-common-hook
               (lambda ()
                 (when (derived-mode-p 'c-mode 'c++-mode 'java-mode 'asm-mode)
-                  (semantic-mode t)
-                  (my/setup-helm-gtags)
-                  ;;(ggtags-mode 1) ;; using helm-gtags above instead
-                  (setq-local eldoc-documentation-function
-                              #'ggtags-eldoc-function)
-                  (setq-local hippie-expand-try-functions-list
-                              (cons 'ggtags-try-complete-tag
-                                    hippie-expand-try-functions-list)))))))
+                  (my/setup-semantic-mode)
+                  ;; (my/setup-helm-gtags) ;; helm-gtags
+                  (my/setup-ggtags) ;; regular gtags
+                  )))))
 #+END_SRC
 
 ** expand-region
@@ -2399,6 +2416,8 @@ In order to get this to work also
 #+END_SRC
 
 ** magit
+I use =M-g M-g= everywhere to go directly to Magit.
+
 #+BEGIN_SRC emacs-lisp
 (use-package magit
   :bind ("M-g M-g" . magit-status)
@@ -2847,7 +2866,7 @@ Standard auto-completion configuration with company-mode
   :diminish ""
   :config
   (progn
-    (setq company-idle-delay 0.4
+    (setq company-idle-delay 0.5
           ;; min prefix of 3 chars
           company-minimum-prefix-length 3
           company-dabbrev-downcase nil)))
@@ -3158,13 +3177,10 @@ to switch between as needed:
 
 #+BEGIN_SRC emacs-lisp
 (use-package smart-mode-line
-  :disabled t
   :init
   (progn
-    (setq sml/no-confirm-load-theme t)
-    (setq sml/mode-width 'full)
     (sml/setup)
-    (sml/apply-theme my/background)))
+    (sml/apply-theme 'respectful)))
 
 (use-package powerline
   :disabled t
@@ -3290,8 +3306,8 @@ http://amitp.blogspot.nl/2011/08/emacs-custom-mode-line.html
                       :foreground "black" :background "#eab700"))
 
 ;; Only set up Amit's modeline when using a dark background
-(when (eq my/background 'dark)
-  (amit-modeline))
+;; (when (eq my/background 'dark)
+;;   (amit-modeline))
 #+END_SRC
 
 ** Bindings
@@ -3367,9 +3383,6 @@ Deletes whitespace at join."
 
 ;; If you want to be able to M-x without meta (phones, etc)
 (global-set-key (kbd "C-c C-x") 'execute-extended-command)
-
-;; So good!
-(global-set-key (kbd "C-c g") 'magit-status)
 
 ;; Activate occur easily inside isearch
 (define-key isearch-mode-map (kbd "C-o")

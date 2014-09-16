@@ -3,7 +3,7 @@ OS=$(uname)
 if [[ $OS == "Darwin" ]]; then
 
     # default to java8
-    export JAVA_HOME=/Library/Java/JavaVirtualMachines/jdk1.8.0.jdk/Contents/Home
+    export JAVA_HOME=/Library/Java/JavaVirtualMachines/jdk1.8.0_20.jdk/Contents/Home
 
     function java6() {
         export JAVA_HOME=/System/Library/Frameworks/JavaVM.framework/Versions/1.6/Home
@@ -33,8 +33,16 @@ if [[ $OS == "Darwin" ]]; then
         export JAVA_HOME=/Library/Java/JavaVirtualMachines/jdk1.7.0_45.jdk/Contents/Home
     }
 
-    function java8() {
+    function java8_00() {
         export JAVA_HOME=/Library/Java/JavaVirtualMachines/jdk1.8.0.jdk/Contents/Home
+    }
+
+    function java8_20() {
+        export JAVA_HOME=/Library/Java/JavaVirtualMachines/jdk1.8.0_20.jdk/Contents/Home
+    }
+
+    function java8() {
+        export JAVA_HOME=/Library/Java/JavaVirtualMachines/jdk1.8.0_20.jdk/Contents/Home
     }
 
     export EMACS_HOME="/Applications/Emacs.app/Contents/MacOS"

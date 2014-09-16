@@ -33,6 +33,7 @@ cp -f /Library/LaunchDaemons/pdnsd.plist .
 cp -f ~/.pythonstartup .
 cp -f ~/.tmux.* .
 cp -f ~/.cmd-key-happy.lua .
+cp -f ~/.globalrc .
 mkdir -p .emacs.d
 cp -f -r ~/.emacs.d .
 rm -rf .emacs.d/elpa

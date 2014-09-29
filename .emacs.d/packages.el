@@ -27,7 +27,7 @@
     erc-hl-nicks ercn todochiku twittering-mode
 
     ;; for auto-complete
-    fuzzy popup company company-cider
+    fuzzy popup company
 
     ;; editing utilities
     expand-region smex windresize ag undo-tree iedit ido-ubiquitous

@@ -2393,6 +2393,8 @@ In order to get this to work also
 (defun my/setup-ggtags ()
   (interactive)
   (ggtags-mode 1)
+  ;; turn on helm-mode for completion
+  (helm-mode 1)
   ;; turn on eldoc with ggtags
   (setq-local eldoc-documentation-function #'ggtags-eldoc-function)
   ;; add ggtags to the hippie completion

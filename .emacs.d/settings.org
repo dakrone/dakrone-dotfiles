@@ -1655,7 +1655,6 @@ currently open, based on `org-agenda-files'."
     ;; save all the agenda files after each capture
     (add-hook 'org-capture-after-finalize-hook 'my/save-all-agenda-buffers)
     ))
-
 #+END_SRC
 
 ** org-publishing
@@ -1733,14 +1732,6 @@ Generating table of contents from org-mode files, see:
 #+BEGIN_SRC emacs-lisp
 (use-package org-toc
   :init (add-hook 'org-mode-hook 'org-toc-enable))
-#+END_SRC
-
-** org-trello
-Interfacing with my org-trello account
-
-#+BEGIN_SRC emacs-lisp
-(use-package org-trello
-  :disabled t)
 #+END_SRC
 
 ** ERC Configuration (IRC)

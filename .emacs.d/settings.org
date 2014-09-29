@@ -685,12 +685,22 @@ I use aspell for spellcheck, ignoring words under 3 characters and
 running very quickly. My personal word dictionary is at
 =~/.flydict=.
 
-#+BEGIN_SRC emacs-lisp
-(setq-default ispell-program-name "aspell")
-(setq ispell-personal-dictionary "~/.flydict"
-      ispell-extra-args '("--sug-mode=ultra" "--ignore=3"))
-(add-to-list 'ispell-skip-region-alist '("[^\000-\377]+"))
+First, set up some Hunspell things if applicable:
 
+#+BEGIN_SRC emacs-lisp
+(if (file-exists-p "/usr/local/bin/hunspell")
+    (progn
+      ;; Add english-hunspell as a dictionary
+      (setq-default ispell-program-name "hunspell"
+                    ispell-dictionary "en_US"))
+  (progn (setq-default ispell-program-name "aspell")
+         (setq ispell-personal-dictionary "~/.flydict"
+               ispell-extra-args '("--sug-mode=normal" "--ignore=3"))))
+
+(add-to-list 'ispell-skip-region-alist '("[^\000-\377]+"))
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
 ;; flyspell
 (use-package flyspell
   :config

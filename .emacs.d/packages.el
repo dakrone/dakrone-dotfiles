@@ -57,7 +57,7 @@
 
     ;; clojure
     clojure-mode cider paredit paren-face kibit-mode
-    cider-tracing cider-decompile company-cider ac-cider
+    cider-decompile ac-cider
 
     ;; perl
     cperl-mode

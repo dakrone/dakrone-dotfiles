@@ -1571,7 +1571,13 @@ settings are mine.
        (sh . t)
        (ruby . t)
        (python . t)
-       (gnuplot . t)))
+       (gnuplot . t)
+       (plantuml . t)
+       (latex . t)))
+
+    ;; plantuml jar path
+    (setq org-plantuml-jar-path
+          "/usr/local/Cellar/plantuml/8002/plantuml.8002.jar")
 
     ;; Use org.css from the :wq website for export document stylesheets
     (setq org-html-head-extra

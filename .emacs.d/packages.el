@@ -31,11 +31,15 @@
 
     ;; editing utilities
     expand-region smex windresize ag undo-tree iedit ido-ubiquitous
-    ido-vertical-mode yasnippet idle-highlight-mode smart-tab anzu
+    ido-vertical-mode yasnippet smart-tab anzu
     smartparens flx-ido projectile smooth-scrolling keyfreq
-    prodigy column-marker highlight-symbol ace-jump-mode
+    prodigy column-marker  ace-jump-mode
     multiple-cursors fancy-narrow easy-kill indent-guide toggle-quotes
     visible-mark simple-call-tree simple-call-tree+ editorconfig ggtags
+
+    ;; highlighting
+    idle-highlight-mode highlight-symbol highlight-escape-sequences
+    highlight-numbers highlight-quoted
 
     ;; LaTeX
     auctex

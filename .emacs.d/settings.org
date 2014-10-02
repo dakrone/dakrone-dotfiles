@@ -3477,20 +3477,20 @@ Various methods I call interactively for things.
 This is for correctly finding the SSH agent:
 
 #+BEGIN_SRC emacs-lisp
-    (defun find-agent ()
-      (first (split-string
-              (shell-command-to-string
-               (concat
-                "ls -t1 "
-                "$(find /tmp/ -uid $UID -path \\*ssh\\* -type s 2> /dev/null)"
-                "|"
-                "head -1")))))
+(defun find-agent ()
+  (first (split-string
+          (shell-command-to-string
+           (concat
+            "ls -t1 "
+            "$(find /tmp/ -uid $UID -path \\*ssh\\* -type s 2> /dev/null)"
+            "|"
+            "head -1")))))
 
-    (defun fix-agent ()
-      (interactive)
-      (let ((agent (find-agent)))
-        (setenv "SSH_AUTH_SOCK" agent)
-        (message agent)))
+(defun fix-agent ()
+  (interactive)
+  (let ((agent (find-agent)))
+    (setenv "SSH_AUTH_SOCK" agent)
+    (message agent)))
 #+END_SRC
 
 *** Format JSON more beautifully

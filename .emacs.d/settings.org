@@ -2561,6 +2561,24 @@ Jump to the next/prev symbol pretty easily
          ("M-p" . highlight-symbol-prev)))
 #+END_SRC
 
+** highlight-escape-sequences
+
+https://github.com/dgutov/highlight-escape-sequences/
+
+#+BEGIN_SRC emacs-lisp
+(use-package highlight-escape-sequences
+  :init (add-to-list 'prog-mode-hook (lambda () (hes-mode t))))
+#+END_SRC
+
+** highlight-numbers
+
+Highlights numbers in source code
+
+#+BEGIN_SRC emacs-lisp
+(use-package highlight-numbers
+  :init (add-hook 'prog-mode-hook 'highlight-numbers-mode))
+#+END_SRC
+
 ** anzu
 Anzu shows the number of search hits in the modeline, which is handy.
 

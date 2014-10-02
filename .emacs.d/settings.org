@@ -1672,12 +1672,11 @@ settings are mine.
       "Function used to save all agenda buffers that are
 currently open, based on `org-agenda-files'."
       (interactive)
-      (require 'dash)
       (save-current-buffer
         (dolist (buffer (buffer-list t))
           (set-buffer buffer)
           (when (member (buffer-file-name)
-                        (-map 'expand-file-name (org-agenda-files t)))
+                        (mapcar 'expand-file-name (org-agenda-files t)))
             (save-buffer)))))
 
     ;; save all the agenda files after each capture

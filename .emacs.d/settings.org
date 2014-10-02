@@ -764,9 +764,30 @@ and go directly to a dired buffer.
 
 Setting =ls-lisp-dirs-first= means directories are always at the
 top. Always copy and delete recursively. Also enable
-=hl-line-mode= in dired, since it's easier to see the cursor then:
+=hl-line-mode= in dired, since it's easier to see the cursor then.
+
+To start, a helper to use "=open=" to open files in dired-mode with =M-o=
+(similar to Finder in OSX).
 
 #+BEGIN_SRC emacs-lisp
+(defun my/dired-mac-open ()
+  (interactive)
+  (save-window-excursion
+    (dired-do-async-shell-command
+     "open" current-prefix-arg
+     (dired-get-marked-files t current-prefix-arg))))
+#+END_SRC
+
+And then some other things to setup when dired runs. =C-x C-q= to edit
+writable-dired mode is aawwweeeesssoooommee, it makes renames super easy.
+
+#+BEGIN_SRC emacs-lisp
+(defun my/dired-mode-hook ()
+  (hl-line-mode t)
+  (toggle-truncate-lines 1)
+  (define-key dired-mode-map (kbd "M-o") 'my/dired-mac-open)
+  (define-key dired-mode-map (kbd "C-x C-q") 'wdired-change-to-wdired-mode))
+
 (use-package dired
   :bind ("C-x C-j" . dired-jump)
   :config
@@ -779,7 +800,7 @@ top. Always copy and delete recursively. Also enable
     (setq dired-recursive-copies 'always)
     (setq dired-recursive-deletes 'always)
     (define-key dired-mode-map (kbd "C-M-u") 'dired-up-directory)
-    (add-hook 'dired-mode-hook (lambda () (hl-line-mode)))))
+    (add-hook 'dired-mode-hook 'my/dired-mode-hook)))
 #+END_SRC
 
 *** Emacsclient

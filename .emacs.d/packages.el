@@ -48,7 +48,7 @@
     htmlize gnuplot-mode gnuplot org-toc org-eldoc
 
     ;; buffer utils
-    popwin dired+
+    popwin dired+ dired-imenu
 
     ;; haskell
     haskell-mode ghc ghci-completion

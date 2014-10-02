@@ -411,7 +411,14 @@ system we're on:
         (process-send-string proc text)
         (process-send-eof proc))))
   (setq interprogram-cut-function 'paste-to-osx
-        interprogram-paste-function 'copy-from-osx))
+        interprogram-paste-function 'copy-from-osx)
+
+  (defun move-file-to-trash (file)
+    "Use `trash' to move FILE to the system trash.
+When using Homebrew, install it using \"brew install trash\"."
+    (call-process (executable-find "trash")
+                  nil 0 nil
+                  file)))
 #+END_SRC
 
 **** Windows
@@ -784,9 +791,7 @@ writable-dired mode is aawwweeeesssoooommee, it makes renames super easy.
 #+BEGIN_SRC emacs-lisp
 (defun my/dired-mode-hook ()
   (hl-line-mode t)
-  (toggle-truncate-lines 1)
-  (define-key dired-mode-map (kbd "M-o") 'my/dired-mac-open)
-  (define-key dired-mode-map (kbd "C-x C-q") 'wdired-change-to-wdired-mode))
+  (toggle-truncate-lines 1))
 
 (use-package dired
   :bind ("C-x C-j" . dired-jump)
@@ -794,12 +799,19 @@ writable-dired mode is aawwweeeesssoooommee, it makes renames super easy.
   (progn
     (use-package dired-x
       :init (setq-default dired-omit-files-p t))
+    (use-package dired-imenu)
+    (customize-set-variable 'diredp-hide-details-initially-flag nil)
+    (use-package dired+)
     (put 'dired-find-alternate-file 'disabled nil)
+    (setq ls-lisp-dirs-first t
+          dired-recursive-copies 'always
+          dired-recursive-deletes 'always
+          dired-dwim-target t
+          delete-by-moving-to-trash t)
     (define-key dired-mode-map (kbd "RET") 'dired-find-alternate-file)
-    (setq ls-lisp-dirs-first t)
-    (setq dired-recursive-copies 'always)
-    (setq dired-recursive-deletes 'always)
     (define-key dired-mode-map (kbd "C-M-u") 'dired-up-directory)
+    (define-key dired-mode-map (kbd "M-o") 'my/dired-mac-open)
+    (define-key dired-mode-map (kbd "C-x C-q") 'wdired-change-to-wdired-mode)
     (add-hook 'dired-mode-hook 'my/dired-mode-hook)))
 #+END_SRC
 

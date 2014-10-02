@@ -2649,6 +2649,8 @@ There are many helm things. I use it a lot.
     (use-package helm-imenu)
     (use-package helm-semantic)
     (use-package helm-ring)
+    (use-package helm-bookmark
+      :bind (("C-x M-b" . helm-bookmarks)))
     (use-package helm-projectile
       :bind (("C-x f" . helm-projectile)))
     (use-package helm-eshell
@@ -2661,6 +2663,7 @@ There are many helm things. I use it a lot.
           helm-input-idle-delay 0
           helm-candidate-number-limit 500
           helm-buffers-fuzzy-matching t
+          helm-truncate-lines t
           helm-grep-default-command
           ;;"ggrep -a -d skip %e -n%cH -e %p %f"
           "grep -a -d skip %e -n%cH -e %p %f"

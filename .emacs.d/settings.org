@@ -1693,59 +1693,52 @@ Both dropbox and non dropbox are included here, because symlinks suck.
 (use-package org
   :config
   (setq org-publish-project-alist
+        ;; Org-mode files for ~/.emacs.d/settings.org
         '(("emacs dotfiles"
            :base-directory "~/.emacs.d/"
-           :base-extension "org\\|zsh\\|html"
+           :base-extension "org\\|html"
            :publishing-directory "/ssh:hinmanph@writequit:~/public_html/wq/paste/org/"
            :publishing-function org-html-publish-to-html
            :with-toc t
            :html-preamble t)
-          ("org-pastebin"
+
+          ;; Org-mode files for ~/org files
+          ("org-org"
            :base-directory "~/org/"
-           :base-extension "org\\|zsh\\|html"
+           :base-extension "org\\|html"
            :publishing-directory "/ssh:hinmanph@writequit:~/public_html/wq/paste/org/"
            :publishing-function org-html-publish-to-html
            :with-toc t
            :html-preamble t)
-          ("org-pastebin-db"
-           :base-directory "~/Dropbox/org/"
-           :base-extension "org\\|zsh\\|html"
-           :publishing-directory "/ssh:hinmanph@writequit:~/public_html/wq/paste/org/"
-           :publishing-function org-html-publish-to-html
-           :with-toc t
-           :html-preamble t)
-          ("org-es-pastebin"
+          ("org-images"
+           :base-directory "~/org/images"
+           :base-extension "png\\|jpg"
+           :publishing-directory "/ssh:hinmanph@writequit:~/public_html/wq/paste/org/images"
+           :publishing-function org-publish-attachment)
+          ("org" :components ("org-org" "org-images"))
+
+          ;; Org-mode for the ~/org/es files
+          ("org-es-org"
            :base-directory "~/org/es/"
-           :base-extension "org\\|zsh\\|html"
+           :base-extension "org\\|html"
            :publishing-directory "/ssh:hinmanph@writequit:~/public_html/wq/paste/org/"
            :publishing-function org-html-publish-to-html
            :with-toc t
            :html-preamble t)
-          ("org-es-pastebin-db"
-           :base-directory "~/Dropbox/org/es/"
-           :base-extension "org\\|zsh\\|html"
-           :publishing-directory "/ssh:hinmanph@writequit:~/public_html/wq/paste/org/"
-           :publishing-function org-html-publish-to-html
-           :with-toc t
-           :html-preamble t)
+          ("org-es-images"
+           :base-directory "~/org/es/images"
+           :base-extension "png\\|jpg"
+           :publishing-directory "/ssh:hinmanph@writequit:~/public_html/wq/paste/org/images"
+           :publishing-function org-publish-attachment)
+          ("org-es" :components ("org-es-org" "org-es-images"))
+
+          ;; Org-mode files for the book
           ("org-book-pastebin"
            :base-directory "~/org/book/"
-           :base-extension "org\\|zsh\\|html"
+           :base-extension "org\\|zsh\\|html\\|png"
            :publishing-directory "/ssh:hinmanph@writequit:~/public_html/wq/paste/org/book/"
            :publishing-function org-html-publish-to-html
            :with-toc t
-           :html-preamble t)
-          ("org-book-pastebin-db"
-           :base-directory "~/Dropbox/org/book/"
-           :base-extension "org\\|zsh\\|html"
-           :publishing-directory "/ssh:hinmanph@writequit:~/public_html/wq/paste/org/book/"
-           :publishing-function org-html-publish-to-html
-           ;; :exclude "PrivatePage.org"   ;; regexp
-           ;; :headline-levels 3
-           ;; :section-numbers nil
-           :with-toc t
-           ;; :html-head "<link rel=\"stylesheet\"
-           ;;               href=\"../other/mystyle.css\" type=\"text/css\"/>"
            :html-preamble t))))
 #+END_SRC
 

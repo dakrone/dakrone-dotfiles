@@ -76,7 +76,7 @@ exuberant-ctags|plugin-example|setting to use Exuberant Ctags plug-in parser:\
 	:langmap=HTML\:.htm.html:\
 	:langmap=Java\:.java:\
 	:langmap=JavaScript\:.js:\
-	:langmap=Lisp\:.cl.clisp.el.l.lisp.lsp:\
+	:langmap=Lisp\:.cl.clisp.el.l.lisp.lsp.clj.cljs:\
 	:langmap=Lua\:.lua:\
 	:langmap=MatLab\:.m:\
 	:langmap=OCaml\:.ml.mli:\
@@ -166,7 +166,7 @@ pygments-parser|Pygments plug-in parser:\
 	:langmap=Cfm\:.cfm.cfml.cfc:\
 	:langmap=Clojure\:.clj:\
 	:langmap=CoffeeScript\:.coffee:\
-	:langmap=Common-Lisp\:.cl.lisp.el:\
+	:langmap=Common-Lisp\:.cl.lisp.el.clj.cljs:\
 	:langmap=Coq\:.v:\
 	:langmap=Croc\:.croc:\
 	:langmap=Csh\:.tcsh.csh:\

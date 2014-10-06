@@ -86,6 +86,45 @@ Or, you can manually tangle the file and use this alternative instead:
     (message "Loading settings...done (%.3fs)" elapsed))
   #+END_SRC
 
+** A note about keyboard shortcuts
+There are a lot (like, a *lot*) of keyboard shortcuts in this configuration, and
+they aren't all collected in one place. So I thought I should collect the most
+common of them into a single place so anyone looking at this can get an idea of
+what I use the most. I borrowed the idea from a different configuration I saw,
+when I thought it was useful for seeing how people bound things.
+
+This doesn't include stuff that I haven't really rebound, like =C-x C-f=, which
+just calls =find-file=, though there may be a few sprinkled in there. This list
+is in no way exhaustive.
+
+| Shortcut  | What it does                                                  | Usage frequency          |
+|-----------+---------------------------------------------------------------+--------------------------|
+| =C-a SPC= | open my custom agenda view                                    | Every time I start emacs |
+| =C-x m=   | open eshell                                                   | Every time I start emacs |
+| =C-x C-r= | helm-mini                                                     | Very                     |
+| =C-x b=   | helm-mini                                                     | Very                     |
+| =C-x f=   | helm-projectile                                               | Very                     |
+| =C-c b=   | switch between org-mode buffers                               | Very                     |
+| =M-g M-g= | open Magit                                                    | Very                     |
+| =C-x C-i= | open helm's semantic imenu                                    | Very                     |
+| =C-c n=   | cleanup buffer (reindent, clean whitespace)                   | Often                    |
+| =C-x C-j= | open dired folder for current file                            | Often                    |
+| =C-M-n=   | scroll half a page down                                       | Often                    |
+| =C-M-p=   | scroll half a page up                                         | Often                    |
+| =M-i=     | open helm-swoop                                               | Often                    |
+| =M-g .=   | helm-grep, with C-u prefix, rgrep                             | Sometimes                |
+| =C-c p s= | switch projectile projecs                                     | Sometimes                |
+| =C-h b=   | see the current bindings (helm-descbinds)                     | Sometimes                |
+| =C-h a=   | look through all emacs vars, functions, faces (helm-apropos)  | Sometimes                |
+| =C-h t=   | see the current time in different locations (helm-world-time) | Sometimes                |
+| =C-c c=   | open capture template for capturing org agenda things         | Sometimes                |
+| =C-x M-b= | open a list of my file/buffer bookmarks (helm-bookmarks)      | Sometimes                |
+| =C-c d=   | look up something in the Elasticsearch documentation          | Sometimes                |
+| =C-c u=   | search for the last URL and browse to it with system browser  | Sometimes                |
+| =C-x 4 t= | transpose the current buffers                                 | Rarely                   |
+| =C-h e=   | pop up the ~*Messages*~ buffer                                | Rarely                   |
+| =C-x RET= | open shell (zsh)                                              | Rarely                   |
+
 ** Basics and settings used everywhere
 
 *** General settings

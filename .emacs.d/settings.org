@@ -925,13 +925,24 @@ generally only have configuration for languages I use, but the
 "order of usage" usually goes =clojure & shell > elisp > python >
 ruby > java > everything else=.
 
-*** Semantic-mode
+*** CEDET (semantic-mode)
 Basic semantic-mode things
+
+First, use a development version of cedet if applicable, I download the latest
+snapshot from http://www.randomsample.de/cedet-snapshots/ and extract it in
+~/src/elisp. Don't forget to run =make= in it!
+
+And then things to set up semantic mode
 
 #+BEGIN_SRC emacs-lisp
 (defun my/setup-semantic-mode ()
   (interactive)
   (use-package semantic)
+  (require 'semantic/ia)
+  (require 'semantic/wisent)
+  ;; Use a better (though slower) parser for java, if it exists
+  (when (file-exists-p "~/src/elisp/cedet/cedet-devel-load.el")
+    (autoload 'wisent-java-default-setup "semantic/wisent/java"))
   (setq semantic-default-submodes
         '(global-semantic-idle-scheduler-mode
           global-semanticdb-minor-mode
@@ -1017,7 +1028,7 @@ Other Clojure-specific settings:
      (setq font-lock-verbose nil)
      (global-set-key (kbd "C-c t") 'clojure-jump-between-tests-and-code)
      (paredit-mode 1)
-     (use-package highlight-quoted-mode
+     (use-package highlight-quoted
        :init (highlight-quoted-mode t)))))
 #+END_SRC
 
@@ -1166,24 +1177,28 @@ work with the ES codebase.
   '((c-basic-offset . 4)
     (c-comment-only-line-offset . (0 . 0))
     ;; the following preserves Javadoc starter lines
-    (c-offsets-alist . ((inline-open . 0)
-                        (topmost-intro-cont    . +)
-                        (statement-block-intro . +)
-                        (knr-argdecl-intro     . 5)
-                        (substatement-open     . +)
-                        (substatement-label    . +)
-                        (case-label            . +)
-                        (label                 . +)
-                        (statement-case-open   . +)
-                        (statement-cont        . ++)
-                        (arglist-intro . c-lineup-arglist-intro-after-paren)
-                        (arglist-close . c-lineup-arglist)
-                        (arglist-cont-nonempty . ++)
-                        (inexpr-class          . 0)
-                        (access-label          . 0)
-                        (inher-cont            . ++)
-                        (brace-list-intro      . ++)
-                        (func-decl-cont        . ++))))
+    (c-offsets-alist
+     .
+     ((inline-open . 0)
+      (topmost-intro-cont    . +)
+      (statement-block-intro . +)
+      (knr-argdecl-intro     . +)
+      (substatement-open     . +)
+      (substatement-label    . +)
+      (case-label            . +)
+      (label                 . +)
+      (statement-case-open   . +)
+      (statement-cont        . ++)
+      ;; (arglist-intro         . c-lineup-arglist-intro-after-paren)
+      ;; (arglist-intro         . ++)
+      ;; (arglist-close         . c-lineup-arglist)
+      (arglist-cont-nonempty . ++)
+      (arglist-close         . --)
+      (inexpr-class          . 0)
+      (access-label          . 0)
+      (inher-cont            . ++)
+      (brace-list-intro      . ++)
+      (func-decl-cont        . ++))))
   "Intellij Java Programming Style")
 
 (c-add-style "intellij" intellij-java-style)

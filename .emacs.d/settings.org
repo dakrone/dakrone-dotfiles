@@ -2617,7 +2617,9 @@ I basically use this to start up ES when I need to test something really quickly
          ("C-c N" . git-gutter:next-hunk)
          ("C-x p" . git-gutter:previous-hunk)
          ("C-x n" . git-gutter:next-hunk)
-         ("C-c G" . git-gutter:popup-hunk)))
+         ("C-c G" . git-gutter:popup-hunk))
+  :diminish ""
+  :init (add-hook 'prog-mode-hook 'git-gutter-mode))
 #+END_SRC
 
 ** highlight-symbol

@@ -2555,7 +2555,9 @@ Per-project navigation
 #+BEGIN_SRC emacs-lisp
 (use-package projectile
   :bind (;;("C-x f" . projectile-find-file)
-         ("C-c p s" . projectile-switch-project))
+         ("C-c p s" . projectile-switch-project)
+         ("C-c p a" . projectile-ag)
+         ("C-c p g" . projectile-grep))
   :config
   (progn
     (defconst projectile-mode-line-lighter " P")))

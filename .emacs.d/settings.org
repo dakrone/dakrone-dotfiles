@@ -1774,7 +1774,8 @@ Both dropbox and non dropbox are included here, because symlinks suck.
         '(("emacs dotfiles"
            :base-directory "~/.emacs.d/"
            :base-extension "org\\|html"
-           :publishing-directory "/ssh:hinmanph@writequit:~/public_html/wq/paste/org/"
+           :publishing-directory
+           "/ssh:hinmanph@writequit:~/public_html/wq/paste/org/"
            :publishing-function org-html-publish-to-html
            :with-toc t
            :html-preamble t)
@@ -1783,14 +1784,16 @@ Both dropbox and non dropbox are included here, because symlinks suck.
           ("org-org"
            :base-directory "~/org/"
            :base-extension "org\\|html"
-           :publishing-directory "/ssh:hinmanph@writequit:~/public_html/wq/paste/org/"
+           :publishing-directory
+           "/ssh:hinmanph@writequit:~/public_html/wq/paste/org/"
            :publishing-function org-html-publish-to-html
            :with-toc t
            :html-preamble t)
           ("org-images"
            :base-directory "~/org/images"
            :base-extension "png\\|jpg"
-           :publishing-directory "/ssh:hinmanph@writequit:~/public_html/wq/paste/org/images"
+           :publishing-directory
+           "/ssh:hinmanph@writequit:~/public_html/wq/paste/org/images"
            :publishing-function org-publish-attachment)
           ("org" :components ("org-org" "org-images"))
 
@@ -1798,22 +1801,58 @@ Both dropbox and non dropbox are included here, because symlinks suck.
           ("org-es-org"
            :base-directory "~/org/es/"
            :base-extension "org\\|html"
-           :publishing-directory "/ssh:hinmanph@writequit:~/public_html/wq/paste/org/"
+           :publishing-directory
+           "/ssh:hinmanph@writequit:~/public_html/wq/paste/org/es"
            :publishing-function org-html-publish-to-html
            :with-toc t
            :html-preamble t)
+          ("org-es-files"
+           :base-directory "~/org/es/"
+           :base-extension "css\\|pdf\\|sh\\|es\\|zsh\\|py\\|org"
+           :publishing-directory
+           "/ssh:hinmanph@writequit:~/public_html/wq/paste/org/es"
+           :publishing-function org-publish-attachment)
           ("org-es-images"
            :base-directory "~/org/es/images"
            :base-extension "png\\|jpg"
-           :publishing-directory "/ssh:hinmanph@writequit:~/public_html/wq/paste/org/images"
+           :publishing-directory
+           "/ssh:hinmanph@writequit:~/public_html/wq/paste/org/es/images"
            :publishing-function org-publish-attachment)
-          ("org-es" :components ("org-es-org" "org-es-images"))
+          ("org-es"
+           :components ("org-es-org" "org-es-files" "org-es-images"))
+
+          ;; Org-mode for the ~/org/es/design files
+          ("org-es-design-org"
+           :base-directory "~/org/es/design"
+           :base-extension "org\\|html"
+           :publishing-directory
+           "/ssh:hinmanph@writequit:~/public_html/wq/paste/org/es/design"
+           :publishing-function org-html-publish-to-html
+           :with-toc t
+           :html-preamble t)
+          ("org-es-design-files"
+           :base-directory "~/org/es/design"
+           :base-extension "css\\|pdf\\|sh\\|es\\|zsh\\|py\\|org"
+           :publishing-directory
+           "/ssh:hinmanph@writequit:~/public_html/wq/paste/org/es/design"
+           :publishing-function org-publish-attachment)
+          ("org-es-designs-images"
+           :base-directory "~/org/es/design/images"
+           :base-extension "png\\|jpg"
+           :publishing-directory
+           "/ssh:hinmanph@writequit:~/public_html/wq/paste/org/es/design/images"
+           :publishing-function org-publish-attachment)
+          ("org-es-design"
+           :components ("org-es-design-org"
+                        "org-es-design-files"
+                        "org-es-design-images"))
 
           ;; Org-mode files for the book
           ("org-book-pastebin"
            :base-directory "~/org/book/"
            :base-extension "org\\|zsh\\|html\\|png"
-           :publishing-directory "/ssh:hinmanph@writequit:~/public_html/wq/paste/org/book/"
+           :publishing-directory
+           "/ssh:hinmanph@writequit:~/public_html/wq/paste/org/book/"
            :publishing-function org-html-publish-to-html
            :with-toc t
            :html-preamble t))))
@@ -3272,6 +3311,7 @@ Kind of like Vim's folding, but manually done right now.
 ;; (add-hook 'java-mode-hook 'my/enable-hs-minor-mode)
 (add-hook 'prog-mode-hook 'my/enable-hs-minor-mode)
 #+END_SRC
+
 ** indent-guide
 A neat mode to show indention
 
@@ -3308,6 +3348,7 @@ to switch between as needed:
 
 #+BEGIN_SRC emacs-lisp
 (use-package smart-mode-line
+  :disabled t
   :init
   (progn
     (sml/setup)

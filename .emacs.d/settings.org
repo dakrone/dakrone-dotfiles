@@ -413,6 +413,13 @@ Prettify all the symbols, if available (an Emacs 24.4 feature):
   (global-prettify-symbols-mode +1))
 #+END_SRC
 
+Always prefer to load newer files, instead of giving precedence to the .elc
+files.
+
+#+BEGIN_SRC emacs-lisp
+(setq load-prefer-newer t)
+#+END_SRC
+
 *** OS-specific settings
 These are settings that are applied depending on what OS I'm
 currently running on. First, we need a way to tell what kind of

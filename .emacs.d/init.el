@@ -1,5 +1,10 @@
 ;; Keep track of loading time
 (defconst emacs-start-time (current-time))
+
+;; Use a development version of CEDET, if available
+(when (file-exists-p "~/src/elisp/cedet/cedet-devel-load.el")
+  (load-file "~/src/elisp/cedet/cedet-devel-load.el"))
+
 ;; initalize all ELPA packages
 (require 'package)
 

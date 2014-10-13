@@ -1,0 +1,37 @@
+#+TITLE:    Squid caching proxy
+#+AUTHOR:   Lee Hinman
+#+STARTUP:  align fold nodlcheck lognotestate content
+#+OPTIONS:  H:4 num:nil toc:t \n:nil @:t ::t |:t ^:{} -:t f:t *:t
+#+OPTIONS:  skip:nil d:(HIDE) tags:not-in-toc
+#+PROPERTY: header-args :results code :exports both :noweb yes
+#+HTML_HEAD: <link rel="stylesheet" href="http://dakrone.github.io/org.css" type="text/css" />
+#+LANGUAGE: en
+
+* Squid
+First, install squid
+
+#+BEGIN_SRC 
+brew install squid
+#+END_SRC
+
+Then, copy the config from squid.conf into =/usr/local/etc/squid.conf= (if on
+OSX), or equivalent for linux.
+
+Next, create the caching directories:
+
+: /usr/local/sbin/squid -z
+
+Finally, test by running in the foreground:
+
+: /usr/local/sbin/squid -NCd1
+
+=C-c= when you're satisfied, then if on OSX:
+
+#+BEGIN_EXAMPLE
+To have launchd start squid at login:
+    ln -sfv /usr/local/opt/squid/*.plist ~/Library/LaunchAgents
+Then to load squid now:
+    launchctl load ~/Library/LaunchAgents/homebrew.mxcl.squid.plist
+#+END_EXAMPLE
+
+Then configure Firefox to use =localhost:3128= as the proxy.

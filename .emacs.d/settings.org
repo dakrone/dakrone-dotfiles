@@ -1386,13 +1386,17 @@ annoys me somewhat.
 
 (defun dakrone-dark ()
   (interactive)
-  (if window-system
-      (progn
-        ;; https://github.com/bruce/emacs-spacegray-theme
-        (load-theme 'spacegray t)
-        (global-hl-line-mode t))
-    (progn
-      (load-theme 'subatomic256 t)))
+  (use-package smyx-theme
+    :init (load-theme 'smyx t)
+    :config
+    (global-hl-line-mode t))
+  ;; (if window-system
+  ;;     (progn
+  ;;       ;; https://github.com/bruce/emacs-spacegray-theme
+  ;;       (load-theme 'spacegray t)
+  ;;       (global-hl-line-mode t))
+  ;;   (progn
+  ;;     (load-theme 'subatomic256 t)))
   ;; https://github.com/dakrone/dakrone-theme
   ;;(load-theme 'dakrone t)
   ;; (set-background-color "#262626")
@@ -1404,11 +1408,10 @@ annoys me somewhat.
   ;; (use-package moe-theme
   ;;   :init (moe-dark)
   ;;   :config
-  ;;   (progn
-  ;;     ;;(setq moe-theme-mode-line-color 'orange)
-  ;;     ;;(powerline-moe-theme)
-  ;;     ))
-  )
+  ;;   ;; Moe's string color is a bit too... magenta
+  ;;   (set-face-foreground 'font-lock-string-face "#ff7bbb")
+  ;;   )
+)
 
 (defun dakrone-light ()
   (interactive)

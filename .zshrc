@@ -7,7 +7,7 @@ zmodload zsh/datetime
 start=$EPOCHREALTIME
 
 # path
-export PATH=~/bin:/usr/local/bin:$PATH
+export PATH=~/bin:/usr/local/bin:/usr/local/sbin:$PATH
 
 # JBoss (brew install wildfly-as)
 export JBOSS_HOME=/usr/local/opt/wildfly-as/libexec

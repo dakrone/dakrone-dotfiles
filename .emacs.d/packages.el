@@ -15,7 +15,7 @@
     ;; themeing
     rainbow-mode leuven-theme dakrone-theme smart-mode-line
     color-identifiers-mode subatomic-theme subatomic256-theme
-    moe-theme powerline nyan-mode spacegray-theme
+    moe-theme powerline nyan-mode spacegray-theme zenburn-theme
 
     ;; misc
     diminish gist scpaste w3m
@@ -24,7 +24,7 @@
     es-mode
 
     ;; IRC/ERC and social stuff
-    erc-hl-nicks ercn todochiku twittering-mode
+    erc-hl-nicks ercn alert twittering-mode
 
     ;; for auto-complete
     fuzzy popup company
@@ -36,6 +36,7 @@
     prodigy column-marker  ace-jump-mode
     multiple-cursors fancy-narrow easy-kill indent-guide toggle-quotes
     visible-mark simple-call-tree simple-call-tree+ editorconfig ggtags
+    bookmark+
 
     ;; highlighting
     idle-highlight-mode highlight-symbol highlight-escape-sequences
@@ -82,7 +83,7 @@
     emacs-eclim malabar-mode groovy-mode javap-mode
 
     ;; javascript
-    tern json-mode
+    tern json-mode js2-mode
 
     ;; emacs-lisp
     elisp-slime-nav paredit

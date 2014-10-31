@@ -342,7 +342,7 @@ Turn on auto-fill mode in text buffers:
 (use-package diminish
   :init
   (progn
-    (diminish 'auto-fill-function (string 32 #xa7))))
+    (diminish 'auto-fill-function "AF")))
 #+END_SRC
 
 Set the internal calculator not to go to scientific form quite so quickly:
@@ -498,6 +498,11 @@ Settings for what to do with temporary files.
       `((".*" . ,temporary-file-directory)))
 (setq auto-save-file-name-transforms
       `((".*" ,temporary-file-directory t)))
+
+;; create a backup file directory
+;; make sure to `mkdir ~/.emacs_backups'
+(defun make-backup-file-name (file)
+  (concat "~/.emacs_backups/" (file-name-nondirectory file) "~"))
 #+END_SRC
 
 *** Shell settings
@@ -714,12 +719,23 @@ completion, prompt and term settings:
 #+END_SRC
 
 *** Tramp settings
+I have really been getting into TRAMP lately, I use it with eshell all the time,
+and dired tramp buffers are great for file management.
+
 #+BEGIN_SRC emacs-lisp
 (use-package tramp
   :config
   (progn
     (setq tramp-default-user-alist '(("\\`su\\(do\\)?\\'" nil "root"))
           tramp-backup-directory-alist backup-directory-alist
+          tramp-adb-program "/Users/hinmanm/android-sdk-macosx/platform-tools/adb"
+          ;; use the settings in ~/.ssh/config instead of Tramp's
+          tramp-use-ssh-controlmaster-options nil
+          ;; update vc ignore to include tramp files
+          vc-ignore-dir-regexp
+          (format "\\(%s\\)\\|\\(%s\\)"
+                  vc-ignore-dir-regexp
+                  tramp-file-name-regexp)
           backup-enable-predicate
           (lambda (name)
             (and (normal-backup-enable-predicate name)
@@ -764,7 +780,7 @@ First, set up some Hunspell things if applicable:
 (use-package diminish
   :init
   (progn
-    (diminish 'flyspell-mode (string 32 #x2708))))
+    (diminish 'flyspell-mode "FS")))
 #+END_SRC
 
 *** View-mode
@@ -854,7 +870,8 @@ writable-dired mode is aawwweeeesssoooommee, it makes renames super easy.
           dired-recursive-copies 'always
           dired-recursive-deletes 'always
           dired-dwim-target t
-          delete-by-moving-to-trash t)
+          delete-by-moving-to-trash t
+          wdired-allow-to-change-permissions t)
     (define-key dired-mode-map (kbd "RET") 'dired-find-alternate-file)
     (define-key dired-mode-map (kbd "C-M-u") 'dired-up-directory)
     (define-key dired-mode-map (kbd "M-o") 'my/dired-mac-open)
@@ -1339,27 +1356,49 @@ Bleh javascript.
 #+END_SRC
 
 ** theme
-Misc settings for fonts, depending on the OS:
+Misc theme settings
+
+*** fonts
 
 I've been using [[https://github.com/belluzj/fantasque-sans][Fantasque Sans Mono]] lately, it looks pretty nice to me. On Linux
-I've been using Bitstream Vera Sans Mono.
+I've been using Bitstream Vera Sans Mono. I also use Anonymous Pro and
+Inconsolata a lot.
+
+Config for OSX:
 
 #+BEGIN_SRC emacs-lisp
 (when (eq window-system 'ns)
   (set-fontset-font "fontset-default" 'symbol "Monaco")
   ;; (set-default-font "Fantasque Sans Mono")
+  ;; (set-default-font "Monaco")
+  ;; (set-default-font "Anonymous Pro")
   (set-default-font "Inconsolata")
+  ;; (set-default-font "Andale Mono")
+  ;; (set-default-font "CosmicSansNeueMono")
+  ;; (set-default-font "Fira Mono")
+  ;; (set-default-font "Luculent")
+  ;; (set-default-font "Menlo")
+  ;; (set-default-font "Source Code Pro")
+  ;; (set-default-font "Mensch")
   (set-face-attribute 'default nil :height 120)
   (set-face-attribute 'fixed-pitch nil :height 120))
+
+;; Anti-aliasing
+(setq mac-allow-anti-aliasing t)
+#+END_SRC
+
+Config for Linux/X11 systems:
+
+#+BEGIN_SRC emacs-lisp
 (when (eq window-system 'x)
   ;; Font family
   (set-fontset-font "fontset-default" 'symbol "Bitstream Vera Sans Mono")
   (set-default-font "Bitstream Vera Sans Mono")
   ;; Font size
   (set-face-attribute 'default nil :height 90))
-;; Anti-aliasing
-(setq mac-allow-anti-aliasing t)
 #+END_SRC
+
+*** color theme
 
 For light-colored backgrounds, I used [[https://github.com/fniessen/emacs-leuven-theme][leuven-theme]]. For dark-colored
 backgrounds (most of the time), I use my own custom theme, called [[https://github.com/dakrone/dakrone-theme][dakrone-theme]].
@@ -1369,27 +1408,24 @@ annoys me somewhat.
 #+BEGIN_SRC emacs-lisp
 (setq ns-use-srgb-colorspace t)
 
-;; Emacs 24.4 requires these faces to be defined :-/
-(defface clojure-parens '() "")
-(defface clojure-keyword '() "")
-(defface clojure-braces '() "")
-(defface clojure-brackets '() "")
-(defface clojure-namespace '() "")
-(defface clojure-java-call '() "")
-(defface clojure-special '() "")
-(defface clojure-double-quote '() "")
-
-(defmacro defclojureface (name color desc &optional others)
-  `(defface
-     ,name '((((class color)) (:foreground ,color ,@others)))
-     ,desc :group 'faces))
-
 (defun dakrone-dark ()
   (interactive)
-  (use-package smyx-theme
-    :init (load-theme 'smyx t)
-    :config
-    (global-hl-line-mode t))
+  ;; (use-package smyx-theme
+  ;;   :init (load-theme 'smyx t)
+  ;;   :config
+  ;;   (global-hl-line-mode t))
+  ;; (use-package gruber-darker-theme
+  ;;   :init (load-theme 'gruber-darker t))
+  ;; (setq solarized-use-more-italic t
+  ;;       solarized-high-contrast-mode-line nil)
+  ;; (load-theme 'solarized-dark t)
+  ;; (use-package color-theme-sanityinc-tomorrow
+  ;;   :init (load-theme 'sanityinc-tomorrow-night t))
+  (use-package color-theme-sanityinc-solarized
+    :init (load-theme 'sanityinc-solarized-dark t))
+  ;; (load-theme 'solarized-dark t)
+  ;; (use-package soothe-theme
+  ;;   :init (load-theme 'soothe t))
   ;; (if window-system
   ;;     (progn
   ;;       ;; https://github.com/bruce/emacs-spacegray-theme
@@ -1399,48 +1435,20 @@ annoys me somewhat.
   ;;     (load-theme 'subatomic256 t)))
   ;; https://github.com/dakrone/dakrone-theme
   ;;(load-theme 'dakrone t)
-  ;; (set-background-color "#262626")
-  ;; https://github.com/cryon/subatomic
   ;;(load-theme 'subatomic t)
-  ;; https://github.com/d11wtq/subatomic256
   ;;(load-theme 'subatomic256 t)
-  ;; https://github.com/kuanyui/moe-theme.el
   ;; (use-package moe-theme
   ;;   :init (moe-dark)
-  ;;   :config
-  ;;   ;; Moe's string color is a bit too... magenta
-  ;;   (set-face-foreground 'font-lock-string-face "#ff7bbb")
   ;;   )
-)
+  )
 
 (defun dakrone-light ()
   (interactive)
   ;; https://github.com/fniessen/emacs-leuven-theme
   (load-theme 'leuven t)
-  (defclojureface clojure-parens       "#696969"   "Clojure parens")
-  (defclojureface clojure-braces       "#696969"   "Clojure braces")
-  (defclojureface clojure-brackets     "#4682b4"   "Clojure brackets")
-  (defclojureface clojure-keyword      "DarkCyan"  "Clojure keywords")
-  (defclojureface clojure-namespace    "#c476f1"   "Clojure namespace")
-  (defclojureface clojure-java-call    "#008b8b"   "Clojure Java calls")
-  (defclojureface clojure-special      "#006400"   "Clojure special")
-  (defclojureface clojure-double-quote "#006400"   "Clojure special")
-  (if (window-system)
-      (set-face-foreground 'region nil)))
-
-;; Define faces in clojure code
-(defun tweak-clojure-syntax ()
-  "Tweaks syntax for Clojure-specific faces."
-  (mapcar (lambda (x) (font-lock-add-keywords nil x))
-          '((("#?['`]*(\\|)"       . 'clojure-parens))
-            (("#?\\^?{\\|}"        . 'clojure-brackets))
-            (("\\[\\|\\]"          . 'clojure-braces))
-            ((":\\w+"              . 'clojure-keyword))
-            (("nil\\|true\\|false\\|%[1-9]?" . 'clojure-special))
-            (("(\\(\\.[^ \n)]*\\|[^ \n)]+\\.\\|new\\)\\([ )\n]\\|$\\)" 1
-              'clojure-java-call)))))
-
-;; (add-hook 'clojure-mode-hook 'tweak-clojure-syntax)
+  ;; (if (window-system)
+  ;;     (set-face-foreground 'region nil))
+  )
 
 (if (eq my/background 'dark)
     (dakrone-dark)
@@ -1758,6 +1766,42 @@ currently open, based on `org-agenda-files'."
 
     ;; save all the agenda files after each capture
     (add-hook 'org-capture-after-finalize-hook 'my/save-all-agenda-buffers)
+
+    (use-package org-id
+      :init
+      :config
+      (progn
+        (setq org-id-link-to-org-use-id t)
+
+        (defun my/org-custom-id-get (&optional pom create prefix)
+          "Get the CUSTOM_ID property of the entry at point-or-marker POM.
+If POM is nil, refer to the entry at point. If the entry does not
+have an CUSTOM_ID, the function returns nil. However, when CREATE
+is non nil, create a CUSTOM_ID if none is present already. PREFIX
+will be passed through to `org-id-new'. In any case, the
+CUSTOM_ID of the entry is returned."
+          (interactive)
+          (org-with-point-at pom
+            (let ((id (org-entry-get nil "CUSTOM_ID")))
+              (cond
+               ((and id (stringp id) (string-match "\\S-" id))
+                id)
+               (create
+                (setq id (org-id-new prefix))
+                (org-entry-put pom "CUSTOM_ID" id)
+                (org-id-add-location id (buffer-file-name (buffer-base-buffer)))
+                id)))))
+
+        (defun my/org-add-ids-to-headlines-in-file ()
+          "Add CUSTOM_ID properties to all headlines in the
+current file which do not already have one."
+          (interactive)
+          (org-map-entries (lambda () (my/org-custom-id-get (point) 'create))))
+
+        ;; automatically add ids to captured headlines
+        (add-hook 'org-capture-prepare-finalize-hook
+                  (lambda () (my/org-custom-id-get (point) 'create)))))
+
     ))
 #+END_SRC
 
@@ -1867,7 +1911,61 @@ Generating table of contents from org-mode files, see:
 
 #+BEGIN_SRC emacs-lisp
 (use-package org-toc
+  :disabled t
   :init (add-hook 'org-mode-hook 'org-toc-enable))
+#+END_SRC
+
+** alert (notifications)
+
+#+BEGIN_SRC emacs-lisp
+(defun my/terminal-notifier-notify (title message)
+  "Show a message with `terminal-notifier-command`."
+  (interactive)
+  (start-process "terminal-notifier"
+                 "*terminal-notifier*"
+                 "terminal-notifier"
+                 "-title" title
+                 "-message" message))
+
+(use-package alert
+  :config
+  (progn
+    (alert-define-style 'terminal-notifier
+                        :title "terminal-notifier"
+                        :notifier
+                        (lambda (info)
+                          (my/terminal-notifier-notify
+                           (plist-get info :title)
+                           (plist-get info :message))
+                          ;; The :category of the alert
+                          (plist-get info :category)
+                          ;; The major-mode this alert relates to
+                          (plist-get info :mode)
+                          ;; The buffer the alert relates to
+                          (plist-get info :buffer)
+                          ;; Severity of the alert.  It is one of:
+                          ;;   `urgent'
+                          ;;   `high'
+                          ;;   `moderate'
+                          ;;   `normal'
+                          ;;   `low'
+                          ;;   `trivial'
+                          (plist-get info :severity)
+                          ;; Whether this alert should persist, or fade away
+                          (plist-get info :persistent)
+                          ;; Data which was passed to `alert'.  Can be
+                          ;; anything.
+                          (plist-get info :data))
+
+                        ;; Removers are optional.  Their job is to remove
+                        ;; the visual or auditory effect of the alert.
+                        :remover
+                        (lambda (info)
+                          ;; It is the same property list that was passed to
+                          ;; the notifier function.
+                          ))
+    (if (eq (window-system) 'ns)
+        (setq alert-default-style 'terminal-notifier))))
 #+END_SRC
 
 ** ERC Configuration (IRC)
@@ -1917,7 +2015,7 @@ if running in windowed mode, because I don't use ERC otherwise:
             erc-pal-highlight-type 'nil
             erc-keywords '("dakrone" "dakrone_" "clj-http" "cheshire"
                            "clojure-opennlp" "opennlp" "circuit breaker"
-                           "groovy" "es-mode" "simple_query_string")
+                           "groovy" "es-mode" "simple_query_string" "mvel")
             erc-ignore-list '()
             erc-track-exclude-types '("JOIN" "NICK" "PART" "QUIT" "MODE"
                                       "324" "329" "332" "333" "353" "477")
@@ -1932,7 +2030,7 @@ if running in windowed mode, because I don't use ERC otherwise:
             erc-server-reconnect-timeout 5
             erc-server-reconnect-attempts 4
             erc-fill-function 'erc-fill-static
-            erc-fill-static-center 22
+            erc-fill-static-center 18
             ;; update ERC prompt with room name
             erc-prompt (lambda ()
                          (if (and (boundp 'erc-default-recipients)
@@ -1943,8 +2041,10 @@ if running in windowed mode, because I don't use ERC otherwise:
                            (erc-propertize (concat "ERC>") 'read-only t
                                            'rear-nonsticky t
                                            'front-nonsticky t))))
+      ;; highlighting nicks
       (use-package erc-hl-nicks
         :init (add-to-list 'erc-modules 'hl-nicks))
+      ;; other random services (spelling)
       (use-package erc-services
         :init
         (progn
@@ -1959,6 +2059,23 @@ if running in windowed mode, because I don't use ERC otherwise:
   (setup-irc)
   (erc-tls :server "freenode" :port 31425
            :nick "dakrone" :password znc-pass))
+#+END_SRC
+
+** ercn
+ERC notifications! Written by the honorable Mr. Leatherman
+
+#+BEGIN_SRC emacs-lisp
+(use-package ercn
+  :init
+  (progn
+    (setq ercn-notify-rules
+          '((current-nick . all)
+            (keyword . all)
+            (pal . ("#84115"))
+            (query-buffer . all)))
+    (defun do-notify (nickname message)
+      (alert message :title (concat (buffer-name) ": " nickname)))
+    (add-hook 'ercn-notify 'do-notify)))
 #+END_SRC
 
 ** Email (mu4e) Configuration
@@ -2472,7 +2589,7 @@ Paredit for all the lisps.
          ("M-g M-p" . flycheck-previous-error)
          ("M-g M-=" . flycheck-list-errors))
   :idle (global-flycheck-mode)
-  :diminish " ✓"
+  :diminish "fc"
   :config
   (progn
     (setq-default flycheck-disabled-checkers
@@ -2569,7 +2686,7 @@ I use =M-g M-g= everywhere to go directly to Magit.
   :config
   (progn
     (when (eq system-type 'darwin)
-      (setq magit-emacsclient-executable "/usr/local/Cellar/emacs/HEAD/bin/emacsclient"))
+      (setq magit-emacsclient-executable "/Applications/Emacs.app/Contents/MacOS/bin/emacsclient"))
     (defun magit-browse ()
       (interactive)
       (let ((url (with-temp-buffer
@@ -2595,8 +2712,6 @@ I use =M-g M-g= everywhere to go directly to Magit.
     (custom-set-variables '(magit-set-upstream-on-push (quote dontask)))
 
     (setq magit-completing-read-function 'magit-ido-completing-read)))
-
-(use-package magit-gh-pulls)
 #+END_SRC
 
 ** projectile
@@ -2622,9 +2737,9 @@ I basically use this to start up ES when I need to test something really quickly
   :config
   (progn
     (prodigy-define-service
-      :name "Elasticsearch 1.3.2"
-      :cwd "~/ies/elasticsearch-1.3.2/"
-      :command "~/ies/elasticsearch-1.3.2/bin/elasticsearch"
+      :name "Elasticsearch 1.3.4"
+      :cwd "~/ies/elasticsearch-1.3.4/"
+      :command "~/ies/elasticsearch-1.3.4/bin/elasticsearch"
       :tags '(work test es)
       :port 9200)
 
@@ -3018,6 +3133,18 @@ Various markdown-related settings.
         ("fn"   "^\\[\\^\\(.+?\\)\\]" 1) ))))
 #+END_SRC
 
+** bookmark+
+Extendend bookmarks, which I've started used for dired buffers and so on
+
+#+BEGIN_SRC emacs-lisp
+(use-package bookmark+
+  :config
+  (progn
+    (setq bookmark-version-control t
+          ;; auto-save bookmarks
+          bookmark-save-flag 1)))
+#+END_SRC
+
 ** editorconfig
 EditorConfig is a per-project cross-editor way of specifying settings. See:
 http://editorconfig.org/
@@ -3065,7 +3192,7 @@ visualize it in ascii art if needed.
 
 #+BEGIN_SRC emacs-lisp
 (use-package undo-tree
-  :init (global-undo-tree-mode)
+  :idle (global-undo-tree-mode t)
   :diminish ""
   :config
   (progn
@@ -3322,17 +3449,44 @@ A neat mode to show indention
 ;; (add-hook 'prog-mode-hook (lambda () (indent-guide-mode t)))
 #+END_SRC
 
+** aggressive-indent
+
+#+BEGIN_SRC emacs-lisp
+(use-package aggressive-indent
+  :init
+  (progn
+    (add-hook 'emacs-lisp-mode-hook #'aggressive-indent-mode)
+    (add-hook 'clojure-mode-hook #'aggressive-indent-mode)))
+#+END_SRC
+
 ** abbrev
+I use abbrev-mode to automatically correct misspellings I usually make. In this
+case, I misspell elasticsearch all the time, and I type it all the time, so it's
+helpful to auto-correct.
 
 #+BEGIN_SRC emacs-lisp
 (use-package abbrev
   :diminish ""
   :config
-  (define-abbrev-table 'global-abbrev-table
-    '(("elasticsearhc" "elasticsearch" nil 0)
-      ("elastiscearch" "elasticsearch" nil 0)
-      ("elastiscearhc" "elasticsearch" nil 0)
-      ("elatsicsearch" "elasticsearch" nil 0))))
+  (progn
+    (define-key ctl-x-map "\C-a" 'my/ispell-word-then-abbrev)
+
+    (defun my/ispell-word-then-abbrev (p)
+      "Call `ispell-word'. Then create an abbrev for the correction made.
+With prefix P, create local abbrev. Otherwise it will be global."
+      (interactive "P")
+      (let ((bef (downcase (or (thing-at-point 'word) ""))) aft)
+        (call-interactively 'ispell-word)
+        (setq aft (downcase (or (thing-at-point 'word) "")))
+        (unless (string= aft bef)
+          (message "\"%s\" now expands to \"%s\" %sally"
+                   bef aft (if p "loc" "glob"))
+          (define-abbrev
+            (if p local-abbrev-table global-abbrev-table)
+            bef aft))))
+
+    (setq save-abbrevs t)
+    (setq-default abbrev-mode t)))
 
 (defun my/enable-abbrev-mode ()
   (interactive)
@@ -3340,6 +3494,33 @@ A neat mode to show indention
 
 (add-hook 'prog-mode-hook 'my/enable-abbrev-mode)
 (add-hook 'org-mode-hook 'my/enable-abbrev-mode)
+#+END_SRC
+
+** eww
+Ewwwwww...
+
+Wait, no, I mean the Emacs web browser built in to 24.4
+
+#+BEGIN_SRC emacs-lisp
+(use-package eww
+  :init
+  (progn
+    (define-prefix-command 'my/eww-map)
+    (define-key ctl-x-map "w" 'my/eww-map)
+
+    (define-key my/eww-map "t" 'eww)
+    (define-key my/eww-map "o" 'eww)
+    (define-key my/eww-map "w" 'my/eww-wiki)
+    (define-key my/eww-map "e" 'my/search-es-docs)
+
+    (defun my/eww-wiki (text)
+      "Function used to search wikipedia for the given text."
+      (interactive (list (read-string "Wiki for: ")))
+      (eww (format "https://en.wikipedia.org/wiki/Special:Search?search=%s"
+                   (url-encode-url text)))))
+  :config
+  (progn
+    (define-key eww-mode-map "O" 'eww-browse-with-external-browser)))
 #+END_SRC
 
 ** modeline
@@ -3490,6 +3671,9 @@ really fit in anywhere else.
 (global-set-key (kbd "C-h e") 'popwin:messages)
 (global-set-key (kbd "C-h C-p") 'popwin:special-display-config)
 (global-set-key (kbd "C-x +") 'balance-windows-area)
+
+;; https://github.com/remyferre/comment-dwim-2
+(global-set-key (kbd "M-;") 'comment-dwim-2)
 
 ;; M-g mapping
 (global-set-key (kbd "M-g M-f") 'ffap)
@@ -3758,8 +3942,7 @@ A function to search/browse ES docs from Emacs using =eww=
 (defun my/search-es-docs (text)
   "Search ES docs for `text'."
   (interactive (list (read-string "Search for: ")))
-  (use-package w3m)
-  (w3m-goto-url-new-session
+  (eww
    (url-encode-url
     (format "http://www.elasticsearch.org/?s=%s" text))))
 
@@ -3818,4 +4001,51 @@ See: `xah-forward-block'"
 
 (global-set-key (kbd "<C-up>") 'xah-backward-block)
 (global-set-key (kbd "<C-down>") 'xah-forward-block)
+#+END_SRC
+
+*** File previews
+Taken from ...
+
+#+BEGIN_SRC emacs-lisp
+(defun my/quick-view-file-at-point ()
+  "Preview the file at point then jump back after some idle time.
+
+In order for this to work you need to bind this function to a key combo,
+you cannot call it from the minibuffer and let it work.
+
+The reason it works is that by holding the key combo down, you inhibit
+idle timers from running so as long as you hold the key combo, the
+buffer preview will still display."
+  (interactive)
+  (setq-local lexical-binding t)
+  (let* ((buffer (current-buffer))
+         (file (thing-at-point 'filename t))
+         (file-buffer-name (format "*preview of %s*" file)))
+    (if (and file (file-exists-p file))
+        (let ((contents))
+          (if (get-buffer file)
+              (setq contents (save-excursion
+                               (with-current-buffer (get-buffer file)
+                                 (font-lock-fontify-buffer)
+                                 (buffer-substring (point-min) (point-max)))))
+            (let ((new-buffer (find-file-noselect file)))
+              (with-current-buffer new-buffer
+                (font-lock-mode t)
+                (font-lock-fontify-buffer)
+                (setq contents (buffer-substring (point-min) (point-max))))
+              (kill-buffer new-buffer)))
+          (switch-to-buffer (get-buffer-create file-buffer-name))
+          (setq-local header-line-format "%60b")
+          (delete-region (point-min) (point-max))
+          (save-excursion (insert contents))
+          (local-set-key (kbd "C-M-v") (lambda () (interactive) (sit-for .2)))
+          (run-with-idle-timer
+           .7
+           nil
+           (lambda ()
+             (switch-to-buffer buffer)
+             (kill-buffer file-buffer-name))))
+      (message "no file to preview at point!"))))
+
+(global-set-key (kbd "C-M-v") 'my/quick-view-file-at-point)
 #+END_SRC

@@ -7,7 +7,7 @@
 ###   Description
 #
 #  Outputs a list of the most CPU-hungry and memory-hungry processes,
-#  along with their process IDs, absolute processor time consumed 
+#  along with their process IDs, absolute processor time consumed
 #  since the process started, and total resident memory size.
 #
 #  Compared to geektool-pstop and geektool-top, this runs faster by
@@ -19,7 +19,7 @@
 #
 #  This script can be executed from the OS X commandline without
 #  administrative priveleges, but is intended for use with GeekTool
-#  with a refresh time of 10 seconds.  The number of processes 
+#  with a refresh time of 10 seconds.  The number of processes
 #  displayed can be customized below.  This script was tested on
 #  OS X v10.4.8 with GeekTool v2.1.2(112).
 #
@@ -52,10 +52,17 @@ cpu_rows=10
 mem_rows=8
 
 
-
 #-------------------------------------------------------------------------------
 #  Output
 #-------------------------------------------------------------------------------
-ps -c -r -ax -o command,pid,pcpu,time | sed 's/\(PID *\)%/\1 %/' | head -n $(($cpu_rows+1))
-echo
-ps -c -m -ax -o command,pid,pmem,rss=RSIZE | sed 's/\(.\{23\}\)/\1 /' | head -n $(($mem_rows+1))
+OS=$(uname)
+
+if [[ $OS == "Darwin" ]]; then
+    ps -c -r -ax -o command,pid,pcpu,time | sed 's/\(PID *\)%/\1 %/' | head -n $(($cpu_rows+1))
+    echo
+    ps -c -m -ax -o command,pid,pmem,rss=RSIZE | sed 's/\(.\{23\}\)/\1 /' | head -n $(($mem_rows+1))
+else
+    ps -eo cmd,fname,pid,pcpu,time --sort=-pcpu | head -n $(($cpu_rows+1))
+    echo
+    ps -eo cmd,fname,pid,pmem,rss --sort=-rss | head -n $(($mem_rows+1))
+fi

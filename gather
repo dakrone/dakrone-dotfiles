@@ -35,6 +35,8 @@ cp -f ~/.tmux.* .
 cp -f ~/.cmd-key-happy.lua .
 cp -f ~/.globalrc .
 cp -f ~/.pylintrc .
+mkdir -p .aria2
+cp -f ~/.aria2/aria2.conf .aria2
 mkdir -p .emacs.d
 cp -f -r ~/.emacs.d .
 rm -rf .emacs.d/elpa

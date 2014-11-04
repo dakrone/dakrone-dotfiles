@@ -662,6 +662,7 @@ completion, prompt and term settings:
 
     (add-hook 'eshell-mode-hook
               (lambda ()
+                (semantic-mode -1)
                 (define-key eshell-mode-map (kbd "M-l")
                   'helm-eshell-history)))
 
@@ -989,7 +990,6 @@ on subword mode and idle-highlight-mode:
 #+BEGIN_SRC emacs-lisp
 (add-hook 'prog-mode-hook
           (lambda ()
-            (use-package column-marker)
             (use-package idle-highlight-mode
               :init (idle-highlight-mode t))
             (setq show-trailing-whitespace t)
@@ -1014,7 +1014,8 @@ test/foo.clj instead of foo_test.clj
 
 #+BEGIN_SRC emacs-lisp
 ;; custom test locations instead of foo_test.clj, use test/foo.clj
-(defun my-clojure-test-for (namespace)
+(defun clojure-test-for-without-test (namespace)
+  (interactive)
   (let* ((namespace (clojure-underscores-for-hyphens namespace))
          (segments (split-string namespace "\\."))
          (before (subseq segments 0 1))
@@ -1024,7 +1025,8 @@ test/foo.clj instead of foo_test.clj
             (locate-dominating-file buffer-file-name "src/")
             (mapconcat 'identity test-segments "/"))))
 
-(defun my-clojure-test-implementation-for (namespace)
+(defun clojure-test-implementation-for-without-test (namespace)
+  (interactive)
   (let* ((namespace (clojure-underscores-for-hyphens namespace))
          (segments (split-string namespace "\\."))
          (before (subseq segments 0 1))
@@ -1047,21 +1049,19 @@ Other Clojure-specific settings:
      (eldoc-mode t)
      (subword-mode t)
      ;; use my test layout fns
-     (setq clojure-test-for-fn 'my-clojure-test-for)
-     (setq clojure-test-implementation-for-fn 'my-clojure-test-implementation-for)
+     ;; (setq clojure-test-for-fn 'my-clojure-test-for)
+     ;; (setq clojure-test-implementation-for-fn 'my-clojure-test-implementation-for)
      ;; compile faster
      (setq font-lock-verbose nil)
      (global-set-key (kbd "C-c t") 'clojure-jump-between-tests-and-code)
-     (paredit-mode 1)
-     (use-package highlight-quoted
-       :init (highlight-quoted-mode t)))))
+     (paredit-mode 1))))
 #+END_SRC
 
 Let's define a couple of helper functions for setting up the cider and
 ac-nrepl packages:
 
 #+BEGIN_SRC emacs-lisp
-(defun setup-clojure-cider ()
+(defun my/setup-cider ()
   (lambda ()
     (paredit-mode 1)
     (setq cider-history-file "~/.nrepl-history"
@@ -1077,8 +1077,8 @@ And then finally use them if cider and ac-nrepl packages are available:
 (use-package cider
   :init
   (progn
-    (add-hook 'cider-mode-hook 'setup-clojure-cider)
-    (add-hook 'cider-repl-mode-hook 'setup-clojure-cider)))
+    (add-hook 'cider-mode-hook 'my/setup-cider)
+    (add-hook 'cider-repl-mode-hook 'my/setup-cider)))
 #+END_SRC
 
 *** Shell
@@ -1105,9 +1105,6 @@ First, turn on eldoc everywhere it's useful:
 #+BEGIN_SRC emacs-lisp
 (add-hook 'emacs-lisp-mode-hook 'turn-on-eldoc-mode)
 (add-hook 'emacs-lisp-mode-hook (lambda () (paredit-mode 1)))
-(add-hook 'emacs-list-mode-hook
-          (lambda () (use-package highlight-quoted-mode
-                  :init (highlight-quoted-mode t))))
 (add-hook 'lisp-interaction-mode-hook 'turn-on-eldoc-mode)
 (add-hook 'ielm-mode-hook 'turn-on-eldoc-mode)
 #+END_SRC
@@ -1119,7 +1116,8 @@ And some various eldoc settings:
   :config
   (progn
     (use-package diminish
-      :init (diminish 'eldoc-mode "ed"))
+      :init
+      (progn (diminish 'eldoc-mode "ed")))
     (setq eldoc-idle-delay 0.2)
     (set-face-attribute 'eldoc-highlight-function-argument nil
                         :underline t :foreground "green"
@@ -1252,12 +1250,7 @@ work with the ES codebase.
     :disabled t
     :config (use-package cedet))
   ;; Generic java stuff things
-  (setq whitespace-line-column 140)
-  (use-package column-marker
-    :config
-    (progn
-      (column-marker-1 140)
-      (column-marker-2 100))))
+  (setq fci-rule-column 100))
 
 (add-hook 'java-mode-hook 'setup-java)
 #+END_SRC
@@ -1672,7 +1665,9 @@ settings are mine.
                 (define-key org-mode-map [C-S-tab]
                   (lambda ()
                     (interactive)
-                    (other-window -1)))))
+                    (other-window -1)))
+                (define-key org-mode-map (kbd "C-'")
+                  'eyebrowse-next-window-config)))
 
     ;; org-babel stuff
     (require 'ob-clojure)
@@ -2090,6 +2085,7 @@ elisp files.
   (use-package mu4e
     :config
     (progn
+      (add-hook 'mu4e-compose-mode-hook 'turn-on-flyspell)
       ;; gpg stuff
       (use-package epa-file
         :init (epa-file-enable))
@@ -2711,7 +2707,10 @@ I use =M-g M-g= everywhere to go directly to Magit.
                                       :background "#262626"))))
     (custom-set-variables '(magit-set-upstream-on-push (quote dontask)))
 
-    (setq magit-completing-read-function 'magit-ido-completing-read)))
+    (setq magit-completing-read-function 'magit-ido-completing-read)
+    ;; Diminish the auto-revert-mode
+    (add-hook 'magit-auto-revert-mode-hook
+              (diminish 'magit-auto-revert-mode))))
 #+END_SRC
 
 ** projectile
@@ -3164,8 +3163,8 @@ Standard auto-completion configuration with company-mode
   :config
   (progn
     (setq company-idle-delay 0.5
-          ;; min prefix of 3 chars
-          company-minimum-prefix-length 3
+          ;; min prefix of 2 chars
+          company-minimum-prefix-length 2
           company-dabbrev-downcase nil)))
 
 (add-hook 'prog-mode-hook 'global-company-mode)
@@ -3409,6 +3408,17 @@ you're basically editing every instance of that word/variable in the buffer.
   :bind ("C-;" . iedit-mode))
 #+END_SRC
 
+** eyebrowse
+
+#+BEGIN_SRC emacs-lisp
+(use-package eyebrowse
+  :init
+  (progn
+    (setq eyebrowse-wrap-around-p t)
+    (eyebrowse-mode 1)
+    (global-set-key (kbd "C-'") 'eyebrowse-next-window-config)))
+#+END_SRC
+
 ** hideshow
 Kind of like Vim's folding, but manually done right now.
 
@@ -3516,11 +3526,42 @@ Wait, no, I mean the Emacs web browser built in to 24.4
     (defun my/eww-wiki (text)
       "Function used to search wikipedia for the given text."
       (interactive (list (read-string "Wiki for: ")))
-      (eww (format "https://en.wikipedia.org/wiki/Special:Search?search=%s"
+      (eww (format "https://en.m.wikipedia.org/wiki/Special:Search?search=%s"
                    (url-encode-url text)))))
   :config
   (progn
+    (define-key eww-mode-map "o" 'eww)
     (define-key eww-mode-map "O" 'eww-browse-with-external-browser)))
+#+END_SRC
+
+** aria2 (downloader) mode
+Doesn't quite work yet, but it's getting there...
+
+#+BEGIN_SRC emacs-lisp
+(use-package aria2
+  :bind (("C-h C-a" . aria2-downloads-list)))
+#+END_SRC
+
+** volatile-highlights
+Highlights things that have recently undergone a change, such as yanking text
+it, undoing, etc.
+
+#+BEGIN_SRC emacs-lisp
+(use-package volatile-highlights
+  :init (volatile-highlights-mode t)
+  :diminish "")
+#+END_SRC
+
+** fill-column-indicator
+
+#+BEGIN_SRC emacs-lisp
+(defun my/turn-on-fill-column-indicator ()
+  (interactive)
+  (fci-mode 1)
+  (setq fci-rule-column 80))
+
+(use-package fill-column-indicator
+  :init (add-hook 'prog-mode-hook 'my/turn-on-fill-column-indicator))
 #+END_SRC
 
 ** modeline

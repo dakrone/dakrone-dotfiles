@@ -18,7 +18,7 @@
     moe-theme powerline nyan-mode spacegray-theme zenburn-theme
 
     ;; misc
-    diminish gist scpaste w3m
+    diminish gist scpaste w3m aria2
 
     ;; es-mode
     es-mode
@@ -36,7 +36,7 @@
     prodigy column-marker  ace-jump-mode
     multiple-cursors fancy-narrow easy-kill indent-guide toggle-quotes
     visible-mark simple-call-tree simple-call-tree+ editorconfig ggtags
-    bookmark+
+    bookmark+ volatile-highlights fill-column-indicator
 
     ;; highlighting
     idle-highlight-mode highlight-symbol highlight-escape-sequences
@@ -61,7 +61,7 @@
     flycheck flycheck-tip
 
     ;; clojure
-    clojure-mode cider paredit paren-face kibit-mode
+    clojure-mode clojure-test-mode cider paredit paren-face kibit-mode
     cider-decompile ac-cider
 
     ;; perl

@@ -1,23 +1,31 @@
-#+TITLE:    Lee's emacs settings file
-#+AUTHOR:   Lee Hinman
-#+EMAIL:    lee [at] writequit [dot] org
-#+STARTUP:  align fold nodlcheck content
-#+OPTIONS:  H:4 num:nil toc:t \n:nil @:t ::t |:t ^:{} -:t f:t *:t
-#+OPTIONS:  skip:nil d:(HIDE) tags:not-in-toc
-#+PROPERTY: header-args :results none :noweb yes
-#+HTML_HEAD: <link rel="stylesheet" href="http://dakrone.github.io/org.css" type="text/css" />
+#+TITLE:   Lee's Emacs settings file
+#+AUTHOR:  Lee Hinman
+#+EMAIL:   matthew.hinman@gmail.com
 #+LANGUAGE: en
+#+PROPERTY: header-args :tangle yes
+#+HTML_HEAD: <link rel="stylesheet" href="http://dakrone.github.io/org.css" type="text/css" />
+#+EXPORT_SELECT_TAGS: export
+#+EXPORT_EXCLUDE_TAGS: noexport
+#+OPTIONS: H:4 num:nil toc:t \n:nil @:t ::t |:t ^:{} -:t f:t *:t
+#+OPTIONS: skip:nil d:(HIDE) tags:not-in-toc
+#+TODO: SOMEDAY(s) TODO(t) INPROGRESS(i) WAITING(w@/!) NEEDSREVIEW(n@/!) | DONE(d)
+#+TODO: WAITING(w@/!) HOLD(h@/!) | CANCELLED(c@/!)
+#+TAGS: export(e) noexport(n)
+#+STARTUP: align fold nodlcheck lognotestate content
+#+HTML_HEAD: <style>pre.src {background-color: #303030; color: #c6c6c6;}</style>
 
 * Configuration
-  This file is used by org-mode to load my personal emacs configuration file. The
-  latest version of this file is always at
-  [[https://github.com/dakrone/dakrone-dotfiles]], keep in mind that to use it you
-  will probably have to install a number of packages. Here's my list of packages:
-  [[https://github.com/dakrone/dakrone-dotfiles/blob/master/.emacs.d/packages.el]]
+This file is used by org-mode to load my personal emacs configuration file. The
+latest version of this file is always at
+[[https://github.com/dakrone/dakrone-dotfiles]], keep in mind that to use it you
+will probably have to install a number of packages. Here's my list of packages:
+[[https://github.com/dakrone/dakrone-dotfiles/blob/master/.emacs.d/packages.el]]
 
-  It can be loaded by putting the following in your .emacs.d/init.el:
+This file was last exported: {{{time(%Y-%m-%d %H:%M)}}}
 
-  #+BEGIN_SRC
+It can be loaded by putting the following in your .emacs.d/init.el:
+
+#+BEGIN_SRC
   ;; Keep track of loading time
   (defconst emacs-start-time (current-time))
   ;; initalize all ELPA packages
@@ -49,11 +57,11 @@
   (let ((elapsed (float-time (time-subtract (current-time)
                                             emacs-start-time))))
     (message "Loading settings...done (%.3fs)" elapsed))
-  #+END_SRC
+#+END_SRC
 
 Or, you can manually tangle the file and use this alternative instead:
 
-  #+BEGIN_SRC
+#+BEGIN_SRC
   ;; Keep track of loading time
   (defconst emacs-start-time (current-time))
   ;; initalize all ELPA packages
@@ -84,7 +92,7 @@ Or, you can manually tangle the file and use this alternative instead:
   (let ((elapsed (float-time (time-subtract (current-time)
                                             emacs-start-time))))
     (message "Loading settings...done (%.3fs)" elapsed))
-  #+END_SRC
+#+END_SRC
 
 ** A note about keyboard shortcuts
 There are a lot (like, a *lot*) of keyboard shortcuts in this configuration, and
@@ -126,6 +134,7 @@ is in no way exhaustive.
 | =C-x RET= | open shell (zsh)                                              | Rarely                   |
 
 ** Basics and settings used everywhere
+Mostly settings that don't fit in elsewhere, so they end up here.
 
 *** General settings
 First, let's determine whether I'm going to be using a dark theme,
@@ -134,8 +143,15 @@ depending on whatever I'm in the mood for. This is used later on for the
 modeline theme, as well as the general theme for things.
 
 #+BEGIN_SRC emacs-lisp
-(defvar my/background 'light)
-;;(defvar my/background 'dark)
+;;(defvar my/background 'light)
+(defvar my/background 'dark)
+#+END_SRC
+
+Now some personal information about me:
+
+#+BEGIN_SRC emacs-lisp
+(setq user-full-name "Lee Hinman"
+      user-mail-address "matthew.hinman@gmail.com")
 #+END_SRC
 
 Always, *always*, prefer UTF-8, anything else is insanity
@@ -495,14 +511,7 @@ Settings for what to do with temporary files.
 ;; delete-auto-save-files
 (setq delete-auto-save-files t)
 (setq backup-directory-alist
-      `((".*" . ,temporary-file-directory)))
-(setq auto-save-file-name-transforms
-      `((".*" ,temporary-file-directory t)))
-
-;; create a backup file directory
-;; make sure to `mkdir ~/.emacs_backups'
-(defun make-backup-file-name (file)
-  (concat "~/.emacs_backups/" (file-name-nondirectory file) "~"))
+      '(("." . "~/.emacs_backups")))
 #+END_SRC
 
 *** Shell settings
@@ -759,14 +768,16 @@ running very quickly. My personal word dictionary is at
 First, set up some Hunspell things if applicable:
 
 #+BEGIN_SRC emacs-lisp
+;; Standard location of personal dictionary
+(setq ispell-personal-dictionary "~/.flydict")
+
 (if (file-exists-p "/usr/local/bin/hunspell")
     (progn
       ;; Add english-hunspell as a dictionary
       (setq-default ispell-program-name "hunspell"
                     ispell-dictionary "en_US"))
   (progn (setq-default ispell-program-name "aspell")
-         (setq ispell-personal-dictionary "~/.flydict"
-               ispell-extra-args '("--sug-mode=normal" "--ignore=3"))))
+         (setq ispell-extra-args '("--sug-mode=normal" "--ignore=3"))))
 
 (add-to-list 'ispell-skip-region-alist '("[^\000-\377]+"))
 #+END_SRC
@@ -862,7 +873,10 @@ writable-dired mode is aawwweeeesssoooommee, it makes renames super easy.
   :config
   (progn
     (use-package dired-x
-      :init (setq-default dired-omit-files-p t))
+      :init (setq-default dired-omit-files-p t)
+      :config
+      (when (eq system-type 'darwin)
+        (add-to-list 'dired-omit-extensions ".DS_STORE")))
     (use-package dired-imenu)
     (customize-set-variable 'diredp-hide-details-initially-flag nil)
     (use-package dired+)
@@ -880,11 +894,19 @@ writable-dired mode is aawwweeeesssoooommee, it makes renames super easy.
     (add-hook 'dired-mode-hook 'my/dired-mode-hook)))
 #+END_SRC
 
-*** Emacsclient
+*** emacsclient
 Let's make sure to start up a server!
 
+Disabled, I actually start up a background emacs --daemon for this
+
+*** saveplace
+Navigates back to where you were editing a file next time you open it
+
 #+BEGIN_SRC emacs-lisp
-;; Disabled, I actually start up a background emacs --daemon for this
+(use-package saveplace
+  :init
+  (setq-default save-place t)
+  (setq save-place-file (expand-file-name ".places" user-emacs-directory)))
 #+END_SRC
 
 *** recentf
@@ -902,7 +924,8 @@ This also only enables recentf-mode if idle, so that emacs starts up faster.
     (setq recentf-max-saved-items 300
           recentf-exclude '("/auto-install/" ".recentf" "/repos/" "/elpa/"
                             "\\.mime-example" "\\.ido.last" "COMMIT_EDITMSG"
-                            ".gz")
+                            ".gz"
+                            "~$" "/tmp/" "/ssh:" "/sudo:" "/scp:")
           recentf-auto-cleanup 600)
     (when (not noninteractive) (recentf-mode 1))
 
@@ -972,7 +995,8 @@ And then things to set up semantic mode
   (setq semantic-default-submodes
         '(global-semantic-idle-scheduler-mode
           global-semanticdb-minor-mode
-          global-semantic-idle-summary-mode))
+          global-semantic-idle-summary-mode
+          global-semantic-stickyfunc-mode))
   (semantic-mode t)
   (local-set-key [(control return)] 'semantic-ia-complete-symbol)
   (local-set-key "\C-c>" 'semantic-complete-analyze-inline)
@@ -993,6 +1017,7 @@ on subword mode and idle-highlight-mode:
             (use-package idle-highlight-mode
               :init (idle-highlight-mode t))
             (setq show-trailing-whitespace t)
+            (hl-line-mode 1)
             (subword-mode t)))
 #+END_SRC
 
@@ -1107,6 +1132,7 @@ First, turn on eldoc everywhere it's useful:
 (add-hook 'emacs-lisp-mode-hook (lambda () (paredit-mode 1)))
 (add-hook 'lisp-interaction-mode-hook 'turn-on-eldoc-mode)
 (add-hook 'ielm-mode-hook 'turn-on-eldoc-mode)
+(add-hook 'ielm-mode-hook (lambda () (paredit-mode 1)))
 #+END_SRC
 
 And some various eldoc settings:
@@ -1196,6 +1222,20 @@ Elasticsearch, which are a little weird in some cases, but needed in order to
 work with the ES codebase.
 
 #+BEGIN_SRC emacs-lisp
+(defun java-line-up-only-constructor-or-dont (thing)
+  "If at a class constructor, line up with the paren, if not, use
+ ++ indentation"
+  (interactive)
+  (save-excursion
+    (beginning-of-line)
+    (backward-up-list 1)
+    (backward-word 2)
+    ;; Now at either "new" or something else
+    (let* ((sym (semantic-ctxt-current-symbol)))
+      (if (eq '("new") sym)
+          '++
+        (c-lineup-arglist-intro-after-paren thing)))))
+
 (defconst intellij-java-style
   '((c-basic-offset . 4)
     (c-comment-only-line-offset . (0 . 0))
@@ -1212,17 +1252,19 @@ work with the ES codebase.
       (label                 . +)
       (statement-case-open   . +)
       (statement-cont        . ++)
+      (arglist-intro         . 0)
       ;; (arglist-intro         . c-lineup-arglist-intro-after-paren)
-      ;; (arglist-intro         . ++)
-      ;; (arglist-close         . c-lineup-arglist)
       (arglist-cont-nonempty . ++)
+      ;; (arglist-cont-nonempty . java-line-up-only-constructor-or-dont)
       (arglist-close         . --)
+      ;; (arglist-close         . c-lineup-arglist)
       (inexpr-class          . 0)
       (access-label          . 0)
       (inher-cont            . ++)
-      (brace-list-intro      . ++)
+      ;; (brace-list-intro      . ++)
+      (brace-list-intro      . +)
       (func-decl-cont        . ++))))
-  "Intellij Java Programming Style")
+  "Elasticsearch's Intellij Java Programming Style")
 
 (c-add-style "intellij" intellij-java-style)
 (customize-set-variable 'c-default-style
@@ -1250,7 +1292,7 @@ work with the ES codebase.
     :disabled t
     :config (use-package cedet))
   ;; Generic java stuff things
-  (setq fci-rule-column 100))
+  (setq-local fci-rule-column 99))
 
 (add-hook 'java-mode-hook 'setup-java)
 #+END_SRC
@@ -1332,20 +1374,28 @@ Bleh javascript.
 (use-package tern)
 ;;(add-hook 'js-mode-hook (lambda () (tern-mode t)))
 #+END_SRC
-
-*** Elasticsearch
+*** Elasticsearch (es-mode)
 (es-mode) stuff, loaded from disk so I can develop on it quickly.
 
 #+BEGIN_SRC emacs-lisp
-(when (file-exists-p "~/src/elisp/es-mode")
-  (add-to-list 'load-path "~/src/elisp/es-mode")
-  (require 'es-mode)
-  (require 'ob-elasticsearch)
-  (use-package org
-    :config
-    (org-babel-do-load-languages
-     'org-babel-load-languages
-     '((elasticsearch . t)))))
+(if (file-exists-p "~/src/elisp/es-mode")
+    (progn
+      (add-to-list 'load-path "~/src/elisp/es-mode")
+      (use-package es-mode
+        :init (use-package ob-elasticsearch))
+      (use-package org
+        :config
+        (org-babel-do-load-languages
+         'org-babel-load-languages
+         '((elasticsearch . t)))))
+  (progn
+    (use-package es-mode
+      :init (use-package ob-elasticsearch))
+    (use-package org
+      :config
+      (org-babel-do-load-languages
+       'org-babel-load-languages
+       '((elasticsearch . t))))))
 #+END_SRC
 
 ** theme
@@ -1392,7 +1442,6 @@ Config for Linux/X11 systems:
 #+END_SRC
 
 *** color theme
-
 For light-colored backgrounds, I used [[https://github.com/fniessen/emacs-leuven-theme][leuven-theme]]. For dark-colored
 backgrounds (most of the time), I use my own custom theme, called [[https://github.com/dakrone/dakrone-theme][dakrone-theme]].
 Sometimes I use [[https://github.com/kuanyui/moe-theme.el][moe-theme]] for a dark background also, although the magenta text
@@ -1403,45 +1452,27 @@ annoys me somewhat.
 
 (defun dakrone-dark ()
   (interactive)
-  ;; (use-package smyx-theme
-  ;;   :init (load-theme 'smyx t)
-  ;;   :config
-  ;;   (global-hl-line-mode t))
-  ;; (use-package gruber-darker-theme
-  ;;   :init (load-theme 'gruber-darker t))
-  ;; (setq solarized-use-more-italic t
-  ;;       solarized-high-contrast-mode-line nil)
-  ;; (load-theme 'solarized-dark t)
-  ;; (use-package color-theme-sanityinc-tomorrow
-  ;;   :init (load-theme 'sanityinc-tomorrow-night t))
-  (use-package color-theme-sanityinc-solarized
-    :init (load-theme 'sanityinc-solarized-dark t))
-  ;; (load-theme 'solarized-dark t)
-  ;; (use-package soothe-theme
-  ;;   :init (load-theme 'soothe t))
-  ;; (if window-system
-  ;;     (progn
-  ;;       ;; https://github.com/bruce/emacs-spacegray-theme
-  ;;       (load-theme 'spacegray t)
-  ;;       (global-hl-line-mode t))
-  ;;   (progn
-  ;;     (load-theme 'subatomic256 t)))
-  ;; https://github.com/dakrone/dakrone-theme
-  ;;(load-theme 'dakrone t)
-  ;;(load-theme 'subatomic t)
-  ;;(load-theme 'subatomic256 t)
-  ;; (use-package moe-theme
-  ;;   :init (moe-dark)
-  ;;   )
-  )
+  (use-package moe-theme
+    :init (moe-dark)
+    :config
+    (progn
+      ;; Moe's misspelled font is a bit much...
+      (if (version< emacs-version "24.4")
+          (set-face-attribute 'flyspell-incorrect nil
+                              :inherit nil
+                              :foreground 'unspecified
+                              :background 'unspecified
+                              :underline "red")
+        (set-face-attribute 'flyspell-incorrect nil
+                            :inherit nil
+                            :foreground 'unspecified
+                            :background 'unspecified
+                            :underline '(:style wave :color "red"))))))
 
 (defun dakrone-light ()
   (interactive)
-  ;; https://github.com/fniessen/emacs-leuven-theme
-  (load-theme 'leuven t)
-  ;; (if (window-system)
-  ;;     (set-face-foreground 'region nil))
-  )
+  (use-package leuven-theme
+    :init (load-theme 'leuven t)))
 
 (if (eq my/background 'dark)
     (dakrone-dark)
@@ -1597,7 +1628,9 @@ settings are mine.
             ("work" . ?w)
             ("book" . ?b)
             ("support" . ?s)
-            ("docs" . ?d)))
+            ("docs" . ?d)
+            ("export" . ?e)
+            ("noexport" . ?n)))
     ;; capture templates
     (setq org-capture-templates
           (quote
@@ -1678,6 +1711,7 @@ settings are mine.
        (dot . t)
        (sh . t)
        (ruby . t)
+       (R . t)
        (python . t)
        (gnuplot . t)
        (plantuml . t)
@@ -1763,7 +1797,6 @@ currently open, based on `org-agenda-files'."
     (add-hook 'org-capture-after-finalize-hook 'my/save-all-agenda-buffers)
 
     (use-package org-id
-      :init
       :config
       (progn
         (setq org-id-link-to-org-use-id t)
@@ -2036,6 +2069,10 @@ if running in windowed mode, because I don't use ERC otherwise:
                            (erc-propertize (concat "ERC>") 'read-only t
                                            'rear-nonsticky t
                                            'front-nonsticky t))))
+
+      ;; Turn on company-mode in ERC
+      (add-hook 'erc-mode-hook 'company-mode)
+      
       ;; highlighting nicks
       (use-package erc-hl-nicks
         :init (add-to-list 'erc-modules 'hl-nicks))
@@ -2508,8 +2545,13 @@ Paredit for all the lisps.
 
 #+BEGIN_SRC emacs-lisp
 (use-package smartparens
+  :bind (("M-9" . sp-backward-sexp)
+         ("M-0" . sp-forward-sexp))
   :config
   (progn
+    (add-to-list 'sp-sexp-suffix '(json-mode regex ""))
+    (add-to-list 'sp-sexp-suffix '(es-mode regex ""))
+
     (use-package smartparens-config)
     (add-hook 'sh-mode-hook
               (lambda ()
@@ -2575,6 +2617,19 @@ Paredit for all the lisps.
           (lambda ()
             (smartparens-global-mode t)
             (show-smartparens-global-mode t)))
+#+END_SRC
+
+** golden-ratio
+Automagically resizes the windows to be the golden ratio (1.618), nice when
+using a big font size and I need more eshell space
+
+#+BEGIN_SRC emacs-lisp
+(use-package golden-ratio
+  :diminish golden-ratio-mode
+  :defer t
+  :config
+  (setq golden-ratio-exclude-modes
+        '(erc-mode mu4e-headers-mode mu4e-view-mode)))
 #+END_SRC
 
 ** flycheck
@@ -2682,31 +2737,33 @@ I use =M-g M-g= everywhere to go directly to Magit.
   :config
   (progn
     (when (eq system-type 'darwin)
-      (setq magit-emacsclient-executable "/Applications/Emacs.app/Contents/MacOS/bin/emacsclient"))
+      (setq magit-emacsclient-executable
+            "/Applications/Emacs.app/Contents/MacOS/bin/emacsclient"))
     (defun magit-browse ()
+      "Browse to the project's github URL, if available"
       (interactive)
       (let ((url (with-temp-buffer
-                   (unless (zerop (call-process-shell-command "git remote -v" nil t))
+                   (unless (zerop (call-process-shell-command
+                                   "git remote -v" nil t))
                      (error "Failed: 'git remote -v'"))
                    (goto-char (point-min))
-                   (when (re-search-forward "github\\.com[:/]\\(.+?\\)\\.git" nil t)
+                   (when (re-search-forward
+                          "github\\.com[:/]\\(.+?\\)\\.git" nil t)
                      (format "https://github.com/%s" (match-string 1))))))
         (unless url
           (error "Can't find repository URL"))
         (browse-url url)))
 
+    (when (and (boundp 'moe-theme-which-enabled)
+               (eq moe-theme-which-enabled 'dark))
+      ;; Moe's magit colors are baaaaaaad
+      (set-face-attribute 'magit-item-highlight nil
+                          :inherit nil
+                          :foreground 'unspecified))
+
     (define-key magit-mode-map (kbd "C-c C-b") 'magit-browse)
     (define-key magit-status-mode-map (kbd "W") 'magit-toggle-whitespace)
-    ;; faces
-    ;; (set-face-attribute 'magit-branch nil
-    ;;                     :foreground "yellow" :weight 'bold :underline t)
-    (when (eq my/background 'dark)
-      (add-hook 'magit-mode-hook
-                (lambda ()
-                  (set-face-attribute 'magit-item-highlight nil
-                                      :background "#262626"))))
     (custom-set-variables '(magit-set-upstream-on-push (quote dontask)))
-
     (setq magit-completing-read-function 'magit-ido-completing-read)
     ;; Diminish the auto-revert-mode
     (add-hook 'magit-auto-revert-mode-hook
@@ -2736,9 +2793,16 @@ I basically use this to start up ES when I need to test something really quickly
   :config
   (progn
     (prodigy-define-service
-      :name "Elasticsearch 1.3.4"
-      :cwd "~/ies/elasticsearch-1.3.4/"
-      :command "~/ies/elasticsearch-1.3.4/bin/elasticsearch"
+      :name "Elasticsearch 1.4.0"
+      :cwd "~/ies/elasticsearch-1.4.0/"
+      :command "~/ies/elasticsearch-1.4.0/bin/elasticsearch"
+      :tags '(work test es)
+      :port 9200)
+
+    (prodigy-define-service
+      :name "Elasticsearch 1.3.5"
+      :cwd "~/ies/elasticsearch-1.3.5/"
+      :command "~/ies/elasticsearch-1.3.5/bin/elasticsearch"
       :tags '(work test es)
       :port 9200)
 
@@ -2886,7 +2950,8 @@ There are many helm things. I use it a lot.
     (use-package helm-bookmark
       :bind (("C-x M-b" . helm-bookmarks)))
     (use-package helm-projectile
-      :bind (("C-x f" . helm-projectile)))
+      :bind (("C-x f" . helm-projectile)
+             ("C-c p f" . helm-projectile-find-file)))
     (use-package helm-eshell
       :init (add-hook 'eshell-mode-hook
                       (lambda ()
@@ -3123,13 +3188,13 @@ Various markdown-related settings.
     (defvar markdown-imenu-generic-expression
       '(("title"  "^\\(.+?\\)[\n]=+$" 1)
         ("h2-"    "^\\(.+?\\)[\n]-+$" 1)
-        ("h1"   "^#\\s-+\\(.+?\\)$" 1)
-        ("h2"   "^##\\s-+\\(.+?\\)$" 1)
-        ("h3"   "^###\\s-+\\(.+?\\)$" 1)
-        ("h4"   "^####\\s-+\\(.+?\\)$" 1)
-        ("h5"   "^#####\\s-+\\(.+?\\)$" 1)
-        ("h6"   "^######\\s-+\\(.+?\\)$" 1)
-        ("fn"   "^\\[\\^\\(.+?\\)\\]" 1) ))))
+        ("h1"     "^#\\s-+\\(.+?\\)$" 1)
+        ("h2"     "^##\\s-+\\(.+?\\)$" 1)
+        ("h3"     "^###\\s-+\\(.+?\\)$" 1)
+        ("h4"     "^####\\s-+\\(.+?\\)$" 1)
+        ("h5"     "^#####\\s-+\\(.+?\\)$" 1)
+        ("h6"     "^######\\s-+\\(.+?\\)$" 1)
+        ("fn"     "^\\[\\^\\(.+?\\)\\]" 1) ))))
 #+END_SRC
 
 ** bookmark+
@@ -3154,20 +3219,29 @@ Mainly used by non-Emacs people, but we should always try to play nice :)
 (use-package editorconfig)
 #+END_SRC
 
-** Auto-completion (company-mode)
+** company-mode (auto-complete)
 Standard auto-completion configuration with company-mode
 
 #+BEGIN_SRC emacs-lisp
 (use-package company
-  :diminish ""
+  :diminish "C"
+  :bind ("C-." . company-complete)
   :config
   (progn
-    (setq company-idle-delay 0.5
+    (setq company-idle-delay 0.2
           ;; min prefix of 2 chars
           company-minimum-prefix-length 2
-          company-dabbrev-downcase nil)))
+          company-selection-wrap-around t
+          company-show-numbers t
+          company-dabbrev-downcase nil
+          company-transformers '(company-sort-by-occurrence))
+    (bind-keys :map company-active-map
+               ("C-n" . company-select-next)
+               ("C-p" . company-select-previous)
+               ("C-d" . company-show-doc-buffer)
+               ("<tab>" . company-complete))))
 
-(add-hook 'prog-mode-hook 'global-company-mode)
+(add-hook 'prog-mode-hook 'company-mode)
 #+END_SRC
 
 ** smart-tab
@@ -3453,8 +3527,7 @@ Kind of like Vim's folding, but manually done right now.
 A neat mode to show indention
 
 #+BEGIN_SRC emacs-lisp
-(use-package indent-guide
-  :disabled t)
+(use-package indent-guide)
 
 ;; (add-hook 'prog-mode-hook (lambda () (indent-guide-mode t)))
 #+END_SRC
@@ -3531,25 +3604,12 @@ Wait, no, I mean the Emacs web browser built in to 24.4
   :config
   (progn
     (define-key eww-mode-map "o" 'eww)
-    (define-key eww-mode-map "O" 'eww-browse-with-external-browser)))
-#+END_SRC
-
-** aria2 (downloader) mode
-Doesn't quite work yet, but it's getting there...
-
-#+BEGIN_SRC emacs-lisp
-(use-package aria2
-  :bind (("C-h C-a" . aria2-downloads-list)))
-#+END_SRC
-
-** volatile-highlights
-Highlights things that have recently undergone a change, such as yanking text
-it, undoing, etc.
-
-#+BEGIN_SRC emacs-lisp
-(use-package volatile-highlights
-  :init (volatile-highlights-mode t)
-  :diminish "")
+    (define-key eww-mode-map "O" 'eww-browse-with-external-browser)
+    (use-package eww-lnum
+      :init
+      (eval-after-load "eww"
+        '(progn (define-key eww-mode-map "f" 'eww-lnum-follow)
+                (define-key eww-mode-map "F" 'eww-lnum-universal))))))
 #+END_SRC
 
 ** fill-column-indicator
@@ -3557,11 +3617,12 @@ it, undoing, etc.
 #+BEGIN_SRC emacs-lisp
 (defun my/turn-on-fill-column-indicator ()
   (interactive)
-  (fci-mode 1)
-  (setq fci-rule-column 80))
+  (fci-mode 1))
 
 (use-package fill-column-indicator
-  :init (add-hook 'prog-mode-hook 'my/turn-on-fill-column-indicator))
+  :disabled t
+  :init (add-hook 'prog-mode-hook 'my/turn-on-fill-column-indicator)
+  :config (setq fci-rule-column 80))
 #+END_SRC
 
 ** modeline
@@ -3570,11 +3631,10 @@ to switch between as needed:
 
 #+BEGIN_SRC emacs-lisp
 (use-package smart-mode-line
-  :disabled t
   :init
   (progn
     (sml/setup)
-    (sml/apply-theme 'respectful)))
+    (sml/apply-theme 'dark)))
 
 (use-package powerline
   :disabled t
@@ -3718,10 +3778,6 @@ really fit in anywhere else.
 
 ;; M-g mapping
 (global-set-key (kbd "M-g M-f") 'ffap)
-
-;; some navigation helpers
-(global-set-key "\M-9" 'backward-sexp)
-(global-set-key "\M-0" 'forward-sexp)
 
 (global-set-key (kbd "C-x C-l") 'toggle-truncate-lines)
 
@@ -4089,4 +4145,27 @@ buffer preview will still display."
       (message "no file to preview at point!"))))
 
 (global-set-key (kbd "C-M-v") 'my/quick-view-file-at-point)
+#+END_SRC
+
+*** Replace smart quotes
+I hate smart quotes
+
+#+BEGIN_SRC emacs-lisp
+(defcustom smart-to-ascii '(("\x201C" . "\"")
+                            ("\x201D" . "\"")
+                            ("\x2018" . "'")
+                            ("\x2019" . "'")
+                            ;; en-dash
+                            ("\x2013" . "-")
+                            ;; em-dash
+                            ("\x2014" . "-"))
+  "Map of smart quotes to their replacements"
+  :type '(repeat (cons (string :tag "Smart Character  ")
+                       (string :tag "Ascii Replacement"))))
+
+(defun my/smart-to-ascii (beg end)
+  "Replace smart quotes and dashes with their ASCII equivalents"
+  (interactive "r")
+  (format-replace-strings smart-to-ascii
+                          nil beg end))
 #+END_SRC

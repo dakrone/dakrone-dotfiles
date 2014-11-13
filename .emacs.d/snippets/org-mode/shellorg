@@ -1,14 +1,22 @@
 # -*- mode: snippet -*-
 #name : shellorg
 # --
-#+TITLE:    ${1:<title>}
-#+AUTHOR:   Lee Hinman
-#+STARTUP:  align fold nodlcheck lognotestate content
-#+OPTIONS:  H:4 num:nil toc:t \n:nil @:t ::t |:t ^:{} -:t f:t *:t
-#+OPTIONS:  skip:nil d:(HIDE) tags:not-in-toc
-#+PROPERTY: header-args :results code :exports both :noweb yes
-#+HTML_HEAD: <link rel="stylesheet" href="http://dakrone.github.io/org.css" type="text/css" />
+#+TITLE:   ${1:<title>}
+#+AUTHOR:  `(user-full-name)`
+#+EMAIL:   `user-mail-address`
 #+LANGUAGE: en
+#+PROPERTY: header-args :results code replace :exports both :noweb yes :comments org :tangle no
+#+PROPERTY: header-args:sh :shebang "#!/usr/bin/env zsh"
+#+PROPERTY: header-args:python :shebang "#!/usr/bin/env python"
+#+HTML_HEAD: <link rel="stylesheet" href="http://dakrone.github.io/org.css" type="text/css" />
+#+EXPORT_SELECT_TAGS: export
+#+EXPORT_EXCLUDE_TAGS: noexport
+#+OPTIONS: H:4 num:nil toc:t \n:nil @:t ::t |:t ^:{} -:t f:t *:t
+#+OPTIONS: skip:nil d:(HIDE) tags:not-in-toc
+#+TODO: SOMEDAY(s) TODO(t) INPROGRESS(i) WAITING(w@/!) NEEDSREVIEW(n@/!) | DONE(d)
+#+TODO: WAITING(w@/!) HOLD(h@/!) | CANCELLED(c@/!)
+#+TAGS: export(e) noexport(n)
+#+STARTUP: align fold nodlcheck lognotestate content
 
 * Create the index
 

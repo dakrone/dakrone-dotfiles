@@ -261,7 +261,7 @@ function kibana-tunnel() {
 
 # Delete a branch locally and on my (dakrone) fork
 function del-branch() {
-    git branch -d $1
+    git branch -D $1
     git push dakrone :$1
 }
 

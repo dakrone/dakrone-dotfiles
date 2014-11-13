@@ -18,7 +18,7 @@
     moe-theme powerline nyan-mode spacegray-theme zenburn-theme
 
     ;; misc
-    diminish gist scpaste w3m aria2
+    diminish gist scpaste
 
     ;; es-mode
     es-mode
@@ -31,12 +31,11 @@
 
     ;; editing utilities
     expand-region smex windresize ag undo-tree iedit ido-ubiquitous
-    ido-vertical-mode yasnippet smart-tab anzu
-    smartparens flx-ido projectile smooth-scrolling keyfreq
-    prodigy column-marker  ace-jump-mode
+    ido-vertical-mode yasnippet smart-tab anzu smartparens flx-ido projectile
+    smooth-scrolling keyfreq prodigy column-marker ace-jump-mode
     multiple-cursors fancy-narrow easy-kill indent-guide toggle-quotes
     visible-mark simple-call-tree simple-call-tree+ editorconfig ggtags
-    bookmark+ volatile-highlights fill-column-indicator
+    bookmark+ volatile-highlights fill-column-indicator golden-ratio wc-mode
 
     ;; highlighting
     idle-highlight-mode highlight-symbol highlight-escape-sequences
@@ -103,6 +102,9 @@
 
     ;; gnus
     gnus-x-gm-raw
+
+    ;; eww
+    eww-lnum
     ))
 
 ;; org-mode is forced manually

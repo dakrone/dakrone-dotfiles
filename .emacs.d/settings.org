@@ -12,7 +12,6 @@
 #+TODO: WAITING(w@/!) HOLD(h@/!) | CANCELLED(c@/!)
 #+TAGS: export(e) noexport(n)
 #+STARTUP: align fold nodlcheck lognotestate content
-#+HTML_HEAD: <style>pre.src {background-color: #303030; color: #c6c6c6;}</style>
 
 * Configuration
 This file is used by org-mode to load my personal emacs configuration file. The
@@ -651,6 +650,10 @@ completion, prompt and term settings:
           (interactive)
           (let ((eshell-buffer-maximum-lines 0))
             (eshell-truncate-buffer)))
+
+        ;; auto truncate after 25k lines
+        (setq eshell-buffer-maximum-lines 25000)
+        (add-to-list 'eshell-output-filter-functions 'eshell-truncate-buffer)
 
         (defun eshell/export-env (&optional env-file)
           (interactive)
@@ -1777,8 +1780,8 @@ settings are mine.
                                  (re-search-forward this-month
                                                     subtree-end t)))))
                     (if subtree-is-current
-                        subtree-end ; Has a date in this month, skip it
-                      nil))  ; available to archive
+                        subtree-end     ; Has a date in this month, skip it
+                      nil))             ; available to archive
                 (or subtree-end (point-max)))
             next-headline))))
 
@@ -1829,6 +1832,22 @@ current file which do not already have one."
         ;; automatically add ids to captured headlines
         (add-hook 'org-capture-prepare-finalize-hook
                   (lambda () (my/org-custom-id-get (point) 'create)))))
+
+    (defun my/org-inline-css-hook (exporter)
+      "Insert custom inline css to automatically set the
+background of code to whatever theme I'm using's background"
+      (when (eq exporter 'html)
+        (let* ((my-pre-bg (face-background 'default))
+               (my-pre-fg (face-foreground 'default)))
+          ;;(setq org-html-head-include-default-style nil)
+          (setq
+           org-html-head-extra
+           (concat
+            org-html-head-extra
+            (format "<style type=\"text/css\">\n pre.src {background-color: %s; color: %s;}</style>\n"
+                    my-pre-bg my-pre-fg))))))
+
+    (add-hook 'org-export-before-processing-hook 'my/org-inline-css-hook)
 
     ))
 #+END_SRC
@@ -2847,7 +2866,13 @@ I basically use this to start up ES when I need to test something really quickly
          ("C-x n" . git-gutter:next-hunk)
          ("C-c G" . git-gutter:popup-hunk))
   :diminish ""
-  :init (add-hook 'prog-mode-hook 'git-gutter-mode))
+  :init
+  (progn
+    ;; Only a few programming modes
+    (add-hook 'java-mode-hook 'git-gutter-mode)
+    (add-hook 'clojure-mode-hook 'git-gutter-mode)
+    (add-hook 'ruby-mode-hook 'git-gutter-mode)
+    (add-hook 'python-mode-hook 'git-gutter-mode)))
 #+END_SRC
 
 ** highlight-symbol
@@ -2857,15 +2882,6 @@ Jump to the next/prev symbol pretty easily
 (use-package highlight-symbol
   :bind (("M-n" . highlight-symbol-next)
          ("M-p" . highlight-symbol-prev)))
-#+END_SRC
-
-** highlight-escape-sequences
-
-https://github.com/dgutov/highlight-escape-sequences/
-
-#+BEGIN_SRC emacs-lisp
-(use-package highlight-escape-sequences
-  :init (add-to-list 'prog-mode-hook (lambda () (hes-mode t))))
 #+END_SRC
 
 ** highlight-numbers
@@ -3468,9 +3484,6 @@ Can be really handy to see if you've misspelled a variable name.
 (defun my/enable-color-identifiers ()
   (interactive)
   (color-identifiers-mode t))
-
-;;(add-hook 'java-mode-hook 'my/enable-color-identifiers)
-;;(add-hook 'prog-mode-hook 'my/enable-color-identifiers)
 #+END_SRC
 
 ** iedit

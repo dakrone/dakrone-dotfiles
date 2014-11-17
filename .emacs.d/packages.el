@@ -38,8 +38,7 @@
     bookmark+ volatile-highlights fill-column-indicator golden-ratio wc-mode
 
     ;; highlighting
-    idle-highlight-mode highlight-symbol highlight-escape-sequences
-    highlight-numbers highlight-quoted
+    idle-highlight-mode highlight-symbol highlight-numbers highlight-quoted
 
     ;; LaTeX
     auctex

@@ -36,6 +36,7 @@
     multiple-cursors fancy-narrow easy-kill indent-guide toggle-quotes
     visible-mark simple-call-tree simple-call-tree+ editorconfig ggtags
     bookmark+ volatile-highlights fill-column-indicator golden-ratio wc-mode
+    comment-dwim2
 
     ;; highlighting
     idle-highlight-mode highlight-symbol highlight-numbers highlight-quoted
@@ -69,7 +70,7 @@
     hy-mode jedi
 
     ;; ruby
-    ruby-mode ruby-test-mode inf-ruby puppet-mode rbenv
+    ruby-mode ruby-test-mode inf-ruby puppet-mode rbenv chruby
 
     ;; rust
     rust-mode

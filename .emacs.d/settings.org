@@ -479,7 +479,11 @@ system we're on:
 When using Homebrew, install it using \"brew install trash\"."
     (call-process (executable-find "trash")
                   nil 0 nil
-                  file)))
+                  file))
+
+  ;; Trackpad scrolling
+  (global-set-key [wheel-up] 'previous-line)
+  (global-set-key [wheel-down] 'next-line))
 #+END_SRC
 
 **** Windows
@@ -1309,6 +1313,16 @@ Using rbenv, set it up correctly when idle
   :idle (global-rbenv-mode t))
 #+END_SRC
 
+Or, chruby, which is much simpler (no shims)
+
+: brew install chruby ruby-install
+: ruby-install 2.1.3
+
+#+BEGIN_SRC emacs-lisp
+(use-package chruby
+  :init (chruby "ruby-2.1.3"))
+#+END_SRC
+
 *** Haskell
 Use GHC for haskell mode, and turn on auto-complete and some doc/indent
 modes:
@@ -1855,14 +1869,37 @@ background of code to whatever theme I'm using's background"
 ** org-publishing
 Publishing org-mode files to my hosting provider:
 
-Both dropbox and non dropbox are included here, because symlinks suck.
-
 #+BEGIN_SRC emacs-lisp
 (use-package org
   :config
   (setq org-publish-project-alist
-        ;; Org-mode files for ~/.emacs.d/settings.org
-        '(("emacs dotfiles"
+        '(;; Main website at http://writequit.org
+          ("writequit-org"
+           :base-directory "~/www"
+           :base-extension "org\\|html"
+           :publishing-directory
+           "/ssh:hinmanph@writequit:~/public_html/wq/"
+           :publishing-function org-html-publish-to-html
+           :with-toc nil
+           :html-preamble t)
+          ("writequit-images"
+           :base-directory "~/www/images"
+           :base-extension "png\\|jpg\\|gif"
+           :publishing-directory
+           "/ssh:hinmanph@writequit:~/public_html/wq/images"
+           :publishing-function org-publish-attachment)
+          ("writequit-files"
+           :base-directory "~/www/files"
+           :base-extension "*"
+           :publishing-directory
+           "/ssh:hinmanph@writequit:~/public_html/wq/files/"
+           :publishing-function org-publish-attachment)
+          ("writequit" :components ("writequit-org"
+                                    "writequit-images"
+                                    "writequit-files"))
+
+          ;; Org-mode files for ~/.emacs.d/settings.org
+          ("emacs dotfiles"
            :base-directory "~/.emacs.d/"
            :base-extension "org\\|html"
            :publishing-directory
@@ -1952,6 +1989,16 @@ Both dropbox and non dropbox are included here, because symlinks suck.
 Then, when I'm editing ~/org/es/feature-foo.org, I can hit =C-c C-e P f= and
 export the file to show up in http://p.writequit.org/org
 
+** org-reveal (ox-reveal)
+Exporting org-mode to [[http://lab.hakim.se/reveal-js/#/][reveal.js]] presentations
+
+#+BEGIN_SRC emacs-lisp
+(use-package ox-reveal
+  :config
+  (progn
+    (setq org-reveal-root "http://cdn.jsdelivr.net/reveal.js/2.5.0/")))
+#+END_SRC
+
 ** org-toc
 Generating table of contents from org-mode files, see:
 [[https://github.com/snosov1/org-toc]]
@@ -2018,16 +2065,6 @@ Generating table of contents from org-mode files, see:
 ** ERC Configuration (IRC)
 ERC (IRC) configuration, requires the ERC package
 
-First, set the SSL program to something sane. I use a cert at
-=~/host.pem= for connecting to my bouncer:
-
-#+BEGIN_SRC emacs-lisp
-(setq tls-program
-      '("openssl s_client -connect %h:%p -no_ssl2 -ign_eof -cert ~/host.pem"
-        "gnutls-cli --priority secure256 --x509certfile ~/host.pem -p %p %h"
-        "gnutls-cli --priority secure256 -p %p %h"))
-#+END_SRC
-
 And finally the giant setting of ERC configuration variables, only
 if running in windowed mode, because I don't use ERC otherwise:
 
@@ -2091,7 +2128,7 @@ if running in windowed mode, because I don't use ERC otherwise:
 
       ;; Turn on company-mode in ERC
       (add-hook 'erc-mode-hook 'company-mode)
-      
+
       ;; highlighting nicks
       (use-package erc-hl-nicks
         :init (add-to-list 'erc-modules 'hl-nicks))
@@ -2108,8 +2145,12 @@ if running in windowed mode, because I don't use ERC otherwise:
   "Connect to IRC."
   (interactive)
   (setup-irc)
-  (erc-tls :server "freenode" :port 31425
-           :nick "dakrone" :password znc-pass))
+  (let ((tls-program
+         '("openssl s_client -connect %h:%p -no_ssl2 -ign_eof -cert ~/host.pem"
+           "gnutls-cli --priority secure256 --x509certfile ~/host.pem -p %p %h"
+           "gnutls-cli --priority secure256 -p %p %h")))
+    (erc-tls :server "freenode" :port 31425
+             :nick "dakrone" :password znc-pass)))
 #+END_SRC
 
 ** ercn
@@ -3294,7 +3335,7 @@ Popwin handles little popup windows at the bottom of the screen, which is very
 helpful for documentation buffers and so on.
 
 #+BEGIN_SRC emacs-lisp
-(require 'popwin)
+(use-package popwin)
 (defvar popwin:special-display-config-backup popwin:special-display-config)
 (setq display-buffer-function 'popwin:display-buffer)
 
@@ -3623,6 +3664,17 @@ Wait, no, I mean the Emacs web browser built in to 24.4
       (eval-after-load "eww"
         '(progn (define-key eww-mode-map "f" 'eww-lnum-follow)
                 (define-key eww-mode-map "F" 'eww-lnum-universal))))))
+#+END_SRC
+
+** elfeed and elfeed-org
+RSS and Atom with Emacs and Org!
+
+See: [[file:elfeed.org][~/.emacs.d/elfeed.org]]
+
+#+BEGIN_SRC emacs-lisp
+(use-package elfeed-org
+  :init (use-package elfeed
+          :init (elfeed-org)))
 #+END_SRC
 
 ** fill-column-indicator

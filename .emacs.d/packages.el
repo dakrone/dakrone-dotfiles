@@ -45,7 +45,7 @@
     auctex
 
     ;; org-mode
-    htmlize gnuplot-mode gnuplot org-toc
+    htmlize gnuplot-mode gnuplot org-toc ox-reveal
 
     ;; buffer utils
     popwin dired+ dired-imenu

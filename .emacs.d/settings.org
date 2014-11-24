@@ -620,7 +620,6 @@ completion, prompt and term settings:
   (progn
     (defalias 'emacs 'find-file)
     (defalias 'ec 'find-file)
-    (setenv "TERM" "xterm-256color")
     (setenv "PAGER" "cat")
     (use-package esh-opt
       :config
@@ -629,12 +628,24 @@ completion, prompt and term settings:
         (use-package em-prompt)
         (use-package em-term)
 
-        ;; Taken from Phil's config
         (setq eshell-cmpl-cycle-completions nil
-              eshell-history-size 20480
-              eshell-buffer-shorthand t)
-        (add-hook 'eshell-mode-hook (defun pnh-eshell-term-dumb ()
-                                      (eshell/export "TERM" "dumb")))
+              ;; auto truncate after 20k lines
+              eshell-buffer-maximum-lines 20000
+              ;; history size
+              eshell-history-size 350
+              ;; buffer shorthand -> echo foo > #'buffer
+              eshell-buffer-shorthand t
+              ;; my prompt is easy enough to see
+              eshell-highlight-prompt nil)
+
+        ;; Visual commands
+        (add-to-list 'eshell-visual-commands "ssh")
+        (add-to-list 'eshell-visual-commands "top")
+        (add-to-list 'eshell-visual-commands "htop")
+        (add-to-list 'eshell-visual-commands "el")
+        (add-to-list 'eshell-visual-commands "elinks")
+        ;; automatically truncate buffer after output
+        (add-to-list 'eshell-output-filter-functions 'eshell-truncate-buffer)
 
         (when (not (functionp 'eshell/rgrep))
           (defun eshell/rgrep (&rest args)
@@ -655,10 +666,6 @@ completion, prompt and term settings:
           (let ((eshell-buffer-maximum-lines 0))
             (eshell-truncate-buffer)))
 
-        ;; auto truncate after 25k lines
-        (setq eshell-buffer-maximum-lines 25000)
-        (add-to-list 'eshell-output-filter-functions 'eshell-truncate-buffer)
-
         (defun eshell/export-env (&optional env-file)
           (interactive)
           (let ((original-buffer (current-buffer)))
@@ -671,9 +678,6 @@ completion, prompt and term settings:
                     (eshell/export line)))
                 (next-line)))))
 
-        (eval-after-load 'em-term
-          '(add-to-list 'eshell-visual-commands "ssh"))
-
         (defalias 'eshell/ee 'eshell/export-env)))
 
     (add-hook 'eshell-mode-hook
@@ -684,25 +688,15 @@ completion, prompt and term settings:
 
     ;; See eshell-prompt-function below
     (setq eshell-prompt-regexp "^[^#$\n]* [#$] ")
-    (add-to-list 'eshell-visual-commands "el")
-    (add-to-list 'eshell-visual-commands "elinks")
-    (add-to-list 'eshell-visual-commands "htop")
 
     ;; So the history vars are defined
     (require 'em-hist)
     (if (boundp 'eshell-save-history-on-exit)
         ;; Don't ask, just save
         (setq eshell-save-history-on-exit t))
-    ;;(message "eshell-ask-to-save-history is %s" eshell-ask-to-save-history)
     (if (boundp 'eshell-ask-to-save-history)
         ;; For older(?) version
         (setq eshell-ask-to-save-history 'always))
-    ;;(message "eshell-ask-to-save-history is %s" eshell-ask-to-save-history)
-
-    (defun eshell/ef (fname-regexp &rest dir) (ef fname-regexp default-directory))
-
-
-;;; ---- path manipulation
 
     ;; See: https://github.com/kaihaosw/eshell-prompt-extras
     (use-package eshell-prompt-extras
@@ -713,26 +707,11 @@ completion, prompt and term settings:
               epe-git-dirty-char "*"
               eshell-prompt-function 'epe-theme-dakrone)))
 
-    (setq eshell-highlight-prompt nil)
-
     (defun eshell/magit ()
       "Function to open magit-status for the current directory"
       (interactive)
       (magit-status default-directory)
       nil)))
-
-(add-hook 'eshell-mode-hook
-          (lambda ()
-            (local-set-key
-             (kbd "C-c h")
-             (lambda ()
-               (interactive)
-               (insert
-                (ido-completing-read
-                 "Eshell history: "
-                 (delete-dups
-                  (ring-elements eshell-history-ring))))))
-            (local-set-key (kbd "C-c C-h") 'eshell-list-history)))
 #+END_SRC
 
 *** Tramp settings

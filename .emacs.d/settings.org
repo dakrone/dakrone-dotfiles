@@ -990,18 +990,25 @@ And then things to set up semantic mode
 
 (add-hook 'c-mode-hook 'my/setup-semantic-mode)
 (add-hook 'java-mode-hook 'my/setup-semantic-mode)
-(add-hook 'emacs-lisp-mode-hook 'my/setup-semantic-mode)
 #+END_SRC
 
 *** General prog-mode hooks
+Remove some back-ends from vc-mode, no need to check all this ancient things:
+
+#+BEGIN_SRC emacs-lisp
+(setq vc-handled-backends '(SVN Git))
+#+END_SRC
+
 Some general settings that should apply to all programming modes, turning
 on subword mode and idle-highlight-mode:
 
 #+BEGIN_SRC emacs-lisp
+(use-package idle-highlight-mode)
+
 (add-hook 'prog-mode-hook
           (lambda ()
-            (use-package idle-highlight-mode
-              :init (idle-highlight-mode t))
+            (when (fboundp 'idle-highlight-mode)
+              (idle-highlight-mode t))
             (setq show-trailing-whitespace t)
             (hl-line-mode 1)
             (subword-mode t)))
@@ -1012,6 +1019,7 @@ highlighted so they stand out:
 
 #+BEGIN_SRC emacs-lisp
 (defun my/add-watchwords ()
+  "Highlight FIXME, TODO, and NOCOMMIT in code"
   (font-lock-add-keywords
    nil '(("\\<\\(FIXME\\|TODO\\|NOCOMMIT\\)\\>"
           1 '((:foreground "#d7a3ad") (:weight bold)) t))))
@@ -1051,21 +1059,22 @@ test/foo.clj instead of foo_test.clj
 Other Clojure-specific settings:
 
 #+BEGIN_SRC emacs-lisp
+(defun my/clojure-things-hook ()
+  "Set up clojure-y things"
+  (turn-on-eldoc-mode)
+  (subword-mode t)
+  ;; use my test layout fns
+  ;; (setq clojure-test-for-fn 'my-clojure-test-for)
+  ;; (setq clojure-test-implementation-for-fn 'my-clojure-test-implementation-for)
+  ;; compile faster
+  (setq font-lock-verbose nil)
+  (global-set-key (kbd "C-c t") 'clojure-jump-between-tests-and-code)
+  (paredit-mode 1))
+
 (use-package clojure-mode
   :config
-  (add-hook
-   'clojure-mode-hook
-   (lambda ()
-     ;; enable eldoc
-     (eldoc-mode t)
-     (subword-mode t)
-     ;; use my test layout fns
-     ;; (setq clojure-test-for-fn 'my-clojure-test-for)
-     ;; (setq clojure-test-implementation-for-fn 'my-clojure-test-implementation-for)
-     ;; compile faster
-     (setq font-lock-verbose nil)
-     (global-set-key (kbd "C-c t") 'clojure-jump-between-tests-and-code)
-     (paredit-mode 1))))
+  (progn
+    (add-hook 'clojure-mode-hook 'my/clojure-things-hook)))
 #+END_SRC
 
 Let's define a couple of helper functions for setting up the cider and
@@ -1074,7 +1083,6 @@ ac-nrepl packages:
 #+BEGIN_SRC emacs-lisp
 (defun my/setup-cider ()
   (lambda ()
-    (paredit-mode 1)
     (setq cider-history-file "~/.nrepl-history"
           cider-hide-special-buffers t
           cider-repl-history-size 10000
@@ -1089,7 +1097,9 @@ And then finally use them if cider and ac-nrepl packages are available:
   :init
   (progn
     (add-hook 'cider-mode-hook 'my/setup-cider)
-    (add-hook 'cider-repl-mode-hook 'my/setup-cider)))
+    (add-hook 'cider-repl-mode-hook 'my/setup-cider)
+    (add-hook 'cider-mode-hook 'my/clojure-things-hook)
+    (add-hook 'cider-repl-mode-hook 'my/clojure-things-hook)))
 #+END_SRC
 
 *** Shell
@@ -1101,7 +1111,6 @@ it!) as well as not blinking the matching paren.
 (add-hook 'sh-mode-hook
           (lambda ()
             (show-paren-mode -1)
-            (setq whitespace-line-column 140)
             (flycheck-mode -1)
             (setq blink-matching-paren nil)))
 
@@ -1114,11 +1123,14 @@ This contains the configuration for elisp programming
 First, turn on eldoc everywhere it's useful:
 
 #+BEGIN_SRC emacs-lisp
-(add-hook 'emacs-lisp-mode-hook 'turn-on-eldoc-mode)
-(add-hook 'emacs-lisp-mode-hook (lambda () (paredit-mode 1)))
-(add-hook 'lisp-interaction-mode-hook 'turn-on-eldoc-mode)
-(add-hook 'ielm-mode-hook 'turn-on-eldoc-mode)
-(add-hook 'ielm-mode-hook (lambda () (paredit-mode 1)))
+(add-hook 'emacs-lisp-mode-hook
+          (lambda ()
+            (paredit-mode 1)
+            (turn-on-eldoc-mode)))
+(add-hook 'ielm-mode-hook
+          (lambda ()
+            (paredit-mode 1)
+            (turn-on-eldoc-mode)))
 #+END_SRC
 
 And some various eldoc settings:
@@ -1164,15 +1176,6 @@ definitions:
 (use-package elisp-slime-nav)
 
 (add-hook 'emacs-lisp-mode-hook 'elisp-slime-nav-mode)
-(add-hook 'lisp-interaction-mode-hook 'elisp-slime-nav-mode)
-#+END_SRC
-
-And make sure paredit is always on in lisp-like modes:
-
-#+BEGIN_SRC emacs-lisp
-(use-package lisp-mode
-  :config
-  (add-hook 'lisp-mode (lambda () (paredit-mode 1))))
 #+END_SRC
 
 *** Python
@@ -1363,12 +1366,20 @@ And zencoding/css settings
 Bleh javascript.
 
 #+BEGIN_SRC emacs-lisp
-(defalias 'javascript-generic-mode 'js-mode)
-(setq-default js-auto-indent-flag nil)
-(setq-default js-indent-level 2)
+(use-package js2-mode
+  :init
+  (progn
+    (add-to-list 'auto-mode-alist '("\\.js\\'" . js2-mode))
+    (defalias 'javascript-generic-mode 'js2-mode))
+  :config
+  (progn
+    (setq-default js-auto-indent-flag nil
+                  js-indent-level 2)))
 
-(use-package tern)
-;;(add-hook 'js-mode-hook (lambda () (tern-mode t)))
+(use-package tern
+  :init ;;(add-hook 'js-mode-hook (lambda () (tern-mode t)))
+  )
+
 #+END_SRC
 *** Elasticsearch (es-mode)
 (es-mode) stuff, loaded from disk so I can develop on it quickly.

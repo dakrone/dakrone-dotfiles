@@ -3526,6 +3526,17 @@ you're basically editing every instance of that word/variable in the buffer.
   :bind ("C-;" . iedit-mode))
 #+END_SRC
 
+** paradox
+Prettifies the package list, if so desired.
+
+Only loaded if the paradox file exists, since it requires a github token
+
+#+BEGIN_SRC emacs-lisp
+(when (file-exists-p "~/.paradox.el")
+  (load-file "~/.paradox.el")
+  (use-package paradox))
+#+END_SRC
+
 ** eyebrowse
 
 #+BEGIN_SRC emacs-lisp
@@ -3662,9 +3673,13 @@ RSS and Atom with Emacs and Org!
 See: [[file:elfeed.org][~/.emacs.d/elfeed.org]]
 
 #+BEGIN_SRC emacs-lisp
-(use-package elfeed-org
-  :init (use-package elfeed
-          :init (elfeed-org)))
+(defun rss ()
+  "Start RSS things"
+  (interactive)
+  (use-package elfeed-org
+    :init (use-package elfeed
+            :init (elfeed-org)))
+  (elfeed))
 #+END_SRC
 
 ** fill-column-indicator

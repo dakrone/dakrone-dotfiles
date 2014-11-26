@@ -1286,9 +1286,8 @@ Turn on elisp-slime-nav if available, so =M-.= works to jump to function
 definitions:
 
 #+BEGIN_SRC emacs-lisp
-(use-package elisp-slime-nav)
-
-(add-hook 'emacs-lisp-mode-hook 'elisp-slime-nav-mode)
+(use-package elisp-slime-nav
+  :init (add-hook 'emacs-lisp-mode-hook 'elisp-slime-nav-mode))
 #+END_SRC
 
 *** Python
@@ -1502,7 +1501,9 @@ Bleh javascript.
     (progn
       (add-to-list 'load-path "~/src/elisp/es-mode")
       (use-package es-mode
-        :init (use-package ob-elasticsearch))
+        :init (use-package ob-elasticsearch)
+        ;; Don't warn me about delete statements
+        :config (setq es-warn-on-delete-query nil))
       (use-package org
         :config
         (org-babel-do-load-languages
@@ -1510,7 +1511,9 @@ Bleh javascript.
          '((elasticsearch . t)))))
   (progn
     (use-package es-mode
-      :init (use-package ob-elasticsearch))
+      :init (use-package ob-elasticsearch)
+      ;; Don't warn me about delete statements
+      :config (setq es-warn-on-delete-query nil))
     (use-package org
       :config
       (org-babel-do-load-languages
@@ -2891,6 +2894,19 @@ In order to get this to work also
          ("C-M-@" . er/contract-region)))
 #+END_SRC
 
+** with-editor
+Sets up the =with-editor= package so things that invoke =$EDITOR= will use the
+current emacs if I'm already inside of emacs
+
+#+BEGIN_SRC emacs-lisp
+(use-package with-editor
+  :init
+  (progn
+    (add-hook 'shell-mode-hook  'with-editor-export-editor)
+    (add-hook 'term-mode-hook   'with-editor-export-editor)
+    (add-hook 'eshell-mode-hook 'with-editor-export-editor)))
+#+END_SRC
+
 ** magit
 I use =M-g M-g= everywhere to go directly to Magit.
 
@@ -3384,7 +3400,7 @@ Standard auto-completion configuration with company-mode
 
 #+BEGIN_SRC emacs-lisp
 (use-package company
-  :diminish "C"
+  :diminish " C"
   :bind ("C-." . company-complete)
   :config
   (progn
@@ -3959,7 +3975,8 @@ really fit in anywhere else.
 (global-set-key (kbd "C-x +") 'balance-windows-area)
 
 ;; https://github.com/remyferre/comment-dwim-2
-(global-set-key (kbd "M-;") 'comment-dwim-2)
+(when (fboundp 'comment-dwim-2)
+  (global-set-key (kbd "M-;") 'comment-dwim-2))
 
 ;; M-g mapping
 (global-set-key (kbd "M-g M-f") 'ffap)

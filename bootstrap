@@ -1,7 +1,7 @@
 #!/bin/sh
 #
 # Usage:
-# % curl -sk https://raw.github.com/dakrone/dakrone-dotfiles/master/bootstrap | zsh
+# % curl -s https://raw.githubusercontent.com/dakrone/dakrone-dotfiles/master/bootstrap | zsh
 
 IAM=$(whoami)
 
@@ -21,7 +21,8 @@ git clone --depth 1 -q git://github.com/dakrone/dakrone-dotfiles.git ~/.dakrone
 HAVE24=$(emacs --version | grep "Emacs 24")
 if [ $? -eq 0 ]; then
     cp -R ~/.dakrone/.emacs.d ~/
-    emacs -q -batch -l ~/.emacs.d/packages.el -kill
+    # Start up emacs so it downloads packages and gets all set up
+    emacs -kill
 else
     cp -R ~/.dakrone/.emacs.d/backup23.el ~/.emacs.el
 fi

@@ -35,10 +35,11 @@
  '(logstash-indent 2)
  '(magit-set-upstream-on-push (quote dontask))
  '(magit-use-overlays nil)
- '(org-export-backends (quote (ascii html latex md reveal odt)))
+ '(org-export-backends (quote (ascii html latex md reveal)))
  '(org-modules
    (quote
     (org-bbdb org-bibtex org-docview org-gnus org-habit org-info org-irc org-mhe org-rmail org-w3m)))
+ '(paradox-automatically-star t)
  '(protect-buffer-bury-p nil)
  '(safe-local-variable-values
    (quote

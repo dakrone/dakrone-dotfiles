@@ -19,8 +19,6 @@
 
 ;; Dvorak nicety, regardless of loading settings
 (define-key key-translation-map "\C-t" "\C-x")
-;; Load use-package, used for loading packages
-(require 'use-package)
 
 ;; keep customize settings in their own file
 (setq custom-file "~/.emacs.d/custom.el")

@@ -137,111 +137,114 @@ This is code that installs packages before any config is loaded, since a lot of
 things add hooks that don't work if packages aren't installed.
 
 #+BEGIN_SRC emacs-lisp
-  (defvar my/install-packages
-    '(
-      ;; package management
-      use-package
+(defvar my/install-packages
+  '(
+    ;; package management
+    use-package
 
-      ;; themeing
-      rainbow-mode leuven-theme dakrone-theme smart-mode-line
-      color-identifiers-mode subatomic-theme subatomic256-theme
-      moe-theme powerline nyan-mode spacegray-theme zenburn-theme
+    ;; themeing
+    rainbow-mode leuven-theme dakrone-theme smart-mode-line
+    color-identifiers-mode subatomic-theme subatomic256-theme
+    moe-theme powerline nyan-mode spacegray-theme zenburn-theme
 
-      ;; misc
-      diminish gist scpaste
+    ;; misc
+    diminish gist scpaste
 
-      ;; es-mode
-      es-mode
+    ;; es-mode
+    es-mode
 
-      ;; IRC/ERC and social stuff
-      erc-hl-nicks ercn alert twittering-mode
+    ;; IRC/ERC and social stuff
+    erc-hl-nicks ercn alert twittering-mode
 
-      ;; for auto-complete
-      fuzzy popup company
+    ;; for auto-complete
+    fuzzy popup company
 
-      ;; editing utilities
-      expand-region smex windresize ag undo-tree iedit ido-ubiquitous
-      ido-vertical-mode yasnippet smart-tab anzu smartparens flx-ido projectile
-      smooth-scrolling keyfreq prodigy column-marker ace-jump-mode
-      multiple-cursors fancy-narrow easy-kill indent-guide toggle-quotes
-      visible-mark simple-call-tree simple-call-tree+ editorconfig ggtags
-      bookmark+ volatile-highlights fill-column-indicator golden-ratio wc-mode
+    ;; editing utilities
+    expand-region smex windresize ag undo-tree iedit ido-ubiquitous
+    ido-vertical-mode yasnippet smart-tab anzu smartparens flx-ido projectile
+    smooth-scrolling keyfreq prodigy column-marker ace-jump-mode
+    multiple-cursors fancy-narrow easy-kill indent-guide toggle-quotes
+    visible-mark simple-call-tree simple-call-tree+ editorconfig ggtags
+    bookmark+ volatile-highlights fill-column-indicator golden-ratio wc-mode
 
-      ;; highlighting
-      idle-highlight-mode highlight-symbol highlight-numbers highlight-quoted
+    ;; highlighting
+    idle-highlight-mode highlight-symbol highlight-numbers highlight-quoted
 
-      ;; LaTeX
-      auctex
+    ;; LaTeX
+    auctex
 
-      ;; org-mode
-      org htmlize gnuplot-mode gnuplot org-toc ox-reveal
+    ;; org-mode
+    org htmlize gnuplot-mode gnuplot org-toc ox-reveal
 
-      ;; buffer utils
-      popwin dired+ dired-imenu
+    ;; buffer utils
+    popwin dired+ dired-imenu
 
-      ;; haskell
-      haskell-mode ghc ghci-completion
+    ;; haskell
+    haskell-mode ghc ghci-completion
 
-      ;; config
-      ssh-config-mode
+    ;; config
+    ssh-config-mode
 
-      ;; flycheck
-      flycheck flycheck-tip
+    ;; flycheck
+    flycheck flycheck-tip
 
-      ;; clojure
-      clojure-mode clojure-test-mode cider paredit paren-face kibit-mode
-      cider-decompile ac-cider
+    ;; clojure
+    clojure-mode clojure-test-mode cider paredit paren-face kibit-mode
+    cider-decompile ac-cider
 
-      ;; perl
-      cperl-mode
+    ;; perl
+    cperl-mode
 
-      ;; python
-      hy-mode jedi
+    ;; python
+    hy-mode jedi
 
-      ;; ruby
-      ruby-mode ruby-test-mode inf-ruby puppet-mode rbenv chruby
+    ;; ruby
+    ruby-mode ruby-test-mode inf-ruby puppet-mode rbenv chruby
 
-      ;; rust
-      rust-mode
+    ;; rust
+    rust-mode
 
-      ;; go
-      go-mode
+    ;; go
+    go-mode
 
-      ;; java
-      emacs-eclim malabar-mode groovy-mode javap-mode
+    ;; java
+    emacs-eclim malabar-mode groovy-mode javap-mode
 
-      ;; javascript
-      tern json-mode js2-mode
+    ;; javascript
+    tern json-mode js2-mode
 
-      ;; emacs-lisp
-      elisp-slime-nav paredit
+    ;; emacs-lisp
+    elisp-slime-nav paredit
 
-      ;; racket
-      racket-mode
+    ;; racket
+    racket-mode
 
-      ;; markup language
-      markdown-mode markdown-mode+ yaml-mode zencoding-mode
+    ;; markup language
+    markdown-mode markdown-mode+ yaml-mode zencoding-mode
 
-      ;; helm
-      helm helm-descbinds helm-ag helm-projectile helm-swoop
-      helm-gtags
+    ;; helm
+    helm helm-descbinds helm-ag helm-projectile helm-swoop
+    helm-gtags
 
-      ;; git
-      magit git-gutter git-timemachine magit-gh-pulls with-editor
+    ;; git
+    magit git-gutter git-timemachine magit-gh-pulls with-editor
 
-      ;; eshell
-      eshell-prompt-extras
+    ;; eshell
+    eshell-prompt-extras
 
-      ;; gnus
-      gnus-x-gm-raw
+    ;; gnus
+    gnus-x-gm-raw
 
-      ;; eww
-      eww-lnum
-      ))
+    ;; eww
+    eww-lnum
+    ))
 
-  (dolist (pack my/install-packages)
-    (unless (package-installed-p pack)
-      (package-install pack)))
+(dolist (pack my/install-packages)
+  (unless (package-installed-p pack)
+    (package-install pack)))
+
+;; Load use-package, used for loading packages everywhere else
+(require 'use-package)
 
 #+END_SRC
 

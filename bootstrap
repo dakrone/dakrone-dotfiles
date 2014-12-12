@@ -21,8 +21,6 @@ git clone --depth 1 -q git://github.com/dakrone/dakrone-dotfiles.git ~/.dakrone
 HAVE24=$(emacs --version | grep "Emacs 24")
 if [ $? -eq 0 ]; then
     cp -R ~/.dakrone/.emacs.d ~/
-    # Start up emacs so it downloads packages and gets all set up
-    emacs -kill
 else
     cp -R ~/.dakrone/.emacs.d/backup23.el ~/.emacs.el
 fi

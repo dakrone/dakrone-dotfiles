@@ -189,7 +189,7 @@ things add hooks that don't work if packages aren't installed.
     flycheck flycheck-tip
 
     ;; clojure
-    clojure-mode clojure-test-mode cider paredit paren-face kibit-mode
+    clojure-mode cider paredit paren-face kibit-mode
     cider-decompile ac-cider
 
     ;; perl
@@ -227,7 +227,7 @@ things add hooks that don't work if packages aren't installed.
     helm-gtags
 
     ;; git
-    magit git-gutter git-timemachine magit-gh-pulls with-editor
+    magit git-gutter git-timemachine magit-gh-pulls with-editor git-annex
 
     ;; eshell
     eshell-prompt-extras
@@ -245,7 +245,6 @@ things add hooks that don't work if packages aren't installed.
 
 ;; Load use-package, used for loading packages everywhere else
 (require 'use-package)
-
 #+END_SRC
 
 ** Basics and settings used everywhere

@@ -834,7 +834,17 @@ completion, prompt and term settings:
       "Function to open magit-status for the current directory"
       (interactive)
       (magit-status default-directory)
-      nil)))
+      nil)
+
+    (defun my/create-or-switch-to-delta-buffer ()
+      "Switch to the *eshell delta* buffer, or create it"
+      (interactive)
+      (if (get-buffer "*eshell-delta*")
+          (switch-to-buffer "*eshell-delta*")
+        (let ((eshell-buffer-name "*eshell-delta*"))
+          (eshell))))
+
+    (global-set-key (kbd "C-x d") 'my/create-or-switch-to-delta-buffer)))
 #+END_SRC
 
 *** Tramp settings

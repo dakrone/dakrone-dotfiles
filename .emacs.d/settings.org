@@ -3041,9 +3041,9 @@ I basically use this to start up ES when I need to test something really quickly
   :config
   (progn
     (prodigy-define-service
-      :name "Elasticsearch 1.4.0"
-      :cwd "~/ies/elasticsearch-1.4.0/"
-      :command "~/ies/elasticsearch-1.4.0/bin/elasticsearch"
+      :name "Elasticsearch 1.4.1"
+      :cwd "~/ies/elasticsearch-1.4.1/"
+      :command "~/ies/elasticsearch-1.4.1/bin/elasticsearch"
       :tags '(work test es)
       :port 9200)
 

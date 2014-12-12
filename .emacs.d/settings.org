@@ -1405,25 +1405,24 @@ work with the ES codebase.
   (interactive)
   (define-key java-mode-map (kbd "M-,") 'pop-tag-mark)
   (c-set-style "intellij" t)
-  ;; eclim things
-  (use-package eclim
-    :config
-    (progn
-      (setq help-at-pt-display-when-idle t)
-      (setq help-at-pt-timer-delay 0.1)
-      (help-at-pt-set-timer)
-      (use-package company-emacs-eclim
-        :config
-        (company-emacs-eclim-setup))))
-
-  ;; Malabar things
-  (use-package malabar-mode
-    :disabled t
-    :config (use-package cedet))
   ;; Generic java stuff things
   (setq-local fci-rule-column 99))
 
 (add-hook 'java-mode-hook 'setup-java)
+#+END_SRC
+
+**** malabar-mode
+Malabar mode is for dealing with maven projects, such as [[https://github.com/elasticsearch/elasticsearch][Elasticsearch]], where it
+is nice to be able to compile the code.
+
+#+BEGIN_SRC emacs-lisp
+(defun my/setup-malabar ()
+  "Set up malabar configuration"
+  (interactive)
+  (use-package malabar-mode
+    :config (use-package cedet)))
+
+(add-hook 'java-mode-hook 'my/setup-malabar)
 #+END_SRC
 
 *** Ruby

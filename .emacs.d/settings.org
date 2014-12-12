@@ -550,6 +550,14 @@ files.
 (setq load-prefer-newer t)
 #+END_SRC
 
+Turn on winner-mode, which allows me to use =C-c LEFT= to undo window
+configuration changes, if so desired.
+
+#+BEGIN_SRC emacs-lisp
+(use-package winner
+  :init (winner-mode 1))
+#+END_SRC
+
 *** OS-specific settings
 These are settings that are applied depending on what OS I'm
 currently running on. First, we need a way to tell what kind of

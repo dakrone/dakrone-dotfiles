@@ -162,10 +162,9 @@ things add hooks that don't work if packages aren't installed.
     ;; editing utilities
     expand-region smex windresize ag undo-tree iedit ido-ubiquitous
     ido-vertical-mode yasnippet smart-tab anzu smartparens flx-ido projectile
-    smooth-scrolling keyfreq prodigy column-marker ace-jump-mode
-    multiple-cursors fancy-narrow easy-kill indent-guide toggle-quotes
-    visible-mark simple-call-tree simple-call-tree+ editorconfig ggtags
-    bookmark+ volatile-highlights fill-column-indicator golden-ratio wc-mode
+    smooth-scrolling keyfreq prodigy ace-jump-mode multiple-cursors
+    easy-kill simple-call-tree simple-call-tree+ editorconfig ggtags bookmark+
+    volatile-highlights fill-column-indicator golden-ratio wc-mode
 
     ;; highlighting
     idle-highlight-mode highlight-symbol highlight-numbers highlight-quoted
@@ -174,7 +173,7 @@ things add hooks that don't work if packages aren't installed.
     auctex
 
     ;; org-mode
-    org htmlize gnuplot-mode gnuplot org-toc ox-reveal
+    org htmlize gnuplot-mode gnuplot ox-reveal
 
     ;; buffer utils
     popwin dired+ dired-imenu
@@ -189,8 +188,7 @@ things add hooks that don't work if packages aren't installed.
     flycheck flycheck-tip
 
     ;; clojure
-    clojure-mode cider paredit paren-face kibit-mode
-    cider-decompile ac-cider
+    clojure-mode cider paredit paren-face cider-decompile
 
     ;; perl
     cperl-mode
@@ -506,18 +504,13 @@ Remove fringe things
   (set-fringe-style 0))
 #+END_SRC
 
-Start a server if not running, but a different server for GUI versus text-only:
+Start a server if not running, but a only for text-only:
 
 #+BEGIN_SRC emacs-lisp
 (use-package server
   :config
   (progn
-    (if (window-system)
-        (if (server-running-p server-name)
-            nil
-          (progn
-            (setq server-name "server-gui")
-            (server-start)))
+    (when (not (window-system))
       (if (server-running-p server-name)
           nil
         (server-start)))))
@@ -1113,7 +1106,11 @@ And then things to set up semantic mode
 #+BEGIN_SRC emacs-lisp
 (defun my/setup-semantic-mode ()
   (interactive)
-  (use-package semantic)
+  (use-package semantic
+    :init
+    (progn
+      (load "~/src/elisp/cedet/lisp/cedet/loaddefs.el")
+      (load "~/src/elisp/cedet/lisp/cedet/semantic/loaddefs.el")))
   (require 'semantic/ia)
   (require 'semantic/wisent)
   ;; Use a better (though slower) parser for java, if it exists
@@ -1151,7 +1148,6 @@ on subword mode and idle-highlight-mode:
             (when (fboundp 'idle-highlight-mode)
               (idle-highlight-mode t))
             (setq show-trailing-whitespace t)
-            (hl-line-mode 1)
             (subword-mode t)))
 #+END_SRC
 
@@ -1416,13 +1412,9 @@ Malabar mode is for dealing with maven projects, such as [[https://github.com/el
 is nice to be able to compile the code.
 
 #+BEGIN_SRC emacs-lisp
-(defun my/setup-malabar ()
-  "Set up malabar configuration"
-  (interactive)
-  (use-package malabar-mode
-    :config (use-package cedet)))
-
-(add-hook 'java-mode-hook 'my/setup-malabar)
+(use-package malabar-mode
+  :disabled t
+  :init (add-to-list 'auto-mode-alist '("\\.java\\'" . malabar-mode)))
 #+END_SRC
 
 *** Ruby
@@ -1644,7 +1636,7 @@ annoys me somewhat.
     :init
     (progn
       (setq moe-theme-resize-markdown-title '(2.0 1.7 1.5 1.3 1.0 1.0))
-      (setq moe-theme-resize-org-title '(2.2 1.8 1.6 1.4 1.2 1.0 1.0 1.0 1.0))
+      (setq moe-theme-resize-org-title '(2.0 1.8 1.6 1.4 1.2 1.0 1.0 1.0 1.0))
       (moe-dark))
     :config
     (progn
@@ -1664,7 +1656,8 @@ annoys me somewhat.
 (defun dakrone-light ()
   (interactive)
   (use-package leuven-theme
-    :init (load-theme 'leuven t)))
+    :init (load-theme 'leuven t))
+  (add-hook 'prog-mode-hook (lambda () (hl-line-mode 1))))
 
 (if (eq my/background 'dark)
     (dakrone-dark)
@@ -2172,16 +2165,6 @@ Exporting org-mode to [[http://lab.hakim.se/reveal-js/#/][reveal.js]] presentati
   :config
   (progn
     (setq org-reveal-root "http://cdn.jsdelivr.net/reveal.js/2.5.0/")))
-#+END_SRC
-
-** org-toc
-Generating table of contents from org-mode files, see:
-[[https://github.com/snosov1/org-toc]]
-
-#+BEGIN_SRC emacs-lisp
-(use-package org-toc
-  :disabled t
-  :init (add-hook 'org-mode-hook 'org-toc-enable))
 #+END_SRC
 
 ** alert (notifications)
@@ -3192,6 +3175,7 @@ There are many helm things. I use it a lot.
     (use-package helm-imenu)
     (use-package helm-semantic)
     (use-package helm-ring)
+    (use-package helm-simple-call-tree)
     (use-package helm-bookmark
       :bind (("C-x M-b" . helm-bookmarks)))
     (use-package helm-projectile
@@ -3417,29 +3401,7 @@ There are many helm things. I use it a lot.
 Various markdown-related settings.
 
 #+BEGIN_SRC emacs-lisp
-(use-package markdown-mode
-  :config
-  (progn
-    (define-key markdown-mode-map (kbd "C-M-f") 'forward-symbol)
-    (define-key markdown-mode-map (kbd "C-M-b") 'backward-symbol)
-    (define-key markdown-mode-map (kbd "C-M-u") 'my/backward-up-list)
-
-    (define-key markdown-mode-map (kbd "C-c C-n") 'outline-next-visible-heading)
-    (define-key markdown-mode-map (kbd "C-c C-p") 'outline-previous-visible-heading)
-    (define-key markdown-mode-map (kbd "C-c C-f") 'outline-forward-same-level)
-    (define-key markdown-mode-map (kbd "C-c C-b") 'outline-backward-same-level)
-    (define-key markdown-mode-map (kbd "C-c C-u") 'outline-up-heading)
-
-    (defvar markdown-imenu-generic-expression
-      '(("title"  "^\\(.+?\\)[\n]=+$" 1)
-        ("h2-"    "^\\(.+?\\)[\n]-+$" 1)
-        ("h1"     "^#\\s-+\\(.+?\\)$" 1)
-        ("h2"     "^##\\s-+\\(.+?\\)$" 1)
-        ("h3"     "^###\\s-+\\(.+?\\)$" 1)
-        ("h4"     "^####\\s-+\\(.+?\\)$" 1)
-        ("h5"     "^#####\\s-+\\(.+?\\)$" 1)
-        ("h6"     "^######\\s-+\\(.+?\\)$" 1)
-        ("fn"     "^\\[\\^\\(.+?\\)\\]" 1) ))))
+(use-package markdown-mode)
 #+END_SRC
 
 ** bookmark+
@@ -3636,32 +3598,6 @@ instead of rigid completions
 (use-package ido-ubiquitous)
 #+END_SRC
 
-** toggle-quotes
-Hot-key to toggle between single and double-quoted strings
-
-#+BEGIN_SRC emacs-lisp
-(use-package toggle-quotes
-  :bind ("M-\"" . toggle-quotes))
-#+END_SRC
-
-** visible-mark
-Shows the mark visibly, so I know where popping it will lead
-
-#+BEGIN_SRC emacs-lisp
-;; this has to go before the (require 'visible-mark)
-(defface visible-mark-active
-  '((((type tty) (class mono)))
-    (t (:background "magenta"))) "")
-
-(use-package visible-mark
-  :init (global-visible-mark-mode 1)
-  :disabled t
-  :config
-  (progn
-    (setq visible-mark-max 2)
-    (setq visible-mark-faces `(visible-mark-face1 my-visible-mark-face2))))
-#+END_SRC
-
 ** multiple-cursors
 Mulitple cursors is like rectangular selection/insertion but on steroids
 
@@ -3776,23 +3712,11 @@ Kind of like Vim's folding, but manually done right now.
 (add-hook 'prog-mode-hook 'my/enable-hs-minor-mode)
 #+END_SRC
 
-** indent-guide
-A neat mode to show indention
-
-#+BEGIN_SRC emacs-lisp
-(use-package indent-guide)
-
-;; (add-hook 'prog-mode-hook (lambda () (indent-guide-mode t)))
-#+END_SRC
-
 ** aggressive-indent
+Enable it, but don't turn it on by default...
 
 #+BEGIN_SRC emacs-lisp
-(use-package aggressive-indent
-  :init
-  (progn
-    (add-hook 'emacs-lisp-mode-hook #'aggressive-indent-mode)
-    (add-hook 'clojure-mode-hook #'aggressive-indent-mode)))
+(use-package aggressive-indent)
 #+END_SRC
 
 ** abbrev
@@ -3865,21 +3789,6 @@ Wait, no, I mean the Emacs web browser built in to 24.4
                 (define-key eww-mode-map "F" 'eww-lnum-universal))))))
 #+END_SRC
 
-** elfeed and elfeed-org
-RSS and Atom with Emacs and Org!
-
-See: [[file:elfeed.org][~/.emacs.d/elfeed.org]]
-
-#+BEGIN_SRC emacs-lisp
-(defun rss ()
-  "Start RSS things"
-  (interactive)
-  (use-package elfeed-org
-    :init (use-package elfeed
-            :init (elfeed-org)))
-  (elfeed))
-#+END_SRC
-
 ** fill-column-indicator
 
 #+BEGIN_SRC emacs-lisp
@@ -3911,127 +3820,6 @@ to switch between as needed:
   :init
   (progn
     (powerline-default-theme)))
-#+END_SRC
-
-Amit's modeline setup, from:
-http://amitp.blogspot.nl/2011/08/emacs-custom-mode-line.html
-
-#+BEGIN_SRC emacs-lisp
-(defun amit-modeline ()
-  "Set up Amit's modeline, currently only set up for dark backgrounds"
-  (interactive)
-  ;; Mode line setup
-  (setq-default
-   mode-line-format
-   '(;; Position, including warning for 80 columns
-     (:propertize "%5l:" face mode-line-position-face)
-     (:eval (propertize "%3c" 'face
-                        (if (>= (current-column) 80)
-                            'mode-line-80col-face
-                          'mode-line-position-face)))
-     ;; emacsclient [default -- keep?]
-     mode-line-client
-     " "
-     ;; read-only or modified status
-     (:eval
-      (cond (buffer-read-only
-             (propertize " RO " 'face 'mode-line-read-only-face))
-            ((buffer-modified-p)
-             (propertize " ** " 'face 'mode-line-modified-face))
-            (t " ")))
-     " "
-     ;; directory and buffer/file name
-     (:propertize (:eval (shorten-directory default-directory 30))
-                  face mode-line-folder-face)
-     (:propertize "%b"
-                  face mode-line-filename-face)
-     ;; narrow [default -- keep?]
-     " %n "
-     ;; mode indicators: vc, recursive edit, major mode, minor modes, process, global
-     (vc-mode vc-mode)
-     " %["
-     (:propertize mode-name
-                  face mode-line-mode-face)
-     "%] "
-     (:eval (propertize (format-mode-line minor-mode-alist)
-                        'face 'mode-line-minor-mode-face))
-     (:propertize mode-line-process
-                  face mode-line-process-face)
-     (global-mode-string global-mode-string)
-     " "
-     ;; nyan-mode uses nyan cat as an alternative to %p
-     (:eval (when nyan-mode (list (nyan-create))))
-     ))
-
-  ;; Helper function
-  (defun shorten-directory (dir max-length)
-    "Show up to `max-length' characters of a directory name `dir'."
-    (let ((path (reverse (split-string (abbreviate-file-name dir) "/")))
-          (output ""))
-      (when (and path (equal "" (car path)))
-        (setq path (cdr path)))
-      (while (and path (< (length output) (- max-length 4)))
-        (setq output (concat (car path) "/" output))
-        (setq path (cdr path)))
-      (when path
-        (setq output (concat ".../" output)))
-      output))
-
-  ;; Extra mode line faces
-  (make-face 'mode-line-read-only-face)
-  (make-face 'mode-line-modified-face)
-  (make-face 'mode-line-folder-face)
-  (make-face 'mode-line-filename-face)
-  (make-face 'mode-line-position-face)
-  (make-face 'mode-line-mode-face)
-  (make-face 'mode-line-minor-mode-face)
-  (make-face 'mode-line-process-face)
-  (make-face 'mode-line-80col-face)
-
-  (set-face-attribute 'mode-line nil
-                      :foreground "gray60" :background "gray10"
-                      :inverse-video nil
-                      :box '(:line-width 1 :color "gray60" :style nil))
-  (set-face-attribute 'mode-line-inactive nil
-                      :foreground "gray60" :background "gray20"
-                      :inverse-video nil
-                      :box '(:line-width 1 :color "gray10" :style nil))
-  (set-face-attribute 'mode-line-read-only-face nil
-                      :inherit 'mode-line-face
-                      :foreground "#4271ae"
-                      :box '(:line-width 1 :color "#4271ae"))
-  (set-face-attribute 'mode-line-modified-face nil
-                      :inherit 'mode-line-face
-                      :foreground "#c82829"
-                      :background "#ffffff"
-                      :box '(:line-width 1 :color "#c82829"))
-  (set-face-attribute 'mode-line-folder-face nil
-                      :inherit 'mode-line-face
-                      :foreground "gray60")
-  (set-face-attribute 'mode-line-filename-face nil
-                      :inherit 'mode-line-face
-                      :foreground "#eab700"
-                      :weight 'bold)
-  (set-face-attribute 'mode-line-position-face nil
-                      :inherit 'mode-line-face
-                      :height 100)
-  (set-face-attribute 'mode-line-mode-face nil
-                      :inherit 'mode-line-face
-                      :foreground "gray80")
-  (set-face-attribute 'mode-line-minor-mode-face nil
-                      :inherit 'mode-line-mode-face
-                      :foreground "gray40"
-                      :height 110)
-  (set-face-attribute 'mode-line-process-face nil
-                      :inherit 'mode-line-face
-                      :foreground "#718c00")
-  (set-face-attribute 'mode-line-80col-face nil
-                      :inherit 'mode-line-position-face
-                      :foreground "black" :background "#eab700"))
-
-;; Only set up Amit's modeline when using a dark background
-;; (when (eq my/background 'dark)
-;;   (amit-modeline))
 #+END_SRC
 
 ** Bindings

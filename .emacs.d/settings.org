@@ -249,6 +249,12 @@ things add hooks that don't work if packages aren't installed.
 Mostly settings that don't fit in elsewhere, so they end up here.
 
 *** General settings
+Turn on debugging, it will be turned off at the end
+
+#+BEGIN_SRC emacs-lisp
+(setq debug-on-error t)
+#+END_SRC
+
 First, let's determine whether I'm going to be using a dark theme,
 or a light theme. I set a var to either '=light= or '=dark=
 depending on whatever I'm in the mood for. This is used later on for the
@@ -4227,4 +4233,11 @@ I hate smart quotes
   (interactive "r")
   (format-replace-strings smart-to-ascii
                           nil beg end))
+#+END_SRC
+
+* Finalizers
+Turn off debugging, now that initialization has ended
+
+#+BEGIN_SRC emacs-lisp
+(setq debug-on-error nil)
 #+END_SRC

@@ -93,4 +93,6 @@ if [[ $OS == "Darwin" ]]; then
     alias acme='acme -a -f /mnt/font/AnonymousPro/13a/font'
     alias tmux='tmux -2 -f .tmux.osx'
 
+    # cabal things
+    export PATH=$PATH:~/Library/Haskell/bin
 fi

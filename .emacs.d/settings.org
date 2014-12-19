@@ -150,8 +150,7 @@ things add hooks that don't work if packages aren't installed.
     ;; misc
     diminish gist scpaste
 
-    ;; es-mode
-    es-mode
+    ;; es-mode is run from a  git checkout
 
     ;; IRC/ERC and social stuff
     erc-hl-nicks ercn alert twittering-mode
@@ -206,7 +205,7 @@ things add hooks that don't work if packages aren't installed.
     go-mode
 
     ;; java
-    emacs-eclim malabar-mode groovy-mode javap-mode
+    malabar-mode groovy-mode javap-mode
 
     ;; javascript
     tern json-mode js2-mode
@@ -261,8 +260,8 @@ depending on whatever I'm in the mood for. This is used later on for the
 modeline theme, as well as the general theme for things.
 
 #+BEGIN_SRC emacs-lisp
-;;(defvar my/background 'light)
-(defvar my/background 'dark)
+(defvar my/background 'light)
+;;(defvar my/background 'dark)
 #+END_SRC
 
 Now some personal information about me:
@@ -937,17 +936,11 @@ in a less/vim manner.
     (define-key view-mode-map (kbd "?") 'View-search-regexp-backward?)
     (define-key view-mode-map (kbd "g") 'View-goto-line)
     (define-key view-mode-map (kbd "G") 'View-goto-line-last)
-    (define-key view-mode-map (kbd "b") 'View-scroll-page-backward)
-    (define-key view-mode-map (kbd "f") 'View-scroll-page-forward)
     ;; vi/w3m like
     (define-key view-mode-map (kbd "h") 'backward-char)
     (define-key view-mode-map (kbd "j") 'next-line)
     (define-key view-mode-map (kbd "k") 'previous-line)
-    (define-key view-mode-map (kbd "l") 'forward-char)
-    (define-key view-mode-map (kbd "[") 'backward-paragraph)
-    (define-key view-mode-map (kbd "]") 'forward-paragraph)
-    (define-key view-mode-map (kbd "J") 'View-scroll-line-forward)
-    (define-key view-mode-map (kbd "K") 'View-scroll-line-backward)))
+    (define-key view-mode-map (kbd "l") 'forward-char)))
 
 (use-package doc-view
   :config
@@ -955,7 +948,6 @@ in a less/vim manner.
     'doc-view-next-line-or-next-page)
   (define-key doc-view-mode-map (kbd "k")
     'doc-view-previous-line-or-previous-page))
-
 #+END_SRC
 
 *** Dired
@@ -1112,16 +1104,11 @@ And then things to set up semantic mode
 #+BEGIN_SRC emacs-lisp
 (defun my/setup-semantic-mode ()
   (interactive)
-  (use-package semantic
-    :init
-    (progn
-      (load "~/src/elisp/cedet/lisp/cedet/loaddefs.el")
-      (load "~/src/elisp/cedet/lisp/cedet/semantic/loaddefs.el")))
+  (use-package semantic)
   (require 'semantic/ia)
   (require 'semantic/wisent)
   ;; Use a better (though slower) parser for java, if it exists
-  (when (file-exists-p "~/src/elisp/cedet/cedet-devel-load.el")
-    (autoload 'wisent-java-default-setup "semantic/wisent/java"))
+  ;; (autoload 'wisent-java-default-setup "semantic/wisent/java")
   (setq semantic-default-submodes
         '(global-semantic-idle-scheduler-mode
           global-semanticdb-minor-mode
@@ -1418,9 +1405,10 @@ Malabar mode is for dealing with maven projects, such as [[https://github.com/el
 is nice to be able to compile the code.
 
 #+BEGIN_SRC emacs-lisp
-(use-package malabar-mode
-  :disabled t
-  :init (add-to-list 'auto-mode-alist '("\\.java\\'" . malabar-mode)))
+(add-hook 'java-mode-hook
+          (lambda ()
+            (use-package malabar-mode)
+            (malabar-mode 1)))
 #+END_SRC
 
 *** Ruby
@@ -1495,46 +1483,6 @@ modes:
     (autoload 'ghc-debug "ghc" nil t)
     (add-hook 'haskell-mode-hook (lambda () (ghc-init)))))
 
-#+END_SRC
-
-*** C
-Not much to say about C/C++, it's mostly for reading code anyway:
-
-#+BEGIN_SRC emacs-lisp
-(defun my/c-mode-init ()
-  (c-set-style "k&r")
-  (c-toggle-electric-state -1)
-  (define-key c-mode-map (kbd "C-c o") 'ff-find-other-file)
-  (define-key c++-mode-map (kbd "C-c o") 'ff-find-other-file)
-  (hs-minor-mode 1)
-  (setq c-basic-offset 4))
-
-(add-hook 'c-mode-hook #'my/c-mode-init)
-(add-hook 'c++-mode-hook #'my/c-mode-init)
-#+END_SRC
-
-*** Html
-A nicety to insert a =<br />= when needed:
-
-#+BEGIN_SRC emacs-lisp
-(defun html-mode-insert-br ()
-  (interactive)
-  (insert "<br />"))
-
-(defvar html-mode-map nil "keymap used in html-mode")
-(unless html-mode-map
-  (setq html-mode-map (make-sparse-keymap))
-  (define-key html-mode-map (kbd "C-c b") 'html-mode-insert-br))
-#+END_SRC
-
-And zencoding/css settings
-
-#+BEGIN_SRC emacs-lisp
-(use-package zencoding-mode)
-(use-package css-mode)
-
-(add-hook 'sgml-mode-hook 'zencoding-mode)
-(add-hook 'html-mode-hook 'zencoding-mode)
 #+END_SRC
 
 *** Javascript
@@ -2974,8 +2922,7 @@ I use =M-g M-g= everywhere to go directly to Magit.
   :config
   (progn
     (when (eq system-type 'darwin)
-      (setq magit-emacsclient-executable
-            "/Applications/Emacs.app/Contents/MacOS/bin/emacsclient"))
+      (setq magit-emacsclient-executable "/usr/local/bin/emacsclient"))
     (defun magit-browse ()
       "Browse to the project's github URL, if available"
       (interactive)
@@ -3030,16 +2977,16 @@ I basically use this to start up ES when I need to test something really quickly
   :config
   (progn
     (prodigy-define-service
-      :name "Elasticsearch 1.4.1"
-      :cwd "~/ies/elasticsearch-1.4.1/"
-      :command "~/ies/elasticsearch-1.4.1/bin/elasticsearch"
+      :name "Elasticsearch 1.4.2"
+      :cwd "~/ies/elasticsearch-1.4.2/"
+      :command "~/ies/elasticsearch-1.4.2/bin/elasticsearch"
       :tags '(work test es)
       :port 9200)
 
     (prodigy-define-service
-      :name "Elasticsearch 1.3.5"
-      :cwd "~/ies/elasticsearch-1.3.5/"
-      :command "~/ies/elasticsearch-1.3.5/bin/elasticsearch"
+      :name "Elasticsearch 1.3.7"
+      :cwd "~/ies/elasticsearch-1.3.7/"
+      :command "~/ies/elasticsearch-1.3.7/bin/elasticsearch"
       :tags '(work test es)
       :port 9200)
 

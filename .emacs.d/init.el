@@ -1,9 +1,18 @@
+;; Dvorak nicety, regardless of loading settings
+(define-key key-translation-map "\C-t" "\C-x")
+
 ;; Keep track of loading time
 (defconst emacs-start-time (current-time))
 
 ;; Use a development version of CEDET, if available
-(when (file-exists-p "~/src/elisp/cedet/cedet-devel-load.el")
-  (load-file "~/src/elisp/cedet/cedet-devel-load.el"))
+;; (when (file-exists-p "~/src/elisp/cedet/cedet-devel-load.el")
+;;   (load-file "~/src/elisp/cedet/cedet-devel-load.el")
+;;   (add-to-list 'load-path "~/src/elisp/cedet")
+;;   (add-to-list 'load-path "~/src/elisp/cedet/lisp")
+;;   (add-to-list 'load-path "~/src/elisp/cedet/lisp/cedet")
+;;   (add-to-list 'load-path "~/src/elisp/cedet/lisp/eieio")
+;;   (add-to-list 'load-path "~/src/elisp/cedet/lisp/speedbar")
+;;   )
 
 ;; initalize all ELPA packages
 (require 'package)
@@ -16,9 +25,6 @@
 (let ((elapsed (float-time (time-subtract (current-time)
                                           emacs-start-time))))
   (message "Loaded packages in %.3fs" elapsed))
-
-;; Dvorak nicety, regardless of loading settings
-(define-key key-translation-map "\C-t" "\C-x")
 
 ;; keep customize settings in their own file
 (setq custom-file "~/.emacs.d/custom.el")

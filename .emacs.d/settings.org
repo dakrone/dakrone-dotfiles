@@ -146,6 +146,7 @@ things add hooks that don't work if packages aren't installed.
     rainbow-mode leuven-theme dakrone-theme smart-mode-line
     color-identifiers-mode subatomic-theme subatomic256-theme
     moe-theme powerline nyan-mode spacegray-theme zenburn-theme
+    flatui-theme
 
     ;; misc
     diminish gist scpaste
@@ -163,7 +164,8 @@ things add hooks that don't work if packages aren't installed.
     ido-vertical-mode yasnippet smart-tab anzu smartparens flx-ido projectile
     smooth-scrolling keyfreq prodigy ace-jump-mode multiple-cursors
     easy-kill simple-call-tree simple-call-tree+ editorconfig ggtags bookmark+
-    volatile-highlights fill-column-indicator golden-ratio wc-mode
+    volatile-highlights fill-column-indicator golden-ratio wc-mode eyebrowse
+    aggressive-indent
 
     ;; highlighting
     idle-highlight-mode highlight-symbol highlight-numbers highlight-quoted

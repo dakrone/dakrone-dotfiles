@@ -1,3 +1,6 @@
+# Handle dumb terms
+[[ $TERM == "dumb" ]] && unsetopt zle && PS1='$ ' && return
+
 echo -n "+++Reading .zshrc"
 [[ -o interactive ]] && echo -n " (for interactive use)"
 echo .
@@ -6,16 +9,11 @@ echo .
 zmodload zsh/datetime
 start=$EPOCHREALTIME
 
-# path
-export PATH=~/bin:/usr/local/bin:/usr/local/sbin:$PATH
+# path see ~/.zshenv
 
 # JBoss (brew install wildfly-as)
 export JBOSS_HOME=/usr/local/opt/wildfly-as/libexec
 export PATH=${PATH}:${JBOSS_HOME}/bin
-
-# abbreviation
-export EDITOR=nano # to be overwritten later
-export PAGER=less
 
 # report things that take more than 5 seconds
 export REPORTTIME=5
@@ -29,15 +27,6 @@ export SHOW_LOAD=false
 # start with a pre-title of nothing
 export PRETITLE=""
 
-# word chars
-# default is: *?_-.[]~=/&;!#$%^(){}<>
-# other: "*?_-.[]~=&;!#$%^(){}<>\\"
-export WORDCHARS='*?_[]~=&;!#$%^(){}'
-
-# history
-HISTFILE=$HOME/.zsh-history
-HISTSIZE=10000
-SAVEHIST=5000
 # "persistent history"
 # just write important commands you always need to ~/.important_commands
 if [[ -r ~/.important_commands ]] ; then
@@ -106,28 +95,6 @@ setopt dvorak
 
 autoload -U url-quote-magic
 zle -N self-insert url-quote-magic
-
-# Keybindings
-# Emacs keybindings
-bindkey -e
-bindkey "^?"    backward-delete-char
-bindkey "^H"    backward-delete-char
-bindkey "^[[3~" backward-delete-char
-bindkey "^[[1~" beginning-of-line
-bindkey "^[[4~" end-of-line
-
-bindkey '^r' history-incremental-search-backward
-bindkey "^[[5~" up-line-or-history
-bindkey "^[[6~" down-line-or-history
-bindkey "^A" beginning-of-line
-bindkey "^E" end-of-line
-bindkey "^W" backward-delete-word
-bindkey "^k" kill-line
-bindkey ' ' magic-space    # also do history expansion on space
-bindkey '^I' complete-word # complete on tab, leave expansion to _expand
-bindkey -r '^j' #unbind ctrl-j, I hit it all the time accidentaly
-bindkey -r '^[x' # remove M-x for emacs-things
-
 
 ## Sourcing OS-specific things
 if [[ -f ~/.zsh.d/zsh.${OS} ]]; then

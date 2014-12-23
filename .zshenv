@@ -3,13 +3,23 @@
 OS=$(uname -s); export OS
 MANPATH=/opt/local/man:/usr/local/man:$MANPATH
 WORDCHARS='*?_[]~=&;!#$%^(){}'
+# default is: *?_-.[]~=/&;!#$%^(){}<>
+# other: "*?_-.[]~=&;!#$%^(){}<>\\"
 WORDCHARS=${WORDCHARS:s,/,,}
-LEDGER_FILE=$HOME/.ledger; export LEDGER_FILE
-EDITOR=nano; export EDITOR
+
+export EDITOR=nano # to be overwritten later
+export PAGER=less
+
+export PATH=~/bin:/usr/local/bin:/usr/local/sbin:$PATH
+
+# history
+HISTFILE=$HOME/.zsh-history
+HISTSIZE=10000
+SAVEHIST=5000
 
 export JAVA_HOME
 [[ $OS == "Darwin" ]] && \
-   JAVA_HOME=$(/usr/libexec/java_home -v 1.7)
+   JAVA_HOME=$(/usr/libexec/java_home -v 1.8)
 
 ## With Emacs 23, I've found this needs to go in ~root/.zshrc too to
 ## help with Tramp hangs.

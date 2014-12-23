@@ -187,7 +187,7 @@ things add hooks that don't work if packages aren't installed.
     flycheck flycheck-tip
 
     ;; clojure
-    clojure-mode cider paredit paren-face cider-decompile
+    clojure-mode clojure-mode-extra-font-locking cider paredit paren-face
 
     ;; perl
     cperl-mode
@@ -1609,8 +1609,10 @@ annoys me somewhat.
 
 (defun dakrone-light ()
   (interactive)
-  (use-package leuven-theme
-    :init (load-theme 'leuven t))
+  (use-package flatui-theme
+    :init (load-theme 'flatui t))
+  ;; (use-package leuven-theme
+  ;;   :init (load-theme 'leuven t))
   (add-hook 'prog-mode-hook (lambda () (hl-line-mode 1))))
 
 (if (eq my/background 'dark)
@@ -3113,8 +3115,7 @@ There are many helm things. I use it a lot.
    ("C-x C-b" . helm-buffers-list)
    ;;("C-x b" . helm-buffers-list)
    ("C-x b" . helm-mini)
-   ("C-h t" . helm-world-time)
-   ("C-h s" . helm-simple-call-tree))
+   ("C-h t" . helm-world-time))
   ;;:idle (helm-mode 1)
   :config
   (progn
@@ -3128,7 +3129,6 @@ There are many helm things. I use it a lot.
     (use-package helm-imenu)
     (use-package helm-semantic)
     (use-package helm-ring)
-    (use-package helm-simple-call-tree)
     (use-package helm-bookmark
       :bind (("C-x M-b" . helm-bookmarks)))
     (use-package helm-projectile

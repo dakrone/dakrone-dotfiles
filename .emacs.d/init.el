@@ -19,6 +19,16 @@
 
 (add-to-list 'package-archives
              '("melpa" . "http://melpa.org/packages/"))
+(add-to-list 'package-archives
+             '("melpa-stable" . "http://stable.melpa.org/packages/"))
+
+(when (boundp 'package-pinned-packages)
+  (setq package-pinned-packages
+        '((cider                             . "melpa-stable")
+          (clojure-mode                      . "melpa-stable")
+          (clojure-mode-extra-font-locking   . "melpa-stable")
+          (company-cider                     . "melpa-stable")
+          (malabar-mode                      . "melpa-stable"))))
 
 (package-initialize)
 (setq package-enable-at-startup nil)

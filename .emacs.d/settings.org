@@ -2266,7 +2266,9 @@ if running in windowed mode, because I don't use ERC otherwise:
            "gnutls-cli --priority secure256 --x509certfile ~/host.pem -p %p %h"
            "gnutls-cli --priority secure256 -p %p %h")))
     (erc-tls :server "freenode" :port 31425
-             :nick "dakrone" :password znc-pass)))
+             :nick "dakrone" :password freenode-znc-pass)
+    (erc-tls :server "oftc" :port 31425
+             :nick "dakrone" :password oftc-znc-pass)))
 #+END_SRC
 
 ** ercn
@@ -2913,7 +2915,6 @@ current emacs if I'm already inside of emacs
   :init
   (progn
     (add-hook 'shell-mode-hook  'with-editor-export-editor)
-    (add-hook 'term-mode-hook   'with-editor-export-editor)
     (add-hook 'eshell-mode-hook 'with-editor-export-editor)))
 #+END_SRC
 
@@ -3160,6 +3161,7 @@ There are many helm things. I use it a lot.
                                     ("UTC" "UTC")
                                     ("Europe/London" "London")
                                     ("Europe/Amsterdam" "Amsterdam")
+                                    ("Asia/Bangkok" "Bangkok")
                                     ("Asia/Tokyo" "Tokyo")
                                     ("Australia/Sydney" "Sydney")))
     (define-key helm-map (kbd "C-p")   'helm-previous-line)

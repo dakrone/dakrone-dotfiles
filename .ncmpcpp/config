@@ -1,0 +1,64 @@
+
+##### connection settings #####
+mpd_host = "localhost"
+mpd_port = "6600"
+mpd_music_dir = "/Users/hinmanm/Music/iTunes/iTunes Media/Music"
+mpd_connection_timeout = "5"
+mpd_crossfade_time = "5"
+
+##### delays #####
+playlist_disable_highlight_delay = "5"
+message_delay_time = "4"
+
+##### song format #####
+song_library_format = "{%n - }{%t}|{%f}"
+tag_editor_album_format = "{(%y) }%b"
+browser_playlist_prefix = "$2playlist$9 "
+selected_item_prefix = "$6"
+selected_item_suffix = "$9"
+song_status_format = "{(%l) }{%a - }{%t}|{%f}"
+song_window_title_format = "{%a - }{%t}|{%f}"
+song_columns_list_format = "(5)[magenta]{l} (28)[cyan]{a} (30)[blue]{b} (50)[white]{t}"
+alternative_header_first_line_format = "{%t}"
+alternative_header_second_line_format = "$7{%a} - $5{%b} $8{(%y)}"
+
+##### various settings #####
+playlist_display_mode = "columns"
+incremental_seeking = "yes"
+seek_time = "1"
+autocenter_mode = "yes"
+default_place_to_search_in = "database"
+default_find_mode = "wrapped"
+default_space_mode = "add"
+default_tag_editor_pattern = "%n - %t"
+header_visibility = "yes"
+header_text_scrolling = "yes"
+cyclic_scrolling = "yes"
+statusbar_visibility = "yes"
+follow_now_playing_lyrics = "no"
+clock_display_seconds = "yes"
+enable_window_title = "yes"
+user_interface = "alternative"
+progressbar_look = "-)"
+
+
+##### colors definitions #####
+colors_enabled = "yes"
+empty_tag_color = "cyan"
+header_window_color = "default"
+volume_color = "default"
+state_line_color = "default"
+state_flags_color = "default"
+main_window_color = "cyan"
+color1 = "white"
+color2 = "green"
+main_window_highlight_color = "blue"
+progressbar_color = "default"
+statusbar_color = "default"
+active_column_color = "red"
+window_border_color = "green"
+active_window_border = "red"
+alternative_ui_separator_color = "black"
+
+# From Ravi on IRC
+media_library_primary_tag = "album_artist"

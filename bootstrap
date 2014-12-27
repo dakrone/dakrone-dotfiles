@@ -36,5 +36,6 @@ cp -R ~/.dakrone/.zsh.d ~/
 cp -f ~/.dakrone/.gitconfig ~/
 cp -f ~/.dakrone/.tmux.* ~/
 cp -f ~/.dakrone/.cmd-key-happy.lua ~/
+cp -R ~/.dakrone/.elinks ~/
 
 echo "Bootstrapped."

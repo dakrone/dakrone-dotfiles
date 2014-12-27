@@ -2,41 +2,59 @@
 
 echo "Gathering dotfiles..."
 
+# Vim
+echo "copying vim..."
 cp -f ~/.vimrc .
+mkdir -p .vim
+cp -f -r ~/.vim .
+
+# ZSH
+echo "copying zsh..."
 cp -f ~/.zshenv .
 cp -f ~/.zshrc .
 mkdir -p .zsh.d
 cp -f -r ~/.zsh.d .
 cp -f ~/.important_commands .
-cp -f ~/.screenrc .
-mkdir -p .vim
-cp -f -r ~/.vim .
-cp -f ~/.nsmcrc .
-cp -f ~/.vimperatorrc .
-cp -f ~/.vromerc .
-mkdir -p .vimperator
-cp -f -r ~/.vimperator .
+
+# IRB
+echo "copying IRB..."
 mkdir -p .config/irb
 cp -f -r ~/.config/irb .config/
 cp -f ~/.irbrc .
-cp -f ~/.autotest .
+
+# Newsbeuter
+echo "copying newsbeuter..."
 mkdir -p .newsbeuter
 cp -f ~/.newsbeuter/config .newsbeuter/config
-cp -f ~/.conkerorrc .
+
+# Elinks
+echo "copying elinks..."
 mkdir -p .elinks
 cp -f ~/.elinks/elinks.conf .elinks
+
+# Git
+echo "copying git..."
 cp -f ~/.gitconfig .
+
+# Network
+echo "copying polipo, pdnsd, privoxy..."
 cp -f /usr/local/etc/polipo.conf .
 cp -f /usr/local/etc/pdnsd.conf .
 cp -f -r /usr/local/etc/privoxy .
 cp -f /Library/LaunchDaemons/pdnsd.plist .
+
+# Python
+echo "copying python..."
 cp -f ~/.pythonstartup .
-cp -f ~/.tmux.* .
-cp -f ~/.cmd-key-happy.lua .
-cp -f ~/.globalrc .
 cp -f ~/.pylintrc .
-mkdir -p .aria2
-cp -f ~/.aria2/aria2.conf .aria2
+
+# TMUX
+echo "copying screen and tmux..."
+cp -f ~/.screenrc .
+cp -f ~/.tmux.* .
+
+# Emacs
+echo "copying emacs..."
 mkdir -p .emacs.d
 cp -f -r ~/.emacs.d .
 rm -rf .emacs.d/elpa
@@ -47,7 +65,22 @@ find . -name "*.elc" -exec rm {} \;
 find . -name "*._*" -exec rm {} \;
 find . -name "*~" -exec rm {} \;
 
+# MPD
+echo "copying mpd..."
+mkdir -p .ncmpcpp
+cp -f -r ~/.ncmpcpp .
+rm -rf .ncmpcpp/*.log
+cp -f ~/.mpd.conf .
+
+# Misc
+echo "copying misc..."
+cp -f ~/.cmd-key-happy.lua .
+cp -f ~/.globalrc .
+mkdir -p .aria2
+cp -f ~/.aria2/aria2.conf .aria2
+
 # Remove cruft
+echo "removing cruft and things that should not be backed up..."
 rm -rf .emacs.d/auto-save-list/
 rm -rf .emacs.d/backups
 rm -rf .emacs.d/tramp
@@ -58,3 +91,5 @@ rm -rf .zsh/zsh-completions/
 rm -rf .zsh/auto-fu*
 rm -rf .emacs.d/hinmanm/kibit-mode/target/
 rm -rf .emacs.d/var
+
+echo "Done."

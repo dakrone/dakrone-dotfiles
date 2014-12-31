@@ -167,6 +167,9 @@ things add hooks that don't work if packages aren't installed.
     volatile-highlights fill-column-indicator golden-ratio wc-mode eyebrowse
     aggressive-indent
 
+    ;; infrastructure stuff
+    restclient company-restclient
+
     ;; highlighting
     idle-highlight-mode highlight-symbol highlight-numbers highlight-quoted
 
@@ -578,8 +581,9 @@ system we're on:
 
 (when (eq system-type 'darwin)
   (setq ns-use-native-fullscreen nil)
-  (setq insert-directory-program "gls")
-  (setq dired-listing-switches "-aBhl --group-directories-first")
+  (when (executable-find "gls")
+    (setq insert-directory-program "gls")
+    (setq dired-listing-switches "-aBhl --group-directories-first"))
   (defun copy-from-osx ()
     "Handle copy/paste intelligently on osx."
     (let ((pbpaste (purecopy "/usr/bin/pbpaste")))
@@ -759,7 +763,9 @@ completion, prompt and term settings:
               ;; buffer shorthand -> echo foo > #'buffer
               eshell-buffer-shorthand t
               ;; my prompt is easy enough to see
-              eshell-highlight-prompt nil)
+              eshell-highlight-prompt nil
+              ;; treat 'echo' like shell echo
+              eshell-plain-echo-behavior t)
 
         ;; Visual commands
         (add-to-list 'eshell-visual-commands "ssh")
@@ -2685,20 +2691,20 @@ And some niceties to allow choosing a snippet using helm:
     :config
     (progn
       (defun my-yas/prompt (prompt choices &optional display-fn)
-      (let* ((names (loop for choice in choices
-                          collect (or (and display-fn
-                                           (funcall display-fn choice))
-                                      coice)))
-             (selected (helm-other-buffer
-                        `(((name . ,(format "%s" prompt))
-                           (candidates . names)
-                           (action . (("Insert snippet" . (lambda (arg)
-                                                            arg))))))
-                        "*helm yas/prompt*")))
-        (if selected
-            (let ((n (position selected names :test 'equal)))
-              (nth n choices))
-          (signal 'quit "user quit!"))))
+        (let* ((names (loop for choice in choices
+                            collect (or (and display-fn
+                                             (funcall display-fn choice))
+                                        choice)))
+               (selected (helm-other-buffer
+                          `(((name . ,(format "%s" prompt))
+                             (candidates . names)
+                             (action . (("Insert snippet" . (lambda (arg)
+                                                              arg))))))
+                          "*helm yas/prompt*")))
+          (if selected
+              (let ((n (position selected names :test 'equal)))
+                (nth n choices))
+            (signal 'quit "user quit!"))))
       (custom-set-variables '(yas/prompt-functions '(my-yas/prompt))))))
 #+END_SRC
 
@@ -3099,6 +3105,9 @@ Also, add a thing for yanking the entire symbol into the query while searching:
 ** helm
 There are many helm things. I use it a lot.
 
+A lot of things are taken from taken from
+https://tuhdo.github.io/helm-intro.html
+
 #+BEGIN_SRC emacs-lisp
 (use-package helm
   :bind
@@ -3114,12 +3123,13 @@ There are many helm things. I use it a lot.
    ("M-g ," . helm-ag-pop-stack)
    ("M-g ." . helm-do-grep)
    ("C-x C-i" . helm-semantic-or-imenu)
-   ("C-c M-x" . helm-M-x)
+   ("M-x" . helm-M-x)
+   ("C-x C-f" . helm-find-files)
    ("C-x C-b" . helm-buffers-list)
-   ;;("C-x b" . helm-buffers-list)
+   ("C-x C-r" . helm-mini)
    ("C-x b" . helm-mini)
    ("C-h t" . helm-world-time))
-  ;;:idle (helm-mode 1)
+  :idle (helm-mode 1)
   :config
   (progn
     (use-package helm-config)
@@ -3136,25 +3146,72 @@ There are many helm things. I use it a lot.
       :bind (("C-x M-b" . helm-bookmarks)))
     (use-package helm-projectile
       :bind (("C-x f" . helm-projectile)
-             ("C-c p f" . helm-projectile-find-file)))
+             ("C-c p f" . helm-projectile-find-file)
+             ("C-c p s" . helm-projectile-switch-project)))
     (use-package helm-eshell
       :init (add-hook 'eshell-mode-hook
                       (lambda ()
                         (define-key eshell-mode-map (kbd "M-l")
                           'helm-eshell-history))))
+    (use-package helm-descbinds
+      :init (helm-descbinds-mode t))
+    (use-package helm-ag
+      :bind ("C-M-s" . helm-ag-this-file))
+
+    ;; The default "C-x c" is quite close to "C-x C-c", which quits Emacs.
+    ;; Changed to "C-c h". Note: We must set "C-c h" globally, because we
+    ;; cannot change `helm-command-prefix-key' once `helm-config' is loaded.
+    (global-set-key (kbd "C-c h") 'helm-command-prefix)
+    (global-unset-key (kbd "C-x c"))
+
     (setq helm-idle-delay 0.1
           helm-exit-idle-delay 0.1
           helm-input-idle-delay 0
           helm-candidate-number-limit 500
           helm-buffers-fuzzy-matching t
+          ;; truncate long lines in helm completion
           helm-truncate-lines t
+          ;; may be overridden if 'ggrep' is in path (see below)
           helm-grep-default-command
-          ;;"ggrep -a -d skip %e -n%cH -e %p %f"
           "grep -a -d skip %e -n%cH -e %p %f"
           helm-grep-default-recurse-command
-          ;;"ggrep -a -d recurse %e -n%cH -e %p %f"
           "grep -a -d recurse %e -n%cH -e %p %f"
-          )
+          ;; scroll 4 lines other window using M-<next>/M-<prior>
+          helm-scroll-amount 4
+          ;; do not display invisible candidates
+          helm-quick-update t
+          ;; be idle for this many seconds, before updating in delayed sources.
+          helm-idle-delay 0.01
+          ;; be idle for this many seconds, before updating candidate buffer
+          helm-input-idle-delay 0.01
+          ;; open helm buffer in another window
+          helm-split-window-default-side 'other
+          ;; open helm buffer inside current window, don't occupy whole other window
+          helm-split-window-in-side-p t
+          helm-buffers-favorite-modes (append helm-buffers-favorite-modes
+                                              '(picture-mode artist-mode))
+          ;; limit the number of displayed canidates
+          helm-candidate-number-limit 200
+          ;; show all candidates when set to 0
+          helm-M-x-requires-pattern 0
+          ;; do not show these files in helm buffer
+          helm-boring-file-regexp-list '("\\.git$" "\\.hg$" "\\.svn$" "\\.CVS$"
+                                         "\\._darcs$" "\\.la$" "\\.o$" "\\.i$")
+          ;; don't use recentf stuff in helm-ff
+          helm-ff-file-name-history-use-recentf nil
+          ;; move to end or beginning of source when reaching top or bottom
+          ;; of source
+          helm-move-to-line-cycle-in-source t
+          ;; sometimes needed in helm-buffers-list
+          ido-use-virtual-buffers 'auto
+          ;; fuzzy matching for helm-M-x
+          helm-M-x-fuzzy-match t
+          ;; fuzzy matching
+          helm-buffers-fuzzy-matching t
+          helm-semantic-fuzzy-match t
+          helm-imenu-fuzzy-match t)
+
+    ;; List of times to show in helm-world-time
     (setq display-time-world-list '(("PST8PDT" "Los Altos")
                                     ("America/Denver" "Denver")
                                     ("EST5EDT" "Boston")
@@ -3164,61 +3221,35 @@ There are many helm things. I use it a lot.
                                     ("Asia/Bangkok" "Bangkok")
                                     ("Asia/Tokyo" "Tokyo")
                                     ("Australia/Sydney" "Sydney")))
+
+    (define-key helm-map (kbd "<tab>") 'helm-execute-persistent-action) ; rebind tab to do persistent action
+    (define-key helm-map (kbd "C-i") 'helm-execute-persistent-action) ; make TAB works in terminal
+    (define-key helm-map (kbd "C-z")  'helm-select-action) ; list actions using C-z
+
     (define-key helm-map (kbd "C-p")   'helm-previous-line)
     (define-key helm-map (kbd "C-n")   'helm-next-line)
     (define-key helm-map (kbd "C-M-n") 'helm-next-source)
     (define-key helm-map (kbd "C-M-p") 'helm-previous-source)
 
-    ;; Start of not-my-config stuff
-    ;; taken from https://tuhdo.github.io/helm-intro.html#sec-6
-    (define-key helm-map (kbd "<tab>") 'helm-execute-persistent-action) ; rebind tab to do persistent action
-    (define-key helm-map (kbd "C-i") 'helm-execute-persistent-action) ; make TAB works in terminal
-    (define-key helm-map (kbd "C-z")  'helm-select-action) ; list actions using C-z
-
     (define-key helm-grep-mode-map (kbd "<return>")  'helm-grep-mode-jump-other-window)
     (define-key helm-grep-mode-map (kbd "n")  'helm-grep-mode-jump-other-window-forward)
     (define-key helm-grep-mode-map (kbd "p")  'helm-grep-mode-jump-other-window-backward)
 
-    (setq helm-google-suggest-use-curl-p t
-          helm-scroll-amount 4 ; scroll 4 lines other window using M-<next>/M-<prior>
-          helm-quick-update t ; do not display invisible candidates
-          helm-idle-delay 0.01 ; be idle for this many seconds, before updating in delayed sources.
-          helm-input-idle-delay 0.01 ; be idle for this many seconds, before updating candidate buffer
-          helm-ff-search-library-in-sexp t ; search for library in `require' and `declare-function' sexp.
+    (when (executable-find "curl")
+      (setq helm-google-suggest-use-curl-p t))
 
-          ;; you can customize helm-do-grep to execute ack-grep
-          ;; helm-grep-default-command "ack-grep -Hn --smart-case --no-group --no-color %e %p %f"
-          ;; helm-grep-default-recurse-command "ack-grep -H --smart-case --no-group --no-color %e %p %f"
-          helm-split-window-default-side 'other ;; open helm buffer in another window
-          helm-split-window-in-side-p t ;; open helm buffer inside current window, not occupy whole other window
-          helm-buffers-favorite-modes (append helm-buffers-favorite-modes
-                                              '(picture-mode artist-mode))
-          helm-candidate-number-limit 200 ; limit the number of displayed canidates
-          helm-M-x-requires-pattern 0     ; show all candidates when set to 0
-          helm-boring-file-regexp-list
-          '("\\.git$" "\\.hg$" "\\.svn$" "\\.CVS$" "\\._darcs$" "\\.la$" "\\.o$" "\\.i$") ; do not show these files in helm buffer
-          helm-ff-file-name-history-use-recentf t
-          helm-move-to-line-cycle-in-source t ; move to end or beginning of source
-                                        ; when reaching top or bottom of source.
-          ido-use-virtual-buffers t     ; Needed in helm-buffers-list
-          helm-buffers-fuzzy-matching t ; fuzzy matching buffer names when non--nil
-                                        ; useful in helm-mini that lists buffers
-          )
+    ;; ggrep is gnu grep on OSX
+    (when (executable-find "ggrep")
+      (setq helm-grep-default-command
+            "ggrep -a -d skip %e -n%cH -e %p %f"
+            helm-grep-default-recurse-command
+            "ggrep -a -d recurse %e -n%cH -e %p %f"))
 
     (define-key helm-map (kbd "C-x 2") 'helm-select-2nd-action)
     (define-key helm-map (kbd "C-x 3") 'helm-select-3rd-action)
     (define-key helm-map (kbd "C-x 4") 'helm-select-4rd-action)
 
     ;; helm-mini instead of recentf
-    (global-set-key (kbd "C-x C-r") 'helm-mini)
-    ;;(global-set-key (kbd "C-x C-f") 'helm-find-files)
-    (global-set-key (kbd "C-c h s") 'helm-semantic-or-imenu)
-    (global-set-key (kbd "C-c h m") 'helm-man-woman)
-    (global-set-key (kbd "C-c h g") 'helm-do-grep)
-    (global-set-key (kbd "C-c h f") 'helm-find)
-    (global-set-key (kbd "C-c h l") 'helm-locate)
-    (global-set-key (kbd "C-c h o") 'helm-occur)
-    (global-set-key (kbd "C-c h r") 'helm-resume)
     (define-key 'help-command (kbd "C-f") 'helm-apropos)
     (define-key 'help-command (kbd "r") 'helm-info-emacs)
 
@@ -3329,10 +3360,6 @@ There are many helm things. I use it a lot.
     (global-set-key (kbd "C-c M-C-h") 'helm-httpstatus)
     (global-set-key (kbd "C-c M-h") 'helm-clj-http)
 
-    (use-package helm-descbinds
-      :init (helm-descbinds-mode t))
-    (use-package helm-ag
-      :bind ("C-M-s" . helm-ag-this-file))
     (use-package helm-swoop
       :bind (("M-i" . helm-swoop)
              ("M-I" . helm-swoop-back-to-last-point)
@@ -3351,7 +3378,6 @@ There are many helm things. I use it a lot.
               helm-swoop-split-direction 'split-window-vertically
               ;; If nil, you can slightly boost invoke speed in exchange for text color
               helm-swoop-speed-or-color nil)))))
-
 #+END_SRC
 
 ** markdown-mode

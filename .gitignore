@@ -8,7 +8,6 @@
 .vim/README*
 .emacs.d/ac-comphist.dat
 .emacs.d/.*
-.emacs.d/bookmarks
 .emacs.d/swank/*
 .emacs.d/url/*
 .emacs.d/session*
@@ -22,3 +21,11 @@
 .emacs.d/srecode-map.el
 .emacs.d/projectile-bookmarks*
 .emacs.d/projectile.cache
+.emacs.d/elfeed*
+.emacs.d/mail
+.emacs.d/savehist
+.emacs.d/games
+.emacs.d/dired-desktop
+.emacs.d/settings.el
+.emacs.d/image-dired
+.emacs.d/abbrev_defs

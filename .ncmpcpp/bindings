@@ -1,0 +1,11 @@
+def_key "j"
+ scroll_down
+
+def_key "k"
+ scroll_up
+
+def_key "ctrl_p"
+ scroll_up
+
+def_key "ctrl_n"
+ scroll_down

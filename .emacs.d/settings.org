@@ -4216,6 +4216,23 @@ I hate smart quotes
                           nil beg end))
 #+END_SRC
 
+*** Change number of replicas for an index
+So, I'd like something to prompt me for an index name and the number of replicas
+to change to, because I do this quite a bit...
+
+#+BEGIN_SRC emacs-lisp
+(defun my/change-replica-count (index replicas)
+  (interactive (list (read-string "Index (_all for all): ")
+                     (read-string "Number of replicas: ")))
+  (async-shell-command
+   (concat
+    "curl -XPUT 'localhost:9200/"
+    index
+    "/_settings' -d'{\"index\": {\"number_of_replicas\": "
+    replicas
+    "}}'")))
+#+END_SRC
+
 * Finalizers
 Turn off debugging, now that initialization has ended
 

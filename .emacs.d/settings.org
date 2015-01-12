@@ -265,8 +265,8 @@ depending on whatever I'm in the mood for. This is used later on for the
 modeline theme, as well as the general theme for things.
 
 #+BEGIN_SRC emacs-lisp
-(defvar my/background 'light)
-;;(defvar my/background 'dark)
+;;(defvar my/background 'light)
+(defvar my/background 'dark)
 #+END_SRC
 
 Now some personal information about me:
@@ -3075,7 +3075,7 @@ It can also be used for a "refactor-like" thing similar to query-replace.
     (setq anzu-mode-lighter "")
     (set-face-attribute 'anzu-mode-line nil :foreground "yellow")))
 
-(add-hook 'prog-mode-hook (lambda () (global-anzu-mode t)))
+(add-hook 'prog-mode-hook (lambda () (anzu-mode t)))
 #+END_SRC
 
 Also, add a thing for yanking the entire symbol into the query while searching:
@@ -3385,7 +3385,7 @@ Various markdown-related settings.
 #+END_SRC
 
 ** bookmark+
-Extendend bookmarks, which I've started used for dired buffers and so on
+Extended bookmarks, which I've started used for dired buffers and so on
 
 #+BEGIN_SRC emacs-lisp
 (use-package bookmark+
@@ -3465,7 +3465,8 @@ Popwin handles little popup windows at the bottom of the screen, which is very
 helpful for documentation buffers and so on.
 
 #+BEGIN_SRC emacs-lisp
-(use-package popwin)
+(use-package popwin
+  :idle (popwin-mode 1))
 (defvar popwin:special-display-config-backup popwin:special-display-config)
 (setq display-buffer-function 'popwin:display-buffer)
 
@@ -3535,6 +3536,9 @@ helpful for documentation buffers and so on.
 
 ;; ggtags
 (push '("*ggtags-global*" :stick t :noselect t :height 30) popwin:special-display-config)
+
+;; async shell commands
+(push '("*Async Shell Command*" :stick t) popwin:special-display-config)
 #+END_SRC
 
 ** paren-face

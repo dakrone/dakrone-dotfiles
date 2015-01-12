@@ -165,7 +165,7 @@ things add hooks that don't work if packages aren't installed.
     smooth-scrolling keyfreq prodigy ace-jump-mode multiple-cursors
     easy-kill simple-call-tree simple-call-tree+ editorconfig ggtags bookmark+
     volatile-highlights fill-column-indicator golden-ratio wc-mode eyebrowse
-    aggressive-indent
+    aggressive-indent vlf
 
     ;; infrastructure stuff
     restclient company-restclient
@@ -3734,6 +3734,13 @@ With prefix P, create local abbrev. Otherwise it will be global."
 
 (add-hook 'prog-mode-hook 'my/enable-abbrev-mode)
 (add-hook 'org-mode-hook 'my/enable-abbrev-mode)
+#+END_SRC
+
+** vlf (view large files)
+[[https://github.com/m00natic/vlfi][VLF]] lets me handle things like 2gb files gracefully.
+
+#+BEGIN_SRC emacs-lisp
+(use-package vlf-setup)
 #+END_SRC
 
 ** eww

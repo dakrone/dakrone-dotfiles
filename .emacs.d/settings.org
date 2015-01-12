@@ -1815,8 +1815,6 @@ settings are mine.
                      (org-agenda-skip-function 'my/skip-non-archivable-tasks))))
              nil))))
 
-    (ido-mode (quote both))
-
     ;; Exclude DONE state tasks from refile targets
     (defun my/verify-refile-target ()
       "Exclude todo keywords with a done state from refile targets"
@@ -2800,8 +2798,16 @@ using a big font size and I need more eshell space
   :diminish golden-ratio-mode
   :defer t
   :config
-  (setq golden-ratio-exclude-modes
-        '(erc-mode mu4e-headers-mode mu4e-view-mode)))
+  (progn
+    (defun pl/helm-alive-p ()
+      (if (boundp 'helm-alive-p)
+          (symbol-value 'helm-alive-p)))
+
+    ;; Inhibit helm
+    (add-to-list 'golden-ratio-inhibit-functions 'pl/helm-alive-p)
+    ;; Inhibit ERC and mu4e
+    (setq golden-ratio-exclude-modes
+          '(erc-mode mu4e-headers-mode mu4e-view-mode))))
 #+END_SRC
 
 ** flycheck
@@ -2869,8 +2875,6 @@ In order to get this to work also
 (defun my/setup-ggtags ()
   (interactive)
   (ggtags-mode 1)
-  ;; turn on helm-mode for completion
-  ;; (helm-mode 1)
   ;; turn on eldoc with ggtags
   (setq-local eldoc-documentation-function #'ggtags-eldoc-function)
   ;; add ggtags to the hippie completion
@@ -2887,8 +2891,8 @@ In order to get this to work also
               (lambda ()
                 (when (derived-mode-p 'c-mode 'c++-mode 'java-mode 'asm-mode)
                   (my/setup-semantic-mode)
-                  ;; (my/setup-helm-gtags) ;; helm-gtags
-                  (my/setup-ggtags) ;; regular gtags
+                  (my/setup-helm-gtags) ;; helm-gtags
+                  ;;(my/setup-ggtags) ;; regular gtags
                   )))))
 #+END_SRC
 
@@ -3117,7 +3121,9 @@ https://tuhdo.github.io/helm-intro.html
    ("C-x C-r" . helm-mini)
    ("C-x b" . helm-mini)
    ("C-h t" . helm-world-time))
-  :idle (helm-mode 1)
+  :idle (progn
+          ;;(helm-autoresize-mode 1)
+          (helm-mode 1))
   :config
   (progn
     (use-package helm-config)
@@ -3218,6 +3224,9 @@ https://tuhdo.github.io/helm-intro.html
     (define-key helm-map (kbd "C-n")   'helm-next-line)
     (define-key helm-map (kbd "C-M-n") 'helm-next-source)
     (define-key helm-map (kbd "C-M-p") 'helm-previous-source)
+    ;; The normal binding is C-c h M-g s which is insane
+    (global-set-key (kbd "C-c h g")    'helm-do-grep)
+    (global-set-key (kbd "C-c h a")    'helm-do-ag)
 
     (define-key helm-grep-mode-map (kbd "<return>")  'helm-grep-mode-jump-other-window)
     (define-key helm-grep-mode-map (kbd "n")  'helm-grep-mode-jump-other-window-forward)

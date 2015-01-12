@@ -3555,12 +3555,11 @@ instead of rigid completions
 
 #+BEGIN_SRC emacs-lisp
 (use-package ido
-  :init (ido-mode 1)
   :config
   (progn
     (setq ido-use-virtual-buffers nil
-          ido-enable-prefix nil
-          ido-enable-tramp-completion nil
+          ;; this setting causes weird TRAMP connections, don't set it!
+          ;;ido-enable-tramp-completion nil
           ido-enable-flex-matching t
           ido-auto-merge-work-directories-length nil
           ido-create-new-buffer 'always

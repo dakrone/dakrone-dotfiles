@@ -1981,7 +1981,71 @@ background of code to whatever theme I'm using's background"
 
     (add-hook 'org-export-before-processing-hook 'my/org-inline-css-hook)
 
-    ))
+    ;; A lot of this taken from http://oremacs.com/2015/01/07/org-protocol-1/
+    ;; and http://oremacs.com/2015/01/08/org-protocol-2/
+    (use-package org-protocol
+      :config
+      (progn
+        (setq org-protocol-default-template-key "l")
+        (push '("l" "Link" entry (function org-handle-link)
+                "* TODO %(org-wash-link)\nAdded: %U\n%(org-link-hooks)\n%?")
+              org-capture-templates)
+
+        (defun org-wash-link ()
+          (let ((link (caar org-stored-links))
+                (title (cadar org-stored-links)))
+            (setq title (replace-regexp-in-string
+                         " - Stack Overflow" "" title))
+            (org-make-link-string link title)))
+
+        (defvar org-link-hook nil)
+
+        (defun org-link-hooks ()
+          (prog1
+              (mapconcat #'funcall
+                         org-link-hook
+                         "\n")
+            (setq org-link-hook)))
+
+        (defun org-handle-link ()
+          (let ((link (caar org-stored-links))
+                file)
+            (cond ((string-match "^https://www.youtube.com/" link)
+                   (org-handle-link-youtube link))
+                  ((string-match (regexp-quote
+                                  "http://stackoverflow.com/") link)
+                   (find-file (org-expand "wiki/stack.org"))
+                   (goto-char (point-min))
+                   (re-search-forward "^\\*+ +Questions" nil t))
+                  (t
+                   (find-file (org-expand "ent.org"))
+                   (goto-char (point-min))
+                   (re-search-forward "^\\*+ +Articles" nil t)))))
+
+        (require 'async)
+        (defun org-handle-link-youtube (link)
+          (lexical-let*
+              ((file-name (org-trim
+                           (shell-command-to-string
+                            (concat
+                             "youtube-dl \""
+                             link
+                             "\""
+                             " -o \"%(title)s.%(ext)s\" --get-filename"))))
+               (dir "~/Downloads")
+               (full-name
+                (expand-file-name file-name dir)))
+            (add-hook 'org-link-hook
+                      (lambda ()
+                        (concat
+                         (org-make-link-string dir dir)
+                         "\n"
+                         (org-make-link-string full-name file-name))))
+            (async-shell-command
+             (format "youtube-dl \"%s\" -t" link))
+            (find-file (org-expand "ent.org"))
+            (goto-char (point-min))
+            (re-search-forward "^\\*+ +Videos" nil t)))))))
 #+END_SRC
 
 ** org-publishing

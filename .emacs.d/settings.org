@@ -885,12 +885,13 @@ and dired tramp buffers are great for file management.
         (add-to-list 'tramp-remote-path "~/bin")))))
 #+END_SRC
 
-*** Spellcheck and flyspell settings
-I use aspell for spellcheck, ignoring words under 3 characters and
-running very quickly. My personal word dictionary is at
+*** Spell check and flyspell settings
+I use hunspell and aspell checking spelling, ignoring words under 3 characters
+and running very quickly. My personal word dictionary is at
 =~/.flydict=.
 
-First, set up some Hunspell things if applicable:
+First, set up some Hunspell things if applicable, falling back to aspell if
+hunspell isn't available:
 
 #+BEGIN_SRC emacs-lisp
 ;; Standard location of personal dictionary

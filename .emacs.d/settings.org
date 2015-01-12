@@ -1735,9 +1735,6 @@ settings are mine.
     ;; Agenda org-mode files
     (setq org-agenda-files
           '("~/org/todo.org"
-            "~/org/elasticsearch.org"
-            "~/org/oss.org"
-            "~/org/book.org"
             "~/org/notes.org"
             "~/org/journal.org"
             "~/org/refile.org"))

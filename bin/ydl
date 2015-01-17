@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+youtube-dl "$1" --restrict-filenames

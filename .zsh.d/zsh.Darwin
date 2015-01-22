@@ -42,8 +42,12 @@ if [[ $OS == "Darwin" ]]; then
         export JAVA_HOME=/Library/Java/JavaVirtualMachines/jdk1.8.0_25.jdk/Contents/Home
     }
 
+    function java8_31() {
+        export JAVA_HOME=/Library/Java/JavaVirtualMachines/jdk1.8.0_31.jdk/Contents/Home
+    }
+
     function java8() {
-        export JAVA_HOME=/Library/Java/JavaVirtualMachines/jdk1.8.0_25.jdk/Contents/Home
+        export JAVA_HOME=/Library/Java/JavaVirtualMachines/jdk1.8.0_31.jdk/Contents/Home
     }
 
     export EMACS_HOME="/Applications/Emacs.app/Contents/MacOS"

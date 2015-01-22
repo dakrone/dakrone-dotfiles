@@ -37,6 +37,7 @@
  '(haskell-process-suggest-remove-import-lines t)
  '(haskell-process-type (quote cabal-repl))
  '(haskell-tags-on-save t)
+ '(helm-external-programs-associations (quote (("odt" . "open"))))
  '(logstash-indent 2)
  '(magit-set-upstream-on-push (quote dontask))
  '(magit-use-overlays nil)

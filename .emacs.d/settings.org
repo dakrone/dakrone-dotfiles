@@ -149,7 +149,7 @@ things add hooks that don't work if packages aren't installed.
     flatui-theme
 
     ;; misc
-    diminish gist scpaste
+    diminish gist scpaste async
 
     ;; es-mode is run from a  git checkout
 
@@ -247,6 +247,8 @@ things add hooks that don't work if packages aren't installed.
 
 ;; Load use-package, used for loading packages everywhere else
 (require 'use-package)
+;; Set to t to debug package loading
+(setq use-package-verbose nil)
 #+END_SRC
 
 ** Basics and settings used everywhere
@@ -265,8 +267,8 @@ depending on whatever I'm in the mood for. This is used later on for the
 modeline theme, as well as the general theme for things.
 
 #+BEGIN_SRC emacs-lisp
-;;(defvar my/background 'light)
-(defvar my/background 'dark)
+(defvar my/background 'light)
+;;(defvar my/background 'dark)
 #+END_SRC
 
 Now some personal information about me:
@@ -298,9 +300,9 @@ would like to by default, so set the threshold up higher:
 (setq gc-cons-threshold 20000000)
 ;; Allow font-lock-mode to do background parsing
 (setq jit-lock-stealth-time 1
-      jit-lock-stealth-load 100
+      jit-lock-stealth-load 200
       jit-lock-chunk-size 1000
-      jit-lock-defer-time 0.01)
+      jit-lock-defer-time 0.05)
 #+END_SRC
 
 Echo commands I haven't finished quicker than the default of 1 second:
@@ -642,6 +644,9 @@ Settings for what to do with temporary files.
 (setq delete-auto-save-files t)
 (setq backup-directory-alist
       '(("." . "~/.emacs_backups")))
+
+;; delete old backups silently
+(setq delete-old-versions t)
 #+END_SRC
 
 *** Shell settings
@@ -785,9 +790,9 @@ completion, prompt and term settings:
           "Change directory to the project's root."
           (eshell/cd (locate-dominating-file default-directory ".git")))
 
-        (defun eshell/l () "Same as `ls -lh'" (eshell/ls "-lh"))
-        (defun eshell/ll () "Same as `ls -lh'" (eshell/ls "-lh"))
-        (defun eshell/la () "Same as `ls -alh'" (eshell/ls "-alh"))
+        (defun eshell/l (&rest args) "Same as `ls -lh'" (apply #'eshell/ls "-lh" args))
+        (defun eshell/ll (&rest args) "Same as `ls -lh'" (apply #'eshell/ls "-lh" args))
+        (defun eshell/la (&rest args) "Same as `ls -alh'" (apply #'eshell/ls "-alh" args))
 
         (defun eshell/clear ()
           "Clear the eshell buffer"
@@ -921,7 +926,7 @@ hunspell isn't available:
     (diminish 'flyspell-mode "FS")))
 #+END_SRC
 
-*** View-mode
+*** View-mode and doc-view
 Read-only viewing of files. Keybindings for paging through stuff
 in a less/vim manner.
 
@@ -956,7 +961,10 @@ in a less/vim manner.
   (define-key doc-view-mode-map (kbd "j")
     'doc-view-next-line-or-next-page)
   (define-key doc-view-mode-map (kbd "k")
-    'doc-view-previous-line-or-previous-page))
+    'doc-view-previous-line-or-previous-page)
+  ;; use 'q' to kill the buffer, not just hide it
+  (define-key doc-view-mode-map (kbd "q")
+    #'kill-this-buffer))
 #+END_SRC
 
 *** Dired
@@ -998,6 +1006,8 @@ writable-dired mode is aawwweeeesssoooommee, it makes renames super easy.
         (add-to-list 'dired-omit-extensions ".DS_Store")))
     (customize-set-variable 'diredp-hide-details-initially-flag nil)
     (use-package dired+)
+    (use-package dired-aux
+      :init (use-package dired-async))
     (put 'dired-find-alternate-file 'disabled nil)
     (setq ls-lisp-dirs-first t
           dired-recursive-copies 'always
@@ -1307,6 +1317,21 @@ definitions:
   :init (add-hook 'emacs-lisp-mode-hook 'elisp-slime-nav-mode))
 #+END_SRC
 
+Borrowed from Steve Purcell's config. This pretty-prints the results.
+
+#+begin_src emacs-lisp
+(bind-key "M-:" 'pp-eval-expression)
+
+(defun sanityinc/eval-last-sexp-or-region (prefix)
+ "Eval region from BEG to END if active, otherwise the last sexp."
+ (interactive "P")
+ (if (and (mark) (use-region-p))
+ (eval-region (min (point) (mark)) (max (point) (mark)))
+ (pp-eval-last-sexp prefix)))
+
+(bind-key "C-x C-e" 'sanityinc/eval-last-sexp-or-region emacs-lisp-mode-map)
+#+end_src
+
 *** Python
 Some various python settings, including loading jedi if needed to set up
 keys, the custom hook only loads jedi when editing python files:
@@ -1496,6 +1521,7 @@ Bleh javascript.
     (defalias 'javascript-generic-mode 'js2-mode))
   :config
   (progn
+    (js2-imenu-extras-setup)
     (setq-default js-auto-indent-flag nil
                   js-indent-level 2)))
 
@@ -1534,6 +1560,50 @@ Bleh javascript.
 
 ** theme
 Misc theme settings
+
+*** color theme
+For light-colored backgrounds, I used [[https://github.com/fniessen/emacs-leuven-theme][leuven-theme]]. For dark-colored
+backgrounds (most of the time), I use my own custom theme, called [[https://github.com/dakrone/dakrone-theme][dakrone-theme]].
+Sometimes I use [[https://github.com/kuanyui/moe-theme.el][moe-theme]] for a dark background also, although the magenta text
+annoys me somewhat.
+
+#+BEGIN_SRC emacs-lisp
+(setq ns-use-srgb-colorspace t)
+
+(defun dakrone-dark ()
+  (interactive)
+  (use-package moe-theme
+    :init
+    (progn
+      (setq moe-theme-resize-markdown-title '(2.0 1.7 1.5 1.3 1.0 1.0))
+      (moe-dark))
+    :config
+    (progn
+      ;; Moe's misspelled font is a bit much...
+      (if (version< emacs-version "24.4")
+          (set-face-attribute 'flyspell-incorrect nil
+                              :inherit nil
+                              :foreground 'unspecified
+                              :background 'unspecified
+                              :underline "red")
+        (set-face-attribute 'flyspell-incorrect nil
+                            :inherit nil
+                            :foreground 'unspecified
+                            :background 'unspecified
+                            :underline '(:style wave :color "red"))))))
+
+(defun dakrone-light ()
+  (interactive)
+  ;; (use-package flatui-theme
+  ;;   :init (load-theme 'flatui t))
+  (use-package leuven-theme
+    :init (load-theme 'leuven t))
+  (add-hook 'prog-mode-hook (lambda () (hl-line-mode 1))))
+
+(if (eq my/background 'dark)
+    (dakrone-dark)
+  (dakrone-light))
+#+END_SRC
 
 *** fonts
 
@@ -1575,51 +1645,10 @@ Config for Linux/X11 systems:
   (set-face-attribute 'default nil :height 90))
 #+END_SRC
 
-*** color theme
-For light-colored backgrounds, I used [[https://github.com/fniessen/emacs-leuven-theme][leuven-theme]]. For dark-colored
-backgrounds (most of the time), I use my own custom theme, called [[https://github.com/dakrone/dakrone-theme][dakrone-theme]].
-Sometimes I use [[https://github.com/kuanyui/moe-theme.el][moe-theme]] for a dark background also, although the magenta text
-annoys me somewhat.
-
-#+BEGIN_SRC emacs-lisp
-(setq ns-use-srgb-colorspace t)
-
-(defun dakrone-dark ()
-  (interactive)
-  (use-package moe-theme
-    :init
-    (progn
-      (setq moe-theme-resize-markdown-title '(2.0 1.7 1.5 1.3 1.0 1.0))
-      (moe-dark))
-    :config
-    (progn
-      ;; Moe's misspelled font is a bit much...
-      (if (version< emacs-version "24.4")
-          (set-face-attribute 'flyspell-incorrect nil
-                              :inherit nil
-                              :foreground 'unspecified
-                              :background 'unspecified
-                              :underline "red")
-        (set-face-attribute 'flyspell-incorrect nil
-                            :inherit nil
-                            :foreground 'unspecified
-                            :background 'unspecified
-                            :underline '(:style wave :color "red"))))))
-
-(defun dakrone-light ()
-  (interactive)
-  (use-package flatui-theme
-    :init (load-theme 'flatui t))
-  ;; (use-package leuven-theme
-  ;;   :init (load-theme 'leuven t))
-  (add-hook 'prog-mode-hook (lambda () (hl-line-mode 1))))
-
-(if (eq my/background 'dark)
-    (dakrone-dark)
-  (dakrone-light))
-#+END_SRC
-
 ** org-mode
+:PROPERTIES:
+:ID:       47917AC7-93A4-4A8F-B45C-0F482904778C
+:END:
 I use org-mode a ton, so it get's its own page here.
 
 I am using the custom org-mode export to Github-flavored-markdown from:
@@ -1649,7 +1678,7 @@ settings are mine.
     (use-package org-install)
     ;; load github-flavored-markdown
     (add-hook 'org-mode-hook 'turn-on-auto-fill)
-    (setq org-directory "~/org"
+    (setq org-directory (file-truename "~/org")
           org-startup-indented t
           org-return-follows-link t
           ;; allow changing between todo stats directly by hotkey
@@ -1725,10 +1754,10 @@ settings are mine.
 
     ;; Agenda org-mode files
     (setq org-agenda-files
-          '("~/org/todo.org"
-            "~/org/notes.org"
-            "~/org/journal.org"
-            "~/org/refile.org"))
+          `(,(file-truename "~/org/todo.org")
+            ,(file-truename "~/org/notes.org")
+            ,(file-truename "~/org/journal.org")
+            ,(file-truename "~/org/refile.org")))
     ;; Org todo keywords
     (setq org-todo-keywords
           (quote
@@ -1776,7 +1805,10 @@ settings are mine.
             ("n" "Notes" entry (file+headline "~/org/notes.org" "Notes")
              "* %? :NOTE:\n%U\n")
             ("j" "Journal" entry (file+datetree "~/org/journal.org")
-             "* %?\n%U\n"))))
+             "* %?\n%U\n")
+            ("b" "Book/Bibliography" entry
+             (file+headline "~/org/bibliography.org" "Refile")
+             "* %?%^{TITLE}p%^{AUTHOR}p%^{TYPE}p"))))
     ;; Custom agenda command definitions
     (setq org-agenda-custom-commands
           (quote
@@ -1979,73 +2011,7 @@ background of code to whatever theme I'm using's background"
             (format "<style type=\"text/css\">\n pre.src {background-color: %s; color: %s;}</style>\n"
                     my-pre-bg my-pre-fg))))))
 
-    (add-hook 'org-export-before-processing-hook 'my/org-inline-css-hook)
-
-    ;; A lot of this taken from http://oremacs.com/2015/01/07/org-protocol-1/
-    ;; and http://oremacs.com/2015/01/08/org-protocol-2/
-    (use-package org-protocol
-      :config
-      (progn
-        (setq org-protocol-default-template-key "l")
-        (push '("l" "Link" entry (function org-handle-link)
-                "* TODO %(org-wash-link)\nAdded: %U\n%(org-link-hooks)\n%?")
-              org-capture-templates)
-
-        (defun org-wash-link ()
-          (let ((link (caar org-stored-links))
-                (title (cadar org-stored-links)))
-            (setq title (replace-regexp-in-string
-                         " - Stack Overflow" "" title))
-            (org-make-link-string link title)))
-
-        (defvar org-link-hook nil)
-
-        (defun org-link-hooks ()
-          (prog1
-              (mapconcat #'funcall
-                         org-link-hook
-                         "\n")
-            (setq org-link-hook)))
-
-        (defun org-handle-link ()
-          (let ((link (caar org-stored-links))
-                file)
-            (cond ((string-match "^https://www.youtube.com/" link)
-                   (org-handle-link-youtube link))
-                  ((string-match (regexp-quote
-                                  "http://stackoverflow.com/") link)
-                   (find-file (org-expand "wiki/stack.org"))
-                   (goto-char (point-min))
-                   (re-search-forward "^\\*+ +Questions" nil t))
-                  (t
-                   (find-file (org-expand "ent.org"))
-                   (goto-char (point-min))
-                   (re-search-forward "^\\*+ +Articles" nil t)))))
-
-        (require 'async)
-        (defun org-handle-link-youtube (link)
-          (lexical-let*
-              ((file-name (org-trim
-                           (shell-command-to-string
-                            (concat
-                             "youtube-dl \""
-                             link
-                             "\""
-                             " -o \"%(title)s.%(ext)s\" --get-filename"))))
-               (dir "~/Downloads")
-               (full-name
-                (expand-file-name file-name dir)))
-            (add-hook 'org-link-hook
-                      (lambda ()
-                        (concat
-                         (org-make-link-string dir dir)
-                         "\n"
-                         (org-make-link-string full-name file-name))))
-            (async-shell-command
-             (format "youtube-dl \"%s\" -t" link))
-            (find-file (org-expand "ent.org"))
-            (goto-char (point-min))
-            (re-search-forward "^\\*+ +Videos" nil t)))))))
+    (add-hook 'org-export-before-processing-hook 'my/org-inline-css-hook)))
 #+END_SRC
 
 ** org-publishing
@@ -2055,9 +2021,9 @@ Publishing org-mode files to my hosting provider:
 (use-package org
   :config
   (setq org-publish-project-alist
-        '(;; Main website at http://writequit.org
+        `(;; Main website at http://writequit.org
           ("writequit-org"
-           :base-directory "~/www"
+           :base-directory ,(file-truename "~/www")
            :base-extension "org\\|html"
            :publishing-directory
            "/ssh:hinmanph@writequit:~/public_html/wq/"
@@ -2065,13 +2031,13 @@ Publishing org-mode files to my hosting provider:
            :with-toc nil
            :html-preamble t)
           ("writequit-images"
-           :base-directory "~/www/images"
+           :base-directory ,(file-truename  "~/www/images")
            :base-extension "png\\|jpg\\|gif"
            :publishing-directory
            "/ssh:hinmanph@writequit:~/public_html/wq/images"
            :publishing-function org-publish-attachment)
           ("writequit-files"
-           :base-directory "~/www/files"
+           :base-directory ,(file-truename  "~/www/files")
            :base-extension "*"
            :publishing-directory
            "/ssh:hinmanph@writequit:~/public_html/wq/files/"
@@ -2082,7 +2048,7 @@ Publishing org-mode files to my hosting provider:
 
           ;; Org-mode files for ~/.emacs.d/settings.org
           ("emacs dotfiles"
-           :base-directory "~/.emacs.d/"
+           :base-directory ,(file-truename "~/.emacs.d/")
            :base-extension "org\\|html"
            :publishing-directory
            "/ssh:hinmanph@writequit:~/public_html/wq/paste/org/"
@@ -2092,7 +2058,7 @@ Publishing org-mode files to my hosting provider:
 
           ;; Org-mode files for ~/org files
           ("org-org"
-           :base-directory "~/org/"
+           :base-directory ,(file-truename "~/org/")
            :base-extension "org\\|html"
            :publishing-directory
            "/ssh:hinmanph@writequit:~/public_html/wq/paste/org/"
@@ -2100,7 +2066,7 @@ Publishing org-mode files to my hosting provider:
            :with-toc t
            :html-preamble t)
           ("org-images"
-           :base-directory "~/org/images"
+           :base-directory ,(file-truename "~/org/images")
            :base-extension "png\\|jpg"
            :publishing-directory
            "/ssh:hinmanph@writequit:~/public_html/wq/paste/org/images"
@@ -2109,7 +2075,7 @@ Publishing org-mode files to my hosting provider:
 
           ;; Org-mode for the ~/org/es files
           ("org-es-org"
-           :base-directory "~/org/es/"
+           :base-directory ,(file-truename "~/org/es/")
            :base-extension "org\\|html"
            :publishing-directory
            "/ssh:hinmanph@writequit:~/public_html/wq/paste/org/es"
@@ -2117,13 +2083,13 @@ Publishing org-mode files to my hosting provider:
            :with-toc t
            :html-preamble t)
           ("org-es-files"
-           :base-directory "~/org/es/"
+           :base-directory ,(file-truename "~/org/es/")
            :base-extension "css\\|pdf\\|sh\\|es\\|zsh\\|py\\|org"
            :publishing-directory
            "/ssh:hinmanph@writequit:~/public_html/wq/paste/org/es"
            :publishing-function org-publish-attachment)
           ("org-es-images"
-           :base-directory "~/org/es/images"
+           :base-directory ,(file-truename "~/org/es/images")
            :base-extension "png\\|jpg"
            :publishing-directory
            "/ssh:hinmanph@writequit:~/public_html/wq/paste/org/es/images"
@@ -2133,7 +2099,7 @@ Publishing org-mode files to my hosting provider:
 
           ;; Org-mode for the ~/org/es/design files
           ("org-es-design-org"
-           :base-directory "~/org/es/design"
+           :base-directory ,(file-truename "~/org/es/design")
            :base-extension "org\\|html"
            :publishing-directory
            "/ssh:hinmanph@writequit:~/public_html/wq/paste/org/es/design"
@@ -2141,13 +2107,13 @@ Publishing org-mode files to my hosting provider:
            :with-toc t
            :html-preamble t)
           ("org-es-design-files"
-           :base-directory "~/org/es/design"
+           :base-directory ,(file-truename "~/org/es/design")
            :base-extension "css\\|pdf\\|sh\\|es\\|zsh\\|py\\|org"
            :publishing-directory
            "/ssh:hinmanph@writequit:~/public_html/wq/paste/org/es/design"
            :publishing-function org-publish-attachment)
           ("org-es-designs-images"
-           :base-directory "~/org/es/design/images"
+           :base-directory ,(file-truename "~/org/es/design/images")
            :base-extension "png\\|jpg"
            :publishing-directory
            "/ssh:hinmanph@writequit:~/public_html/wq/paste/org/es/design/images"
@@ -2159,7 +2125,7 @@ Publishing org-mode files to my hosting provider:
 
           ;; Org-mode files for the book
           ("org-book-pastebin"
-           :base-directory "~/org/book/"
+           :base-directory ,(file-truename "~/org/book/")
            :base-extension "org\\|zsh\\|html\\|png"
            :publishing-directory
            "/ssh:hinmanph@writequit:~/public_html/wq/paste/org/book/"
@@ -2235,7 +2201,9 @@ Exporting org-mode to [[http://lab.hakim.se/reveal-js/#/][reveal.js]] presentati
 #+END_SRC
 
 ** ERC Configuration (IRC)
-ERC (IRC) configuration, requires the ERC package
+ERC (IRC) configuration, requires the ERC package.
+
+I use ercn for IRC notifications, written by the honorable Mr. Leatherman
 
 And finally the giant setting of ERC configuration variables, only
 if running in windowed mode, because I don't use ERC otherwise:
@@ -2311,7 +2279,19 @@ if running in windowed mode, because I don't use ERC otherwise:
           (add-to-list 'erc-modules 'spelling)
           (erc-services-mode 1)
           (erc-spelling-mode 1)))
-      (erc-update-modules))))
+      (erc-update-modules)))
+
+  (use-package ercn
+  :config
+  (progn
+    (setq ercn-notify-rules
+          '((current-nick . all)
+            (keyword . all)
+            (pal . ("#84115"))
+            (query-buffer . all)))
+    (defun do-notify (nickname message)
+      (alert message :title (concat (buffer-name) ": " nickname)))
+    (add-hook 'ercn-notify 'do-notify))))
 
 (defun start-irc ()
   "Connect to IRC."
@@ -2325,23 +2305,6 @@ if running in windowed mode, because I don't use ERC otherwise:
              :nick "dakrone" :password freenode-znc-pass)
     (erc-tls :server "oftc" :port 31425
              :nick "dakrone" :password oftc-znc-pass)))
-#+END_SRC
-
-** ercn
-ERC notifications! Written by the honorable Mr. Leatherman
-
-#+BEGIN_SRC emacs-lisp
-(use-package ercn
-  :init
-  (progn
-    (setq ercn-notify-rules
-          '((current-nick . all)
-            (keyword . all)
-            (pal . ("#84115"))
-            (query-buffer . all)))
-    (defun do-notify (nickname message)
-      (alert message :title (concat (buffer-name) ": " nickname)))
-    (add-hook 'ercn-notify 'do-notify)))
 #+END_SRC
 
 ** Email (mu4e) Configuration
@@ -2706,6 +2669,32 @@ Jump quickly between words or lines, I mostly use it with eww.
          ("C-c M-SPC" . ace-jump-line-mode)))
 #+END_SRC
 
+** ediff
+Ediff is fantastic for looking through diffs, a lot of these settings are taken
+from http://oremacs.com/2015/01/17/setting-up-ediff/
+
+#+BEGIN_SRC emacs-lisp
+(defun my/setup-ediff ()
+  (interactive)
+  (ediff-setup-keymap)
+  (define-key ediff-mode-map "j" 'ediff-next-difference)
+  (define-key ediff-mode-map "k" 'ediff-previous-difference))
+
+(use-package ediff
+  :init (add-hook 'ediff-mode-hook 'my/setup-ediff)
+  :config
+  (progn
+    (setq
+     ;; Don't use a separate frame for a control
+     ediff-window-setup-function 'ediff-setup-windows-plain
+     ;; Always split nicely for wide screens
+     ediff-split-window-function 'split-window-horizontally
+     ;; Ignore whitespace
+     ediff-diff-options "-w")
+    (when (fboundp 'winner-undo)
+      (add-hook 'ediff-after-quit-hook-internal 'winner-undo))))
+#+END_SRC
+
 ** smooth-scrolling
 Smooth scrolling means when you hit =C-n= to go to the next line at the bottom
 of the page, instead of doing a page-down, it shifts down by a single line. The
@@ -2716,46 +2705,6 @@ buffer.
 (use-package smooth-scrolling
   :config
   (setq smooth-scroll-margin 4))
-#+END_SRC
-
-** yasnippet
-Snippets for coding, loading while idle so startup is faster.
-
-#+BEGIN_SRC emacs-lisp
-(use-package yasnippet
-  :diminish ""
-  :idle (yas-reload-all))
-
-(add-hook 'emacs-lisp-mode-hook 'yas-minor-mode-on)
-(add-hook 'org-mode-hook 'yas-minor-mode-on)
-(add-hook 'clojure-mode-hook 'yas-minor-mode-on)
-#+END_SRC
-
-And some niceties to allow choosing a snippet using helm:
-
-#+BEGIN_SRC emacs-lisp
-(use-package helm-config
-  :config
-  (use-package yasnippet
-    :bind ("M-=" . yas-insert-snippet)
-    :config
-    (progn
-      (defun my-yas/prompt (prompt choices &optional display-fn)
-        (let* ((names (loop for choice in choices
-                            collect (or (and display-fn
-                                             (funcall display-fn choice))
-                                        choice)))
-               (selected (helm-other-buffer
-                          `(((name . ,(format "%s" prompt))
-                             (candidates . names)
-                             (action . (("Insert snippet" . (lambda (arg)
-                                                              arg))))))
-                          "*helm yas/prompt*")))
-          (if selected
-              (let ((n (position selected names :test 'equal)))
-                (nth n choices))
-            (signal 'quit "user quit!"))))
-      (custom-set-variables '(yas/prompt-functions '(my-yas/prompt))))))
 #+END_SRC
 
 ** paredit
@@ -3246,15 +3195,10 @@ https://tuhdo.github.io/helm-intro.html
           helm-split-window-default-side 'other
           ;; open helm buffer inside current window, don't occupy whole other window
           helm-split-window-in-side-p t
-          helm-buffers-favorite-modes (append helm-buffers-favorite-modes
-                                              '(picture-mode artist-mode))
           ;; limit the number of displayed canidates
           helm-candidate-number-limit 200
           ;; show all candidates when set to 0
           helm-M-x-requires-pattern 0
-          ;; do not show these files in helm buffer
-          helm-boring-file-regexp-list '("\\.git$" "\\.hg$" "\\.svn$" "\\.CVS$"
-                                         "\\._darcs$" "\\.la$" "\\.o$" "\\.i$")
           ;; don't use recentf stuff in helm-ff
           helm-ff-file-name-history-use-recentf nil
           ;; move to end or beginning of source when reaching top or bottom
@@ -3267,7 +3211,14 @@ https://tuhdo.github.io/helm-intro.html
           ;; fuzzy matching
           helm-buffers-fuzzy-matching t
           helm-semantic-fuzzy-match t
-          helm-imenu-fuzzy-match t)
+          helm-imenu-fuzzy-match t
+          helm-completion-in-region-fuzzy-match t
+          ;; Here are the things helm-mini shows, I add `helm-source-bookmarks'
+          ;; here to the regular default list
+          helm-mini-default-sources '(helm-source-buffers-list
+                                      helm-source-recentf
+                                      helm-source-bookmarks
+                                      helm-source-buffer-not-found))
 
     ;; List of times to show in helm-world-time
     (setq display-time-world-list '(("PST8PDT" "Los Altos")
@@ -3439,6 +3390,46 @@ https://tuhdo.github.io/helm-intro.html
               helm-swoop-split-direction 'split-window-vertically
               ;; If nil, you can slightly boost invoke speed in exchange for text color
               helm-swoop-speed-or-color nil)))))
+#+END_SRC
+
+** yasnippet
+Snippets for coding, loading while idle so startup is faster.
+
+#+BEGIN_SRC emacs-lisp
+(use-package yasnippet
+  :diminish ""
+  :idle (yas-reload-all))
+
+(add-hook 'emacs-lisp-mode-hook 'yas-minor-mode-on)
+(add-hook 'org-mode-hook 'yas-minor-mode-on)
+(add-hook 'clojure-mode-hook 'yas-minor-mode-on)
+#+END_SRC
+
+And some niceties to allow choosing a snippet using helm:
+
+#+BEGIN_SRC emacs-lisp
+(use-package helm-config
+  :config
+  (use-package yasnippet
+    :bind ("M-=" . yas-insert-snippet)
+    :config
+    (progn
+      (defun my-yas/prompt (prompt choices &optional display-fn)
+        (let* ((names (loop for choice in choices
+                            collect (or (and display-fn
+                                             (funcall display-fn choice))
+                                        choice)))
+               (selected (helm-other-buffer
+                          `(((name . ,(format "%s" prompt))
+                             (candidates . names)
+                             (action . (("Insert snippet" . (lambda (arg)
+                                                              arg))))))
+                          "*helm yas/prompt*")))
+          (if selected
+              (let ((n (position selected names :test 'equal)))
+                (nth n choices))
+            (signal 'quit "user quit!"))))
+      (custom-set-variables '(yas/prompt-functions '(my-yas/prompt))))))
 #+END_SRC
 
 ** markdown-mode
@@ -3802,6 +3793,15 @@ With prefix P, create local abbrev. Otherwise it will be global."
 (add-hook 'prog-mode-hook 'my/enable-abbrev-mode)
 (add-hook 'org-mode-hook 'my/enable-abbrev-mode)
 #+END_SRC
+
+From https://github.com/purcell/emacs.d/blob/master/lisp/init-auto-complete.el -
+Exclude very large buffers from dabbrev
+
+#+begin_src emacs-lisp
+(defun sanityinc/dabbrev-friend-buffer (other-buffer)
+ (< (buffer-size other-buffer) (* 1 1024 1024)))
+(setq dabbrev-friend-buffer-function 'sanityinc/dabbrev-friend-buffer)
+#+end_src
 
 ** vlf (view large files)
 [[https://github.com/m00natic/vlfi][VLF]] lets me handle things like 2gb files gracefully.

@@ -53,6 +53,11 @@ echo "copying screen and tmux..."
 cp -f ~/.screenrc .
 cp -f ~/.tmux.* .
 
+# Lein
+echo "copying leiningen profiles..."
+mkdir -p .lein
+cp -f ~/.lein/profiles.clj .lein
+
 # Emacs
 echo "copying emacs..."
 mkdir -p .emacs.d

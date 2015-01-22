@@ -19,16 +19,13 @@ in your backwards search history.
 # Instructions for using the Emacs stuff (requires Emacs 24):
 
 1. Move the `.emacs.d` directory to `~/.emacs.d`
-2. Run:
-
-```
-emacs -q -batch -l ~/.emacs.d/packages.el -kill
-```
+2. Run `emacs`
 
 Much package installing will commence. If there are errors, just keep
 running it until all the packages are installed.
 
-3. Run `emacs`
+You might need to start it and run `package-list-packages` to update the package
+list the first time.
 
 ## Notes
 

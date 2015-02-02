@@ -104,33 +104,33 @@ This doesn't include stuff that I haven't really rebound, like =C-x C-f=, which
 just calls =find-file=, though there may be a few sprinkled in there. This list
 is in no way exhaustive.
 
-| Shortcut  | What it does                                                  | Usage frequency          |
-|-----------+---------------------------------------------------------------+--------------------------|
-| =C-a SPC= | open my custom agenda view                                    | Every time I start emacs |
-| =C-x m=   | open eshell                                                   | Every time I start emacs |
-| =C-x C-r= | helm-mini                                                     | Very                     |
-| =C-x b=   | helm-mini                                                     | Very                     |
-| =C-x f=   | helm-projectile                                               | Very                     |
-| =C-c b=   | switch between org-mode buffers                               | Very                     |
-| =M-g M-g= | open Magit                                                    | Very                     |
-| =C-x C-i= | open helm's semantic imenu                                    | Very                     |
-| =C-c n=   | cleanup buffer (reindent, clean whitespace)                   | Often                    |
-| =C-x C-j= | open dired folder for current file                            | Often                    |
-| =C-M-n=   | scroll half a page down                                       | Often                    |
-| =C-M-p=   | scroll half a page up                                         | Often                    |
-| =M-i=     | open helm-swoop                                               | Often                    |
-| =M-g .=   | helm-grep, with C-u prefix, rgrep                             | Sometimes                |
-| =C-c p s= | switch projectile projecs                                     | Sometimes                |
-| =C-h b=   | see the current bindings (helm-descbinds)                     | Sometimes                |
-| =C-h a=   | look through all emacs vars, functions, faces (helm-apropos)  | Sometimes                |
-| =C-h t=   | see the current time in different locations (helm-world-time) | Sometimes                |
-| =C-c c=   | open capture template for capturing org agenda things         | Sometimes                |
-| =C-x M-b= | open a list of my file/buffer bookmarks (helm-bookmarks)      | Sometimes                |
-| =C-c d=   | look up something in the Elasticsearch documentation          | Sometimes                |
-| =C-c u=   | search for the last URL and browse to it with system browser  | Sometimes                |
-| =C-x 4 t= | transpose the current buffers                                 | Rarely                   |
-| =C-h e=   | pop up the ~*Messages*~ buffer                                | Rarely                   |
-| =C-x RET= | open shell (zsh)                                              | Rarely                   |
+| Shortcut    | What it does                                                  | Usage frequency          |
+|-------------+---------------------------------------------------------------+--------------------------|
+| =C-c a SPC= | open my custom agenda view                                    | Every time I start emacs |
+| =C-x m=     | open eshell                                                   | Every time I start emacs |
+| =C-x C-r=   | helm-mini                                                     | Very                     |
+| =C-x b=     | helm-mini                                                     | Very                     |
+| =C-x f=     | helm-projectile                                               | Very                     |
+| =C-c b=     | switch between org-mode buffers                               | Very                     |
+| =M-g M-g=   | open Magit                                                    | Very                     |
+| =C-x C-i=   | open helm's semantic imenu                                    | Very                     |
+| =C-c n=     | cleanup buffer (reindent, clean whitespace)                   | Often                    |
+| =C-x C-j=   | open dired folder for current file                            | Often                    |
+| =C-M-n=     | scroll half a page down                                       | Often                    |
+| =C-M-p=     | scroll half a page up                                         | Often                    |
+| =M-i=       | open helm-swoop                                               | Often                    |
+| =M-g .=     | helm-grep, with C-u prefix, rgrep                             | Sometimes                |
+| =C-c p s=   | switch projectile projecs                                     | Sometimes                |
+| =C-h b=     | see the current bindings (helm-descbinds)                     | Sometimes                |
+| =C-h a=     | look through all emacs vars, functions, faces (helm-apropos)  | Sometimes                |
+| =C-h t=     | see the current time in different locations (helm-world-time) | Sometimes                |
+| =C-c c=     | open capture template for capturing org agenda things         | Sometimes                |
+| =C-x M-b=   | open a list of my file/buffer bookmarks (helm-bookmarks)      | Sometimes                |
+| =C-c d=     | look up something in the Elasticsearch documentation          | Sometimes                |
+| =C-c u=     | search for the last URL and browse to it with system browser  | Sometimes                |
+| =C-x 4 t=   | transpose the current buffers                                 | Rarely                   |
+| =C-h e=     | pop up the ~*Messages*~ buffer                                | Rarely                   |
+| =C-x RET=   | open shell (zsh)                                              | Rarely                   |
 
 ** Packages that need to be installed
 This is code that installs packages before any config is loaded, since a lot of
@@ -144,9 +144,8 @@ things add hooks that don't work if packages aren't installed.
 
     ;; themeing
     rainbow-mode leuven-theme dakrone-theme smart-mode-line
-    color-identifiers-mode subatomic-theme subatomic256-theme
-    moe-theme powerline nyan-mode spacegray-theme zenburn-theme
-    flatui-theme
+    color-identifiers-mode moe-theme powerline nyan-mode zenburn-theme
+    flatui-theme tangotango-theme
 
     ;; misc
     diminish gist scpaste async
@@ -177,7 +176,7 @@ things add hooks that don't work if packages aren't installed.
     auctex
 
     ;; org-mode
-    org htmlize gnuplot-mode gnuplot ox-reveal
+    org htmlize gnuplot-mode gnuplot ox-reveal ox-gfm
 
     ;; buffer utils
     popwin dired+
@@ -252,10 +251,13 @@ things add hooks that don't work if packages aren't installed.
 #+END_SRC
 
 ** Basics and settings used everywhere
-Mostly settings that don't fit in elsewhere, so they end up here.
+Mostly settings that don't fit in elsewhere, so they end up here. However, this
+does include settings that aren't part of packages and need to configure Emacs'
+built-in packages.
 
 *** General settings
-Turn on debugging, it will be turned off at the end
+Turn on debugging, it will be turned off at the end. In case something happens
+during loading that breaks something, it's nice to have a debug information.
 
 #+BEGIN_SRC emacs-lisp
 (setq debug-on-error t)
@@ -267,8 +269,8 @@ depending on whatever I'm in the mood for. This is used later on for the
 modeline theme, as well as the general theme for things.
 
 #+BEGIN_SRC emacs-lisp
-(defvar my/background 'light)
-;;(defvar my/background 'dark)
+;;(defvar my/background 'light)
+(defvar my/background 'dark)
 #+END_SRC
 
 Now some personal information about me:
@@ -297,7 +299,7 @@ We don't really need to garbage collect as frequently as Emacs
 would like to by default, so set the threshold up higher:
 
 #+BEGIN_SRC emacs-lisp
-(setq gc-cons-threshold 20000000)
+(setq gc-cons-threshold 50000000)
 ;; Allow font-lock-mode to do background parsing
 (setq jit-lock-stealth-time 1
       jit-lock-stealth-load 200
@@ -565,8 +567,9 @@ configuration changes, if so desired.
 
 *** OS-specific settings
 These are settings that are applied depending on what OS I'm
-currently running on. First, we need a way to tell what kind of
-system we're on:
+currently running on. On gnu/linux systems, I bind =C-M-w= to the
+yank-to-x-clipboard method, which uses =xsel= to yank text. On OSX, I use the
+=pbpaste= and =pbcopy= methods to interact with the system clipboard.
 
 #+BEGIN_SRC emacs-lisp
 (when (eq system-type 'gnu/linux)
@@ -625,6 +628,12 @@ Change the clipboard settings to better integrate into Linux:
 (setq x-select-enable-clipboard t)
 ;; Treat clipboard input as UTF-8 string first; compound text next, etc.
 (setq x-select-request-type '(UTF8_STRING COMPOUND_TEXT TEXT STRING))
+#+END_SRC
+
+Save whatever's in the current (system) clipboard before replacing it with the
+Emacs' text.
+
+#+BEGIN_SRC emacs-lisp
 (setq save-interprogram-paste-before-kill t)
 #+END_SRC
 
@@ -652,13 +661,14 @@ Settings for what to do with temporary files.
 *** Shell settings
 Things for running shells inside of emacs
 
-#+BEGIN_SRC emacs-lisp
-(defvar my-local-shells
-  '("*shell*"))
-(defvar my-remote-shells
-  '())
-(defvar my-shells (append my-local-shells my-remote-shells))
+First, Emacs doesn't handle =less= well, so use =cat= instead for the shell
+pager:
 
+#+BEGIN_SRC emacs-lisp
+(setenv "PAGER" "cat")
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
 (custom-set-variables
  '(comint-scroll-to-bottom-on-input t)  ; always insert at the bottom
  '(comint-scroll-to-bottom-on-output nil) ; always add output at the bottom
@@ -671,55 +681,11 @@ Things for running shells inside of emacs
  '(comint-get-old-input (lambda () "")) ; what to run when i press enter on a
                                         ; line above the current prompt
  '(comint-input-ring-size 5000)         ; max shell history size
- '(protect-buffer-bury-p nil)
  )
-
-(setenv "PAGER" "cat")
-
-;; truncate buffers continuously
-(add-hook 'comint-output-filter-functions 'comint-truncate-buffer)
-
-(defun make-my-shell-output-read-only (text)
-  "Add to comint-output-filter-functions to make stdout read only in my shells."
-  (if (member (buffer-name) my-shells)
-      (let ((inhibit-read-only t)
-            (output-end (process-mark (get-buffer-process (current-buffer)))))
-        (put-text-property comint-last-output-start output-end 'read-only t))))
-(add-hook 'comint-output-filter-functions 'make-my-shell-output-read-only)
-
-(defun my-dirtrack-mode ()
-  "Add to shell-mode-hook to use dirtrack mode in my shell buffers."
-  (when (member (buffer-name) my-shells)
-    (shell-dirtrack-mode 0)
-    (set-variable 'dirtrack-list '("^.*[^ ]+:\\(.*\\)>" 1 nil))
-    (dirtrack-mode 1)))
-(add-hook 'shell-mode-hook 'my-dirtrack-mode)
-
-;; interpret and use ansi color codes in shell output windows
-(add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on)
 
 (defun set-scroll-conservatively ()
   "Add to shell-mode-hook to prevent jump-scrolling on newlines in shell buffers."
   (set (make-local-variable 'scroll-conservatively) 10))
-(add-hook 'shell-mode-hook 'set-scroll-conservatively)
-
-(defun make-comint-directory-tracking-work-remotely ()
-  "Add this to comint-mode-hook to make directory tracking work
-while sshed into a remote host, e.g. for remote shell buffers
-started in tramp. (This is a bug fix backported from Emacs 24:
-http://comments.gmane.org/gmane.emacs.bugs/39082"
-  (set (make-local-variable 'comint-file-name-prefix)
-       (or (file-remote-p default-directory) "")))
-(add-hook 'comint-mode-hook 'make-comint-directory-tracking-work-remotely)
-
-(defun enter-again-if-enter ()
-  "Make the return key select the current item in minibuf and shell history isearch.
-An alternate approach would be after-advice on isearch-other-meta-char."
-  (when (and (not isearch-mode-end-hook-quit)
-             (equal (this-command-keys-vector) [13])) ; == return
-    (cond ((active-minibuffer-window) (minibuffer-complete-and-exit))
-          ((member (buffer-name) my-shells) (comint-send-input)))))
-(add-hook 'isearch-mode-end-hook 'enter-again-if-enter)
 
 (defadvice comint-previous-matching-input
     (around suppress-history-item-messages activate)
@@ -730,23 +696,23 @@ comint-replace-by-expanded-history-before-point."
     (unwind-protect
         (progn (fset 'message 'ignore) ad-do-it)
       (fset 'message old-message))))
+
+(add-hook 'shell-mode-hook 'set-scroll-conservatively)
+(add-hook 'isearch-mode-end-hook 'enter-again-if-enter)
+;; truncate buffers continuously
+(add-hook 'comint-output-filter-functions 'comint-truncate-buffer)
+;; interpret and use ansi color codes in shell output windows
+(add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on)
 #+END_SRC
 
 *** Eshell settings
 Eshell is great for one-off shell things, but I use ZSH too much for it to be a
 full replacement. Regardless, it needs some tweaks in order to be fully useful.
 
-First, let's set up 256 colors and make sure we don't invoke emacs from within
-emacs (emacsception!). Also set the pager to cat so paging things don't freak
-out.
-
 Also, after eshell has loaded its options, let's load some other niceties like
 completion, prompt and term settings:
 
 #+BEGIN_SRC emacs-lisp
-(when (cl-equalp "DUMB" (getenv "TERM"))
-  (setenv "PAGER" "cat"))
-
 (use-package eshell
   :config
   (progn
@@ -774,6 +740,7 @@ completion, prompt and term settings:
 
         ;; Visual commands
         (add-to-list 'eshell-visual-commands "ssh")
+        (add-to-list 'eshell-visual-commands "less")
         (add-to-list 'eshell-visual-commands "top")
         (add-to-list 'eshell-visual-commands "htop")
         (add-to-list 'eshell-visual-commands "el")
@@ -790,32 +757,22 @@ completion, prompt and term settings:
           "Change directory to the project's root."
           (eshell/cd (locate-dominating-file default-directory ".git")))
 
-        (defun eshell/l (&rest args) "Same as `ls -lh'" (apply #'eshell/ls "-lh" args))
-        (defun eshell/ll (&rest args) "Same as `ls -lh'" (apply #'eshell/ls "-lh" args))
-        (defun eshell/la (&rest args) "Same as `ls -alh'" (apply #'eshell/ls "-alh" args))
+        (defun eshell/l (&rest args) "Same as `ls -lh'"
+               (apply #'eshell/ls "-lh" args))
+        (defun eshell/ll (&rest args) "Same as `ls -lh'"
+               (apply #'eshell/ls "-lh" args))
+        (defun eshell/la (&rest args) "Same as `ls -alh'"
+               (apply #'eshell/ls "-alh" args))
 
         (defun eshell/clear ()
           "Clear the eshell buffer"
           (interactive)
           (let ((eshell-buffer-maximum-lines 0))
-            (eshell-truncate-buffer)))
-
-        (defun eshell/export-env (&optional env-file)
-          (interactive)
-          (let ((original-buffer (current-buffer)))
-            (with-temp-buffer
-              (insert-file (or env-file ".env"))
-              (goto-char (point-min))
-              (while (< (point) (point-max))
-                (let ((line (substring (thing-at-point 'line) 0 -1)))
-                  (with-current-buffer original-buffer
-                    (eshell/export line)))
-                (next-line)))))
-
-        (defalias 'eshell/ee 'eshell/export-env)))
+            (eshell-truncate-buffer)))))
 
     (add-hook 'eshell-mode-hook
               (lambda ()
+                ;; turn off semantic-mode in eshell buffers
                 (semantic-mode -1)
                 (define-key eshell-mode-map (kbd "M-l")
                   'helm-eshell-history)))
@@ -845,17 +802,22 @@ completion, prompt and term settings:
       "Function to open magit-status for the current directory"
       (interactive)
       (magit-status default-directory)
-      nil)
+      nil)))
+#+END_SRC
 
-    (defun my/create-or-switch-to-delta-buffer ()
-      "Switch to the *eshell delta* buffer, or create it"
-      (interactive)
-      (if (get-buffer "*eshell-delta*")
-          (switch-to-buffer "*eshell-delta*")
-        (let ((eshell-buffer-name "*eshell-delta*"))
-          (eshell))))
+I use a dedicated buffer for connection to my desktop, with a binding of =C-x
+d=, if the buffer doesn't exist it is created.
 
-    (global-set-key (kbd "C-x d") 'my/create-or-switch-to-delta-buffer)))
+#+BEGIN_SRC emacs-lisp
+(defun my/create-or-switch-to-delta-buffer ()
+  "Switch to the *eshell delta* buffer, or create it"
+  (interactive)
+  (if (get-buffer "*eshell-delta*")
+      (switch-to-buffer "*eshell-delta*")
+    (let ((eshell-buffer-name "*eshell-delta*"))
+      (eshell))))
+
+(global-set-key (kbd "C-x d") 'my/create-or-switch-to-delta-buffer)
 #+END_SRC
 
 *** Tramp settings
@@ -913,17 +875,16 @@ hunspell isn't available:
 (add-to-list 'ispell-skip-region-alist '("[^\000-\377]+"))
 #+END_SRC
 
+In most non-programming modes, =M-.= can be used to spellcheck the word
+(otherwise it would jump to the definition)
+
 #+BEGIN_SRC emacs-lisp
 ;; flyspell
 (use-package flyspell
+  :diminish "FS"
   :config
   (define-key flyspell-mode-map (kbd "M-n") 'flyspell-goto-next-error)
   (define-key flyspell-mode-map (kbd "M-.") 'ispell-word))
-
-(use-package diminish
-  :init
-  (progn
-    (diminish 'flyspell-mode "FS")))
 #+END_SRC
 
 *** View-mode and doc-view
@@ -959,9 +920,9 @@ in a less/vim manner.
 (use-package doc-view
   :config
   (define-key doc-view-mode-map (kbd "j")
-    'doc-view-next-line-or-next-page)
+    #'doc-view-next-line-or-next-page)
   (define-key doc-view-mode-map (kbd "k")
-    'doc-view-previous-line-or-previous-page)
+    #'doc-view-previous-line-or-previous-page)
   ;; use 'q' to kill the buffer, not just hide it
   (define-key doc-view-mode-map (kbd "q")
     #'kill-this-buffer))
@@ -1019,13 +980,13 @@ writable-dired mode is aawwweeeesssoooommee, it makes renames super easy.
     (define-key dired-mode-map (kbd "C-M-u") 'dired-up-directory)
     (define-key dired-mode-map (kbd "M-o") 'my/dired-mac-open)
     (define-key dired-mode-map (kbd "C-x C-q") 'wdired-change-to-wdired-mode)
-    (add-hook 'dired-mode-hook 'my/dired-mode-hook)))
+    (add-hook 'dired-mode-hook #'my/dired-mode-hook)))
 #+END_SRC
 
 *** emacsclient
 Let's make sure to start up a server!
 
-Disabled, I actually start up a background emacs --daemon for this
+Disabled, I actually start up a background =emacs --daemon= for this
 
 *** saveplace
 Navigates back to where you were editing a file next time you open it
@@ -1129,8 +1090,8 @@ And then things to set up semantic mode
   (local-set-key "\C-c>" 'semantic-complete-analyze-inline)
   (local-set-key "\C-c?" 'semantic-analyze-proto-impl-toggle))
 
-(add-hook 'c-mode-hook 'my/setup-semantic-mode)
-(add-hook 'java-mode-hook 'my/setup-semantic-mode)
+(add-hook 'c-mode-hook #'my/setup-semantic-mode)
+(add-hook 'java-mode-hook #'my/setup-semantic-mode)
 #+END_SRC
 
 *** General prog-mode hooks
@@ -1144,14 +1105,17 @@ Some general settings that should apply to all programming modes, turning
 on subword mode and idle-highlight-mode:
 
 #+BEGIN_SRC emacs-lisp
-(use-package idle-highlight-mode)
+(use-package idle-highlight-mode
+  :init
+  (progn
+    (defun my/idle-highlight-hook ()
+      (interactive)
+      (when (fboundp 'idle-highlight-mode)
+        (idle-highlight-mode t))
+      (setq show-trailing-whitespace t)
+      (subword-mode t))
 
-(add-hook 'prog-mode-hook
-          (lambda ()
-            (when (fboundp 'idle-highlight-mode)
-              (idle-highlight-mode t))
-            (setq show-trailing-whitespace t)
-            (subword-mode t)))
+    (add-hook 'prog-mode-hook #'my/idle-highlight-hook)))
 #+END_SRC
 
 In programming modes, make sure things like FIXME and TODO are
@@ -1201,7 +1165,7 @@ Other Clojure-specific settings:
 #+BEGIN_SRC emacs-lisp
 (defun my/clojure-things-hook ()
   "Set up clojure-y things"
-  (turn-on-eldoc-mode)
+  (eldoc-mode 1)
   (subword-mode t)
   ;; use my test layout fns
   ;; (setq clojure-test-for-fn 'my-clojure-test-for)
@@ -1227,7 +1191,9 @@ ac-nrepl packages:
           cider-hide-special-buffers t
           cider-repl-history-size 10000
           cider-prefer-local-resources t
-          cider-popup-stacktraces-in-repl t)))
+          cider-popup-stacktraces-in-repl t)
+    (paredit-mode 1)
+    (eldoc-mode 1)))
 #+END_SRC
 
 And then finally use them if cider and ac-nrepl packages are available:
@@ -1263,14 +1229,13 @@ This contains the configuration for elisp programming
 First, turn on eldoc everywhere it's useful:
 
 #+BEGIN_SRC emacs-lisp
-(add-hook 'emacs-lisp-mode-hook
-          (lambda ()
-            (paredit-mode 1)
-            (turn-on-eldoc-mode)))
-(add-hook 'ielm-mode-hook
-          (lambda ()
-            (paredit-mode 1)
-            (turn-on-eldoc-mode)))
+(defun my/turn-on-paredit-and-eldoc ()
+  (interactive)
+  (paredit-mode 1)
+  (eldoc-mode 1))
+
+(add-hook 'emacs-lisp-mode-hook #'my/turn-on-paredit-and-eldoc)
+(add-hook 'ielm-mode-hook #'my/turn-on-paredit-and-eldoc)
 #+END_SRC
 
 And some various eldoc settings:
@@ -1282,7 +1247,7 @@ And some various eldoc settings:
     (use-package diminish
       :init
       (progn (diminish 'eldoc-mode "ed")))
-    (setq eldoc-idle-delay 0.2)
+    (setq eldoc-idle-delay 0.3)
     (set-face-attribute 'eldoc-highlight-function-argument nil
                         :underline t :foreground "green"
                         :weight 'bold)))
@@ -1314,7 +1279,7 @@ definitions:
 
 #+BEGIN_SRC emacs-lisp
 (use-package elisp-slime-nav
-  :init (add-hook 'emacs-lisp-mode-hook 'elisp-slime-nav-mode))
+  :init (add-hook 'emacs-lisp-mode-hook #'elisp-slime-nav-mode))
 #+END_SRC
 
 Borrowed from Steve Purcell's config. This pretty-prints the results.
@@ -1463,8 +1428,8 @@ modes:
 (use-package haskell-mode
   :init
   (progn
-    (add-hook 'haskell-mode-hook 'turn-on-haskell-indentation)
-    (add-hook 'haskell-mode-hook 'turn-on-haskell-doc-mode))
+    (add-hook 'haskell-mode-hook #'turn-on-haskell-indentation)
+    (add-hook 'haskell-mode-hook #'turn-on-haskell-doc-mode))
   :config
   (progn
     (let ((my-cabal-path (expand-file-name "~/.cabal/bin")))
@@ -1511,7 +1476,7 @@ modes:
 #+END_SRC
 
 *** Javascript
-Bleh javascript.
+Bleh javascript. js2-mode is better than nothing.
 
 #+BEGIN_SRC emacs-lisp
 (use-package js2-mode
@@ -1525,13 +1490,18 @@ Bleh javascript.
     (setq-default js-auto-indent-flag nil
                   js-indent-level 2)))
 
+#+END_SRC
+
+There's =tern= also, but I leave it turned off by default
+
+#+BEGIN_SRC emacs-lisp
 (use-package tern
   :init ;;(add-hook 'js-mode-hook (lambda () (tern-mode t)))
   )
-
 #+END_SRC
+
 *** Elasticsearch (es-mode)
-(es-mode) stuff, loaded from disk so I can develop on it quickly.
+([[https://github.com/dakrone/es-mode][es-mode]]) stuff, loaded from disk so I can develop on it quickly.
 
 #+BEGIN_SRC emacs-lisp
 (if (file-exists-p "~/src/elisp/es-mode")
@@ -1548,6 +1518,7 @@ Bleh javascript.
          '((elasticsearch . t)))))
   (progn
     (use-package es-mode
+      :ensure t
       :init (use-package ob-elasticsearch)
       ;; Don't warn me about delete statements
       :config (setq es-warn-on-delete-query nil))
@@ -1565,14 +1536,18 @@ Misc theme settings
 For light-colored backgrounds, I used [[https://github.com/fniessen/emacs-leuven-theme][leuven-theme]]. For dark-colored
 backgrounds (most of the time), I use my own custom theme, called [[https://github.com/dakrone/dakrone-theme][dakrone-theme]].
 Sometimes I use [[https://github.com/kuanyui/moe-theme.el][moe-theme]] for a dark background also, although the magenta text
-annoys me somewhat.
+annoys me somewhat. Lately I've also been checking out [[https://github.com/juba/color-theme-tangotango][tangotango]], which seems
+nice.
 
 #+BEGIN_SRC emacs-lisp
 (setq ns-use-srgb-colorspace t)
 
 (defun dakrone-dark ()
   (interactive)
+  (use-package tangotango-theme
+    :init (load-theme 'tangotango t))
   (use-package moe-theme
+    :disabled t
     :init
     (progn
       (setq moe-theme-resize-markdown-title '(2.0 1.7 1.5 1.3 1.0 1.0))
@@ -1606,7 +1581,6 @@ annoys me somewhat.
 #+END_SRC
 
 *** fonts
-
 I've been using [[https://github.com/belluzj/fantasque-sans][Fantasque Sans Mono]] lately, it looks pretty nice to me. On Linux
 I've been using Bitstream Vera Sans Mono. I also use Anonymous Pro and
 Inconsolata a lot.
@@ -1646,24 +1620,35 @@ Config for Linux/X11 systems:
 #+END_SRC
 
 ** org-mode
-:PROPERTIES:
-:ID:       47917AC7-93A4-4A8F-B45C-0F482904778C
-:END:
 I use org-mode a ton, so it get's its own page here.
-
-I am using the custom org-mode export to Github-flavored-markdown from:
-https://lists.gnu.org/archive/html/emacs-orgmode/2014-04/msg00241.html
 
 A great lot of this was taken from http://doc.norang.ca/org-mode.html, to which
 I owe almost all of the agenda configuration. The capture stuff and regular org
 settings are mine.
 
-#+BEGIN_SRC emacs-lisp
-(defun my/load-github-flavored-markdown ()
-  (interactive)
-  (when (file-exists-p "~/.emacs.d/ox-gfm.el")
-    (load-file "~/.emacs.d/ox-gfm.el")))
+First, the hook that gets run every time org-mode is started, to turn on certain
+modes
 
+#+BEGIN_SRC emacs-lisp
+(defun my/org-mode-hook ()
+  (interactive)
+  (turn-on-auto-fill)
+  (turn-on-flyspell)
+  (yas-minor-mode-on)
+  (when (fboundp 'my/enable-abbrev-mode)
+    (my/enable-abbrev-mode))
+
+  ;; fix some bindings that org-mode overwrites
+  (define-key org-mode-map [C-tab] 'other-window)
+  (define-key org-mode-map [C-S-tab]
+    (lambda ()
+      (interactive)
+      (other-window -1)))
+  (define-key org-mode-map (kbd "C-'")
+    'eyebrowse-next-window-config))
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
 (use-package org
   :bind (("C-c l" . org-store-link)
          ("C-c a" . org-agenda)
@@ -1676,8 +1661,7 @@ settings are mine.
   :config
   (progn
     (use-package org-install)
-    ;; load github-flavored-markdown
-    (add-hook 'org-mode-hook 'turn-on-auto-fill)
+    (add-hook 'org-mode-hook #'my/org-mode-hook)
     (setq org-directory (file-truename "~/org")
           org-startup-indented t
           org-return-follows-link t
@@ -1708,7 +1692,7 @@ settings are mine.
           org-refile-allow-creating-parent-nodes (quote confirm)
           ;; Use IDO for both buffer and file completion and ido-everywhere to t
           ido-everywhere t
-          ido-max-directory-size 100000
+          ido-max-directory-size 10000
           ;; Use cider as the clojure backend
           org-babel-clojure-backend 'cider
           ;; don't run stuff automatically on export
@@ -1858,17 +1842,6 @@ settings are mine.
     (define-key org-mode-map (kbd "M-G") 'org-plot/gnuplot)
     (local-unset-key (kbd "M-S-<return>"))
 
-    (add-hook 'org-mode-hook
-              (lambda ()
-                (turn-on-flyspell)
-                (define-key org-mode-map [C-tab] 'other-window)
-                (define-key org-mode-map [C-S-tab]
-                  (lambda ()
-                    (interactive)
-                    (other-window -1)))
-                (define-key org-mode-map (kbd "C-'")
-                  'eyebrowse-next-window-config)))
-
     ;; org-babel stuff
     (require 'ob-clojure)
     (org-babel-do-load-languages
@@ -1892,7 +1865,6 @@ settings are mine.
     (setq org-html-head-extra
           "<link rel=\"stylesheet\" href=\"http://dakrone.github.io/org.css\" type=\"text/css\" />")
     (setq org-html-head-include-default-style nil)
-
 
     ;; ensure this variable is defined
     (unless (boundp 'org-babel-default-header-args:sh)
@@ -2011,7 +1983,7 @@ background of code to whatever theme I'm using's background"
             (format "<style type=\"text/css\">\n pre.src {background-color: %s; color: %s;}</style>\n"
                     my-pre-bg my-pre-fg))))))
 
-    (add-hook 'org-export-before-processing-hook 'my/org-inline-css-hook)))
+    (add-hook 'org-export-before-processing-hook #'my/org-inline-css-hook)))
 #+END_SRC
 
 ** org-publishing
@@ -2148,56 +2120,11 @@ Exporting org-mode to [[http://lab.hakim.se/reveal-js/#/][reveal.js]] presentati
 #+END_SRC
 
 ** alert (notifications)
+Yep. I need to actually make this work for OSX, for Linux it's no problem
+though.
 
 #+BEGIN_SRC emacs-lisp
-(defun my/terminal-notifier-notify (title message)
-  "Show a message with `terminal-notifier-command`."
-  (interactive)
-  (start-process "terminal-notifier"
-                 "*terminal-notifier*"
-                 "terminal-notifier"
-                 "-title" title
-                 "-message" message))
-
-(use-package alert
-  :config
-  (progn
-    (alert-define-style 'terminal-notifier
-                        :title "terminal-notifier"
-                        :notifier
-                        (lambda (info)
-                          (my/terminal-notifier-notify
-                           (plist-get info :title)
-                           (plist-get info :message))
-                          ;; The :category of the alert
-                          (plist-get info :category)
-                          ;; The major-mode this alert relates to
-                          (plist-get info :mode)
-                          ;; The buffer the alert relates to
-                          (plist-get info :buffer)
-                          ;; Severity of the alert.  It is one of:
-                          ;;   `urgent'
-                          ;;   `high'
-                          ;;   `moderate'
-                          ;;   `normal'
-                          ;;   `low'
-                          ;;   `trivial'
-                          (plist-get info :severity)
-                          ;; Whether this alert should persist, or fade away
-                          (plist-get info :persistent)
-                          ;; Data which was passed to `alert'.  Can be
-                          ;; anything.
-                          (plist-get info :data))
-
-                        ;; Removers are optional.  Their job is to remove
-                        ;; the visual or auditory effect of the alert.
-                        :remover
-                        (lambda (info)
-                          ;; It is the same property list that was passed to
-                          ;; the notifier function.
-                          ))
-    (if (eq (window-system) 'ns)
-        (setq alert-default-style 'terminal-notifier))))
+(use-package alert)
 #+END_SRC
 
 ** ERC Configuration (IRC)
@@ -2309,13 +2236,13 @@ if running in windowed mode, because I don't use ERC otherwise:
 
 ** Email (mu4e) Configuration
 I usually install [[http://www.djcbsoftware.nl/code/mu/][mu]] from source, with =./configure --prefix=/usr/local=, I
-unpack it to ~/src/mu-0.9.9.6 (or whatever version) so I can reference the mu4e
-elisp files.
+unpack it to ~/src/mu-0.9.11 (or whatever version) so I can reference the mu4e
+elisp files. Then run =make= and =make install= to install mu.
 
 #+BEGIN_SRC emacs-lisp
 (defun mail ()
   (interactive)
-  (add-to-list 'load-path "~/src/mu-0.9.9.6/mu4e")
+  (add-to-list 'load-path "~/src/mu-0.9.11/mu4e")
   (use-package mu4e
     :config
     (progn
@@ -2327,6 +2254,9 @@ elisp files.
       ;; Various mu4e settings
       (setq mu4e-mu-binary "/usr/local/bin/mu"
             ;;mu4e-sent-messages-behavior 'delete
+            mu4e-user-mail-address-list
+            '("matthew.hinman@gmail.com" "lee@writequit.org"
+              "lee.hinman@elasticsearch.com")
             ;; save attachments to the Downloads folder
             mu4e-attachment-dir "~/Downloads"
             ;; attempt to show images
@@ -2649,17 +2579,6 @@ passed in. Also supports ignoring the msg at the point."
 ** Email (gnus) configuration
 See: ~/.gnus.el
 
-#+BEGIN_SRC emacs-lisp
-(defun my/gnus-group-list-subscribed-groups ()
-  "List all subscribed groups with or without un-read messages"
-  (interactive)
-  (gnus-group-list-all-groups 5))
-
-(add-hook 'gnus-group-mode-hook
-          ;; list all the subscribed groups even they contain zero un-read messages
-          (lambda () (local-set-key "o" 'my/gnus-group-list-subscribed-groups )))
-#+END_SRC
-
 ** ace-jump-mode
 Jump quickly between words or lines, I mostly use it with eww.
 
@@ -2677,22 +2596,18 @@ from http://oremacs.com/2015/01/17/setting-up-ediff/
 (defun my/setup-ediff ()
   (interactive)
   (ediff-setup-keymap)
-  (define-key ediff-mode-map "j" 'ediff-next-difference)
-  (define-key ediff-mode-map "k" 'ediff-previous-difference))
+  (define-key ediff-mode-map "j" #'ediff-next-difference)
+  (define-key ediff-mode-map "k" #'ediff-previous-difference))
 
 (use-package ediff
   :init (add-hook 'ediff-mode-hook 'my/setup-ediff)
   :config
   (progn
     (setq
-     ;; Don't use a separate frame for a control
-     ediff-window-setup-function 'ediff-setup-windows-plain
      ;; Always split nicely for wide screens
      ediff-split-window-function 'split-window-horizontally
      ;; Ignore whitespace
-     ediff-diff-options "-w")
-    (when (fboundp 'winner-undo)
-      (add-hook 'ediff-after-quit-hook-internal 'winner-undo))))
+     ediff-diff-options "-w")))
 #+END_SRC
 
 ** smooth-scrolling
@@ -2720,11 +2635,11 @@ Paredit for all the lisps.
     (define-key paredit-mode-map (kbd "C-)") 'paredit-forward-slurp-sexp)
     (define-key paredit-mode-map (kbd ")") 'paredit-close-parenthesis)
     (define-key paredit-mode-map (kbd "M-\"") 'my/other-window-backwards)))
-
-(add-hook 'cider-repl-mode-hook (lambda () (paredit-mode t)))
 #+END_SRC
 
 ** smartparens
+So, paredit is great, however, it doesn't work for non-lisp modes. Smartparens
+works pretty well, so I use it everywhere paredit-mode doesn't work.
 
 #+BEGIN_SRC emacs-lisp
 (use-package smartparens
@@ -2812,20 +2727,26 @@ using a big font size and I need more eshell space
   :defer t
   :config
   (progn
-    (defun pl/helm-alive-p ()
+    (defun my/helm-alive-p ()
       (if (boundp 'helm-alive-p)
           (symbol-value 'helm-alive-p)))
 
     ;; Inhibit helm
-    (add-to-list 'golden-ratio-inhibit-functions 'pl/helm-alive-p)
+    (add-to-list 'golden-ratio-inhibit-functions #'my/helm-alive-p)
     ;; Inhibit ERC and mu4e
     (setq golden-ratio-exclude-modes
           '(erc-mode mu4e-headers-mode mu4e-view-mode))))
 #+END_SRC
 
 ** flycheck
+Pretty minimally configured, but awesome tool for most dynamic languages.
 
 #+BEGIN_SRC emacs-lisp
+(defun my/flycheck-customize ()
+  (interactive)
+  (global-set-key (kbd "C-c C-n") 'flycheck-tip-cycle)
+  (global-set-key (kbd "C-c C-p") 'flycheck-tip-cycle-reverse))
+
 (use-package flycheck
   :bind (("M-g M-n" . flycheck-next-error)
          ("M-g M-p" . flycheck-previous-error)
@@ -2834,14 +2755,11 @@ using a big font size and I need more eshell space
   :diminish "fc"
   :config
   (progn
-    (setq-default flycheck-disabled-checkers
-                  '(emacs-lisp-checkdoc))
+    (setq-default flycheck-disabled-checkers '(emacs-lisp-checkdoc))
+    (use-package flycheck-color-mode-line
+      :init (add-hook 'flycheck-mode-hook 'flycheck-color-mode-line-mode))
     (use-package flycheck-tip
-      :config
-      (add-hook 'flycheck-mode-hook
-                (lambda ()
-                  (global-set-key (kbd "C-c C-n") 'flycheck-tip-cycle)
-                  (global-set-key (kbd "C-c C-p") 'flycheck-tip-cycle-reverse))))))
+      :config (add-hook 'flycheck-mode-hook #'my/flycheck-customize))))
 
 #+END_SRC
 
@@ -2910,6 +2828,7 @@ In order to get this to work also
 #+END_SRC
 
 ** expand-region
+Great for selecting the inside of Elasticsearch queries
 
 #+BEGIN_SRC emacs-lisp
 (use-package expand-region
@@ -2937,7 +2856,8 @@ I use =M-g M-g= everywhere to go directly to Magit.
   :bind ("M-g M-g" . magit-status)
   :config
   (progn
-    (when (eq system-type 'darwin)
+    (when (and (eq system-type 'darwin)
+               (file-exists-p  "/usr/local/bin/emacsclient"))
       (setq magit-emacsclient-executable "/usr/local/bin/emacsclient"))
     (defun magit-browse ()
       "Browse to the project's github URL, if available"
@@ -3037,6 +2957,8 @@ I basically use this to start up ES when I need to test something really quickly
 #+END_SRC
 
 ** git-gutter
+Only enabled in a few modes, but quite useful, as well as the =C-x n= and =C-x
+p= bindings.
 
 #+BEGIN_SRC emacs-lisp
 (use-package git-gutter
@@ -3066,8 +2988,7 @@ Jump to the next/prev symbol pretty easily
 #+END_SRC
 
 ** highlight-numbers
-
-Highlights numbers in source code
+Highlights numbers in source code, pretty simple.
 
 #+BEGIN_SRC emacs-lisp
 (use-package highlight-numbers
@@ -3401,7 +3322,6 @@ Snippets for coding, loading while idle so startup is faster.
   :idle (yas-reload-all))
 
 (add-hook 'emacs-lisp-mode-hook 'yas-minor-mode-on)
-(add-hook 'org-mode-hook 'yas-minor-mode-on)
 (add-hook 'clojure-mode-hook 'yas-minor-mode-on)
 #+END_SRC
 
@@ -3433,7 +3353,7 @@ And some niceties to allow choosing a snippet using helm:
 #+END_SRC
 
 ** markdown-mode
-Various markdown-related settings.
+Various markdown-related settings. Not much here.
 
 #+BEGIN_SRC emacs-lisp
 (use-package markdown-mode)
@@ -3528,6 +3448,7 @@ helpful for documentation buffers and so on.
 ;; basic
 (push '("*Help*" :stick t :noselect t) popwin:special-display-config)
 (push '("*helm world time*" :stick t :noselect t) popwin:special-display-config)
+(push '("*Pp Eval Output*" :stick t) popwin:special-display-config)
 
 ;; magit
 (push '("*magit-process*" :stick t) popwin:special-display-config)
@@ -3657,7 +3578,7 @@ immediately use Twitter :P
   :config
   (progn
     (setq twittering-icon-mode t
-        twittering-use-master-password t)))
+          twittering-use-master-password t)))
 #+END_SRC
 
 ** scpaste
@@ -3671,6 +3592,8 @@ scp-ing an HTML version of the current buffer somewhere
 #+END_SRC
 
 ** smex
+Smex is IDO, but for =M-x=
+
 #+BEGIN_SRC emacs-lisp
 (use-package smex
   :bind (("M-x" . smex)
@@ -3683,10 +3606,6 @@ Can be really handy to see if you've misspelled a variable name.
 
 #+BEGIN_SRC emacs-lisp
 (use-package color-identifiers-mode)
-
-(defun my/enable-color-identifiers ()
-  (interactive)
-  (color-identifiers-mode t))
 #+END_SRC
 
 ** iedit
@@ -3790,8 +3709,7 @@ With prefix P, create local abbrev. Otherwise it will be global."
   (interactive)
   (abbrev-mode t))
 
-(add-hook 'prog-mode-hook 'my/enable-abbrev-mode)
-(add-hook 'org-mode-hook 'my/enable-abbrev-mode)
+(add-hook 'prog-mode-hook #'my/enable-abbrev-mode)
 #+END_SRC
 
 From https://github.com/purcell/emacs.d/blob/master/lisp/init-auto-complete.el -
@@ -3852,7 +3770,7 @@ Wait, no, I mean the Emacs web browser built in to 24.4
 
 (use-package fill-column-indicator
   :disabled t
-  :init (add-hook 'prog-mode-hook 'my/turn-on-fill-column-indicator)
+  :init (add-hook 'prog-mode-hook #'my/turn-on-fill-column-indicator)
   :config (setq fci-rule-column 80))
 #+END_SRC
 
@@ -3862,6 +3780,7 @@ to switch between as needed:
 
 #+BEGIN_SRC emacs-lisp
 (use-package smart-mode-line
+  :disabled t
   :init
   (progn
     (sml/setup)
@@ -3906,7 +3825,7 @@ really fit in anywhere else.
 (define-key my/toggle-map "q" 'toggle-debug-on-quit)
 (when (fboundp 'golden-ratio-mode)
   (define-key my/toggle-map "r" 'golden-ratio-mode))
-(define-key my/toggle-map "n" 'my/narrow-or-widen-dwim)
+(define-key my/toggle-map "n" #'my/narrow-or-widen-dwim)
 
 ;; join on killing lines
 (defun kill-and-join-forward (&optional arg)

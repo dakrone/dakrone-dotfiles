@@ -148,7 +148,7 @@ things add hooks that don't work if packages aren't installed.
     flatui-theme tangotango-theme
 
     ;; misc
-    diminish gist scpaste async
+    diminish gist scpaste async symon
 
     ;; es-mode is run from a  git checkout
 
@@ -269,8 +269,8 @@ depending on whatever I'm in the mood for. This is used later on for the
 modeline theme, as well as the general theme for things.
 
 #+BEGIN_SRC emacs-lisp
-;;(defvar my/background 'light)
-(defvar my/background 'dark)
+(defvar my/background 'light)
+;;(defvar my/background 'dark)
 #+END_SRC
 
 Now some personal information about me:
@@ -887,9 +887,21 @@ In most non-programming modes, =M-.= can be used to spellcheck the word
   (define-key flyspell-mode-map (kbd "M-.") 'ispell-word))
 #+END_SRC
 
+Finally, there are some things I always want spellcheck to ignore, like things
+in org-src blocks and property drawers
+
+#+BEGIN_SRC emacs-lisp
+(add-to-list 'ispell-skip-region-alist '(":\\(PROPERTIES\\|LOGBOOK\\):" . ":END:"))
+(add-to-list 'ispell-skip-region-alist '("#\\+BEGIN_SRC" . "#\\+END_SRC"))
+(add-to-list 'ispell-skip-region-alist '("#\\+BEGIN_EXAMPLE" . "#\\+END_EXAMPLE"))
+#+END_SRC
+
 *** View-mode and doc-view
 Read-only viewing of files. Keybindings for paging through stuff
 in a less/vim manner.
+
+Make sure you install =mupdf= for the best quality PDFs on Linux and OSX. (=brew
+install mupdf= on osx)
 
 #+BEGIN_SRC emacs-lisp
 (use-package view
@@ -1620,7 +1632,7 @@ Config for Linux/X11 systems:
 #+END_SRC
 
 ** org-mode
-I use org-mode a ton, so it get's its own page here.
+I use [[http://orgmode.org/][org-mode]] a ton, so it get's its own page here.
 
 A great lot of this was taken from http://doc.norang.ca/org-mode.html, to which
 I owe almost all of the agenda configuration. The capture stuff and regular org
@@ -1645,8 +1657,12 @@ modes
       (interactive)
       (other-window -1)))
   (define-key org-mode-map (kbd "C-'")
-    'eyebrowse-next-window-config))
+    'eyebrowse-next-window-config)
+  (define-key org-mode-map (kbd "C-c C-x C-f") 'org-refile)
+  (define-key org-agenda-mode-map (kbd "C-c C-x C-f") 'org-agenda-refile))
 #+END_SRC
+
+And now the huge org-mode configuration
 
 #+BEGIN_SRC emacs-lisp
 (use-package org
@@ -1661,6 +1677,8 @@ modes
   :config
   (progn
     (use-package org-install)
+    ;; Enable archiving things
+    (use-package org-archive)
     (add-hook 'org-mode-hook #'my/org-mode-hook)
     (setq org-directory (file-truename "~/org")
           org-startup-indented t
@@ -1670,6 +1688,7 @@ modes
           org-src-fontify-natively t
           org-fontify-whole-heading-line t
           org-completion-use-ido t
+          ;; don't indent source code
           org-edit-src-content-indentation 0
           ;; Imenu should use 3 depth instead of 2
           org-imenu-depth 3
@@ -1681,7 +1700,13 @@ modes
           org-special-ctrl-a/e t
           org-special-ctrl-k t
           org-yank-adjusted-subtrees nil
+          ;; try to be smart when editing hidden things
+          org-catch-invisible-edits 'smart
+          ;; blank lines are removed when exiting the code edit buffer
+          org-src-strip-leading-and-trailing-blank-lines t
+          ;; how org-src windows are set up when hitting C-c '
           org-src-window-setup 'current-window
+          ;;org-src-window-setup 'other-window
           ;; Overwrite the current window with the agenda
           org-agenda-window-setup 'current-window
           ;; Use full outline paths for refile targets - we file directly with IDO
@@ -1693,10 +1718,14 @@ modes
           ;; Use IDO for both buffer and file completion and ido-everywhere to t
           ido-everywhere t
           ido-max-directory-size 10000
+          ;; never leave empty lines in collapsed view
+          org-cycle-separator-lines 0
           ;; Use cider as the clojure backend
           org-babel-clojure-backend 'cider
           ;; don't run stuff automatically on export
           org-export-babel-evaluate nil
+          ;; export tables as CSV instead of tab-delineated
+          org-table-export-default-format "orgtbl-to-csv"
           ;; always enable noweb, results as code and exporting both
           org-babel-default-header-args
           (cons '(:noweb . "yes")
@@ -1732,16 +1761,19 @@ modes
           org-agenda-include-diary t
           org-agenda-diary-file "~/diary"
           org-agenda-insert-diary-extract-time t
+          ;; keep the agenda filter until manually removed
+          org-agenda-persistent-filter t
           org-agenda-repeating-timestamp-show-all t
           ;; Show all agenda dates - even if they are empty
-          org-agenda-show-all-dates t)
+          org-agenda-show-all-dates t
+          ;; Agenda org-mode files
+          org-agenda-files '("~/org/"
+                             "~/org/es/design/"
+                             "~/org/book/"))
 
-    ;; Agenda org-mode files
-    (setq org-agenda-files
-          `(,(file-truename "~/org/todo.org")
-            ,(file-truename "~/org/notes.org")
-            ,(file-truename "~/org/journal.org")
-            ,(file-truename "~/org/refile.org")))
+    ;; Save all org-mode buffers every hour at :59
+    (run-at-time "00:59" 3600 'org-save-all-org-buffers)
+
     ;; Org todo keywords
     (setq org-todo-keywords
           (quote
@@ -1773,10 +1805,12 @@ modes
                                (org-agenda-files :maxlevel . 2)))
     ;; quick access to common tags
     (setq org-tag-alist
-          '(("oss" . ?o)
-            ("home" . ?h)
-            ("work" . ?w)
-            ("book" . ?b)
+          '((:startgroup)
+            ("@oss" . ?o)
+            ("@home" . ?h)
+            ("@work" . ?w)
+            ("@book" . ?b)
+            (:endgroup)
             ("support" . ?s)
             ("docs" . ?d)
             ("export" . ?e)
@@ -1821,14 +1855,11 @@ modes
               ;; All TODO items
               (todo "TODO"
                     ((org-agenda-overriding-header "Task list")
-                     (org-agenda-sorting-strategy '(category-keep))))
+                     (org-agenda-sorting-strategy
+                      '(time-up priority-down category-keep))))
               ;; Everything on hold
               (todo "HOLD"
-                    ((org-agenda-overriding-header "On-hold")))
-              ;; Everything that's done and archivable
-              (todo "DONE"
-                    ((org-agenda-overriding-header "Tasks for archive")
-                     (org-agenda-skip-function 'my/skip-non-archivable-tasks))))
+                    ((org-agenda-overriding-header "On-hold"))))
              nil))))
 
     ;; Exclude DONE state tasks from refile targets
@@ -1984,6 +2015,44 @@ background of code to whatever theme I'm using's background"
                     my-pre-bg my-pre-fg))))))
 
     (add-hook 'org-export-before-processing-hook #'my/org-inline-css-hook)))
+#+END_SRC
+
+** org-clock
+:PROPERTIES:
+:ID:       DA59822F-1D94-4E05-B28C-9B984C3E8431
+:END:
+Now, my org-mode clocking configuration:
+
+#+BEGIN_SRC emacs-lisp
+(use-package org
+  :config
+  (progn
+    ;; Insinuate it everywhere
+    (org-clock-persistence-insinuate)
+    ;; Show lot of clocking history so it's easy to pick items off the C-F11 list
+    (setq org-clock-history-length 23
+          ;; Resume clocking task on clock-in if the clock is open
+          org-clock-in-resume t
+          ;; Separate drawers for clocking and logs
+          org-drawers '("PROPERTIES" "CLOCK" "LOGBOOK" "RESULTS" "HIDDEN")
+          ;; Save clock data and state changes and notes in the LOGBOOK drawer
+          org-clock-into-drawer t
+          ;; Sometimes I change tasks I'm clocking quickly -
+          ;; this removes clocked tasks with 0:00 duration
+          org-clock-out-remove-zero-time-clocks t
+          ;; Clock out when moving task to a done state
+          org-clock-out-when-done t
+          ;; Save the running clock and all clock history when exiting Emacs, load it on startup
+          org-clock-persist t
+          ;; Prompt to resume an active clock
+          org-clock-persist-query-resume t
+          ;; Enable auto clock resolution for finding open clocks
+          org-clock-auto-clock-resolution #'when-no-clock-is-running
+          ;; Include current clocking task in clock reports
+          org-clock-report-include-clocking-task t
+          ;; some default parameters for the clock report
+          org-agenda-clockreport-parameter-plist
+          '(:link t :maxlevel 5 :fileskip0 t :compact t :narrow 80))))
 #+END_SRC
 
 ** org-publishing
@@ -2913,16 +2982,16 @@ I basically use this to start up ES when I need to test something really quickly
   :config
   (progn
     (prodigy-define-service
-      :name "Elasticsearch 1.4.2"
-      :cwd "~/ies/elasticsearch-1.4.2/"
-      :command "~/ies/elasticsearch-1.4.2/bin/elasticsearch"
+      :name "Elasticsearch 1.4.3"
+      :cwd "~/ies/elasticsearch-1.4.3/"
+      :command "~/ies/elasticsearch-1.4.3/bin/elasticsearch"
       :tags '(work test es)
       :port 9200)
 
     (prodigy-define-service
-      :name "Elasticsearch 1.3.7"
-      :cwd "~/ies/elasticsearch-1.3.7/"
-      :command "~/ies/elasticsearch-1.3.7/bin/elasticsearch"
+      :name "Elasticsearch 1.3.8"
+      :cwd "~/ies/elasticsearch-1.3.8/"
+      :command "~/ies/elasticsearch-1.3.8/bin/elasticsearch"
       :tags '(work test es)
       :port 9200)
 
@@ -2954,6 +3023,16 @@ I basically use this to start up ES when I need to test something really quickly
       :args '("-f")
       :tags '(work test es)
       :port 9200)))
+#+END_SRC
+
+** symon
+A little system-monitoring thingy that shows up in the modeline when you're idle
+
+#+BEGIN_SRC emacs-lisp
+(use-package symon
+  :idle (symon-mode)
+  :config
+  (progn))
 #+END_SRC
 
 ** git-gutter

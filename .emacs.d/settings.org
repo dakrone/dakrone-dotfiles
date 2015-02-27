@@ -16,9 +16,7 @@
 * Configuration
 This file is used by org-mode to load my personal emacs configuration file. The
 latest version of this file is always at
-[[https://github.com/dakrone/dakrone-dotfiles]], keep in mind that to use it you
-will probably have to install a number of packages. Here's my list of packages:
-[[https://github.com/dakrone/dakrone-dotfiles/blob/master/.emacs.d/packages.el]]
+[[https://github.com/dakrone/dakrone-dotfiles]]
 
 This file was last exported: {{{time(%Y-%m-%d %H:%M)}}}
 
@@ -119,6 +117,8 @@ is in no way exhaustive.
 | =C-M-n=     | scroll half a page down                                       | Often                    |
 | =C-M-p=     | scroll half a page up                                         | Often                    |
 | =M-i=       | open helm-swoop                                               | Often                    |
+| =<F11>=     | prompt for recent headlines to clock into                     | Often                    |
+| =<F12>=     | clock out of current task                                     | Often                    |
 | =M-g .=     | helm-grep, with C-u prefix, rgrep                             | Sometimes                |
 | =C-c p s=   | switch projectile projecs                                     | Sometimes                |
 | =C-h b=     | see the current bindings (helm-descbinds)                     | Sometimes                |
@@ -131,6 +131,7 @@ is in no way exhaustive.
 | =C-x 4 t=   | transpose the current buffers                                 | Rarely                   |
 | =C-h e=     | pop up the ~*Messages*~ buffer                                | Rarely                   |
 | =C-x RET=   | open shell (zsh)                                              | Rarely                   |
+#+TBLFM: $1=<@11$6>
 
 ** Packages that need to be installed
 This is code that installs packages before any config is loaded, since a lot of
@@ -148,7 +149,7 @@ things add hooks that don't work if packages aren't installed.
     flatui-theme tangotango-theme
 
     ;; misc
-    diminish gist scpaste async symon
+    diminish gist scpaste async
 
     ;; es-mode is run from a  git checkout
 
@@ -166,6 +167,9 @@ things add hooks that don't work if packages aren't installed.
     volatile-highlights fill-column-indicator golden-ratio wc-mode eyebrowse
     aggressive-indent vlf
 
+    ;; logs
+    log4j-mode
+
     ;; infrastructure stuff
     restclient company-restclient
 
@@ -174,6 +178,9 @@ things add hooks that don't work if packages aren't installed.
 
     ;; LaTeX
     auctex
+
+    ;; binding things
+    hydra
 
     ;; org-mode
     org htmlize gnuplot-mode gnuplot ox-reveal ox-gfm
@@ -269,8 +276,8 @@ depending on whatever I'm in the mood for. This is used later on for the
 modeline theme, as well as the general theme for things.
 
 #+BEGIN_SRC emacs-lisp
-(defvar my/background 'light)
-;;(defvar my/background 'dark)
+;;(defvar my/background 'light)
+(defvar my/background 'dark)
 #+END_SRC
 
 Now some personal information about me:
@@ -401,10 +408,10 @@ Set up the fill-column to 80 characters and set tab width to 2
 (setq-default indent-tabs-mode nil)
 #+END_SRC
 
-It's okay to refer to a file by a symlink:
+Resolve symlinks:
 
 #+BEGIN_SRC emacs-lisp
-(setq-default find-file-visit-truename nil)
+(setq-default find-file-visit-truename t)
 #+END_SRC
 
 Require a newline at the end of files:
@@ -484,7 +491,7 @@ Turn on auto-fill mode in text buffers:
 (use-package diminish
   :init
   (progn
-    (diminish 'auto-fill-function "AF")))
+    (diminish 'auto-fill-function "")))
 #+END_SRC
 
 Set the internal calculator not to go to scientific form quite so quickly:
@@ -881,7 +888,7 @@ In most non-programming modes, =M-.= can be used to spellcheck the word
 #+BEGIN_SRC emacs-lisp
 ;; flyspell
 (use-package flyspell
-  :diminish "FS"
+  :diminish ""
   :config
   (define-key flyspell-mode-map (kbd "M-n") 'flyspell-goto-next-error)
   (define-key flyspell-mode-map (kbd "M-.") 'ispell-word))
@@ -1258,7 +1265,7 @@ And some various eldoc settings:
   (progn
     (use-package diminish
       :init
-      (progn (diminish 'eldoc-mode "ed")))
+      (progn (diminish 'eldoc-mode "")))
     (setq eldoc-idle-delay 0.3)
     (set-face-attribute 'eldoc-highlight-function-argument nil
                         :underline t :foreground "green"
@@ -1556,7 +1563,23 @@ nice.
 
 (defun dakrone-dark ()
   (interactive)
+  (use-package smyx-theme
+    :init (load-theme 'smyx t)
+    :config
+    (progn
+      (set-face-attribute 'org-block nil
+                          :foreground "#5fafd7"
+                          :background "#3a3a3a")
+      (set-face-attribute 'org-block-background nil
+                          :background "#303030")
+      (set-face-attribute 'org-block-begin-line nil
+                          :foreground "#ffffff"
+                          :background "#005f87")
+      (set-face-attribute 'org-block-end-line nil
+                          :foreground "#4e4e4e"
+                          :background "#303030")))
   (use-package tangotango-theme
+    :disabled t
     :init (load-theme 'tangotango t))
   (use-package moe-theme
     :disabled t
@@ -1581,10 +1604,11 @@ nice.
 
 (defun dakrone-light ()
   (interactive)
-  ;; (use-package flatui-theme
-  ;;   :init (load-theme 'flatui t))
   (use-package leuven-theme
     :init (load-theme 'leuven t))
+  (use-package flatui-theme
+    :disabled t
+    :init (load-theme 'flatui t))
   (add-hook 'prog-mode-hook (lambda () (hl-line-mode 1))))
 
 (if (eq my/background 'dark)
@@ -1594,7 +1618,7 @@ nice.
 
 *** fonts
 I've been using [[https://github.com/belluzj/fantasque-sans][Fantasque Sans Mono]] lately, it looks pretty nice to me. On Linux
-I've been using Bitstream Vera Sans Mono. I also use Anonymous Pro and
+I've been using Bitstream Vera Sans Mono. I also use [[http://www.marksimonson.com/fonts/view/anonymous-pro][Anonymous Pro]] and
 Inconsolata a lot.
 
 Config for OSX:
@@ -1767,9 +1791,10 @@ And now the huge org-mode configuration
           ;; Show all agenda dates - even if they are empty
           org-agenda-show-all-dates t
           ;; Agenda org-mode files
-          org-agenda-files '("~/org/"
-                             "~/org/es/design/"
-                             "~/org/book/"))
+          org-agenda-files `(,(file-truename "~/org/")
+                             ,(file-truename "~/org/es/")
+                             ,(file-truename "~/org/es/design/")
+                             ,(file-truename "~/org/book/")))
 
     ;; Save all org-mode buffers every hour at :59
     (run-at-time "00:59" 3600 'org-save-all-org-buffers)
@@ -2023,8 +2048,22 @@ background of code to whatever theme I'm using's background"
 :END:
 Now, my org-mode clocking configuration:
 
+First, a function to use for clocking in
+
+#+BEGIN_SRC emacs-lisp
+(defun my/org-clock-in ()
+  (interactive)
+  (org-clock-in '(4)))
+
+(global-set-key (kbd "<f11>") #'my/org-clock-in)
+(global-set-key (kbd "<f12>") 'org-clock-out)
+#+END_SRC
+
+
 #+BEGIN_SRC emacs-lisp
 (use-package org
+  :bind (("C-c C-x C-i" . my/org-clock-in)
+         ("C-c C-x C-o" . org-clock-out))
   :config
   (progn
     ;; Insinuate it everywhere
@@ -2050,9 +2089,11 @@ Now, my org-mode clocking configuration:
           org-clock-auto-clock-resolution #'when-no-clock-is-running
           ;; Include current clocking task in clock reports
           org-clock-report-include-clocking-task t
+          ;; don't use pretty things for the clocktable
+          org-pretty-entities nil
           ;; some default parameters for the clock report
           org-agenda-clockreport-parameter-plist
-          '(:link t :maxlevel 5 :fileskip0 t :compact t :narrow 80))))
+          '(:maxlevel 10 :fileskip0 t :score agenda :block thismonth :compact t :narrow 80))))
 #+END_SRC
 
 ** org-publishing
@@ -2364,8 +2405,8 @@ elisp files. Then run =make= and =make install= to install mu.
             ;; mu4e-html2text-command "/usr/local/bin/html2text -nobs"
             ;; mu4e-html2text-command
             ;; "/usr/bin/html2markdown | fgrep -v '&nbsp_place_holder;'"
-            ;; check for new messages ever 300 seconds (5 min)
-            mu4e-update-interval 300)
+            ;; check for new messages ever 500 seconds (5 min)
+            mu4e-update-interval 500)
 
       (add-hook 'dired-mode-hook 'turn-on-gnus-dired-mode)
       (use-package gnus-dired
@@ -2821,7 +2862,7 @@ Pretty minimally configured, but awesome tool for most dynamic languages.
          ("M-g M-p" . flycheck-previous-error)
          ("M-g M-=" . flycheck-list-errors))
   :idle (global-flycheck-mode)
-  :diminish "fc"
+  :diminish "FC"
   :config
   (progn
     (setq-default flycheck-disabled-checkers '(emacs-lisp-checkdoc))
@@ -2864,7 +2905,7 @@ In order to get this to work also
         helm-gtags-suggested-key-mapping t)
   (use-package helm-gtags
     :init (helm-gtags-mode t)
-    :diminish "hg")
+    :diminish "")
   ;; key bindings
   (define-key helm-gtags-mode-map (kbd "M-s") 'helm-gtags-select)
   (define-key helm-gtags-mode-map (kbd "M-.") 'helm-gtags-dwim)
@@ -3025,16 +3066,6 @@ I basically use this to start up ES when I need to test something really quickly
       :port 9200)))
 #+END_SRC
 
-** symon
-A little system-monitoring thingy that shows up in the modeline when you're idle
-
-#+BEGIN_SRC emacs-lisp
-(use-package symon
-  :idle (symon-mode)
-  :config
-  (progn))
-#+END_SRC
-
 ** git-gutter
 Only enabled in a few modes, but quite useful, as well as the =C-x n= and =C-x
 p= bindings.
@@ -3117,10 +3148,10 @@ https://tuhdo.github.io/helm-intro.html
 (use-package helm
   :bind
   (("C-M-z" . helm-resume)
+   ("C-x C-f" . helm-find-files)
    ("C-h b" . helm-descbinds)
    ("C-x C-r" . helm-mini)
    ("C-x M-o" . helm-occur)
-   ("C-x C-o" . helm-occur)
    ("M-y" . helm-show-kill-ring)
    ("C-h a" . helm-apropos)
    ("C-h m" . helm-man-woman)
@@ -3129,7 +3160,6 @@ https://tuhdo.github.io/helm-intro.html
    ("M-g ." . helm-do-grep)
    ("C-x C-i" . helm-semantic-or-imenu)
    ("M-x" . helm-M-x)
-   ("C-x C-f" . helm-find-files)
    ("C-x C-b" . helm-buffers-list)
    ("C-x C-r" . helm-mini)
    ("C-x b" . helm-mini)
@@ -3137,6 +3167,7 @@ https://tuhdo.github.io/helm-intro.html
   :idle (progn
           ;;(helm-autoresize-mode 1)
           (helm-mode 1))
+  :diminish ""
   :config
   (progn
     (use-package helm-config)
@@ -3392,6 +3423,23 @@ https://tuhdo.github.io/helm-intro.html
               helm-swoop-speed-or-color nil)))))
 #+END_SRC
 
+** hydra
+Hydra is the new package on the block, and a lot of people seem to like it. It
+seems like a toggle-map for Emacs, so I'm going to use it for org-mode related
+bindings and clocking and all that.
+
+#+BEGIN_SRC emacs-lisp
+(use-package hydra
+  :init
+  (progn
+    (defhydra hydra-org-clock (global-map "C-x C-o")
+      "clock-actions"
+      ("i" my/org-clock-in "clock in")
+      ("o" org-clock-out "clock out")
+      ("g" org-clock-jump-to-current-clock "go to current clock")
+      ("q" nil "cancel"))))
+#+END_SRC
+
 ** yasnippet
 Snippets for coding, loading while idle so startup is faster.
 
@@ -3465,7 +3513,7 @@ Standard auto-completion configuration with company-mode
 
 #+BEGIN_SRC emacs-lisp
 (use-package company
-  :diminish " C"
+  :diminish ""
   :bind ("C-." . company-complete)
   :config
   (progn
@@ -3859,13 +3907,10 @@ to switch between as needed:
 
 #+BEGIN_SRC emacs-lisp
 (use-package smart-mode-line
-  :disabled t
   :init
   (progn
     (sml/setup)
-    (if (eq my/background 'dark)
-        (sml/apply-theme 'dark)
-      (sml/apply-theme 'respectful))))
+    (sml/apply-theme 'respectful)))
 
 (use-package powerline
   :disabled t

@@ -146,7 +146,7 @@ things add hooks that don't work if packages aren't installed.
     ;; themeing
     rainbow-mode leuven-theme dakrone-theme smart-mode-line
     color-identifiers-mode moe-theme powerline nyan-mode zenburn-theme
-    flatui-theme tangotango-theme
+    flatui-theme tangotango-theme smyx-theme
 
     ;; misc
     diminish gist scpaste async
@@ -306,7 +306,7 @@ We don't really need to garbage collect as frequently as Emacs
 would like to by default, so set the threshold up higher:
 
 #+BEGIN_SRC emacs-lisp
-(setq gc-cons-threshold 50000000)
+(setq gc-cons-threshold (* 100 1024 1024)) ;; 100 mb
 ;; Allow font-lock-mode to do background parsing
 (setq jit-lock-stealth-time 1
       jit-lock-stealth-load 200
@@ -625,6 +625,25 @@ When using Homebrew, install it using \"brew install trash\"."
   (global-set-key [wheel-down] 'next-line))
 #+END_SRC
 
+Sometimes I use the OSX =emacs-mac= port:
+https://github.com/railwaycat/emacs-mac-port , which has a whole other set of
+issues, so this is special handling of it...
+
+#+BEGIN_SRC emacs-lisp
+(when (eq window-system 'mac)
+
+  (defun my/max-fullscreen ()
+    (interactive)
+    (set-frame-parameter nil 'fullscreen 'fullboth))
+
+  ;; fullscreen
+  (add-hook 'after-init-hook #'my/max-fullscreen)
+  ;; use alt as hyper
+  (setq mac-option-modifier 'meta)
+  ;; use command as meta
+  (setq mac-command-modifier 'hyper))
+#+END_SRC
+
 **** Windows
 Hahahahaha, you must be joking.
 
@@ -840,11 +859,6 @@ and dired tramp buffers are great for file management.
           tramp-adb-program "/Users/hinmanm/android-sdk-macosx/platform-tools/adb"
           ;; use the settings in ~/.ssh/config instead of Tramp's
           tramp-use-ssh-controlmaster-options nil
-          ;; update vc ignore to include tramp files
-          vc-ignore-dir-regexp
-          (format "\\(%s\\)\\|\\(%s\\)"
-                  vc-ignore-dir-regexp
-                  tramp-file-name-regexp)
           backup-enable-predicate
           (lambda (name)
             (and (normal-backup-enable-predicate name)
@@ -856,6 +870,7 @@ and dired tramp buffers are great for file management.
       :config
       (progn
         (add-to-list 'tramp-remote-path "/usr/local/sbin")
+        (add-to-list 'tramp-remote-path "/opt/java/current/bin")
         (add-to-list 'tramp-remote-path "~/bin")))))
 #+END_SRC
 
@@ -1414,10 +1429,11 @@ Malabar mode is for dealing with maven projects, such as [[https://github.com/el
 is nice to be able to compile the code.
 
 #+BEGIN_SRC emacs-lisp
-(add-hook 'java-mode-hook
-          (lambda ()
-            (use-package malabar-mode)
-            (malabar-mode 1)))
+(defun my/malabar-java-hook ()
+  (use-package malabar-mode)
+  (malabar-mode 1))
+
+;; (add-hook 'java-mode-hook #'my/malabar-java-hook)
 #+END_SRC
 
 *** Ruby
@@ -1624,7 +1640,7 @@ Inconsolata a lot.
 Config for OSX:
 
 #+BEGIN_SRC emacs-lisp
-(when (eq window-system 'ns)
+(when (eq system-type 'darwin)
   (set-fontset-font "fontset-default" 'symbol "Monaco")
   ;; (set-default-font "Fantasque Sans Mono")
   ;; (set-default-font "Monaco")
@@ -1830,12 +1846,10 @@ And now the huge org-mode configuration
                                (org-agenda-files :maxlevel . 2)))
     ;; quick access to common tags
     (setq org-tag-alist
-          '((:startgroup)
-            ("@oss" . ?o)
-            ("@home" . ?h)
-            ("@work" . ?w)
-            ("@book" . ?b)
-            (:endgroup)
+          '(("oss" . ?o)
+            ("home" . ?h)
+            ("work" . ?w)
+            ("book" . ?b)
             ("support" . ?s)
             ("docs" . ?d)
             ("export" . ?e)
@@ -3642,6 +3656,14 @@ helpful for documentation buffers and so on.
 
 ;; async shell commands
 (push '("*Async Shell Command*" :stick t) popwin:special-display-config)
+
+(defun my/popup-downloads ()
+  "Pop up the downloads buffer (3rd eshell buffer for me"
+  (interactive)
+  (popwin:popup-buffer "*eshell*<3>"))
+
+;; eshell 3 is always my "download stuff" buffer
+(global-set-key (kbd "C-x M-d") #'my/popup-downloads)
 #+END_SRC
 
 ** paren-face

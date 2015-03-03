@@ -1,0 +1,5 @@
+# Ivalice had better be a linux machine...
+if [[ $OS == "Linux" ]]; then
+   export JAVA_HOME=/opt/java/current
+   export PATH=$JAVA_HOME/bin:$PATH
+fi

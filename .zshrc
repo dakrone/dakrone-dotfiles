@@ -104,6 +104,14 @@ if [[ -f ~/.zsh.d/zsh.${OS} ]]; then
     source ~/.zsh.d/zsh.${OS}
 fi
 
+## Sourcing machine-specific things
+if [[ -f ~/.zsh.d/zsh.${HOST} ]]; then
+    if [[ ! -z $ZSHDEBUG ]]; then
+        echo +++ ~/.zsh.d/zsh.${HOST}
+    fi
+    source ~/.zsh.d/zsh.${HOST}
+fi
+
 # Source z.sh if available
 if [ -s ~/bin/z.sh ] ; then
     source ~/bin/z.sh ;

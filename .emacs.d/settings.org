@@ -146,7 +146,7 @@ things add hooks that don't work if packages aren't installed.
     ;; themeing
     rainbow-mode leuven-theme dakrone-theme smart-mode-line
     color-identifiers-mode moe-theme powerline nyan-mode zenburn-theme
-    flatui-theme tangotango-theme smyx-theme
+    flatui-theme tangotango-theme smyx-theme monokai-theme
 
     ;; misc
     diminish gist scpaste async
@@ -1580,6 +1580,7 @@ nice.
 (defun dakrone-dark ()
   (interactive)
   (use-package smyx-theme
+    :disabled t
     :init (load-theme 'smyx t)
     :config
     (progn
@@ -1588,6 +1589,24 @@ nice.
                           :background "#3a3a3a")
       (set-face-attribute 'org-block-background nil
                           :background "#303030")
+      (set-face-attribute 'org-block-begin-line nil
+                          :foreground "#ffffff"
+                          :background "#005f87")
+      (set-face-attribute 'org-block-end-line nil
+                          :foreground "#4e4e4e"
+                          :background "#303030")))
+  (use-package monokai-theme
+    :init
+    (progn
+      (setq monokai-use-variable-pitch nil)
+      (load-theme 'monokai t))
+    :config
+    (progn
+      (set-face-attribute 'org-block nil
+                          :foreground "#5fafd7"
+                          :background "#3a3a3a")
+      (set-face-attribute 'org-block-background nil
+                          :background "#2B2D27")
       (set-face-attribute 'org-block-begin-line nil
                           :foreground "#ffffff"
                           :background "#005f87")
@@ -1640,35 +1659,44 @@ Inconsolata a lot.
 Config for OSX:
 
 #+BEGIN_SRC emacs-lisp
-(when (eq system-type 'darwin)
-  (set-fontset-font "fontset-default" 'symbol "Monaco")
-  ;; (set-default-font "Fantasque Sans Mono")
-  ;; (set-default-font "Monaco")
-  ;; (set-default-font "Anonymous Pro")
-  (set-default-font "Inconsolata")
-  ;; (set-default-font "Andale Mono")
-  ;; (set-default-font "CosmicSansNeueMono")
-  ;; (set-default-font "Fira Mono")
-  ;; (set-default-font "Luculent")
-  ;; (set-default-font "Menlo")
-  ;; (set-default-font "Source Code Pro")
-  ;; (set-default-font "Mensch")
-  (set-face-attribute 'default nil :height 120)
-  (set-face-attribute 'fixed-pitch nil :height 120))
+(defun my/setup-osx-fonts ()
+  (interactive)
+  (when (eq system-type 'darwin)
+    (set-fontset-font "fontset-default" 'symbol "Monaco")
+    ;; (set-default-font "Fantasque Sans Mono")
+    ;; (set-default-font "Monaco")
+    ;; (set-default-font "Anonymous Pro")
+    (set-default-font "Inconsolata")
+    ;; (set-default-font "Andale Mono")
+    ;; (set-default-font "CosmicSansNeueMono")
+    ;; (set-default-font "Fira Mono")
+    ;; (set-default-font "Luculent")
+    ;; (set-default-font "Menlo")
+    ;; (set-default-font "Source Code Pro")
+    ;; (set-default-font "Mensch")
+    (set-face-attribute 'default nil :height 120)
+    (set-face-attribute 'fixed-pitch nil :height 120)
 
-;; Anti-aliasing
-(setq mac-allow-anti-aliasing t)
+    ;; Anti-aliasing
+    (setq mac-allow-anti-aliasing t)))
+
+(when (eq system-type 'darwin)
+  (add-hook 'after-init-hook #'my/setup-osx-fonts))
 #+END_SRC
 
 Config for Linux/X11 systems:
 
 #+BEGIN_SRC emacs-lisp
+(defun my/setup-x11-fonts ()
+  (when (eq window-system 'x)
+    ;; Font family
+    (set-fontset-font "fontset-default" 'symbol "Bitstream Vera Sans Mono")
+    (set-default-font "Bitstream Vera Sans Mono")
+    ;; Font size
+    (set-face-attribute 'default nil :height 90)))
+
 (when (eq window-system 'x)
-  ;; Font family
-  (set-fontset-font "fontset-default" 'symbol "Bitstream Vera Sans Mono")
-  (set-default-font "Bitstream Vera Sans Mono")
-  ;; Font size
-  (set-face-attribute 'default nil :height 90))
+  (add-hook 'after-init-hook #'my/setup-x11-fonts))
 #+END_SRC
 
 ** org-mode

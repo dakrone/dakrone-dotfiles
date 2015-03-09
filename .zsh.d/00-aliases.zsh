@@ -40,6 +40,8 @@ alias keepbprox='autossh -M 23000 corinth -L 7778:corinth:6667'
 # keep an X connection open, without proxy
 alias keepx='autossh -M 22000 x'
 alias keepc='autossh -M 22000 corinth'
+alias keepivr='autossh -M 22000 ivalice-remote'
+alias keepivl='autossh -M 22000 ivalice-local'
 # reverse proxy & keepopen
 alias xprox='ssh -nNT -R 4444:localhost:22 x'
 alias cprox='ssh -nNT -R 4444:corinth:22 x'

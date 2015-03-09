@@ -309,7 +309,7 @@ would like to by default, so set the threshold up higher:
 (setq gc-cons-threshold (* 100 1024 1024)) ;; 100 mb
 ;; Allow font-lock-mode to do background parsing
 (setq jit-lock-stealth-time 1
-      jit-lock-stealth-load 200
+      ;; jit-lock-stealth-load 200
       jit-lock-chunk-size 1000
       jit-lock-defer-time 0.05)
 #+END_SRC
@@ -724,7 +724,6 @@ comint-replace-by-expanded-history-before-point."
       (fset 'message old-message))))
 
 (add-hook 'shell-mode-hook 'set-scroll-conservatively)
-(add-hook 'isearch-mode-end-hook 'enter-again-if-enter)
 ;; truncate buffers continuously
 (add-hook 'comint-output-filter-functions 'comint-truncate-buffer)
 ;; interpret and use ansi color codes in shell output windows
@@ -1602,11 +1601,16 @@ nice.
       (load-theme 'monokai t))
     :config
     (progn
+      (when (window-system)
+        ;; only override the defaults for window systems
+        (set-face-attribute 'default nil
+                            :foreground "#f8f8f2"
+                            :background "#303030"))
       (set-face-attribute 'org-block nil
                           :foreground "#5fafd7"
                           :background "#3a3a3a")
       (set-face-attribute 'org-block-background nil
-                          :background "#2B2D27")
+                          :background "#363636")
       (set-face-attribute 'org-block-begin-line nil
                           :foreground "#ffffff"
                           :background "#005f87")
@@ -2447,8 +2451,8 @@ elisp files. Then run =make= and =make install= to install mu.
             ;; mu4e-html2text-command "/usr/local/bin/html2text -nobs"
             ;; mu4e-html2text-command
             ;; "/usr/bin/html2markdown | fgrep -v '&nbsp_place_holder;'"
-            ;; check for new messages ever 500 seconds (5 min)
-            mu4e-update-interval 500)
+            ;; check for new messages every 600 seconds (10 min)
+            mu4e-update-interval 600)
 
       (add-hook 'dired-mode-hook 'turn-on-gnus-dired-mode)
       (use-package gnus-dired
@@ -3957,6 +3961,7 @@ to switch between as needed:
 
 #+BEGIN_SRC emacs-lisp
 (use-package smart-mode-line
+  :disabled t
   :init
   (progn
     (sml/setup)

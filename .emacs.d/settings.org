@@ -144,9 +144,9 @@ things add hooks that don't work if packages aren't installed.
     use-package
 
     ;; themeing
-    rainbow-mode leuven-theme dakrone-theme smart-mode-line
-    color-identifiers-mode moe-theme powerline nyan-mode zenburn-theme
-    flatui-theme tangotango-theme smyx-theme monokai-theme
+    rainbow-mode leuven-theme dakrone-theme
+    color-identifiers-mode moe-theme nyan-mode
+    flatui-theme smyx-theme monokai-theme
 
     ;; misc
     diminish gist scpaste async
@@ -162,7 +162,7 @@ things add hooks that don't work if packages aren't installed.
     ;; editing utilities
     expand-region smex windresize ag undo-tree iedit ido-ubiquitous
     ido-vertical-mode yasnippet smart-tab anzu smartparens flx-ido projectile
-    smooth-scrolling keyfreq prodigy ace-jump-mode multiple-cursors
+    smooth-scrolling prodigy ace-jump-mode multiple-cursors
     easy-kill simple-call-tree simple-call-tree+ editorconfig ggtags bookmark+
     volatile-highlights fill-column-indicator golden-ratio wc-mode eyebrowse
     aggressive-indent vlf
@@ -178,9 +178,6 @@ things add hooks that don't work if packages aren't installed.
 
     ;; LaTeX
     auctex
-
-    ;; binding things
-    hydra
 
     ;; org-mode
     org htmlize gnuplot-mode gnuplot ox-reveal ox-gfm
@@ -276,8 +273,8 @@ depending on whatever I'm in the mood for. This is used later on for the
 modeline theme, as well as the general theme for things.
 
 #+BEGIN_SRC emacs-lisp
-;;(defvar my/background 'light)
-(defvar my/background 'dark)
+(defvar my/background 'light)
+;;(defvar my/background 'dark)
 #+END_SRC
 
 Now some personal information about me:
@@ -843,6 +840,34 @@ d=, if the buffer doesn't exist it is created.
       (eshell))))
 
 (global-set-key (kbd "C-x d") 'my/create-or-switch-to-delta-buffer)
+
+(defun my/create-or-switch-to-eshell-1 ()
+  "Switch to the *eshell* buffer, or create it"
+  (interactive)
+  (if (get-buffer "*eshell*")
+      (switch-to-buffer "*eshell*")
+    (let ((eshell-buffer-name "*eshell*"))
+      (eshell))))
+
+(defun my/create-or-switch-to-eshell-2 ()
+  "Switch to the *eshell*<2> buffer, or create it"
+  (interactive)
+  (if (get-buffer "*eshell*<2>")
+      (switch-to-buffer "*eshell*<2>")
+    (let ((eshell-buffer-name "*eshell*<2>"))
+      (eshell))))
+
+(defun my/create-or-switch-to-eshell-3 ()
+  "Switch to the *eshell*<3> buffer, or create it"
+  (interactive)
+  (if (get-buffer "*eshell*<3>")
+      (switch-to-buffer "*eshell*<3>")
+    (let ((eshell-buffer-name "*eshell*<3>"))
+      (eshell))))
+
+(global-set-key (kbd "H-1") 'my/create-or-switch-to-eshell-1)
+(global-set-key (kbd "H-2") 'my/create-or-switch-to-eshell-2)
+(global-set-key (kbd "H-3") 'my/create-or-switch-to-eshell-3)
 #+END_SRC
 
 *** Tramp settings
@@ -1340,19 +1365,22 @@ keys, the custom hook only loads jedi when editing python files:
   (progn
     (define-key python-mode-map (kbd "C-c C-z") 'run-python)
     (define-key python-mode-map (kbd "<backtab>") 'python-back-indent)
-    (use-package jedi
-      :config
-      (progn
-        (jedi:setup)
-        (jedi:ac-setup)
-        (setq jedi:setup-keys t)
-        (setq jedi:complete-on-dot t)
-        (define-key python-mode-map (kbd "C-c C-d") 'jedi:show-doc)
-        (setq jedi:tooltip-method nil)
-        (set-face-attribute 'jedi:highlight-function-argument nil
-                            :foreground "green")
-        (define-key python-mode-map (kbd "C-c C-l") 'jedi:get-in-function-call)))
-    (add-hook 'python-mode-hook (lambda () (jedi-mode t)))))
+    (defun my/setup-jedi ()
+      (interactive)
+      (use-package jedi
+        :config
+        (progn
+
+          (jedi:setup)
+          (jedi:ac-setup)
+          (setq jedi:setup-keys t)
+          (setq jedi:complete-on-dot t)
+          (define-key python-mode-map (kbd "C-c C-d") 'jedi:show-doc)
+          (setq jedi:tooltip-method nil)
+          (set-face-attribute 'jedi:highlight-function-argument nil
+                              :foreground "green")
+          (define-key python-mode-map (kbd "C-c C-l") 'jedi:get-in-function-call))))
+    (add-hook 'python-mode-hook #'my/setup-jedi)))
 #+END_SRC
 
 *** Java
@@ -2411,8 +2439,7 @@ elisp files. Then run =make= and =make install= to install mu.
       (setq mu4e-mu-binary "/usr/local/bin/mu"
             ;;mu4e-sent-messages-behavior 'delete
             mu4e-user-mail-address-list
-            '("matthew.hinman@gmail.com" "lee@writequit.org"
-              "lee.hinman@elasticsearch.com")
+            '("matthew.hinman@gmail.com" "lee@writequit.org" "lee@elastic.co")
             ;; save attachments to the Downloads folder
             mu4e-attachment-dir "~/Downloads"
             ;; attempt to show images
@@ -2420,7 +2447,7 @@ elisp files. Then run =make= and =make install= to install mu.
             mu4e-view-image-max-width 800
             ;; start in non-queuing mode
             smtpmail-queue-mail nil
-            smtpmail-queue-dir "~/.mailqueue/"
+            smtpmail-queue-dir "~/.mail/queue/"
             mml2015-use 'epg
             pgg-default-user-id "3acecae0"
             epg-gpg-program "/usr/local/bin/gpg"
@@ -2500,12 +2527,12 @@ passed in. Also supports ignoring the msg at the point."
               (match-string 1 maildir)))))
 
       (defun is-gmail-account? (acct)
-        (if (or (equal "elasticsearch" acct) (equal "gmail" acct))
+        (if (or (equal "elastic" acct) (equal "gmail" acct))
             t nil))
 
       ;; my elisp is bad and I should feel bad
       (defun mlh-folder-for (acct g-folder-name other-folder-name)
-        (if (or (equal "elasticsearch" acct) (equal "gmail" acct))
+        (if (or (equal "elastic" acct) (equal "gmail" acct))
             (format "/%s/[Gmail].%s" acct g-folder-name)
           (format "/%s/INBOX.%s" acct other-folder-name)))
 
@@ -2529,9 +2556,9 @@ passed in. Also supports ignoring the msg at the point."
                (user-mail-address   "matthew.hinman@gmail.com")
                (msmtp-account       "gmail")
                (mu4e-sent-messages-behavior delete))
-              ("elasticsearch"
-               (user-mail-address   "lee.hinman@elasticsearch.com")
-               (msmtp-account       "elasticsearch")
+              ("elastic"
+               (user-mail-address   "lee@elastic.co")
+               (msmtp-account       "elastic")
                (mu4e-sent-messages-behavior delete))
               ;; ("writequit"
               ;;  (user-mail-address   "lee@writequit.org")
@@ -2684,16 +2711,15 @@ passed in. Also supports ignoring the msg at the point."
       ;; The bookmarks for the main screen
       (setq mu4e-bookmarks
             `((,(kdl-mu4e-unread-mail-query) "New messages"         ?b)
-              ("maildir:/elasticsearch/build" "Build failures"      ?B)
+              ("maildir:/elastic/build"      "Build failures"      ?B)
               ("date:today..now"             "Today's messages"     ?t)
               ("date:7d..now"                "Last 7 days"          ?W)
               ;;("maildir:/writequit/INBOX"    "Writequit"            ?w)
-              ("subject:elasticsearch"       "ES Issues"            ?e)
-              ("maildir:/elasticsearch/INBOX" "Elasticsearch"       ?s)
+              ("maildir:/elastic/INBOX"      "Elastic"              ?s)
               ("maildir:/gmail/INBOX"        "Gmail"                ?g)
-              ;; ("maildir:/writequit/INBOX OR maildir:/elasticsearch/INBOX OR maildir:/gmail/INBOX"
+              ;; ("maildir:/writequit/INBOX OR maildir:/elastic/INBOX OR maildir:/gmail/INBOX"
               ;;  "All Mail" ?a)
-              ("maildir:/elasticsearch/INBOX OR maildir:/gmail/INBOX" "All Mail" ?a)))
+              ("maildir:/elastic/INBOX OR maildir:/gmail/INBOX" "All Mail" ?a)))
 
       ;; Skip the main mu4e screen and go right to unread
       (defun kdl-mu4e-view-unread ()
@@ -2907,16 +2933,13 @@ Pretty minimally configured, but awesome tool for most dynamic languages.
   :bind (("M-g M-n" . flycheck-next-error)
          ("M-g M-p" . flycheck-previous-error)
          ("M-g M-=" . flycheck-list-errors))
-  :idle (global-flycheck-mode)
+  :init (global-flycheck-mode)
   :diminish "FC"
   :config
   (progn
     (setq-default flycheck-disabled-checkers '(emacs-lisp-checkdoc))
-    (use-package flycheck-color-mode-line
-      :init (add-hook 'flycheck-mode-hook 'flycheck-color-mode-line-mode))
     (use-package flycheck-tip
       :config (add-hook 'flycheck-mode-hook #'my/flycheck-customize))))
-
 #+END_SRC
 
 ** ggtags
@@ -3069,9 +3092,9 @@ I basically use this to start up ES when I need to test something really quickly
   :config
   (progn
     (prodigy-define-service
-      :name "Elasticsearch 1.4.3"
-      :cwd "~/ies/elasticsearch-1.4.3/"
-      :command "~/ies/elasticsearch-1.4.3/bin/elasticsearch"
+      :name "Elasticsearch 1.4.4"
+      :cwd "~/ies/elasticsearch-1.4.4/"
+      :command "~/ies/elasticsearch-1.4.4/bin/elasticsearch"
       :tags '(work test es)
       :port 9200)
 
@@ -3210,7 +3233,7 @@ https://tuhdo.github.io/helm-intro.html
    ("C-x C-r" . helm-mini)
    ("C-x b" . helm-mini)
    ("C-h t" . helm-world-time))
-  :idle (progn
+  :init (progn
           ;;(helm-autoresize-mode 1)
           (helm-mode 1))
   :diminish ""
@@ -3218,7 +3241,12 @@ https://tuhdo.github.io/helm-intro.html
   (progn
     (use-package helm-config)
     (use-package helm-files)
-    (use-package helm-grep)
+    (use-package helm-grep
+      :config
+      (progn
+        (define-key helm-grep-mode-map (kbd "<return>")  'helm-grep-mode-jump-other-window)
+        (define-key helm-grep-mode-map (kbd "n")  'helm-grep-mode-jump-other-window-forward)
+        (define-key helm-grep-mode-map (kbd "p")  'helm-grep-mode-jump-other-window-backward)))
     (use-package helm-man)
     (use-package helm-misc)
     (use-package helm-aliases)
@@ -3251,7 +3279,6 @@ https://tuhdo.github.io/helm-intro.html
     (setq helm-idle-delay 0.1
           helm-exit-idle-delay 0.1
           helm-input-idle-delay 0
-          helm-candidate-number-limit 500
           helm-buffers-fuzzy-matching t
           ;; truncate long lines in helm completion
           helm-truncate-lines t
@@ -3260,8 +3287,6 @@ https://tuhdo.github.io/helm-intro.html
           "grep -a -d skip %e -n%cH -e %p %f"
           helm-grep-default-recurse-command
           "grep -a -d recurse %e -n%cH -e %p %f"
-          ;; scroll 4 lines other window using M-<next>/M-<prior>
-          helm-scroll-amount 4
           ;; do not display invisible candidates
           helm-quick-update t
           ;; be idle for this many seconds, before updating in delayed sources.
@@ -3274,17 +3299,11 @@ https://tuhdo.github.io/helm-intro.html
           helm-split-window-in-side-p t
           ;; limit the number of displayed canidates
           helm-candidate-number-limit 200
-          ;; show all candidates when set to 0
-          helm-M-x-requires-pattern 0
           ;; don't use recentf stuff in helm-ff
           helm-ff-file-name-history-use-recentf nil
           ;; move to end or beginning of source when reaching top or bottom
           ;; of source
           helm-move-to-line-cycle-in-source t
-          ;; sometimes needed in helm-buffers-list
-          ido-use-virtual-buffers 'auto
-          ;; fuzzy matching for helm-M-x
-          helm-M-x-fuzzy-match t
           ;; fuzzy matching
           helm-buffers-fuzzy-matching t
           helm-semantic-fuzzy-match t
@@ -3320,10 +3339,6 @@ https://tuhdo.github.io/helm-intro.html
     (global-set-key (kbd "C-c h g")    'helm-do-grep)
     (global-set-key (kbd "C-c h a")    'helm-do-ag)
 
-    (define-key helm-grep-mode-map (kbd "<return>")  'helm-grep-mode-jump-other-window)
-    (define-key helm-grep-mode-map (kbd "n")  'helm-grep-mode-jump-other-window-forward)
-    (define-key helm-grep-mode-map (kbd "p")  'helm-grep-mode-jump-other-window-backward)
-
     (when (executable-find "curl")
       (setq helm-google-suggest-use-curl-p t))
 
@@ -3348,7 +3363,7 @@ https://tuhdo.github.io/helm-intro.html
                   (define-key eshell-mode-map (kbd "M-l")  'helm-eshell-history)))
 
     ;; Save current position to mark ring
-    (add-hook 'helm-goto-line-before-hook 'helm-save-current-pos-to-mark-ring)
+    ;; (add-hook 'helm-goto-line-before-hook 'helm-save-current-pos-to-mark-ring)
 
     (defvar helm-httpstatus-source
       '((name . "HTTP STATUS")
@@ -3466,24 +3481,8 @@ https://tuhdo.github.io/helm-intro.html
               ;; Split direcion. 'split-window-vertically or 'split-window-horizontally
               helm-swoop-split-direction 'split-window-vertically
               ;; If nil, you can slightly boost invoke speed in exchange for text color
-              helm-swoop-speed-or-color nil)))))
-#+END_SRC
-
-** hydra
-Hydra is the new package on the block, and a lot of people seem to like it. It
-seems like a toggle-map for Emacs, so I'm going to use it for org-mode related
-bindings and clocking and all that.
-
-#+BEGIN_SRC emacs-lisp
-(use-package hydra
-  :init
-  (progn
-    (defhydra hydra-org-clock (global-map "C-x C-o")
-      "clock-actions"
-      ("i" my/org-clock-in "clock in")
-      ("o" org-clock-out "clock out")
-      ("g" org-clock-jump-to-current-clock "go to current clock")
-      ("q" nil "cancel"))))
+              helm-swoop-speed-or-color nil)))
+    ))
 #+END_SRC
 
 ** yasnippet
@@ -3491,11 +3490,10 @@ Snippets for coding, loading while idle so startup is faster.
 
 #+BEGIN_SRC emacs-lisp
 (use-package yasnippet
-  :diminish ""
-  :idle (yas-reload-all))
-
-(add-hook 'emacs-lisp-mode-hook 'yas-minor-mode-on)
-(add-hook 'clojure-mode-hook 'yas-minor-mode-on)
+  :diminish yas-minor-mode
+  :init (progn
+          (yas-global-mode 1)
+          (yas-reload-all)))
 #+END_SRC
 
 And some niceties to allow choosing a snippet using helm:
@@ -3561,6 +3559,7 @@ Standard auto-completion configuration with company-mode
 (use-package company
   :diminish ""
   :bind ("C-." . company-complete)
+  :init (add-hook 'prog-mode-hook 'company-mode)
   :config
   (progn
     (setq company-idle-delay 0.2
@@ -3575,8 +3574,6 @@ Standard auto-completion configuration with company-mode
                ("C-p" . company-select-previous)
                ("C-d" . company-show-doc-buffer)
                ("<tab>" . company-complete))))
-
-(add-hook 'prog-mode-hook 'company-mode)
 #+END_SRC
 
 ** smart-tab
@@ -3585,13 +3582,13 @@ Used smart-tab to complete everywhere except for ERC, shell and mu4e.
 #+BEGIN_SRC emacs-lisp
 (use-package smart-tab
   :diminish ""
+  :init (add-hook 'prog-mode-hook
+                  (lambda () (global-smart-tab-mode 1)))
   :config
   (progn
     (add-to-list 'smart-tab-disabled-major-modes 'mu4e-compose-mode)
     (add-to-list 'smart-tab-disabled-major-modes 'erc-mode)
     (add-to-list 'smart-tab-disabled-major-modes 'shell-mode)))
-
-(add-hook 'prog-mode-hook (lambda () (global-smart-tab-mode 1)))
 #+END_SRC
 
 ** undo-tree
@@ -3798,17 +3795,6 @@ you're basically editing every instance of that word/variable in the buffer.
   :bind ("C-;" . iedit-mode))
 #+END_SRC
 
-** paradox
-Prettifies the package list, if so desired.
-
-Only loaded if the paradox file exists, since it requires a github token
-
-#+BEGIN_SRC emacs-lisp
-(when (file-exists-p "~/.paradox.el")
-  (load-file "~/.paradox.el")
-  (use-package paradox))
-#+END_SRC
-
 ** eyebrowse
 
 #+BEGIN_SRC emacs-lisp
@@ -3953,25 +3939,6 @@ Wait, no, I mean the Emacs web browser built in to 24.4
   :disabled t
   :init (add-hook 'prog-mode-hook #'my/turn-on-fill-column-indicator)
   :config (setq fci-rule-column 80))
-#+END_SRC
-
-** modeline
-I vacillate between powerline and smart-mode-line, so I keep both installed
-to switch between as needed:
-
-#+BEGIN_SRC emacs-lisp
-(use-package smart-mode-line
-  :disabled t
-  :init
-  (progn
-    (sml/setup)
-    (sml/apply-theme 'respectful)))
-
-(use-package powerline
-  :disabled t
-  :init
-  (progn
-    (powerline-default-theme)))
 #+END_SRC
 
 ** Bindings
@@ -4253,7 +4220,7 @@ A function to search/browse ES docs from Emacs using =eww=
   (interactive (list (read-string "Search for: ")))
   (eww
    (url-encode-url
-    (format "http://www.elasticsearch.org/?s=%s" text))))
+    (format "http://www.elastic.co/?q=%s" text))))
 
 (global-set-key (kbd "C-c d") 'my/search-es-docs)
 #+END_SRC

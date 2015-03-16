@@ -162,13 +162,16 @@ things add hooks that don't work if packages aren't installed.
     ;; editing utilities
     expand-region smex windresize ag undo-tree iedit ido-ubiquitous
     ido-vertical-mode yasnippet smart-tab anzu smartparens flx-ido projectile
-    smooth-scrolling prodigy ace-jump-mode multiple-cursors
-    easy-kill simple-call-tree simple-call-tree+ editorconfig ggtags bookmark+
+    smooth-scrolling ace-jump-mode multiple-cursors easy-kill
+    simple-call-tree simple-call-tree+ editorconfig ggtags bookmark+
     volatile-highlights fill-column-indicator golden-ratio wc-mode eyebrowse
     aggressive-indent vlf
 
+    ;; external process things
+    prodigy vkill
+
     ;; logs
-    log4j-mode
+    log4j-mode logstash-conf
 
     ;; infrastructure stuff
     restclient company-restclient
@@ -225,7 +228,7 @@ things add hooks that don't work if packages aren't installed.
     racket-mode
 
     ;; markup language
-    markdown-mode markdown-mode+ yaml-mode zencoding-mode
+    markdown-mode markdown-mode+ yaml-mode zencoding-mode adoc-mode
 
     ;; helm
     helm helm-descbinds helm-ag helm-projectile helm-swoop
@@ -567,6 +570,15 @@ configuration changes, if so desired.
 #+BEGIN_SRC emacs-lisp
 (use-package winner
   :init (winner-mode 1))
+#+END_SRC
+
+Display the time and load on the modeline
+
+#+BEGIN_SRC emacs-lisp
+(setq
+ ;; don't display info about mail
+ display-time-mail-function (lambda () nil))
+(display-time-mode t)
 #+END_SRC
 
 *** OS-specific settings
@@ -1469,7 +1481,7 @@ Using rbenv, set it up correctly when idle
 #+BEGIN_SRC emacs-lisp
 (use-package rbenv
   :disabled t
-  :idle (global-rbenv-mode t))
+  :init (global-rbenv-mode t))
 #+END_SRC
 
 Or, chruby, which is much simpler (no shims)
@@ -2303,6 +2315,22 @@ Exporting org-mode to [[http://lab.hakim.se/reveal-js/#/][reveal.js]] presentati
     (setq org-reveal-root "http://cdn.jsdelivr.net/reveal.js/2.5.0/")))
 #+END_SRC
 
+** vkill
+Visually kill programs and processes, I use helm-occur here (thanks John
+Wiegley!) because it makes selecting things much easier.
+
+#+BEGIN_SRC emacs-lisp
+(use-package vkill
+  :commands vkill
+  :bind ("C-x L" . vkill-and-helm-occur)
+  :init
+  (defun vkill-and-helm-occur ()
+    (interactive)
+    (vkill)
+    (hl-line-mode 1)
+    (call-interactively #'helm-occur)))
+#+END_SRC
+
 ** alert (notifications)
 Yep. I need to actually make this work for OSX, for Linux it's no problem
 though.
@@ -3086,15 +3114,62 @@ Per-project navigation
 ** prodigy
 I basically use this to start up ES when I need to test something really quickly
 
+I have been trying out [[https://www.npmjs.com/package/esvm][esvm]] for this lately also, with this config in
+=~/ies/.esvmrc=:
+
+#+BEGIN_SRC json :tangle no
+{
+  "defaults": {
+    "plugins": ["elasticsearch/marvel/latest"],
+    "config": {
+      "node.add_id_to_custom_path": false,
+      "node.enable_custom_paths": true,
+      "script.disable_dynamic": false,
+      "cluster.name": "es-lee"
+    }
+  },
+  "clusters": {
+    "1node": {
+      "branch": "1.4",
+      "nodes": 1
+    },
+    "2node": {
+      "branch": "1.4",
+      "nodes": 2
+    },
+    "3node": {
+      "branch": "1.4",
+      "nodes": 3
+    }
+  }
+}
+#+END_SRC
+
+So I configure prodigy like so:
+
 #+BEGIN_SRC emacs-lisp
 (use-package prodigy
   :bind ("C-x P" . prodigy)
   :config
   (progn
     (prodigy-define-service
-      :name "Elasticsearch 1.4.4"
-      :cwd "~/ies/elasticsearch-1.4.4/"
-      :command "~/ies/elasticsearch-1.4.4/bin/elasticsearch"
+      :name "ES 1.4, 3 nodes"
+      :cwd "~/ies/"
+      :command "esvm 3node"
+      :tags '(work test es)
+      :port 9200)
+
+    (prodigy-define-service
+      :name "ES 1.4, 2 nodes"
+      :cwd "~/ies/"
+      :command "esvm 2node"
+      :tags '(work test es)
+      :port 9200)
+
+    (prodigy-define-service
+      :name "ES 1.4, 1 node"
+      :cwd "~/ies/"
+      :command "esvm 1node"
       :tags '(work test es)
       :port 9200)
 
@@ -3120,18 +3195,10 @@ I basically use this to start up ES when I need to test something really quickly
       :port 9200)
 
     (prodigy-define-service
-      :name "Elasticsearch 1.0.3"
-      :cwd "~/ies/elasticsearch-1.0.3/"
-      :command "~/ies/elasticsearch-1.0.3/bin/elasticsearch"
-      :tags '(work test es)
-      :port 9200)
-
-    (prodigy-define-service
-      :name "Elasticsearch 0.90.13"
-      :cwd "~/ies/elasticsearch-0.90.13/"
-      :command "~/ies/elasticsearch-0.90.13/bin/elasticsearch"
-      :args '("-f")
-      :tags '(work test es)
+      :name "Kibana 4.0.1"
+      :cwd "~/ies/kibana-4.0.1-darwin-x64"
+      :command "~/ies/kibana-4.0.1-darwin-x64/bin/kibana"
+      :tags '(work test kibana)
       :port 9200)))
 #+END_SRC
 
@@ -3304,6 +3371,8 @@ https://tuhdo.github.io/helm-intro.html
           ;; move to end or beginning of source when reaching top or bottom
           ;; of source
           helm-move-to-line-cycle-in-source t
+          ;; don't displace the header line
+          helm-display-header-line nil
           ;; fuzzy matching
           helm-buffers-fuzzy-matching t
           helm-semantic-fuzzy-match t
@@ -3597,7 +3666,7 @@ visualize it in ascii art if needed.
 
 #+BEGIN_SRC emacs-lisp
 (use-package undo-tree
-  :idle (global-undo-tree-mode t)
+  :init (global-undo-tree-mode t)
   :diminish ""
   :config
   (progn
@@ -3611,88 +3680,91 @@ helpful for documentation buffers and so on.
 
 #+BEGIN_SRC emacs-lisp
 (use-package popwin
-  :idle (popwin-mode 1))
-(defvar popwin:special-display-config-backup popwin:special-display-config)
-(setq display-buffer-function 'popwin:display-buffer)
+  :commands popwin-mode
+  :init (popwin-mode 1)
+  :config
+  (progn
+    (defvar popwin:special-display-config-backup popwin:special-display-config)
+    (setq display-buffer-function 'popwin:display-buffer)
 
-;; basic
-(push '("*Help*" :stick t :noselect t) popwin:special-display-config)
-(push '("*helm world time*" :stick t :noselect t) popwin:special-display-config)
-(push '("*Pp Eval Output*" :stick t) popwin:special-display-config)
+    ;; basic
+    (push '("*Help*" :stick t :noselect t) popwin:special-display-config)
+    (push '("*helm world time*" :stick t :noselect t) popwin:special-display-config)
+    (push '("*Pp Eval Output*" :stick t) popwin:special-display-config)
 
-;; magit
-(push '("*magit-process*" :stick t) popwin:special-display-config)
+    ;; magit
+    (push '("*magit-process*" :stick t) popwin:special-display-config)
 
-;; quickrun
-(push '("*quickrun*" :stick t) popwin:special-display-config)
+    ;; quickrun
+    (push '("*quickrun*" :stick t) popwin:special-display-config)
 
-;; dictionaly
-(push '("*dict*" :stick t) popwin:special-display-config)
-(push '("*sdic*" :stick t) popwin:special-display-config)
+    ;; dictionaly
+    (push '("*dict*" :stick t) popwin:special-display-config)
+    (push '("*sdic*" :stick t) popwin:special-display-config)
 
-;; popwin for slime
-(push '(slime-repl-mode :stick t) popwin:special-display-config)
+    ;; popwin for slime
+    (push '(slime-repl-mode :stick t) popwin:special-display-config)
 
-;; man
-(push '(Man-mode :stick t :height 20) popwin:special-display-config)
+    ;; man
+    (push '(Man-mode :stick t :height 20) popwin:special-display-config)
 
-;; Elisp
-(push '("*ielm*" :stick t) popwin:special-display-config)
-(push '("*eshell pop*" :stick t) popwin:special-display-config)
+    ;; Elisp
+    (push '("*ielm*" :stick t) popwin:special-display-config)
+    (push '("*eshell pop*" :stick t) popwin:special-display-config)
 
-;; pry
-(push '(inf-ruby-mode :stick t :height 20) popwin:special-display-config)
+    ;; pry
+    (push '(inf-ruby-mode :stick t :height 20) popwin:special-display-config)
 
-;; python
-(push '("*Python*"   :stick t) popwin:special-display-config)
-(push '("*Python Help*" :stick t :height 20) popwin:special-display-config)
-(push '("*jedi:doc*" :stick t :noselect t) popwin:special-display-config)
+    ;; python
+    (push '("*Python*"   :stick t) popwin:special-display-config)
+    (push '("*Python Help*" :stick t :height 20) popwin:special-display-config)
+    (push '("*jedi:doc*" :stick t :noselect t) popwin:special-display-config)
 
-;; Haskell
-(push '("*haskell*" :stick t) popwin:special-display-config)
-(push '("*GHC Info*") popwin:special-display-config)
+    ;; Haskell
+    (push '("*haskell*" :stick t) popwin:special-display-config)
+    (push '("*GHC Info*") popwin:special-display-config)
 
-;; sgit
-(push '("*sgit*" :position right :width 0.5 :stick t)
-      popwin:special-display-config)
+    ;; sgit
+    (push '("*sgit*" :position right :width 0.5 :stick t)
+          popwin:special-display-config)
 
-;; git-gutter
-(push '("*git-gutter:diff*" :width 0.5 :stick t)
-      popwin:special-display-config)
+    ;; git-gutter
+    (push '("*git-gutter:diff*" :width 0.5 :stick t)
+          popwin:special-display-config)
 
-;; direx
-(push '(direx:direx-mode :position left :width 40 :dedicated t)
-      popwin:special-display-config)
+    ;; direx
+    (push '(direx:direx-mode :position left :width 40 :dedicated t)
+          popwin:special-display-config)
 
-(push '("*Occur*" :stick t) popwin:special-display-config)
+    (push '("*Occur*" :stick t) popwin:special-display-config)
 
-;; prodigy
-(push '("*prodigy*" :stick t) popwin:special-display-config)
+    ;; prodigy
+    (push '("*prodigy*" :stick t) popwin:special-display-config)
 
-;; malabar-mode
-(push '("*Malabar Compilation*" :stick t :height 30)
-      popwin:special-display-config)
+    ;; malabar-mode
+    (push '("*Malabar Compilation*" :stick t :height 30)
+          popwin:special-display-config)
 
-;; org-mode
-(push '("*Org tags*" :stick t :height 30)
-      popwin:special-display-config)
+    ;; org-mode
+    (push '("*Org tags*" :stick t :height 30)
+          popwin:special-display-config)
 
-;; Completions
-(push '("*Completions*" :stick t :noselect t) popwin:special-display-config)
+    ;; Completions
+    (push '("*Completions*" :stick t :noselect t) popwin:special-display-config)
 
-;; ggtags
-(push '("*ggtags-global*" :stick t :noselect t :height 30) popwin:special-display-config)
+    ;; ggtags
+    (push '("*ggtags-global*" :stick t :noselect t :height 30) popwin:special-display-config)
 
-;; async shell commands
-(push '("*Async Shell Command*" :stick t) popwin:special-display-config)
+    ;; async shell commands
+    (push '("*Async Shell Command*" :stick t) popwin:special-display-config)
 
-(defun my/popup-downloads ()
-  "Pop up the downloads buffer (3rd eshell buffer for me"
-  (interactive)
-  (popwin:popup-buffer "*eshell*<3>"))
+    (defun my/popup-downloads ()
+      "Pop up the downloads buffer (3rd eshell buffer for me"
+      (interactive)
+      (popwin:popup-buffer "*eshell*<3>"))
 
-;; eshell 3 is always my "download stuff" buffer
-(global-set-key (kbd "C-x M-d") #'my/popup-downloads)
+    ;; eshell 3 is always my "download stuff" buffer
+    (global-set-key (kbd "C-x M-d") #'my/popup-downloads)))
 #+END_SRC
 
 ** paren-face
@@ -3799,6 +3871,7 @@ you're basically editing every instance of that word/variable in the buffer.
 
 #+BEGIN_SRC emacs-lisp
 (use-package eyebrowse
+  :diminish eyebrowse-mode
   :init
   (progn
     (setq eyebrowse-wrap-around t)

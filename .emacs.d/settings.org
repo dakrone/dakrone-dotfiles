@@ -880,6 +880,9 @@ d=, if the buffer doesn't exist it is created.
 (global-set-key (kbd "H-1") 'my/create-or-switch-to-eshell-1)
 (global-set-key (kbd "H-2") 'my/create-or-switch-to-eshell-2)
 (global-set-key (kbd "H-3") 'my/create-or-switch-to-eshell-3)
+(global-set-key (kbd "s-1") 'my/create-or-switch-to-eshell-1)
+(global-set-key (kbd "s-2") 'my/create-or-switch-to-eshell-2)
+(global-set-key (kbd "s-3") 'my/create-or-switch-to-eshell-3)
 #+END_SRC
 
 *** Tramp settings
@@ -1618,6 +1621,9 @@ nice.
 
 (defun dakrone-dark ()
   (interactive)
+  (use-package material-theme
+    :disabled t
+    :init (load-theme 'material t))
   (use-package smyx-theme
     :disabled t
     :init (load-theme 'smyx t)
@@ -1707,17 +1713,18 @@ Config for OSX:
   (interactive)
   (when (eq system-type 'darwin)
     (set-fontset-font "fontset-default" 'symbol "Monaco")
-    ;; (set-default-font "Fantasque Sans Mono")
-    ;; (set-default-font "Monaco")
-    ;; (set-default-font "Anonymous Pro")
-    (set-default-font "Inconsolata")
-    ;; (set-default-font "Andale Mono")
-    ;; (set-default-font "CosmicSansNeueMono")
-    ;; (set-default-font "Fira Mono")
-    ;; (set-default-font "Luculent")
-    ;; (set-default-font "Menlo")
-    ;; (set-default-font "Source Code Pro")
-    ;; (set-default-font "Mensch")
+    ;;(set-default-font "Fantasque Sans Mono")
+    ;;(set-default-font "Monaco")
+    ;;(set-default-font "Anonymous Pro")
+    ;;(set-default-font "Inconsolata")
+    ;;(set-default-font "Andale Mono")
+    ;;(set-default-font "CosmicSansNeueMono")
+    ;;(set-default-font "Fira Mono")
+    ;;(set-default-font "Luculent")
+    (set-default-font "Bitstream Vera Sans Mono")
+    ;;(set-default-font "Menlo")
+    ;;(set-default-font "Source Code Pro")
+    ;;(set-default-font "Mensch")
     (set-face-attribute 'default nil :height 120)
     (set-face-attribute 'fixed-pitch nil :height 120)
 
@@ -2179,7 +2186,7 @@ First, a function to use for clocking in
           org-pretty-entities nil
           ;; some default parameters for the clock report
           org-agenda-clockreport-parameter-plist
-          '(:maxlevel 10 :fileskip0 t :score agenda :block thismonth :compact t :narrow 80))))
+          '(:maxlevel 10 :fileskip0 t :score agenda :block thismonth :compact t :narrow 60))))
 #+END_SRC
 
 ** org-publishing
@@ -3061,6 +3068,7 @@ I use =M-g M-g= everywhere to go directly to Magit.
 #+BEGIN_SRC emacs-lisp
 (use-package magit
   :bind ("M-g M-g" . magit-status)
+  :init (defvar magit-emacsclient-executable nil) ;; fix for emacs-mac
   :config
   (progn
     (when (and (eq system-type 'darwin)

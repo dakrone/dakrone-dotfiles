@@ -3,7 +3,6 @@ if [ -s /usr/local/bin/ssh-agent ]; then
     eval $(ssh-agent)
 
     function cleanup-ssh-agent {
-        echo "Killing SSH-Agent"
         kill -9 $SSH_AGENT_PID
     }
 

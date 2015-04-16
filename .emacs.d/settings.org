@@ -147,12 +147,13 @@ things add hooks that don't work if packages aren't installed.
     use-package
 
     ;; themeing
-    rainbow-mode leuven-theme dakrone-theme
-    color-identifiers-mode moe-theme nyan-mode
-    flatui-theme smyx-theme monokai-theme
+    rainbow-mode leuven-theme dakrone-theme color-identifiers-mode
+    moe-theme nyan-mode flatui-theme smyx-theme monokai-theme
+    subatomic-theme subatomic256-theme color-theme-sanityinc-tomorrow
+    powerline
 
     ;; misc
-    diminish gist scpaste async
+    diminish gist scpaste async sx
 
     ;; es-mode is run from a  git checkout
 
@@ -282,8 +283,8 @@ depending on whatever I'm in the mood for. This is used later on for the
 modeline theme, as well as the general theme for things.
 
 #+BEGIN_SRC emacs-lisp
-(defvar my/background 'light)
-;;(defvar my/background 'dark)
+;;(defvar my/background 'light)
+(defvar my/background 'dark)
 #+END_SRC
 
 Now some personal information about me:
@@ -583,8 +584,10 @@ Display the time and load on the modeline
 #+BEGIN_SRC emacs-lisp
 (setq
  ;; don't display info about mail
- display-time-mail-function (lambda () nil))
-(display-time-mode t)
+ display-time-mail-function (lambda () nil)
+ ;; update every 15 seconds instead of 60 seconds
+ display-time-interval 15)
+(display-time-mode 1)
 #+END_SRC
 
 *** OS-specific settings
@@ -1230,7 +1233,8 @@ Display pretty things for newlines and tabs (nothing for spaces)
       ;; 32 SPACE, 183 MIDDLE DOT
       '((space-mark nil)
         ;; 10 LINE FEED
-        (newline-mark 10 [172 10])
+        ;;(newline-mark 10 [172 10])
+        (newline-mark nil)
         ;; 9 TAB, MIDDLE DOT
         (tab-mark 9 [183 9] [92 9])))
 #+END_SRC
@@ -1255,6 +1259,7 @@ Always turn on whitespace mode
 #+BEGIN_SRC emacs-lisp
 ;; turn on whitespace mode globally
 (global-whitespace-mode 1)
+(diminish 'global-whitespace-mode "")
 #+END_SRC
 
 Indicate trailing empty lines in the GUI:
@@ -1806,49 +1811,17 @@ nice.
 
 (defun dakrone-dark ()
   (interactive)
-  (use-package monokai-theme
-    :init
-    (progn
-      (setq monokai-use-variable-pitch nil)
-      (load-theme 'monokai t))
-    :config
-    (progn
-      (when (window-system)
-        ;; only override the defaults for window systems
-        (set-face-attribute 'default nil
-                            :foreground "#f8f8f2"
-                            :background "#303030"))
-      (set-face-attribute 'org-block nil
-                          :foreground "#5fafd7"
-                          :background "#3a3a3a")
-      (set-face-attribute 'org-block-background nil
-                          :background "#363636")
-      (set-face-attribute 'org-block-begin-line nil
-                          :foreground "#ffffff"
-                          :background "#005f87")
-      (set-face-attribute 'org-block-end-line nil
-                          :foreground "#4e4e4e"
-                          :background "#303030")))
-  (use-package moe-theme
+  (use-package color-theme-sanityinc-tomorrow
+    :init (color-theme-sanityinc-tomorrow-night))
+  (use-package apropospriate-theme
     :disabled t
-    :init
-    (progn
-      (setq moe-theme-resize-markdown-title '(2.0 1.7 1.5 1.3 1.0 1.0))
-      (moe-dark))
-    :config
-    (progn
-      ;; Moe's misspelled font is a bit much...
-      (if (version< emacs-version "24.4")
-          (set-face-attribute 'flyspell-incorrect nil
-                              :inherit nil
-                              :foreground 'unspecified
-                              :background 'unspecified
-                              :underline "red")
-        (set-face-attribute 'flyspell-incorrect nil
-                            :inherit nil
-                            :foreground 'unspecified
-                            :background 'unspecified
-                            :underline '(:style wave :color "red"))))))
+    :init (load-theme 'apropospriate-dark t))
+  ;; (if (window-system)
+  ;;     (use-package subatomic-theme
+  ;;       :init (load-theme 'subatomic t))
+  ;;   (use-package subatomic256-theme
+  ;;     :init (load-theme 'subatomic256 t)))
+  )
 
 (defun dakrone-light ()
   (interactive)
@@ -1915,6 +1888,14 @@ Config for Linux/X11 systems:
   (add-hook 'after-init-hook #'my/setup-x11-fonts))
 #+END_SRC
 
+*** modeline
+Ehh.. I go back and forth, right now I'm using [[https://github.com/milkypostman/powerline][Powerline]].
+
+#+BEGIN_SRC emacs-lisp
+(use-package powerline
+  :init (powerline-default-theme))
+#+END_SRC
+
 ** org-mode
 :PROPERTIES:
 :ID:       07EAD909-1415-41FB-8079-8E59DB55D0E3
@@ -1975,6 +1956,8 @@ And now the huge org-mode configuration
           org-src-fontify-natively t
           ;; for the leuven theme, fontify the whole heading line
           org-fontify-whole-heading-line t
+          ;; force UTF-8
+          org-export-coding-system 'utf-8
           org-completion-use-ido t
           ;; don't indent source code
           org-edit-src-content-indentation 0
@@ -3089,6 +3072,7 @@ works pretty well, so I use it everywhere paredit-mode doesn't work.
 #+BEGIN_SRC emacs-lisp
 (use-package smartparens
   :defer t
+  :diminish ""
   :bind (("M-9" . sp-backward-sexp)
          ("M-0" . sp-forward-sexp))
   :config
@@ -3205,7 +3189,7 @@ Pretty minimally configured, but awesome tool for most dynamic languages.
          ("M-g M-p" . flycheck-previous-error)
          ("M-g M-=" . flycheck-list-errors))
   :init (global-flycheck-mode)
-  :diminish "FC"
+  :diminish ""
   :config
   (progn
     (setq-default flycheck-disabled-checkers '(emacs-lisp-checkdoc))
@@ -3926,6 +3910,14 @@ Various markdown-related settings. Not much here.
 
 #+BEGIN_SRC emacs-lisp
 (use-package markdown-mode)
+#+END_SRC
+
+** log4j-mode
+Need =hl-line-mode= for this
+
+#+BEGIN_SRC emacs-lisp
+(use-package log4j-mode
+  :init (add-hook 'log4j-mode-hook #'my/turn-on-hl-line-mode))
 #+END_SRC
 
 ** bookmark+

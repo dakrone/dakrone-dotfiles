@@ -153,7 +153,7 @@ things add hooks that don't work if packages aren't installed.
     powerline
 
     ;; misc
-    diminish gist scpaste async sx
+    diminish gist scpaste async sx exec-path-from-shell
 
     ;; es-mode is run from a  git checkout
 
@@ -1210,11 +1210,11 @@ file to write to."
 :ID:       53B9FB30-6FA8-48C4-8B69-92C6217DB39C
 :END:
 
-I set the width to 100, because although it should be 80, I only want
-highlighting past 100 columns, otherwise Java is unreadable.
+I set the width to 140, because although it should be 80, I only want
+highlighting past 140 columns, otherwise Java is unreadable.
 
 #+BEGIN_SRC emacs-lisp
-(setq whitespace-line-column 100)
+(setq whitespace-line-column 140)
 #+END_SRC
 
 Here are the things that whitespace-mode should highlight
@@ -1894,6 +1894,16 @@ Ehh.. I go back and forth, right now I'm using [[https://github.com/milkypostman
 #+BEGIN_SRC emacs-lisp
 (use-package powerline
   :init (powerline-default-theme))
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(use-package smart-mode-line
+  :disabled t
+  :init
+  (progn
+    (setq sml/theme my/background
+          sml/name-width 20)
+    (sml/setup)))
 #+END_SRC
 
 ** org-mode

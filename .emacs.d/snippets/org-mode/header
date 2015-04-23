@@ -16,6 +16,6 @@
 #+TODO: SOMEDAY(s) TODO(t) INPROGRESS(i) WAITING(w@/!) NEEDSREVIEW(n@/!) | DONE(d)
 #+TODO: WAITING(w@/!) HOLD(h@/!) | CANCELLED(c@/!)
 #+TAGS: export(e) noexport(n)
-#+STARTUP: align fold nodlcheck lognotestate content
+#+STARTUP: fold nodlcheck lognotestate content
 
 * $0

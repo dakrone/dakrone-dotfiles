@@ -47,3 +47,5 @@
   token = !cat ~/.github.token
 [annex]
 	genmetadata = true
+[diff]
+	algorithm = patience

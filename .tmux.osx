@@ -4,3 +4,5 @@
 set-option -g default-command "reattach-to-user-namespace -l zsh"
 
 source-file ~/.tmux.conf
+
+bind-key > run-shell "tmux saveb -| pbcopy"

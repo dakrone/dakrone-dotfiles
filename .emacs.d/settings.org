@@ -142,121 +142,123 @@ This is code that installs packages before any config is loaded, since a lot of
 things add hooks that don't work if packages aren't installed.
 
 #+BEGIN_SRC emacs-lisp
-   (defvar my/install-packages
-     '(
-       ;; package management
-       use-package
+(defvar my/install-packages
+  '(
+    ;; package management
+    use-package
 
-       ;; themeing
-       rainbow-mode leuven-theme dakrone-theme color-identifiers-mode
-       moe-theme nyan-mode color-theme-sanityinc-tomorrow powerline
+    ;; themeing
+    rainbow-mode leuven-theme dakrone-theme color-identifiers-mode
+    moe-theme nyan-mode color-theme-sanityinc-tomorrow powerline
+    volatile-highlights
 
-       ;; misc
-       diminish gist scpaste async sx exec-path-from-shell bbdb
+    ;; misc
+    diminish gist scpaste async sx exec-path-from-shell bbdb
 
-       ;; es-mode is run from a  git checkout
+    ;; es-mode is run from a  git checkout
 
-       ;; IRC/ERC and social stuff
-       erc-hl-nicks ercn alert twittering-mode
+    ;; IRC/ERC and social stuff
+    erc-hl-nicks ercn alert twittering-mode
 
-       ;; for auto-complete
-       fuzzy popup company
+    ;; for auto-complete
+    fuzzy popup company
 
-       ;; editing utilities
-       expand-region smex windresize ag undo-tree iedit ido-ubiquitous
-       ido-vertical-mode yasnippet smart-tab anzu smartparens flx-ido projectile
-       smooth-scrolling ace-jump-mode multiple-cursors easy-kill
-       simple-call-tree simple-call-tree+ editorconfig ggtags bookmark+
-       fill-column-indicator golden-ratio wc-mode eyebrowse vlf
+    ;; editing utilities
+    expand-region smex windresize ag undo-tree iedit ido-ubiquitous
+    ido-vertical-mode yasnippet smart-tab anzu smartparens flx-ido projectile
+    smooth-scrolling ace-jump-mode multiple-cursors easy-kill
+    simple-call-tree simple-call-tree+ editorconfig ggtags bookmark+
+    fill-column-indicator golden-ratio wc-mode eyebrowse vlf
 
-       ;; external process things
-       prodigy vkill
+    ;; external process things
+    prodigy vkill
 
-       ;; logs
-       log4j-mode logstash-conf
+    ;; logs
+    log4j-mode logstash-conf
 
-       ;; infrastructure stuff
-       restclient company-restclient
+    ;; infrastructure stuff
+    restclient company-restclient
 
-       ;; highlighting
-       idle-highlight-mode highlight-symbol highlight-numbers
+    ;; highlighting
+    idle-highlight-mode highlight-symbol highlight-numbers
 
-       ;; LaTeX
-       auctex
+    ;; LaTeX
+    auctex
 
-       ;; org-mode
-       org htmlize gnuplot-mode gnuplot ox-reveal ox-gfm
+    ;; org-mode
+    org htmlize gnuplot-mode gnuplot ox-reveal ox-gfm
 
-       ;; buffer utils
-       popwin dired+
+    ;; buffer utils
+    popwin dired+
 
-       ;; haskell
-       haskell-mode ghc ghci-completion
+    ;; haskell
+    haskell-mode ghc ghci-completion
 
-       ;; config
-       ssh-config-mode
+    ;; config
+    ssh-config-mode
 
-       ;; flycheck
-       flycheck flycheck-tip
+    ;; flycheck
+    flycheck flycheck-tip
 
-       ;; clojure
-       clojure-mode clojure-mode-extra-font-locking cider paredit paren-face
+    ;; clojure
+    clojure-mode clojure-mode-extra-font-locking cider paredit paren-face
 
-       ;; perl
-       cperl-mode
+    ;; perl
+    cperl-mode
 
-       ;; python
-       hy-mode jedi
+    ;; python
+    hy-mode jedi
 
-       ;; ruby
-       ruby-mode ruby-test-mode inf-ruby puppet-mode rbenv chruby
+    ;; ruby
+    ruby-mode ruby-test-mode inf-ruby puppet-mode rbenv chruby
 
-       ;; rust
-       rust-mode
+    ;; rust
+    rust-mode
 
-       ;; go
-       go-mode
+    ;; go
+    go-mode
 
-       ;; java
-       malabar-mode groovy-mode javap-mode
+    ;; java
+    malabar-mode groovy-mode javap-mode
 
-       ;; javascript
-       tern json-mode js2-mode
+    ;; javascript
+    tern json-mode js2-mode
 
-       ;; emacs-lisp
-       elisp-slime-nav paredit
+    ;; emacs-lisp
+    elisp-slime-nav paredit
 
-       ;; racket
-       racket-mode
+    ;; racket
+    racket-mode
 
-       ;; markup language
-       markdown-mode markdown-mode+ yaml-mode zencoding-mode adoc-mode
+    ;; markup language
+    markdown-mode markdown-mode+ yaml-mode zencoding-mode adoc-mode
 
-       ;; helm
-       helm helm-descbinds helm-ag helm-projectile helm-swoop
-       helm-gtags helm-ls-git helm-flycheck helm-flyspell
+    ;; helm
+    helm helm-descbinds helm-ag helm-projectile helm-swoop
+    helm-gtags helm-ls-git helm-flycheck helm-flyspell
 
-       ;; git
-       magit git-gutter git-timemachine magit-gh-pulls with-editor git-annex
+    ;; git
+    magit git-gutter git-timemachine magit-gh-pulls with-editor git-annex
+    diff-hl
 
-       ;; eshell
-       eshell-prompt-extras
+    ;; eshell
+    eshell-prompt-extras
 
-       ;; gnus
-       gnus-x-gm-raw
+    ;; gnus
+    gnus-x-gm-raw
 
-       ;; eww
-       eww-lnum
-       ))
+    ;; eww
+    eww-lnum
+    ))
 
-   (dolist (pack my/install-packages)
-     (unless (package-installed-p pack)
-       (package-install pack)))
+(dolist (pack my/install-packages)
+  (unless (package-installed-p pack)
+    (package-install pack)))
 
-   ;; Load use-package, used for loading packages everywhere else
-   (require 'use-package)
-   ;; Set to t to debug package loading
-   (setq use-package-verbose nil)
+;; Load use-package, used for loading packages everywhere else
+(require 'use-package)
+;; Set to t to debug package loading
+(setq use-package-verbose nil)
 #+END_SRC
 
 ** Basics and settings used everywhere
@@ -282,8 +284,8 @@ depending on whatever I'm in the mood for. This is used later on for the
 modeline theme, as well as the general theme for things.
 
 #+BEGIN_SRC emacs-lisp
-(defvar my/background 'light)
-;;(defvar my/background 'dark)
+;;(defvar my/background 'light)
+(defvar my/background 'dark)
 #+END_SRC
 
 Now some personal information about me:
@@ -1877,8 +1879,8 @@ Config for Linux/X11 systems:
   (add-hook 'after-init-hook #'my/setup-x11-fonts))
 #+END_SRC
 
-*** modeline
-Ehh.. I go back and forth, right now I'm using [[https://github.com/milkypostman/powerline][Powerline]].
+*** modeline (mode-line)
+Ehh.. I go back and forth.
 
 #+BEGIN_SRC emacs-lisp
 (use-package powerline
@@ -1896,6 +1898,121 @@ Ehh.. I go back and forth, right now I'm using [[https://github.com/milkypostman
     (sml/setup)))
 #+END_SRC
 
+Finally, [[http://amitp.blogspot.com/2011/08/emacs-custom-mode-line.html][Amit's mode line]]
+
+#+BEGIN_SRC emacs-lisp
+;; Mode line setup
+(setq-default
+ mode-line-format
+ '(; Position, including warning for 80 columns
+   (:propertize "%4l:" face mode-line-position-face)
+   (:eval (propertize "%3c" 'face
+                      (if (>= (current-column) 80)
+                          'mode-line-80col-face
+                        'mode-line-position-face)))
+   ;; emacsclient [default -- keep?]
+   mode-line-client
+   " "
+   ;; read-only or modified status
+   (:eval
+    (cond (buffer-read-only
+           (propertize " RO " 'face 'mode-line-read-only-face))
+          ((buffer-modified-p)
+           (propertize " ** " 'face 'mode-line-modified-face))
+          (t " ")))
+   " "
+   ;; directory and buffer/file name
+   (:propertize (:eval (shorten-directory default-directory 30))
+                face mode-line-folder-face)
+   (:propertize "%b"
+                face mode-line-filename-face)
+   ;; narrow [default -- keep?]
+   ;;" %n "
+   ;; mode indicators: vc, recursive edit, major mode, minor modes, process, global
+   (vc-mode vc-mode)
+   "  %["
+   (:propertize mode-name face mode-line-mode-face)
+   "%] "
+   (:eval (propertize (format-mode-line minor-mode-alist)
+                      'face 'mode-line-minor-mode-face))
+   (:propertize mode-line-process
+                face mode-line-process-face)
+   " "
+   ;; mode-line-misc-info is better than Amit's version
+   mode-line-misc-info
+   "  "
+   ;; nyan-mode uses nyan cat as an alternative to %p
+   (:eval (when nyan-mode (list (nyan-create))))
+   ))
+
+;; Helper function
+(defun shorten-directory (dir max-length)
+  "Show up to `max-length' characters of a directory name `dir'."
+  (let ((path (reverse (split-string (abbreviate-file-name dir) "/")))
+        (output ""))
+    (when (and path (equal "" (car path)))
+      (setq path (cdr path)))
+    (while (and path (< (length output) (- max-length 4)))
+      (setq output (concat (car path) "/" output))
+      (setq path (cdr path)))
+    (when path
+      (setq output (concat ".../" output)))
+    output))
+
+;; Extra mode line faces
+(make-face 'mode-line-read-only-face)
+(make-face 'mode-line-modified-face)
+(make-face 'mode-line-folder-face)
+(make-face 'mode-line-filename-face)
+(make-face 'mode-line-position-face)
+(make-face 'mode-line-mode-face)
+(make-face 'mode-line-minor-mode-face)
+(make-face 'mode-line-process-face)
+(make-face 'mode-line-80col-face)
+
+(set-face-attribute 'mode-line nil
+                    :foreground "gray60" :background "gray20"
+                    :inverse-video nil
+                    :box '(:line-width 2 :color "gray20" :style nil))
+(set-face-attribute 'mode-line-inactive nil
+                    :foreground "gray80" :background "gray40"
+                    :inverse-video nil
+                    :box '(:line-width 2 :color "gray40" :style nil))
+
+(set-face-attribute 'mode-line-read-only-face nil
+                    :inherit 'mode-line-face
+                    :foreground "#4271ae"
+                    :box '(:line-width 2 :color "#4271ae"))
+(set-face-attribute 'mode-line-modified-face nil
+                    :inherit 'mode-line-face
+                    :foreground "#c82829"
+                    :background "#ffffff"
+                    :box '(:line-width 2 :color "#c82829"))
+(set-face-attribute 'mode-line-folder-face nil
+                    :inherit 'mode-line-face
+                    :foreground "gray60")
+(set-face-attribute 'mode-line-filename-face nil
+                    :inherit 'mode-line-face
+                    :foreground "#eab700"
+                    :weight 'bold)
+(set-face-attribute 'mode-line-position-face nil
+                    :inherit 'mode-line-face
+                    :family "Menlo" :height 100)
+(set-face-attribute 'mode-line-mode-face nil
+                    :inherit 'mode-line-face
+                    :foreground "gray80")
+(set-face-attribute 'mode-line-minor-mode-face nil
+                    :inherit 'mode-line-mode-face
+                    :foreground "gray40"
+                    :height 110)
+(set-face-attribute 'mode-line-process-face nil
+                    :inherit 'mode-line-face
+                    :foreground "#718c00")
+(set-face-attribute 'mode-line-80col-face nil
+                    :inherit 'mode-line-position-face
+                    :foreground "black" :background "#eab700")
+#+END_SRC
+
 *** fringe
 
 So, fring is nice actually, but the background for it kind of sucks in =leuven=,
@@ -1911,6 +2028,10 @@ so I set it to the same color as the background
    `(fringe ((t (:background ,my/fringe-background-color))))))
 
 (add-hook 'after-init-hook #'my/set-fringe-background)
+
+;; Indicate where a buffer stars and stops
+(setq-default indicate-buffer-boundaries 'right)
+(toggle-indicate-empty-lines)
 #+END_SRC
 
 
@@ -4309,7 +4430,8 @@ you're basically editing every instance of that word/variable in the buffer.
   :diminish eyebrowse-mode
   :init
   (progn
-    (setq eyebrowse-wrap-around t)
+    (setq eyebrowse-wrap-around t
+          eyebrowse-new-workspace t)
     (eyebrowse-mode 1)
     (global-set-key (kbd "C-'") 'eyebrowse-next-window-config)))
 #+END_SRC

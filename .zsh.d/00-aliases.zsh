@@ -79,3 +79,5 @@ alias epoch='date +%s'
 alias magit='emacs -f magit-status'
 # npm install -g gitjk
 alias gitjk='history | tail -r | head -10 | gitjk_cmd'
+# simple-extract
+alias se="tar zxvf"

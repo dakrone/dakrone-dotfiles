@@ -25,8 +25,7 @@
  '(compilation-skip-threshold 2)
  '(custom-safe-themes
    (quote
-    ("357d5abe6f693f2875bb3113f5c031b7031f21717e8078f90d9d9bc3a14bcbd8" default)))
- '(delete-selection-mode t)
+    ("06f0b439b62164c6f8f84fdda32b62fb50b6d00e8b01c2208e55543a6337433a" "53e1387d9dc9b0794f2f148699bfc9fb2c5662e0faf68e4e832e98057d2cd539" "c3232d379e847938857ca0408b8ccb9d0aca348ace6f36a78f0f7b4c5df0115c" "a27c00821ccfd5a78b01e4f35dc056706dd9ede09a8b90c6955ae6a390eb1c1e" "357d5abe6f693f2875bb3113f5c031b7031f21717e8078f90d9d9bc3a14bcbd8" default)))
  '(diredp-hide-details-initially-flag nil)
  '(esv-key "IP")
  '(haskell-process-auto-import-loaded-modules t)
@@ -41,8 +40,7 @@
  '(org-export-backends (quote (ascii html latex md reveal)))
  '(org-modules
    (quote
-    (org-bbdb org-bibtex org-docview org-gnus org-habit org-info org-irc org-mhe org-rmail org-w3m)))
- '(paradox-automatically-star t)
+    (org-bbdb org-bibtex org-docview org-gnus org-habit org-info org-mhe org-rmail org-w3m)))
  '(protect-buffer-bury-p nil)
  '(safe-local-variable-values
    (quote

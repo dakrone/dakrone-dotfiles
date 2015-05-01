@@ -180,7 +180,7 @@ things add hooks that don't work if packages aren't installed.
     restclient company-restclient
 
     ;; highlighting
-    idle-highlight-mode highlight-symbol highlight-numbers
+    idle-highlight-mode
 
     ;; LaTeX
     auctex
@@ -284,8 +284,8 @@ depending on whatever I'm in the mood for. This is used later on for the
 modeline theme, as well as the general theme for things.
 
 #+BEGIN_SRC emacs-lisp
-;;(defvar my/background 'light)
-(defvar my/background 'dark)
+(defvar my/background 'light)
+;;(defvar my/background 'dark)
 #+END_SRC
 
 Now some personal information about me:
@@ -726,11 +726,9 @@ pager:
  ;; '(comint-completion-autolist t)     ; show completion list when ambiguous
  '(comint-input-ignoredups t)           ; no duplicates in command history
  '(comint-completion-addsuffix t)       ; insert space/slash after file completion
- '(comint-buffer-maximum-size 20000)    ; max length of the buffer in lines
  '(comint-prompt-read-only nil)         ; if this is t, it breaks shell-command
  '(comint-get-old-input (lambda () "")) ; what to run when i press enter on a
                                         ; line above the current prompt
- '(comint-input-ring-size 5000)         ; max shell history size
  )
 
 (defun set-scroll-conservatively ()
@@ -792,8 +790,8 @@ completion, prompt and term settings:
         (use-package em-term)
 
         (setq eshell-cmpl-cycle-completions nil
-              ;; auto truncate after 15k lines
-              eshell-buffer-maximum-lines 15000
+              ;; auto truncate after 12k lines
+              eshell-buffer-maximum-lines 12000
               ;; history size
               eshell-history-size 350
               ;; buffer shorthand -> echo foo > #'buffer
@@ -1008,6 +1006,7 @@ In most non-programming modes, =M-.= can be used to spellcheck the word
   (flyspell-prog-mode))
 
 (use-package flyspell
+  :defer t
   :diminish ""
   :init (add-hook 'prog-mode-hook #'my/enable-flyspell-prog-mode)
   :config
@@ -1028,6 +1027,7 @@ install mupdf= on osx)
 
 #+BEGIN_SRC emacs-lisp
 (use-package view
+  :defer
   :bind
   (("C-M-n" . View-scroll-half-page-forward)
    ("C-M-p" . View-scroll-half-page-backward))
@@ -1145,6 +1145,7 @@ Navigates back to where you were editing a file next time you open it
 
 #+BEGIN_SRC emacs-lisp
 (use-package saveplace
+  :defer t
   :init
   (setq-default save-place t)
   (setq save-place-file (expand-file-name ".places" user-emacs-directory)))
@@ -1163,6 +1164,7 @@ This also only enables recentf-mode if idle, so that emacs starts up faster.
 
 #+BEGIN_SRC emacs-lisp
 (use-package recentf
+  :defer t
   :init
   (progn
     (setq recentf-max-saved-items 300
@@ -1327,23 +1329,6 @@ Remove some back-ends from vc-mode, no need to check all this ancient things:
 (setq vc-handled-backends '(SVN Git))
 #+END_SRC
 
-Some general settings that should apply to all programming modes, turning
-on subword mode and idle-highlight-mode:
-
-#+BEGIN_SRC emacs-lisp
-(use-package idle-highlight-mode
-  :init
-  (progn
-    (defun my/idle-highlight-hook ()
-      (interactive)
-      (when (fboundp 'idle-highlight-mode)
-        (idle-highlight-mode t))
-      (setq show-trailing-whitespace t)
-      (subword-mode t))
-
-    (add-hook 'prog-mode-hook #'my/idle-highlight-hook)))
-#+END_SRC
-
 In programming modes, make sure things like FIXME and TODO are
 highlighted so they stand out:
 
@@ -1361,6 +1346,7 @@ highlighted so they stand out:
 
 (add-hook 'prog-mode-hook #'my/add-watchwords)
 (add-hook 'prog-mode-hook #'my/turn-on-hl-line-mode)
+(add-hook 'org-mode-hook #'my/turn-on-hl-line-mode)
 #+END_SRC
 
 *** Clojure
@@ -1536,6 +1522,8 @@ Borrowed from Steve Purcell's config. This pretty-prints the results.
  (pp-eval-last-sexp prefix)))
 
 (bind-key "C-x C-e" 'sanityinc/eval-last-sexp-or-region emacs-lisp-mode-map)
+
+(define-key lisp-mode-shared-map (kbd "RET") 'reindent-then-newline-and-indent)
 #+end_src
 
 *** Python
@@ -1547,6 +1535,7 @@ keys, the custom hook only loads jedi when editing python files:
 
 #+BEGIN_SRC emacs-lisp
 (use-package python
+  :defer t
   :config
   (progn
     (define-key python-mode-map (kbd "C-c C-z") 'run-python)
@@ -1635,6 +1624,7 @@ work with the ES codebase.
   (interactive)
   (define-key java-mode-map (kbd "M-,") 'pop-tag-mark)
   (c-set-style "intellij" t)
+  (subword-mode 1)
   ;; Generic java stuff things
   (setq-local fci-rule-column 99)
   ;; remove the stupid company-eclim backend
@@ -1678,6 +1668,7 @@ Or, chruby, which is much simpler (no shims)
 
 #+BEGIN_SRC emacs-lisp
 (use-package chruby
+  :defer t
   :init (chruby "ruby-2.1.3"))
 #+END_SRC
 
@@ -1814,21 +1805,22 @@ annoys me somewhat. Lately I've also been checking out [[https://github.com/juba
 nice.
 
 #+BEGIN_SRC emacs-lisp
-    (setq ns-use-srgb-colorspace t)
+(setq ns-use-srgb-colorspace t)
 
-    (defun dakrone-dark ()
-      (interactive)
-      (use-package color-theme-sanityinc-tomorrow
-        :init (color-theme-sanityinc-tomorrow-night)))
+(defun dakrone-dark ()
+  (interactive)
+  (use-package color-theme-sanityinc-tomorrow
+    :init (color-theme-sanityinc-tomorrow-night)))
 
-    (defun dakrone-light ()
-      (interactive)
-      (use-package leuven-theme
-        :init (load-theme 'leuven t)))
+(defun dakrone-light ()
+  (interactive)
+  (use-package leuven-theme
+    :init (load-theme 'leuven t)
+    :config (set-background-color "#f0f0f0")))
 
-    (if (eq my/background 'dark)
-        (dakrone-dark)
-      (dakrone-light))
+(if (eq my/background 'dark)
+    (dakrone-dark)
+  (dakrone-light))
 #+END_SRC
 
 *** fonts
@@ -1842,26 +1834,26 @@ Inconsolata a lot.
 Config for OSX:
 
 #+BEGIN_SRC emacs-lisp
-    (defun my/setup-osx-fonts ()
-      (interactive)
-      (when (eq system-type 'darwin)
-        (set-fontset-font "fontset-default" 'symbol "Monaco")
-        ;;(set-default-font "Fantasque Sans Mono")
-        ;;(set-default-font "Monaco")
-        ;;(set-default-font "Anonymous Pro")
-        ;;(set-default-font "Inconsolata")
-        (set-default-font "Bitstream Vera Sans Mono")
-        ;;(set-default-font "Menlo")
-        ;;(set-default-font "Source Code Pro")
-        ;;(set-default-font "Mensch")
-        (set-face-attribute 'default nil :height 120)
-        (set-face-attribute 'fixed-pitch nil :height 120)
+(defun my/setup-osx-fonts ()
+  (interactive)
+  (when (eq system-type 'darwin)
+    (set-fontset-font "fontset-default" 'symbol "Monaco")
+    ;;(set-default-font "Fantasque Sans Mono")
+    ;;(set-default-font "Monaco")
+    ;;(set-default-font "Anonymous Pro")
+    ;;(set-default-font "Inconsolata")
+    (set-default-font "Bitstream Vera Sans Mono")
+    ;;(set-default-font "Menlo")
+    ;;(set-default-font "Source Code Pro")
+    ;;(set-default-font "Mensch")
+    (set-face-attribute 'default nil :height 120)
+    (set-face-attribute 'fixed-pitch nil :height 120)
 
-        ;; Anti-aliasing
-        (setq mac-allow-anti-aliasing t)))
+    ;; Anti-aliasing
+    (setq mac-allow-anti-aliasing t)))
 
-    (when (eq system-type 'darwin)
-      (add-hook 'after-init-hook #'my/setup-osx-fonts))
+(when (eq system-type 'darwin)
+  (add-hook 'after-init-hook #'my/setup-osx-fonts))
 #+END_SRC
 
 Config for Linux/X11 systems:
@@ -2084,6 +2076,8 @@ And now the huge org-mode configuration
   :config
   (progn
     (use-package org-install)
+    ;; org-export
+    (use-package ox)
     ;; Enable archiving things
     (use-package org-archive)
     (add-hook 'org-mode-hook #'my/org-mode-hook)
@@ -2635,6 +2629,7 @@ Exporting org-mode to [[http://lab.hakim.se/reveal-js/#/][reveal.js]] presentati
 
 #+BEGIN_SRC emacs-lisp
 (use-package ox-reveal
+  :defer t
   :config
   (progn
     (setq org-reveal-root "http://cdn.jsdelivr.net/reveal.js/2.5.0/")))
@@ -2811,6 +2806,7 @@ elisp files. Then run =make= and =make install= to install mu.
 (defun mail ()
   (interactive)
   (add-to-list 'load-path "~/src/mu-0.9.11/mu4e")
+  (nyan-mode 1) ;; nyan-mode for mail!
   (use-package mu4e
     :config
     (progn
@@ -3195,6 +3191,7 @@ buffer.
 
 #+BEGIN_SRC emacs-lisp
 (use-package smooth-scrolling
+  :defer t
   :config
   (setq smooth-scroll-margin 4))
 #+END_SRC
@@ -3207,6 +3204,7 @@ Paredit for all the lisps.
 
 #+BEGIN_SRC emacs-lisp
 (use-package paredit
+  :defer t
   :diminish "()"
   :config
   (progn
@@ -3230,6 +3228,12 @@ works pretty well, so I use it everywhere paredit-mode doesn't work.
   :diminish ""
   :bind (("M-9" . sp-backward-sexp)
          ("M-0" . sp-forward-sexp))
+  :init
+  (progn
+    (add-hook 'prog-mode-hook #'turn-on-smartparens-mode)
+    ;; turn on showing the match for clojure and elisp
+    (add-hook 'clojure-mode-hook #'turn-on-show-smartparens-mode)
+    (add-hook 'emacs-lisp-mode-hook #'turn-on-show-smartparens-mode))
   :config
   (progn
     (add-to-list 'sp-sexp-suffix '(json-mode regex ""))
@@ -3294,12 +3298,6 @@ works pretty well, so I use it everywhere paredit-mode doesn't work.
 
     (sp-with-modes sp--lisp-modes
       (sp-local-pair "(" nil :bind "C-("))))
-
-
-(add-hook 'prog-mode-hook
-          (lambda ()
-            (smartparens-global-mode t)
-            (show-smartparens-global-mode t)))
 #+END_SRC
 
 ** golden-ratio
@@ -3444,6 +3442,7 @@ current emacs if I'm already inside of emacs
 
 #+BEGIN_SRC emacs-lisp
 (use-package with-editor
+  :defer t
   :init
   (progn
     (add-hook 'shell-mode-hook  'with-editor-export-editor)
@@ -3587,9 +3586,9 @@ So I configure prodigy like so:
       :port 9200)
 
     (prodigy-define-service
-      :name "Elasticsearch 1.5.0"
-      :cwd "~/ies/elasticsearch-1.5.0"
-      :command "~/ies/elasticsearch-1.5.0/bin/elasticsearch"
+      :name "Elasticsearch 1.5.2"
+      :cwd "~/ies/elasticsearch-1.5.2"
+      :command "~/ies/elasticsearch-1.5.2/bin/elasticsearch"
       :tags '(work test es)
       :port 9200)
 
@@ -3605,27 +3604,6 @@ So I configure prodigy like so:
       :cwd "~/ies/elasticsearch-1.3.8/"
       :command "~/ies/elasticsearch-1.3.8/bin/elasticsearch"
       :tags '(work test es)
-      :port 9200)
-
-    (prodigy-define-service
-      :name "Elasticsearch 1.2.4"
-      :cwd "~/ies/elasticsearch-1.2.4/"
-      :command "~/ies/elasticsearch-1.2.4/bin/elasticsearch"
-      :tags '(work test es)
-      :port 9200)
-
-    (prodigy-define-service
-      :name "Elasticsearch 1.1.2"
-      :cwd "~/ies/elasticsearch-1.1.2/"
-      :command "~/ies/elasticsearch-1.1.2/bin/elasticsearch"
-      :tags '(work test es)
-      :port 9200)
-
-    (prodigy-define-service
-      :name "Kibana 4.0.1"
-      :cwd "~/ies/kibana-4.0.1-darwin-x64"
-      :command "~/ies/kibana-4.0.1-darwin-x64/bin/kibana"
-      :tags '(work test kibana)
       :port 9200)))
 #+END_SRC
 
@@ -3668,31 +3646,6 @@ fringe, so I'm trying it out...
   (if (window-system)
       (global-diff-hl-mode 1)
     (diff-hl-margin-mode 1)))
-#+END_SRC
-
-** highlight-symbol
-:PROPERTIES:
-   :ID:       5709E13F-A5A7-45BF-BF53-E9B4CB6C26ED
-   :END:
-Jump to the next/prev symbol pretty easily
-
-#+BEGIN_SRC emacs-lisp
-(use-package highlight-symbol
-  :defer t
-  :bind (("M-n" . highlight-symbol-next)
-         ("M-p" . highlight-symbol-prev)))
-#+END_SRC
-
-** highlight-numbers
-:PROPERTIES:
-   :ID:       5E251415-CA89-4E5A-904D-59A794764491
-   :END:
-Highlights numbers in source code, pretty simple.
-
-#+BEGIN_SRC emacs-lisp
-(use-package highlight-numbers
-  :defer t
-  :init (add-hook 'prog-mode-hook 'highlight-numbers-mode))
 #+END_SRC
 
 ** anzu
@@ -4039,6 +3992,7 @@ Snippets for coding, loading while idle so startup is faster.
 
 #+BEGIN_SRC emacs-lisp
 (use-package yasnippet
+  :defer t
   :diminish yas-minor-mode
   :init (progn
           (yas-global-mode 1)
@@ -4049,6 +4003,7 @@ And some niceties to allow choosing a snippet using helm:
 
 #+BEGIN_SRC emacs-lisp
 (use-package helm-config
+  :defer t
   :config
   (use-package yasnippet
     :bind ("M-=" . yas-insert-snippet)
@@ -4275,7 +4230,8 @@ helpful for documentation buffers and so on.
       (popwin:popup-buffer "*eshell*<3>"))
 
     ;; eshell 3 is always my "download stuff" buffer
-    (global-set-key (kbd "C-x M-d") #'my/popup-downloads)))
+    (global-set-key (kbd "C-x M-d") #'my/popup-downloads)
+    (global-set-key (kbd "C-h e") 'popwin:messages)))
 #+END_SRC
 
 ** paren-face
@@ -4430,10 +4386,18 @@ you're basically editing every instance of that word/variable in the buffer.
   :diminish eyebrowse-mode
   :init
   (progn
+    (defun my/create-eyebrowse-setup ()
+      (interactive)
+      "Create a default window config, if none is present"
+      (when (not (eyebrowse--window-config-present-p 2))
+        ;; there's probably a better way to do this, creating two workspaces
+        (eyebrowse-switch-to-window-config-2)
+        (eyebrowse-switch-to-window-config-1)))
     (setq eyebrowse-wrap-around t
           eyebrowse-new-workspace t)
     (eyebrowse-mode 1)
-    (global-set-key (kbd "C-'") 'eyebrowse-next-window-config)))
+    (global-set-key (kbd "C-'") 'eyebrowse-next-window-config)
+    (add-hook 'after-init-hook #'my/create-eyebrowse-setup)))
 #+END_SRC
 
 ** hideshow
@@ -4592,16 +4556,7 @@ These are miscellaneous bindings used all over the place that don't
 really fit in anywhere else.
 
 #+BEGIN_SRC emacs-lisp
-(global-set-key (kbd "C-h e") 'popwin:messages)
-(global-set-key (kbd "C-h C-p") 'popwin:special-display-config)
 (global-set-key (kbd "C-x +") 'balance-windows-area)
-
-;; https://github.com/remyferre/comment-dwim-2
-(when (fboundp 'comment-dwim-2)
-  (global-set-key (kbd "M-;") 'comment-dwim-2))
-
-;; M-g mapping
-(global-set-key (kbd "M-g M-f") 'ffap)
 
 (global-set-key (kbd "C-x C-l") 'toggle-truncate-lines)
 
@@ -4610,13 +4565,11 @@ really fit in anywhere else.
 ;; The manual recommends C-c for user keys, but C-x t is
 ;; always free, whereas C-c t is used by some modes.
 (define-key ctl-x-map "t" 'my/toggle-map)
-(define-key my/toggle-map "g" 'git-gutter:toggle)
+(define-key my/toggle-map "g" 'golden-ratio-mode)
 (define-key my/toggle-map "d" 'toggle-debug-on-error)
 (define-key my/toggle-map "f" 'auto-fill-mode)
 (define-key my/toggle-map "l" 'toggle-truncate-lines)
 (define-key my/toggle-map "q" 'toggle-debug-on-quit)
-(when (fboundp 'golden-ratio-mode)
-  (define-key my/toggle-map "r" 'golden-ratio-mode))
 (define-key my/toggle-map "n" #'my/narrow-or-widen-dwim)
 
 ;; join on killing lines
@@ -4637,7 +4590,7 @@ Deletes whitespace at join."
 (global-set-key (kbd "M-/") 'hippie-expand)
 
 ;; Perform general cleanup.
-(global-set-key (kbd "C-c n") 'cleanup-buffer)
+(global-set-key (kbd "C-c n") #'cleanup-buffer)
 
 ;; Font size
 (define-key global-map (kbd "C-+") 'text-scale-increase)
@@ -4693,9 +4646,6 @@ Deletes whitespace at join."
       (setq arg (if (plusp arg) (1- arg) (1+ arg))))))
 
 (global-set-key (kbd "C-x 4 t") 'transpose-buffers)
-
-;; lisp stuff
-(define-key lisp-mode-shared-map (kbd "RET") 'reindent-then-newline-and-indent)
 #+END_SRC
 
 ** Utility methods

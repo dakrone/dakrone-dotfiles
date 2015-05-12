@@ -298,10 +298,11 @@ Now some personal information about me:
 Always, *always*, prefer UTF-8, anything else is insanity
 
 #+BEGIN_SRC emacs-lisp
+(prefer-coding-system 'utf-8)
+(set-default-coding-systems 'utf-8)
 (set-terminal-coding-system 'utf-8)
 (set-keyboard-coding-system 'utf-8)
-(set-language-environment "UTF-8")
-(prefer-coding-system 'utf-8)
+(setq default-buffer-file-coding-system 'utf-8)
 #+END_SRC
 
 Turn on syntax highlighting for all buffers:
@@ -322,10 +323,34 @@ would like to by default, so set the threshold up higher:
       jit-lock-defer-time 0.05)
 #+END_SRC
 
+=line-number-mode= displays the current line number in the mode line, however it
+stops doing that in buffers when encountering at least one overly long line and
+displays two question marks instead. This is pretty unhelpful, the only
+workaround I've been able to find was to increase line-number-display-width to a
+substantially higher value.
+
+#+BEGIN_SRC emacs-lisp
+(setq line-number-display-limit-width 10000)
+#+END_SRC
+
+Make gnutls a bit safer
+
+#+BEGIN_SRC emacs-lisp
+(setq gnutls-min-prime-bits 4096)
+#+END_SRC
+
+Fix some things for scrolling a bit better
+
+#+BEGIN_SRC emacs-lisp
+(setq scroll-conservatively 10000
+      scroll-preserve-screen-position t)
+#+END_SRC
+
+
 Echo commands I haven't finished quicker than the default of 1 second:
 
 #+BEGIN_SRC emacs-lisp
-(setq echo-keystrokes 0.1)
+(setq echo-keystrokes 0.4)
 #+END_SRC
 
 Don't warn me about large files unless they're at least 25mb:
@@ -524,6 +549,8 @@ Automatically revert file if it's changed on disk:
 
 #+BEGIN_SRC emacs-lisp
 (global-auto-revert-mode 1)
+;; be quiet about reverting files
+(setq auto-revert-verbose nil)
 #+END_SRC
 
 Start a server if not running, but a only for text-only:
@@ -584,6 +611,16 @@ Display the time and load on the modeline
 (display-time-mode 1)
 #+END_SRC
 
+Quit as fast as possible with =kill -USR1 <pid>=
+
+#+BEGIN_SRC emacs-lisp
+(defun my/quit-emacs-unconditionally ()
+  (interactive)
+  (my-quit-emacs '(4)))
+
+(define-key special-event-map (kbd "<sigusr1>") #'my/quit-emacs-unconditionally)
+#+END_SRC
+
 *** OS-specific settings
 :PROPERTIES:
     :ID:       2A3B6DDC-9AC8-4D8A-AC46-84D3D65DF2EF
@@ -592,6 +629,9 @@ These are settings that are applied depending on what OS I'm
 currently running on. On gnu/linux systems, I bind =C-M-w= to the
 yank-to-x-clipboard method, which uses =xsel= to yank text. On OSX, I use the
 =pbpaste= and =pbcopy= methods to interact with the system clipboard.
+
+For OSX, use =brew install coreutils= to get =gls= which has better support for
+dired buffers.
 
 #+BEGIN_SRC emacs-lisp
 (when (eq system-type 'gnu/linux)
@@ -608,9 +648,12 @@ yank-to-x-clipboard method, which uses =xsel= to yank text. On OSX, I use the
 
 (when (eq system-type 'darwin)
   (setq ns-use-native-fullscreen nil)
-  (when (executable-find "gls")
-    (setq insert-directory-program "gls")
-    (setq dired-listing-switches "-aBhl --group-directories-first"))
+  ;; brew install coreutils
+  (if (executable-find "gls")
+      (progn
+        (setq insert-directory-program "gls")
+        (setq dired-listing-switches "-lFaGh1v --group-directories-first"))
+    (setq dired-listing-switches "-ahlF"))
   (defun copy-from-osx ()
     "Handle copy/paste intelligently on osx."
     (let ((pbpaste (purecopy "/usr/bin/pbpaste")))
@@ -730,6 +773,17 @@ pager:
  '(comint-get-old-input (lambda () "")) ; what to run when i press enter on a
                                         ; line above the current prompt
  )
+
+(defun my/shell-kill-buffer-sentinel (process event)
+  (when (memq (process-status process) '(exit signal))
+    (kill-buffer)))
+
+(defun my/kill-process-buffer-on-exit ()
+  (set-process-sentinel (get-buffer-process (current-buffer))
+                        #'my/shell-kill-buffer-sentinel))
+
+(dolist (hook '(ielm-mode-hook term-exec-hook comint-exec-hook))
+  (add-hook hook 'my/kill-process-buffer-on-exit))
 
 (defun set-scroll-conservatively ()
   "Add to shell-mode-hook to prevent jump-scrolling on newlines in shell buffers."
@@ -934,6 +988,8 @@ and dired tramp buffers are great for file management.
   :defer t
   :config
   (progn
+    (with-eval-after-load 'tramp-cache
+      (setq tramp-persistency-file-name "~/.emacs.d/etc/tramp"))
     (setq tramp-default-user-alist '(("\\`su\\(do\\)?\\'" nil "root"))
           tramp-backup-directory-alist backup-directory-alist
           tramp-adb-program "/Users/hinmanm/android-sdk-macosx/platform-tools/adb"
@@ -1027,7 +1083,7 @@ install mupdf= on osx)
 
 #+BEGIN_SRC emacs-lisp
 (use-package view
-  :defer
+  :defer t
   :bind
   (("C-M-n" . View-scroll-half-page-forward)
    ("C-M-p" . View-scroll-half-page-backward))
@@ -1122,7 +1178,11 @@ writable-dired mode is aawwweeeesssoooommee, it makes renames super easy.
           dired-recursive-copies 'always
           dired-recursive-deletes 'always
           dired-dwim-target t
+          ;; -F marks links with @
+          dired-ls-F-marks-symlinks t
           delete-by-moving-to-trash t
+          ;; Auto refresh dired
+          global-auto-revert-non-file-buffers t
           wdired-allow-to-change-permissions t)
     (define-key dired-mode-map (kbd "RET") 'dired-find-alternate-file)
     (define-key dired-mode-map (kbd "C-M-u") 'dired-up-directory)
@@ -1789,6 +1849,13 @@ There's =tern= also, but I leave it turned off by default
       (org-babel-do-load-languages
        'org-babel-load-languages
        '((elasticsearch . t))))))
+#+END_SRC
+
+*** LaTeX
+Use an engine from 2015
+
+#+BEGIN_SRC emacs-lisp
+(setq-default TeX-engine 'luatex)
 #+END_SRC
 
 ** theme
@@ -2681,8 +2748,16 @@ though.
 
 #+BEGIN_SRC emacs-lisp
 (use-package alert
-  :defer t)
+  :defer t
+  :config
+  (progn
+    (when (eq system-type 'darwin)
+      (setq alert-default-style 'notifier))
+    (when (eq system-type 'gnu/linux)
+      (setq alert-default-style 'notifications))))
 #+END_SRC
+
+To use this, I just need to do =(alert "this is a message")=.
 
 ** ERC Configuration (IRC)
 :PROPERTIES:
@@ -2696,29 +2771,21 @@ And finally the giant setting of ERC configuration variables, only
 if running in windowed mode, because I don't use ERC otherwise:
 
 #+BEGIN_SRC emacs-lisp
-(defun setup-irc ()
+(defun start-irc ()
   (interactive)
   (when (file-exists-p "~/.ercpass")
     (load-file "~/.ercpass"))
 
-  ;; Only track my nick(s)
-  (defadvice erc-track-find-face
-      (around erc-track-find-face-promote-query activate)
-    (if (erc-query-buffer-p)
-        (setq ad-return-value (intern "erc-current-nick-face"))
-      ad-do-it))
-
   (use-package erc
     :config
     (progn
-      (setq erc-fill-column 100
+      (setq erc-fill-column 78
             erc-server-coding-system '(utf-8 . utf-8)
             erc-hide-list '("JOIN" "PART" "QUIT" "NICK")
             erc-track-exclude-types (append '("324" "329" "332" "333"
                                               "353" "477" "MODE")
                                             erc-hide-list)
             erc-nick '("dakrone" "dakrone_" "dakrone__")
-            erc-autojoin-timing :ident
             erc-flood-protect nil
             erc-pals '("hiredman" "danlarkin" "drewr" "pjstadig" "scgilardi"
                        "joegallo" "jimduey" "leathekd" "zkim" "imotov"
@@ -2726,20 +2793,15 @@ if running in windowed mode, because I don't use ERC otherwise:
             erc-pal-highlight-type 'nil
             erc-keywords '("dakrone" "dakrone_" "clj-http" "cheshire"
                            "clojure-opennlp" "opennlp" "circuit breaker"
-                           "groovy" "es-mode" "simple_query_string" "mvel")
+                           "simple_query_string")
             erc-ignore-list '()
             erc-track-exclude-types '("JOIN" "NICK" "PART" "QUIT" "MODE"
                                       "324" "329" "332" "333" "353" "477")
-            erc-button-url-regexp
-            (concat "\\([-a-zA-Z0-9_=!?#$@~`%&*+\\/:;,]+\\.\\)+[-a-zA-Z0-9_=!?#"
-                    "$@~`%&*+\\/:;,]*[-a-zA-Z0-9\\/]")
             erc-log-matches-types-alist
-            '((keyword . "ERC Keywords")
-              (current-nick . "ERC Messages Addressed To You"))
-            erc-log-matches-flag t
+            '((keyword . "ERC keywords")
+              (current-nick . "ERC messages for me"))
             erc-prompt-for-nickserv-password nil
             erc-server-reconnect-timeout 5
-            erc-server-reconnect-attempts 4
             erc-fill-function 'erc-fill-static
             erc-fill-static-center 18
             ;; update ERC prompt with room name
@@ -2756,9 +2818,6 @@ if running in windowed mode, because I don't use ERC otherwise:
       ;; Turn on company-mode in ERC
       (add-hook 'erc-mode-hook 'company-mode)
 
-      ;; highlighting nicks
-      (use-package erc-hl-nicks
-        :init (add-to-list 'erc-modules 'hl-nicks))
       ;; other random services (spelling)
       (use-package erc-services
         :init
@@ -2778,12 +2837,8 @@ if running in windowed mode, because I don't use ERC otherwise:
             (query-buffer . all)))
     (defun do-notify (nickname message)
       (alert message :title (concat (buffer-name) ": " nickname)))
-    (add-hook 'ercn-notify 'do-notify))))
+    (add-hook 'ercn-notify-hook #'do-notify)))
 
-(defun start-irc ()
-  "Connect to IRC."
-  (interactive)
-  (setup-irc)
   (let ((tls-program
          '("openssl s_client -connect %h:%p -no_ssl2 -ign_eof -cert ~/host.pem"
            "gnutls-cli --priority secure256 --x509certfile ~/host.pem -p %p %h"
@@ -3233,7 +3288,9 @@ works pretty well, so I use it everywhere paredit-mode doesn't work.
     (add-hook 'prog-mode-hook #'turn-on-smartparens-mode)
     ;; turn on showing the match for clojure and elisp
     (add-hook 'clojure-mode-hook #'turn-on-show-smartparens-mode)
-    (add-hook 'emacs-lisp-mode-hook #'turn-on-show-smartparens-mode))
+    (add-hook 'emacs-lisp-mode-hook #'turn-on-show-smartparens-mode)
+    (add-hook 'java-mode-hook #'turn-on-show-smartparens-mode)
+    (add-hook 'c-mode-hook #'turn-on-show-smartparens-mode))
   :config
   (progn
     (add-to-list 'sp-sexp-suffix '(json-mode regex ""))
@@ -3442,7 +3499,6 @@ current emacs if I'm already inside of emacs
 
 #+BEGIN_SRC emacs-lisp
 (use-package with-editor
-  :defer t
   :init
   (progn
     (add-hook 'shell-mode-hook  'with-editor-export-editor)
@@ -3634,6 +3690,12 @@ p= bindings.
     (add-hook 'python-mode-hook 'git-gutter-mode)))
 #+END_SRC
 
+** git-annex
+Need to insinuate the git-annex support for dired buffers
+
+#+BEGIN_SRC emacs-lisp
+(use-package git-annex)
+#+END_SRC
 ** diff-hl
 This provides basically the same functionality as =git-gutter=, but using the
 fringe, so I'm trying it out...
@@ -4198,6 +4260,10 @@ helpful for documentation buffers and so on.
     (push '("*git-gutter:diff*" :width 0.5 :stick t)
           popwin:special-display-config)
 
+    ;; es-results-mode
+    (push '(es-result-mode :stick t :width 0.5)
+          popwin:special-display-config)
+    
     ;; direx
     (push '(direx:direx-mode :position left :width 40 :dedicated t)
           popwin:special-display-config)
@@ -4318,6 +4384,7 @@ scp-ing an HTML version of the current buffer somewhere
 
 #+BEGIN_SRC emacs-lisp
 (use-package scpaste
+  :defer t
   :config
   (setq scpaste-http-destination "http://p.writequit.org"
         scpaste-scp-destination "writequit:public_html/wq/paste/"))
@@ -4548,6 +4615,21 @@ https://github.com/alpaker/Fill-Column-Indicator/issues/45
     (setq fci-rule-column 80)))
 #+END_SRC
 
+** idle-highlight-mode
+Highlight idle things, but only in certain modes
+
+#+BEGIN_SRC emacs-lisp
+(use-package idle-highlight-mode
+  :init
+  (progn
+    (defun turn-on-idle-highlight-mode ()
+      (interactive)
+      (idle-highlight-mode 1))
+    (add-hook 'java-mode-hook #'turn-on-idle-highlight-mode)
+    (add-hook 'emacs-lisp-mode-hook #'turn-on-idle-highlight-mode)
+    (add-hook 'clojure-lisp-mode-hook #'turn-on-idle-highlight-mode)))
+#+END_SRC
+
 ** Bindings
 :PROPERTIES:
    :ID:       3F1D7832-2DB7-4D45-A78A-267C823DC4A3
@@ -4560,6 +4642,13 @@ really fit in anywhere else.
 
 (global-set-key (kbd "C-x C-l") 'toggle-truncate-lines)
 
+(defun my/turn-on-viewing-mode ()
+  "Turn on the viewing mode, to make looking through logs easier"
+  (interactive)
+  (read-only-mode 1)
+  (view-mode 1)
+  (hl-line-mode 1))
+
 ;; Via: http://endlessparentheses.com/the-toggle-map-and-wizardry.html
 (define-prefix-command 'my/toggle-map)
 ;; The manual recommends C-c for user keys, but C-x t is
@@ -4570,6 +4659,9 @@ really fit in anywhere else.
 (define-key my/toggle-map "f" 'auto-fill-mode)
 (define-key my/toggle-map "l" 'toggle-truncate-lines)
 (define-key my/toggle-map "q" 'toggle-debug-on-quit)
+(define-key my/toggle-map "r" 'read-only-mode)
+(define-key my/toggle-map "h" 'hl-line-mode)
+(define-key my/toggle-map "v" #'my/turn-on-viewing-mode)
 (define-key my/toggle-map "n" #'my/narrow-or-widen-dwim)
 
 ;; join on killing lines

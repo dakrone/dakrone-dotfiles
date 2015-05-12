@@ -24,3 +24,4 @@ alias post curl -s -XPOST $*
 alias put curl -s -XPUT $*
 alias rcp tr ':' '\n'\ $*
 alias se tar zxvf $*
+alias ga git annex $*

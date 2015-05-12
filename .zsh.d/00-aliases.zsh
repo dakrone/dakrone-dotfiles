@@ -81,3 +81,4 @@ alias magit='emacs -f magit-status'
 alias gitjk='history | tail -r | head -10 | gitjk_cmd'
 # simple-extract
 alias se="tar zxvf"
+alias ga="git annex"

@@ -284,8 +284,8 @@ depending on whatever I'm in the mood for. This is used later on for the
 modeline theme, as well as the general theme for things.
 
 #+BEGIN_SRC emacs-lisp
-(defvar my/background 'light)
-;;(defvar my/background 'dark)
+;;(defvar my/background 'light)
+(defvar my/background 'dark)
 #+END_SRC
 
 Now some personal information about me:
@@ -991,7 +991,6 @@ and dired tramp buffers are great for file management.
     (with-eval-after-load 'tramp-cache
       (setq tramp-persistency-file-name "~/.emacs.d/etc/tramp"))
     (setq tramp-default-user-alist '(("\\`su\\(do\\)?\\'" nil "root"))
-          tramp-backup-directory-alist backup-directory-alist
           tramp-adb-program "/Users/hinmanm/android-sdk-macosx/platform-tools/adb"
           ;; use the settings in ~/.ssh/config instead of Tramp's
           tramp-use-ssh-controlmaster-options nil
@@ -1166,15 +1165,13 @@ writable-dired mode is aawwweeeesssoooommee, it makes renames super easy.
     (use-package dired-x
       :init (setq-default dired-omit-files-p t)
       :config
-      (when (eq system-type 'darwin)
-        (add-to-list 'dired-omit-extensions ".DS_Store")))
+      (add-to-list 'dired-omit-extensions ".DS_Store"))
     (customize-set-variable 'diredp-hide-details-initially-flag nil)
     (use-package dired+)
     (use-package dired-aux
       :init (use-package dired-async))
     (put 'dired-find-alternate-file 'disabled nil)
     (setq ls-lisp-dirs-first t
-          dired-listing-switches "-alh" ;; default is "-al"
           dired-recursive-copies 'always
           dired-recursive-deletes 'always
           dired-dwim-target t
@@ -1852,6 +1849,9 @@ There's =tern= also, but I leave it turned off by default
 #+END_SRC
 
 *** LaTeX
+:PROPERTIES:
+:ID:       4836AB90-B5D5-4F55-8688-C396180A2EC2
+:END:
 Use an engine from 2015
 
 #+BEGIN_SRC emacs-lisp
@@ -1876,8 +1876,13 @@ nice.
 
 (defun dakrone-dark ()
   (interactive)
-  (use-package color-theme-sanityinc-tomorrow
-    :init (color-theme-sanityinc-tomorrow-night)))
+  ;; (use-package color-theme-sanityinc-tomorrow
+  ;;   :init (color-theme-sanityinc-tomorrow-night))
+  (use-package material-theme
+    :disabled t
+    :init (load-theme 'material t))
+  (use-package apropospriate-theme
+    :init (load-theme 'apropospriate-dark t)))
 
 (defun dakrone-light ()
   (interactive)
@@ -1939,6 +1944,9 @@ Config for Linux/X11 systems:
 #+END_SRC
 
 *** modeline (mode-line)
+:PROPERTIES:
+:ID:       DF0A0FE7-21E8-4708-A074-0F21D1B08824
+:END:
 Ehh.. I go back and forth.
 
 #+BEGIN_SRC emacs-lisp
@@ -2073,6 +2081,9 @@ Finally, [[http://amitp.blogspot.com/2011/08/emacs-custom-mode-line.html][Amit's
 #+END_SRC
 
 *** fringe
+:PROPERTIES:
+:ID:       1F8AD6A9-B64A-4B09-849D-34C413D27F5C
+:END:
 
 So, fring is nice actually, but the background for it kind of sucks in =leuven=,
 so I set it to the same color as the background
@@ -2281,7 +2292,7 @@ And now the huge org-mode configuration
                   ("TODO" ("WAITING") ("CANCELLED") ("HOLD"))
                   ("INPROGRESS" ("WAITING") ("CANCELLED") ("HOLD"))
                   ("DONE" ("WAITING") ("CANCELLED") ("HOLD")))))
-    ;; refile targets all level 1 headers in todo.org and notes.org
+    ;; refile targets all level 1 and 2 headers in current file and agenda files
     (setq org-refile-targets '((nil :maxlevel . 2)
                                (org-agenda-files :maxlevel . 2)))
     ;; quick access to common tags
@@ -2577,7 +2588,7 @@ Publishing org-mode files to my hosting provider:
            :base-directory ,(file-truename "~/www")
            :base-extension "org\\|html"
            :publishing-directory
-           "/ssh:hinmanph@writequit:~/public_html/wq/"
+           "/ssh:writequit.org:~/www/"
            :publishing-function org-html-publish-to-html
            :with-toc nil
            :html-preamble t)
@@ -2585,13 +2596,13 @@ Publishing org-mode files to my hosting provider:
            :base-directory ,(file-truename  "~/www/images")
            :base-extension "png\\|jpg\\|gif"
            :publishing-directory
-           "/ssh:hinmanph@writequit:~/public_html/wq/images"
+           "/ssh:writequit.org:~/www/images"
            :publishing-function org-publish-attachment)
           ("writequit-files"
            :base-directory ,(file-truename  "~/www/files")
            :base-extension "*"
            :publishing-directory
-           "/ssh:hinmanph@writequit:~/public_html/wq/files/"
+           "/ssh:writequit.org:~/www/files/"
            :publishing-function org-publish-attachment)
           ("writequit" :components ("writequit-org"
                                     "writequit-images"
@@ -2602,7 +2613,7 @@ Publishing org-mode files to my hosting provider:
            :base-directory ,(file-truename "~/.emacs.d/")
            :base-extension "org\\|html"
            :publishing-directory
-           "/ssh:hinmanph@writequit:~/public_html/wq/paste/org/"
+           "/ssh:writequit.org:~/www/org/"
            :publishing-function org-html-publish-to-html
            :with-toc t
            :html-preamble t)
@@ -2612,7 +2623,7 @@ Publishing org-mode files to my hosting provider:
            :base-directory ,(file-truename "~/org/")
            :base-extension "org\\|html"
            :publishing-directory
-           "/ssh:hinmanph@writequit:~/public_html/wq/paste/org/"
+           "/ssh:writequit.org:~/www/org/"
            :publishing-function org-html-publish-to-html
            :with-toc t
            :html-preamble t)
@@ -2620,7 +2631,7 @@ Publishing org-mode files to my hosting provider:
            :base-directory ,(file-truename "~/org/images")
            :base-extension "png\\|jpg"
            :publishing-directory
-           "/ssh:hinmanph@writequit:~/public_html/wq/paste/org/images"
+           "/ssh:writequit.org:~/www/org/images"
            :publishing-function org-publish-attachment)
           ("org" :components ("org-org" "org-images"))
 
@@ -2629,7 +2640,7 @@ Publishing org-mode files to my hosting provider:
            :base-directory ,(file-truename "~/org/es/")
            :base-extension "org\\|html"
            :publishing-directory
-           "/ssh:hinmanph@writequit:~/public_html/wq/paste/org/es"
+           "/ssh:writequit.org:~/www/org/es"
            :publishing-function org-html-publish-to-html
            :with-toc t
            :html-preamble t)
@@ -2637,13 +2648,13 @@ Publishing org-mode files to my hosting provider:
            :base-directory ,(file-truename "~/org/es/")
            :base-extension "css\\|pdf\\|sh\\|es\\|zsh\\|py\\|org"
            :publishing-directory
-           "/ssh:hinmanph@writequit:~/public_html/wq/paste/org/es"
+           "/ssh:writequit.org:~/www/org/es"
            :publishing-function org-publish-attachment)
           ("org-es-images"
            :base-directory ,(file-truename "~/org/es/images")
            :base-extension "png\\|jpg"
            :publishing-directory
-           "/ssh:hinmanph@writequit:~/public_html/wq/paste/org/es/images"
+           "/ssh:writequit.org:~/www/org/es/images"
            :publishing-function org-publish-attachment)
           ("org-es"
            :components ("org-es-org" "org-es-files" "org-es-images"))
@@ -2653,7 +2664,7 @@ Publishing org-mode files to my hosting provider:
            :base-directory ,(file-truename "~/org/es/design")
            :base-extension "org\\|html"
            :publishing-directory
-           "/ssh:hinmanph@writequit:~/public_html/wq/paste/org/es/design"
+           "/ssh:writequit.org:~/www/org/es/design"
            :publishing-function org-html-publish-to-html
            :with-toc t
            :html-preamble t)
@@ -2661,13 +2672,13 @@ Publishing org-mode files to my hosting provider:
            :base-directory ,(file-truename "~/org/es/design")
            :base-extension "css\\|pdf\\|sh\\|es\\|zsh\\|py\\|org"
            :publishing-directory
-           "/ssh:hinmanph@writequit:~/public_html/wq/paste/org/es/design"
+           "/ssh:writequit.org:~/www/org/es/design"
            :publishing-function org-publish-attachment)
           ("org-es-designs-images"
            :base-directory ,(file-truename "~/org/es/design/images")
            :base-extension "png\\|jpg"
            :publishing-directory
-           "/ssh:hinmanph@writequit:~/public_html/wq/paste/org/es/design/images"
+           "/ssh:writequit.org:~/www/org/es/design/images"
            :publishing-function org-publish-attachment)
           ("org-es-design"
            :components ("org-es-design-org"
@@ -2679,7 +2690,7 @@ Publishing org-mode files to my hosting provider:
            :base-directory ,(file-truename "~/org/book/")
            :base-extension "org\\|zsh\\|html\\|png"
            :publishing-directory
-           "/ssh:hinmanph@writequit:~/public_html/wq/paste/org/book/"
+           "/ssh:writequit.org:~/www/org/book/"
            :publishing-function org-html-publish-to-html
            :with-toc t
            :html-preamble t))))
@@ -3584,7 +3595,7 @@ I have been trying out [[https://www.npmjs.com/package/esvm][esvm]] for this lat
 #+BEGIN_SRC json :tangle ~/.esvmrc
 {
   "defaults": {
-    "plugins": ["karmi/elasticsearch-paramedic"],
+    "plugins": [],
     "config": {
       "node.add_id_to_custom_path": false,
       "node.enable_custom_paths": true,
@@ -3604,6 +3615,10 @@ I have been trying out [[https://www.npmjs.com/package/esvm][esvm]] for this lat
     "3node": {
       "branch": "1.5",
       "nodes": 3
+    },
+    "10node": {
+      "branch": "1.5",
+      "nodes": 10
     }
   }
 }
@@ -3617,6 +3632,14 @@ So I configure prodigy like so:
   :bind ("C-x P" . prodigy)
   :config
   (progn
+    (prodigy-define-service
+      :name "ES 1.5, 10 nodes"
+      :cwd "~/ies/"
+      :command "esvm"
+      :args '("10node")
+      :tags '(work test es)
+      :port 9200)
+
     (prodigy-define-service
       :name "ES 1.5, 3 nodes"
       :cwd "~/ies/"
@@ -3691,12 +3714,19 @@ p= bindings.
 #+END_SRC
 
 ** git-annex
+:PROPERTIES:
+:ID:       1C30149B-9804-4157-9696-9DF1EFE9A926
+:END:
 Need to insinuate the git-annex support for dired buffers
 
 #+BEGIN_SRC emacs-lisp
 (use-package git-annex)
 #+END_SRC
+
 ** diff-hl
+:PROPERTIES:
+:ID:       F90BC586-B58E-4B69-A6EB-3317C4F72C37
+:END:
 This provides basically the same functionality as =git-gutter=, but using the
 fringe, so I'm trying it out...
 
@@ -4038,6 +4068,9 @@ https://tuhdo.github.io/helm-intro.html
 #+END_SRC
 
 ** helm-ls-git
+:PROPERTIES:
+:ID:       17D50EB4-3BD0-41BB-9F3C-4FDB8143E568
+:END:
 Uses =git grep= for that
 
 #+BEGIN_SRC emacs-lisp
@@ -4100,11 +4133,14 @@ Various markdown-related settings. Not much here.
 #+END_SRC
 
 ** log4j-mode
+:PROPERTIES:
+:ID:       495F9BDA-3134-4F5A-842D-C3CEC6F61F71
+:END:
 Need =hl-line-mode= for this
 
 #+BEGIN_SRC emacs-lisp
 (use-package log4j-mode
-  :init (add-hook 'log4j-mode-hook #'my/turn-on-hl-line-mode))
+  :init (add-hook 'log4j-mode-hook #'my/turn-on-viewing-mode))
 #+END_SRC
 
 ** bookmark+
@@ -4403,6 +4439,9 @@ Smex is IDO, but for =M-x=
 #+END_SRC
 
 ** volatile-highlights
+:PROPERTIES:
+:ID:       17C19DE9-FD8F-45C3-ACB2-9CAD4462BE04
+:END:
 Highlights things like undo, copy, paste, etc.
 
 #+BEGIN_SRC emacs-lisp
@@ -4616,6 +4655,9 @@ https://github.com/alpaker/Fill-Column-Indicator/issues/45
 #+END_SRC
 
 ** idle-highlight-mode
+:PROPERTIES:
+:ID:       36115C63-6FF9-4E87-BD76-B0B214C45FC0
+:END:
 Highlight idle things, but only in certain modes
 
 #+BEGIN_SRC emacs-lisp

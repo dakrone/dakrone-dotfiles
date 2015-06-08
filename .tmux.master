@@ -42,6 +42,15 @@ bind-key -n M-7 select-window -t 7
 bind-key -n M-8 select-window -t 8
 #bind-key -n M-9 select-window -t 9
 
+bind-key -n s-1 select-window -t 1
+bind-key -n s-2 select-window -t 2
+bind-key -n s-3 select-window -t 3
+bind-key -n s-4 select-window -t 4
+bind-key -n s-5 select-window -t 5
+bind-key -n s-6 select-window -t 6
+bind-key -n s-7 select-window -t 7
+bind-key -n s-8 select-window -t 8
+
 ## Custom status bar, via https://github.com/myusuf3/dotfiles
 ## Powerline symbols: ⮂ ⮃ ⮀ ⮁ ⭤
 ## If you do not have a patched font (see: https://github.com/Lokaltog/vim-powerline/tree/develop/fontpatcher)
@@ -56,11 +65,11 @@ set-option -g pane-border-fg colour245
 set-option -g pane-active-border-fg colour39
 set-option -g status-justify left
 
-set-option -g status-left '#[fg=colour16,bg=colour254,bold] #S #[fg=colour254,bg=colour238,nobold]⮀#[fg=colour15,bg=colour238,bold] #(up) #[fg=colour238,bg=colour234,nobold]⮀'
+set-option -g status-left '#[fg=colour16,bg=colour254,bold] #S #[fg=colour254,bg=colour238,nobold]#[fg=colour15,bg=colour238,bold] #(up) #[fg=colour238,bg=colour234,nobold]'
 
-set-option -g status-right '#[fg=colour245]⮃ %R ⮃ %d %b #[fg=colour254,bg=colour234,nobold]⮂#[fg=colour16,bg=colour254,bold] #h '
+set-option -g status-right '#[fg=colour245]%R %d %b #[fg=colour254,bg=colour234,nobold]#[fg=colour16,bg=colour254,bold] #h '
 
 set-option -g window-status-format "#[fg=white,bg=colour234] #I #W "
-set-option -g window-status-current-format "#[fg=colour234,bg=colour39]⮀#[fg=colour16,bg=colour39,noreverse,bold] #I ⮁ #W #[fg=colour39,bg=colour234,nobold]⮀"
+set-option -g window-status-current-format "#[fg=colour234,bg=colour39]#[fg=colour16,bg=colour39,noreverse,bold] #I #W #[fg=colour39,bg=colour234,nobold]"
 
 set-option -g default-terminal "screen-256color"

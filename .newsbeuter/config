@@ -7,7 +7,8 @@ always-display-description  true
 #article-sort-order          date
 auto-reload                 yes
 #bookmark-cmd                ricepaper.sh
-browser                     open %u
+#browser                     open %u
+browser                     firefox --new-tab %u
 cleanup-on-quit             yes
 confirm-exit                yes
 #define-filter

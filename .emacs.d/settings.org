@@ -635,6 +635,7 @@ dired buffers.
 
 #+BEGIN_SRC emacs-lisp
 (when (eq system-type 'gnu/linux)
+  (setq dired-listing-switches "-lFaGh1v --group-directories-first")
   (defun yank-to-x-clipboard ()
     (interactive)
     (if (region-active-p)
@@ -974,6 +975,9 @@ d=, if the buffer doesn't exist it is created.
 (global-set-key (kbd "s-1") 'my/create-or-switch-to-eshell-1)
 (global-set-key (kbd "s-2") 'my/create-or-switch-to-eshell-2)
 (global-set-key (kbd "s-3") 'my/create-or-switch-to-eshell-3)
+(global-set-key (kbd "M-1") 'my/create-or-switch-to-eshell-1)
+(global-set-key (kbd "M-2") 'my/create-or-switch-to-eshell-2)
+(global-set-key (kbd "M-3") 'my/create-or-switch-to-eshell-3)
 #+END_SRC
 
 *** Tramp settings
@@ -1141,6 +1145,14 @@ To start, a helper to use "=open=" to open files in dired-mode with =M-o=
      "open" current-prefix-arg
      (dired-get-marked-files t current-prefix-arg))))
 
+(defun my/dired-linux-open ()
+  "Use the Linux `xdg-open' command to open a file with the correct editor"
+  (interactive)
+  (save-window-excursion
+    (dired-do-async-shell-command
+     "xdg-open" current-prefix-arg
+     (dired-get-marked-files t current-prefix-arg))))
+
 (defun my/dired-extract ()
   "Use the `se' utility to extract a file"
   (interactive)
@@ -1183,7 +1195,7 @@ writable-dired mode is aawwweeeesssoooommee, it makes renames super easy.
           wdired-allow-to-change-permissions t)
     (define-key dired-mode-map (kbd "RET") 'dired-find-alternate-file)
     (define-key dired-mode-map (kbd "C-M-u") 'dired-up-directory)
-    (define-key dired-mode-map (kbd "M-o") #'my/dired-mac-open)
+    (define-key dired-mode-map (kbd "M-o") #'my/dired-linux-open)
     (define-key dired-mode-map (kbd "M-E") #'my/dired-extract)
     (define-key dired-mode-map (kbd "C-x C-q") 'wdired-change-to-wdired-mode)
     (add-hook 'dired-mode-hook #'my/dired-mode-hook)))
@@ -1934,10 +1946,12 @@ Config for Linux/X11 systems:
 (defun my/setup-x11-fonts ()
   (when (eq window-system 'x)
     ;; Font family
-    (set-fontset-font "fontset-default" 'symbol "Bitstream Vera Sans Mono")
-    (set-default-font "Bitstream Vera Sans Mono")
+    (add-to-list 'default-frame-alist '(font . "DejaVu Sans Mono-10"))
+    ;; (set-fontset-font "fontset-default" 'symbol "DejaVu Sans Mono")
+    ;; (set-default-font "DejaVu Sans Mono")
     ;; Font size
-    (set-face-attribute 'default nil :height 90)))
+    ;;(set-face-attribute 'default nil :height 90)
+    ))
 
 (when (eq window-system 'x)
   (add-hook 'after-init-hook #'my/setup-x11-fonts))
@@ -3529,6 +3543,7 @@ I use =M-g M-g= everywhere to go directly to Magit.
   :init (defvar magit-emacsclient-executable nil) ;; fix for emacs-mac
   :config
   (progn
+    (setq magit-last-seen-setup-instructions "1.4.0")
     (when (and (eq system-type 'darwin)
                (file-exists-p  "/usr/local/bin/emacsclient"))
       (setq magit-emacsclient-executable "/usr/local/bin/emacsclient"))

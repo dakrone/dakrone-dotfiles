@@ -6,11 +6,12 @@ WORDCHARS='*?_[]~=&;!#$%^(){}'
 # default is: *?_-.[]~=/&;!#$%^(){}<>
 # other: "*?_-.[]~=&;!#$%^(){}<>\\"
 WORDCHARS=${WORDCHARS:s,/,,}
+LEDGER_FILE=$HOME/ledger.dat; export LEDGER_FILE
 
 export EDITOR=nano # to be overwritten later
 export PAGER=less
 
-export PATH=~/bin:/usr/local/bin:/usr/local/sbin:$PATH
+export PATH=~/bin:~/.cabal/bin:/usr/local/bin:/usr/local/sbin:$PATH
 
 # history
 HISTFILE=$HOME/.zsh-history

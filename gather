@@ -36,6 +36,11 @@ cp -f ~/.elinks/elinks.conf .elinks
 echo "copying git..."
 cp -f ~/.gitconfig .
 
+# Aria2
+echo "copying aria..."
+mkdir -p .aria2
+cp -f -r ~/.aria2 .
+
 # Network
 echo "copying polipo, pdnsd, privoxy..."
 cp -f /usr/local/etc/polipo.conf .
@@ -81,8 +86,6 @@ cp -f ~/.mpd.conf .
 echo "copying misc..."
 cp -f ~/.cmd-key-happy.lua .
 cp -f ~/.globalrc .
-mkdir -p .aria2
-cp -f ~/.aria2/aria2.conf .aria2
 
 # Remove cruft
 echo "removing cruft and things that should not be backed up..."

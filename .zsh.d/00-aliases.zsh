@@ -82,3 +82,5 @@ alias gitjk='history | tail -r | head -10 | gitjk_cmd'
 # simple-extract
 alias se="tar zxvf"
 alias ga="git annex"
+# download manager
+alias aria2c='aria2c -c -x5 -s10 -m0'

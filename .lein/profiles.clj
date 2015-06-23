@@ -2,7 +2,7 @@
  {:plugins [[codox "0.6.7"]
             [cider/cider-nrepl "0.8.2"]
             [jonase/eastwood "0.2.0"]
-            [lein-bikeshed "0.2.1-SNAPSHOT"]
+            [lein-bikeshed "0.2.0"]
             [lein-clojuredocs "1.0.2"]
             [lein-difftest "2.0.0"]
             [lein-marginalia "0.7.1"]

@@ -150,7 +150,8 @@ things add hooks that don't work if packages aren't installed.
     ;; themeing
     rainbow-mode leuven-theme dakrone-theme color-identifiers-mode
     moe-theme nyan-mode color-theme-sanityinc-tomorrow powerline
-    volatile-highlights
+    volatile-highlights apropospriate-theme material-theme
+    visible-mark
 
     ;; misc
     diminish gist scpaste async sx exec-path-from-shell bbdb
@@ -198,7 +199,7 @@ things add hooks that don't work if packages aren't installed.
     ssh-config-mode
 
     ;; flycheck
-    flycheck flycheck-tip
+    flycheck flycheck-tip flycheck-haskell
 
     ;; clojure
     clojure-mode clojure-mode-extra-font-locking cider paredit paren-face
@@ -284,8 +285,8 @@ depending on whatever I'm in the mood for. This is used later on for the
 modeline theme, as well as the general theme for things.
 
 #+BEGIN_SRC emacs-lisp
-;;(defvar my/background 'light)
-(defvar my/background 'dark)
+(defvar my/background 'light)
+;;(defvar my/background 'dark)
 #+END_SRC
 
 Now some personal information about me:
@@ -362,7 +363,7 @@ Don't warn me about large files unless they're at least 25mb:
 If you change buffer, or focus, disable the current buffer's mark:
 
 #+BEGIN_SRC emacs-lisp
-(transient-mark-mode t)
+(transient-mark-mode 1)
 #+END_SRC
 
 Don't indicate empty lines or the end of a buffer with visual
@@ -645,7 +646,10 @@ dired buffers.
           (deactivate-mark))
       (message "No region active; can't yank to clipboard!")))
 
-  (global-set-key (kbd "C-M-w") 'yank-to-x-clipboard))
+  (global-set-key (kbd "C-M-w") 'yank-to-x-clipboard)
+  ;; suspend-frame isn't working on Linux?
+  (global-unset-key (kbd "C-z"))
+  (global-unset-key (kbd "C-x C-z")))
 
 (when (eq system-type 'darwin)
   (setq ns-use-native-fullscreen nil)
@@ -1033,14 +1037,11 @@ Hunspell isn't available:
 ;; if (aspell installed) { use aspell }
 ;; else if (hunspell installed) { use hunspell }
 ;; whatever spell checker I use, I always use English dictionary
-(setq ispell-program-name "aspell")
+(setq ispell-program-name (executable-find "aspell"))
 (setq ispell-extra-args
       (list "--sug-mode=fast" ;; ultra|fast|normal|bad-spellers
             "--lang=en_US"
-            "--ignore=3"
-            "--run-together"
-            "--run-together-limit=5"
-            "--run-together-min=2"))
+            "--ignore=3"))
 
 ;; hunspell
 ;; (setq ispell-program-name "hunspell")
@@ -1753,8 +1754,9 @@ modes:
   :defer t
   :init
   (progn
-    (add-hook 'haskell-mode-hook #'turn-on-haskell-indentation)
-    (add-hook 'haskell-mode-hook #'turn-on-haskell-doc-mode))
+    (add-hook 'haskell-mode-hook #'haskell-indentation-mode)
+    (add-hook 'haskell-mode-hook #'turn-on-haskell-doc-mode)
+    (add-hook 'haskell-mode-hook #'subword-mode))
   :config
   (progn
     (let ((my-cabal-path (expand-file-name "~/.cabal/bin")))
@@ -1797,7 +1799,6 @@ modes:
     (autoload 'ghc-init "ghc" nil t)
     (autoload 'ghc-debug "ghc" nil t)
     (add-hook 'haskell-mode-hook (lambda () (ghc-init)))))
-
 #+END_SRC
 
 *** Javascript
@@ -1900,7 +1901,10 @@ nice.
   (interactive)
   (use-package leuven-theme
     :init (load-theme 'leuven t)
-    :config (set-background-color "#f0f0f0")))
+    :config (set-background-color "#f0f0f0"))
+  (use-package material-theme
+    :disabled t
+    :init (load-theme 'material-light t)))
 
 (if (eq my/background 'dark)
     (dakrone-dark)
@@ -1944,11 +1948,10 @@ Config for Linux/X11 systems:
 
 #+BEGIN_SRC emacs-lisp
 (defun my/setup-x11-fonts ()
+  (interactive)
   (when (eq window-system 'x)
     ;; Font family
-    (add-to-list 'default-frame-alist '(font . "DejaVu Sans Mono-10"))
-    ;; (set-fontset-font "fontset-default" 'symbol "DejaVu Sans Mono")
-    ;; (set-default-font "DejaVu Sans Mono")
+    (add-to-list 'default-frame-alist '(font . "DejaVu Sans Mono-9"))
     ;; Font size
     ;;(set-face-attribute 'default nil :height 90)
     ))
@@ -2078,7 +2081,7 @@ Finally, [[http://amitp.blogspot.com/2011/08/emacs-custom-mode-line.html][Amit's
                     :weight 'bold)
 (set-face-attribute 'mode-line-position-face nil
                     :inherit 'mode-line-face
-                    :family "Menlo" :height 100)
+                    :height 100)
 (set-face-attribute 'mode-line-mode-face nil
                     :inherit 'mode-line-face
                     :foreground "gray80")
@@ -2099,8 +2102,8 @@ Finally, [[http://amitp.blogspot.com/2011/08/emacs-custom-mode-line.html][Amit's
 :ID:       1F8AD6A9-B64A-4B09-849D-34C413D27F5C
 :END:
 
-So, fring is nice actually, but the background for it kind of sucks in =leuven=,
-so I set it to the same color as the background
+So, fringe is nice actually, but the background for it kind of sucks in
+=leuven=, so I set it to the same color as the background
 
 #+BEGIN_SRC emacs-lisp
 (defun my/set-fringe-background ()
@@ -3402,7 +3405,8 @@ using a big font size and I need more eshell space
     ;; Inhibit helm
     (add-to-list 'golden-ratio-inhibit-functions #'my/helm-alive-p)
     ;; Inhibit ERC and mu4e
-    (setq golden-ratio-exclude-modes
+    (setq golden-ratio-auto-scale t
+          golden-ratio-exclude-modes
           '(erc-mode mu4e-headers-mode mu4e-view-mode))))
 #+END_SRC
 
@@ -3431,7 +3435,9 @@ Pretty minimally configured, but awesome tool for most dynamic languages.
     (use-package flycheck-tip
       :config (add-hook 'flycheck-mode-hook #'my/flycheck-customize))
     (use-package helm-flycheck
-      :init (define-key flycheck-mode-map (kbd "C-c ! h") 'helm-flycheck))))
+      :init (define-key flycheck-mode-map (kbd "C-c ! h") 'helm-flycheck))
+    (use-package flycheck-haskell
+      :init (add-hook 'flycheck-mode-hook #'flycheck-haskell-setup))))
 #+END_SRC
 
 ** ggtags
@@ -3544,9 +3550,9 @@ I use =M-g M-g= everywhere to go directly to Magit.
   :config
   (progn
     (setq magit-last-seen-setup-instructions "1.4.0")
-    (when (and (eq system-type 'darwin)
-               (file-exists-p  "/usr/local/bin/emacsclient"))
-      (setq magit-emacsclient-executable "/usr/local/bin/emacsclient"))
+    (if (file-exists-p  "/usr/local/bin/emacsclient")
+        (setq magit-emacsclient-executable "/usr/local/bin/emacsclient")
+      (setq magit-emacsclient-executable (executable-find "emacsclient")))
     (defun magit-browse ()
       "Browse to the project's github URL, if available"
       (interactive)
@@ -3620,19 +3626,19 @@ I have been trying out [[https://www.npmjs.com/package/esvm][esvm]] for this lat
   },
   "clusters": {
     "1node": {
-      "branch": "1.5",
+      "branch": "1.6",
       "nodes": 1
     },
     "2node": {
-      "branch": "1.5",
+      "branch": "1.6",
       "nodes": 2
     },
     "3node": {
-      "branch": "1.5",
+      "branch": "1.6",
       "nodes": 3
     },
     "10node": {
-      "branch": "1.5",
+      "branch": "1.6",
       "nodes": 10
     }
   }
@@ -3648,7 +3654,7 @@ So I configure prodigy like so:
   :config
   (progn
     (prodigy-define-service
-      :name "ES 1.5, 10 nodes"
+      :name "ES 1.6, 10 nodes"
       :cwd "~/ies/"
       :command "esvm"
       :args '("10node")
@@ -3656,7 +3662,7 @@ So I configure prodigy like so:
       :port 9200)
 
     (prodigy-define-service
-      :name "ES 1.5, 3 nodes"
+      :name "ES 1.6, 3 nodes"
       :cwd "~/ies/"
       :command "esvm"
       :args '("3node")
@@ -3664,7 +3670,7 @@ So I configure prodigy like so:
       :port 9200)
 
     (prodigy-define-service
-      :name "ES 1.5, 2 nodes"
+      :name "ES 1.6, 2 nodes"
       :cwd "~/ies/"
       :command "esvm"
       :args '("2node")
@@ -3672,10 +3678,9 @@ So I configure prodigy like so:
       :port 9200)
 
     (prodigy-define-service
-      :name "ES 1.5, 1 node"
-      :cwd "~/ies/"
-      :command "esvm"
-      :args '("1node")
+      :name "Elasticsearch 1.6.0"
+      :cwd "~/ies/elasticsearch-1.6.0"
+      :command "~/ies/elasticsearch-1.6.0/bin/elasticsearch"
       :tags '(work test es)
       :port 9200)
 
@@ -3687,16 +3692,9 @@ So I configure prodigy like so:
       :port 9200)
 
     (prodigy-define-service
-      :name "Elasticsearch 1.4.4"
-      :cwd "~/ies/elasticsearch-1.4.4"
-      :command "~/ies/elasticsearch-1.4.4/bin/elasticsearch"
-      :tags '(work test es)
-      :port 9200)
-
-    (prodigy-define-service
-      :name "Elasticsearch 1.3.8"
-      :cwd "~/ies/elasticsearch-1.3.8/"
-      :command "~/ies/elasticsearch-1.3.8/bin/elasticsearch"
+      :name "Elasticsearch 1.4.5"
+      :cwd "~/ies/elasticsearch-1.4.5"
+      :command "~/ies/elasticsearch-1.4.5/bin/elasticsearch"
       :tags '(work test es)
       :port 9200)))
 #+END_SRC
@@ -3864,6 +3862,18 @@ https://tuhdo.github.io/helm-intro.html
       :init (helm-descbinds-mode t))
     (use-package helm-ag
       :bind ("C-M-s" . helm-ag-this-file))
+
+    ;; Via: http://www.reddit.com/r/emacs/comments/3asbyn/new_and_very_useful_helm_feature_enter_search/
+    (setq helm-echo-input-in-header-line t)
+    (defun helm-hide-minibuffer-maybe ()
+      (when (with-helm-buffer helm-echo-input-in-header-line)
+        (let ((ov (make-overlay (point-min) (point-max) nil nil t)))
+          (overlay-put ov 'window (selected-window))
+          (overlay-put ov 'face (let ((bg-color (face-background 'default nil)))
+                                  `(:background ,bg-color :foreground ,bg-color)))
+          (setq-local cursor-type nil))))
+
+    (add-hook 'helm-minibuffer-set-up-hook 'helm-hide-minibuffer-maybe)
 
     ;; The default "C-x c" is quite close to "C-x C-c", which quits Emacs.
     ;; Changed to "C-c h". Note: We must set "C-c h" globally, because we
@@ -4200,9 +4210,9 @@ Standard auto-completion configuration with company-mode
   :init (add-hook 'prog-mode-hook 'company-mode)
   :config
   (progn
-    (setq company-idle-delay 0.2
-          ;; min prefix of 2 chars
-          company-minimum-prefix-length 2
+    (setq company-idle-delay 0.1
+          ;; min prefix of 1 chars
+          company-minimum-prefix-length 1
           company-selection-wrap-around t
           company-show-numbers t
           company-dabbrev-downcase nil
@@ -4502,6 +4512,8 @@ you're basically editing every instance of that word/variable in the buffer.
    :ID:       C1AC79D7-6880-4D3B-B3C7-0FF4AED722F7
    :END:
 
+Eyebrowse is broken right now!
+
 #+BEGIN_SRC emacs-lisp
 (use-package eyebrowse
   :diminish eyebrowse-mode
@@ -4647,6 +4659,21 @@ Wait, no, I mean the Emacs web browser built in to 24.4
       (eval-after-load "eww"
         '(progn (define-key eww-mode-map "f" 'eww-lnum-follow)
                 (define-key eww-mode-map "F" 'eww-lnum-universal))))))
+#+END_SRC
+
+** visible-mark
+
+#+BEGIN_SRC emacs-lisp
+(defface visible-mark-active ;; put this before (use-package visible-mark)
+  '((((type tty) (class mono)))
+    (t (:background "magenta"))) "")
+
+(use-package visible-mark
+  :init (global-visible-mark-mode 1)
+  :config
+  (progn
+    (setq visible-mark-max 2)
+    (setq visible-mark-faces `(visible-mark-face1 visible-mark-face2))))
 #+END_SRC
 
 ** fill-column-indicator

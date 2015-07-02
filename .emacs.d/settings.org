@@ -285,8 +285,8 @@ depending on whatever I'm in the mood for. This is used later on for the
 modeline theme, as well as the general theme for things.
 
 #+BEGIN_SRC emacs-lisp
-(defvar my/background 'light)
-;;(defvar my/background 'dark)
+;;(defvar my/background 'light)
+(defvar my/background 'dark)
 #+END_SRC
 
 Now some personal information about me:
@@ -1892,9 +1892,9 @@ nice.
   ;; (use-package color-theme-sanityinc-tomorrow
   ;;   :init (color-theme-sanityinc-tomorrow-night))
   (use-package material-theme
-    :disabled t
     :init (load-theme 'material t))
   (use-package apropospriate-theme
+    :disabled t
     :init (load-theme 'apropospriate-dark t)))
 
 (defun dakrone-light ()
@@ -3578,10 +3578,7 @@ I use =M-g M-g= everywhere to go directly to Magit.
     (define-key magit-mode-map (kbd "C-c C-b") 'magit-browse)
     (define-key magit-status-mode-map (kbd "W") 'magit-toggle-whitespace)
     (custom-set-variables '(magit-set-upstream-on-push (quote dontask)))
-    (setq magit-completing-read-function 'magit-ido-completing-read)
-    ;; Diminish the auto-revert-mode
-    (add-hook 'magit-auto-revert-mode-hook
-              (diminish 'magit-auto-revert-mode))))
+    (setq magit-completing-read-function 'magit-ido-completing-read)))
 #+END_SRC
 
 ** projectile

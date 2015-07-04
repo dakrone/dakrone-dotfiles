@@ -29,3 +29,6 @@
 .emacs.d/settings.el
 .emacs.d/image-dired
 .emacs.d/abbrev_defs
+.emacs.d/bookmarks
+.emacs.d/smex*
+.emacs.d/recentf

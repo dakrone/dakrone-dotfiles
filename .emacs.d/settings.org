@@ -861,12 +861,11 @@ completion, prompt and term settings:
               eshell-plain-echo-behavior t)
 
         ;; Visual commands
-        (add-to-list 'eshell-visual-commands "ssh")
-        (add-to-list 'eshell-visual-commands "less")
-        (add-to-list 'eshell-visual-commands "top")
-        (add-to-list 'eshell-visual-commands "htop")
-        (add-to-list 'eshell-visual-commands "el")
-        (add-to-list 'eshell-visual-commands "elinks")
+        (setq eshell-visual-commands '("vi" "screen" "top" "less" "more" "lynx"
+                                       "ncftp" "pine" "tin" "trn" "elm" "vim"
+                                       "nmtui" "alsamixer" "htop" "el" "elinks"
+                                       ))
+        (setq eshell-visual-subcommands '(("git" "log" "diff" "show")))
 
         (defun my/truncate-eshell-buffers ()
           "Truncates all eshell buffers"
@@ -904,7 +903,7 @@ completion, prompt and term settings:
           (interactive)
           (let ((eshell-buffer-maximum-lines 0))
             (eshell-truncate-buffer)))))
-
+ 
     (add-hook 'eshell-mode-hook #'my/setup-eshell)
 
     ;; See eshell-prompt-function below
@@ -1892,9 +1891,9 @@ nice.
   ;; (use-package color-theme-sanityinc-tomorrow
   ;;   :init (color-theme-sanityinc-tomorrow-night))
   (use-package material-theme
+    :disabled t
     :init (load-theme 'material t))
   (use-package apropospriate-theme
-    :disabled t
     :init (load-theme 'apropospriate-dark t)))
 
 (defun dakrone-light ()
@@ -3576,6 +3575,9 @@ I use =M-g M-g= everywhere to go directly to Magit.
                           :foreground 'unspecified))
 
     (define-key magit-mode-map (kbd "C-c C-b") 'magit-browse)
+    (define-key magit-mode-map (kbd "M-1") #'my/create-or-switch-to-eshell-1)
+    (define-key magit-mode-map (kbd "M-2") #'my/create-or-switch-to-eshell-2)
+    (define-key magit-mode-map (kbd "M-3") #'my/create-or-switch-to-eshell-3)
     (define-key magit-status-mode-map (kbd "W") 'magit-toggle-whitespace)
     (custom-set-variables '(magit-set-upstream-on-push (quote dontask)))
     (setq magit-completing-read-function 'magit-ido-completing-read)))

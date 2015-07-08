@@ -25,3 +25,6 @@ alias put curl -s -XPUT $*
 alias rcp tr ':' '\n'\ $*
 alias se tar zxvf $*
 alias ga git annex $*
+alias aria2c aria2c -c -x5 -s10 -m0 $*
+alias org2iv rsync -azP --delete ~/org/ ivalice-local:~/org
+alias iv2org rsync -azP --delete ivalice-local:~/org/ ~/org

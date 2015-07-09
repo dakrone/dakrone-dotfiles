@@ -85,5 +85,7 @@ alias ga="git annex"
 # download manager
 alias aria2c='aria2c -c -x5 -s10 -m0'
 # sync org files
-alias org2iv='rsync -azP --delete ~/org/ ivalice-local:~/org'
-alias iv2org='rsync -azP --delete ivalice-local:~/org/ ~/org'
+alias org2ivalice='rsync -azP --delete ~/org/ ivalice-local:~/org'
+alias ivalice2org='rsync -azP --delete ivalice-local:~/org/ ~/org'
+alias xanadu2org='rsync -azP --delete xanadu:~/org/ ~/org'
+alias org2xanadu='rsync -azP --delete ~/org/ xanadu:~/org'

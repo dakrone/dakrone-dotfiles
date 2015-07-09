@@ -41,6 +41,7 @@
 (when (file-exists-p custom-file)
   (load custom-file))
 
+(require 'cl-lib)
 (require 'org)
 (org-babel-load-file
  (expand-file-name "settings.org"

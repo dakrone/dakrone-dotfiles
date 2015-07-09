@@ -169,7 +169,7 @@ things add hooks that don't work if packages aren't installed.
     ido-vertical-mode yasnippet smart-tab anzu smartparens flx-ido projectile
     smooth-scrolling ace-jump-mode multiple-cursors easy-kill
     simple-call-tree simple-call-tree+ editorconfig ggtags bookmark+
-    fill-column-indicator golden-ratio wc-mode eyebrowse vlf
+    fill-column-indicator golden-ratio wc-mode eyebrowse vlf origami
 
     ;; external process things
     prodigy vkill
@@ -236,7 +236,7 @@ things add hooks that don't work if packages aren't installed.
 
     ;; helm
     helm helm-descbinds helm-ag helm-projectile helm-swoop
-    helm-gtags helm-ls-git helm-flycheck helm-flyspell
+    helm-gtags helm-ls-git helm-flycheck helm-flyspell helm-dash
 
     ;; git
     magit git-gutter git-timemachine magit-gh-pulls with-editor git-annex
@@ -252,8 +252,13 @@ things add hooks that don't work if packages aren't installed.
     eww-lnum
     ))
 
+(defvar packages-refreshed? nil)
+
 (dolist (pack my/install-packages)
   (unless (package-installed-p pack)
+    (unless packages-refreshed?
+      (package-refresh-contents)
+      (setq packages-refreshed? t))
     (package-install pack)))
 
 ;; Load use-package, used for loading packages everywhere else
@@ -1137,28 +1142,12 @@ To start, a helper to use "=open=" to open files in dired-mode with =M-o=
 (similar to Finder in OSX).
 
 #+BEGIN_SRC emacs-lisp
-(defun my/dired-mac-open ()
+(defun my/dired-open ()
   "Use the OSX `open' command to open a file with the correct editor"
   (interactive)
   (save-window-excursion
     (dired-do-async-shell-command
-     "open" current-prefix-arg
-     (dired-get-marked-files t current-prefix-arg))))
-
-(defun my/dired-linux-open ()
-  "Use the Linux `xdg-open' command to open a file with the correct editor"
-  (interactive)
-  (save-window-excursion
-    (dired-do-async-shell-command
-     "xdg-open" current-prefix-arg
-     (dired-get-marked-files t current-prefix-arg))))
-
-(defun my/dired-extract ()
-  "Use the `se' utility to extract a file"
-  (interactive)
-  (save-window-excursion
-    (dired-do-async-shell-command
-     "se" current-prefix-arg
+     "~/bin/open" current-prefix-arg
      (dired-get-marked-files t current-prefix-arg))))
 #+END_SRC
 
@@ -1195,8 +1184,7 @@ writable-dired mode is aawwweeeesssoooommee, it makes renames super easy.
           wdired-allow-to-change-permissions t)
     (define-key dired-mode-map (kbd "RET") 'dired-find-alternate-file)
     (define-key dired-mode-map (kbd "C-M-u") 'dired-up-directory)
-    (define-key dired-mode-map (kbd "M-o") #'my/dired-linux-open)
-    (define-key dired-mode-map (kbd "M-E") #'my/dired-extract)
+    (define-key dired-mode-map (kbd "M-o") #'my/dired-open)
     (define-key dired-mode-map (kbd "C-x C-q") 'wdired-change-to-wdired-mode)
     (add-hook 'dired-mode-hook #'my/dired-mode-hook)))
 #+END_SRC
@@ -1250,7 +1238,7 @@ Load the list from the file specified by `recentf-save-file',
 merge the changes of your current session, and save it back to
 the file."
       (interactive)
-      (let ((instance-list (copy-list recentf-list)))
+      (let ((instance-list (cl-copy-list recentf-list)))
         (recentf-load-list)
         (recentf-merge-with-default-list instance-list)
         (recentf-write-list-to-file)))
@@ -4103,6 +4091,71 @@ Uses =git grep= for that
   :bind ("C-x C-d" . helm-browse-project))
 #+END_SRC
 
+** helm-dash
+=helm-dash= allows querying and loading [[http://www.kapeli.com/dash][Dash]] docsets from helm, without
+requiring the Dash app or online connectivity (great for planes).
+
+#+BEGIN_SRC emacs-lisp
+(use-package helm-dash
+  :init
+  (progn
+    ;; Use the Java and Elasticsearch common docsets everywhere
+    (setq helm-dash-common-docsets
+          '(Java_SE7
+            ElasticSearch))))
+#+END_SRC
+
+** hydra
+I'm not really a huge fan of hydra, mostly because I don't need popups for every
+little thing under the sun. I'm only using it for my toggle map right now, so I
+can remember what all I can toggle.
+
+#+BEGIN_SRC emacs-lisp
+(use-package hydra
+  :init
+  (progn
+    (defhydra hydra-toggle-map nil
+        "
+^Toggle^            
+^^^^^^^^--------------------
+_d_: debug-on-error 
+_D_: debug-on-quit
+_f_: auto-fill-mode 
+_l_: toggle-truncate-lines
+_h_: hl-line-mode
+_r_: read-only-mode
+_v_: viewing-mode
+_n_: narrow-or-widen-dwim
+_g_: golden-ratio-mode
+_q_: quit
+"
+        ("d" toggle-debug-on-error :exit t)
+        ("D" toggle-debug-on-quit :exit t)
+        ("g" golden-ratio-mode :exit t)
+        ("f" auto-fill-mode :exit t)
+        ("l" toggle-truncate-lines :exit t)
+        ("r" read-only-mode :exit t)
+        ("h" hl-line-mode :exit t)
+        ("v" my/turn-on-viewing-mode :exit t)
+        ("n" my/narrow-or-widen-dwim :exit t)
+        ("q" nil :exit t))
+    
+    (global-set-key (kbd "C-x t") 'hydra-toggle-map/body)))
+#+END_SRC
+
+Jump between errors in a buffer:
+
+#+BEGIN_SRC emacs-lisp
+(defhydra hydra-next-error (global-map "C-x")
+  "next-error"
+  ("`" next-error "next")
+  ("j" next-error "next" :bind nil)
+  ("n" next-error "next" :bind nil)
+  ("k" previous-error "previous" :bind nil)
+  ("p" previous-error "previous" :bind nil)
+  ("l" flycheck-list-errors "list-errors" :exit t))
+#+END_SRC
+
 ** yasnippet
 :PROPERTIES:
    :ID:       43ACEE5A-0858-4192-B716-D6DF67F61631
@@ -4510,8 +4563,7 @@ you're basically editing every instance of that word/variable in the buffer.
 :PROPERTIES:
    :ID:       C1AC79D7-6880-4D3B-B3C7-0FF4AED722F7
    :END:
-
-Eyebrowse is broken right now!
+Eyebrowse is a great package for workspaces in Emacs.
 
 #+BEGIN_SRC emacs-lisp
 (use-package eyebrowse
@@ -4532,18 +4584,47 @@ Eyebrowse is broken right now!
     (add-hook 'after-init-hook #'my/create-eyebrowse-setup)))
 #+END_SRC
 
+** origami
+[[https://github.com/gregsexton/origami.el][Origami]] is a folding mode that supports a pretty good subset of languages, so
+I'm giving it a try.
+
+#+BEGIN_SRC emacs-lisp
+(use-package origami
+  :bind (("C-c TAB" . origami-recursively-toggle-node)
+         ("C-\\" . origami-recursively-toggle-node)
+         ("M-\\" . origami-close-all-nodes)
+         ("M-+" . origami-open-all-nodes))
+  :init
+  (global-origami-mode))
+#+END_SRC
+
 ** hideshow
 :PROPERTIES:
    :ID:       609C859C-86A7-4CB7-9A27-BE540E9A6CDF
    :END:
 Kind of like Vim's folding, but manually done right now.
 
+I'm in the process of trying out [[https://github.com/gregsexton/origami.el][Origami]] as a replacement, since it's a bit
+easier on the brain and has nicer functions (supposedly), so this is disabled
+for now.
+
 #+BEGIN_SRC emacs-lisp
 (use-package hideshow
+  :disabled t
   :bind (("C-c TAB" . hs-toggle-hiding)
          ("C-\\" . hs-toggle-hiding)
          ("M-\\" . hs-hide-all)
          ("M-+" . hs-show-all))
+  :init
+  (progn
+    (defun my/enable-hs-minor-mode ()
+      (interactive)
+      (hs-minor-mode t))
+
+    ;; (add-hook 'javascript-mode-hook 'my/enable-hs-minor-mode)
+    ;; (add-hook 'js-mode-hook 'my/enable-hs-minor-mode)
+    ;; (add-hook 'java-mode-hook 'my/enable-hs-minor-mode)
+    (add-hook 'prog-mode-hook 'my/enable-hs-minor-mode))
   :config
   (progn
     (defvar hs-special-modes-alist
@@ -4554,15 +4635,6 @@ Kind of like Vim's folding, but manually done right now.
                 (java-mode "{" "}" "/[*/]" nil nil)
                 (js-mode "{" "}" "/[*/]" nil)
                 (javascript-mode  "{" "}" "/[*/]" nil))))))
-
-(defun my/enable-hs-minor-mode ()
-  (interactive)
-  (hs-minor-mode t))
-
-;; (add-hook 'javascript-mode-hook 'my/enable-hs-minor-mode)
-;; (add-hook 'js-mode-hook 'my/enable-hs-minor-mode)
-;; (add-hook 'java-mode-hook 'my/enable-hs-minor-mode)
-(add-hook 'prog-mode-hook 'my/enable-hs-minor-mode)
 #+END_SRC
 
 ** abbrev
@@ -4731,21 +4803,6 @@ really fit in anywhere else.
   (read-only-mode 1)
   (view-mode 1)
   (hl-line-mode 1))
-
-;; Via: http://endlessparentheses.com/the-toggle-map-and-wizardry.html
-(define-prefix-command 'my/toggle-map)
-;; The manual recommends C-c for user keys, but C-x t is
-;; always free, whereas C-c t is used by some modes.
-(define-key ctl-x-map "t" 'my/toggle-map)
-(define-key my/toggle-map "g" 'golden-ratio-mode)
-(define-key my/toggle-map "d" 'toggle-debug-on-error)
-(define-key my/toggle-map "f" 'auto-fill-mode)
-(define-key my/toggle-map "l" 'toggle-truncate-lines)
-(define-key my/toggle-map "q" 'toggle-debug-on-quit)
-(define-key my/toggle-map "r" 'read-only-mode)
-(define-key my/toggle-map "h" 'hl-line-mode)
-(define-key my/toggle-map "v" #'my/turn-on-viewing-mode)
-(define-key my/toggle-map "n" #'my/narrow-or-widen-dwim)
 
 ;; join on killing lines
 (defun kill-and-join-forward (&optional arg)

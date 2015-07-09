@@ -13,6 +13,13 @@ export PAGER=less
 
 export PATH=~/bin:~/.cabal/bin:/usr/local/bin:/usr/local/sbin:$PATH
 
+# JBoss (wildfly)
+export JBOSS_HOME=/usr/local/opt/wildfly-as/libexec
+export PATH=${PATH}:${JBOSS_HOME}/bin
+
+# Node/npm
+export PATH=$PATH:~/node_modules/.bin
+
 # history
 HISTFILE=$HOME/.zsh-history
 HISTSIZE=10000

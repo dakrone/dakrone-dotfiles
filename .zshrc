@@ -9,11 +9,7 @@ echo .
 zmodload zsh/datetime
 start=$EPOCHREALTIME
 
-# path see ~/.zshenv
-
-# JBoss (brew install wildfly-as)
-export JBOSS_HOME=/usr/local/opt/wildfly-as/libexec
-export PATH=${PATH}:${JBOSS_HOME}/bin
+# for $PATH see ~/.zshenv
 
 # report things that take more than 5 seconds
 export REPORTTIME=5

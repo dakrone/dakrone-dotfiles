@@ -1,6 +1,14 @@
+#!/usr/bin/env zsh
+
+#
+#############
+### WARNING
+### This file has been automatically generated from an org-mode file
+### Change at your own risk, as it may be overwritten later!
+#############
+
 [[ -o interactive ]] && echo "+++Reading .zshenv"
 
-OS=$(uname -s); export OS
 MANPATH=/opt/local/man:/usr/local/man:$MANPATH
 WORDCHARS='*?_[]~=&;!#$%^(){}'
 # default is: *?_-.[]~=/&;!#$%^(){}<>
@@ -11,11 +19,8 @@ LEDGER_FILE=$HOME/ledger.dat; export LEDGER_FILE
 export EDITOR=nano # to be overwritten later
 export PAGER=less
 
+# Update path with local ~/bin and cabal's bin dir
 export PATH=~/bin:~/.cabal/bin:/usr/local/bin:/usr/local/sbin:$PATH
-
-# JBoss (wildfly)
-export JBOSS_HOME=/usr/local/opt/wildfly-as/libexec
-export PATH=${PATH}:${JBOSS_HOME}/bin
 
 # Node/npm
 export PATH=$PATH:~/node_modules/.bin
@@ -24,6 +29,8 @@ export PATH=$PATH:~/node_modules/.bin
 HISTFILE=$HOME/.zsh-history
 HISTSIZE=10000
 SAVEHIST=5000
+
+OS=$(uname -s); export OS
 
 export JAVA_HOME
 [[ $OS == "Darwin" ]] && \

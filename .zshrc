@@ -1,3 +1,12 @@
+#!/usr/bin/env zsh
+
+#
+#############
+### WARNING
+### This file has been automatically generated from an org-mode file
+### Change at your own risk, as it may be overwritten later!
+#############
+
 # Handle dumb terms
 [[ $TERM == "dumb" ]] && unsetopt zle && PS1='$ ' && return
 
@@ -127,22 +136,6 @@ for zshrc in ~/.zsh.d/[0-9][0-9]*[^~] ; do
     source $zshrc
 done
 unsetopt EXTENDED_GLOB
-
-## GPG
-# brew install gpg gpg-agent keychain
-# if [[ -o interactive ]]; then
-#     which keychain 2>&1 > /dev/null
-#     if [[ $? -eq 0 ]]; then
-#         eval `keychain -q --eval --agents gpg,ssh --inherit any id_rsa`
-#     fi
-# fi
-
-if in_emacs; then
-    unsetopt zle
-    export DISABLE_AUTO_TITLE=true
-    export ZSH_HIGHLIGHT_MAXLENGTH=0
-    export TERM=xterm
-fi
 
 end=$EPOCHREALTIME
 

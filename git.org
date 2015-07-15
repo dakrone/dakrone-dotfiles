@@ -122,7 +122,7 @@ Basically a list of files or directories I always want to ignore in git
 repositories. Since it's read from =~/.gitconfig=, I don't have to configure
 every individual repository to ignore these files separately.
 
-#+BEGIN_SRC :tangle .gitignore
+#+BEGIN_SRC conf :tangle .gitignore
 .tern-port
 TAGS
 GTAGS

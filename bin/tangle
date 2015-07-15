@@ -7,9 +7,8 @@
 #    Files:  "nested-in-all.org", Dir: /Users/hinmanm/es-scripts
 #    Tangled 6 code blocks from nested-in-all.org
 
-# Set this to the location of your emacs executable (since I don't use the
-# 'emacs' binary in the path on OSX
-EMACSCMD="/Applications/Emacs.app/Contents/MacOS/Emacs"
+# Set this to the location of your emacs executable
+EMACSCMD="emacs"
 
 # wrap each argument in the code required to call tangle on it
 DIR=`pwd`

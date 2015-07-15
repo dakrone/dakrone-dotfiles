@@ -1,6 +1,3 @@
-#+TITLE:   Tmux configuration
-#+AUTHOR:  Lee Hinman
-#+EMAIL:   leehinman@fastmail.com
 #+LANGUAGE: en
 #+PROPERTY: header-args :eval no :results code replace :noweb yes :tangle no
 #+HTML_HEAD: <link rel="stylesheet" href="http://dakrone.github.io/org.css" type="text/css" />
@@ -12,11 +9,6 @@
 #+TODO: WAITING(w@/!) HOLD(h@/!) | CANCELLED(c@/!)
 #+TAGS: export(e) noexport(n)
 #+STARTUP: fold nodlcheck lognotestate content
-
-* Tmux configuration
-:PROPERTIES:
-:CUSTOM_ID: be27f9cf-6991-45a4-8959-c66f0017fb20
-:END:
 
 I couldn't live without [[https://tmux.github.io/][tmux]], so much of my work is done on remote machines
 where I need to be able to disconnect running work and re-attach later.

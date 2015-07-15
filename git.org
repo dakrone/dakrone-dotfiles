@@ -1,6 +1,3 @@
-#+TITLE:   Git configuration
-#+AUTHOR:  Lee Hinman
-#+EMAIL:   leehinman@fastmail.com
 #+LANGUAGE: en
 #+PROPERTY: header-args :eval no :results code replace :noweb yes :tangle no
 #+HTML_HEAD: <link rel="stylesheet" href="http://dakrone.github.io/org.css" type="text/css" />
@@ -13,7 +10,6 @@
 #+TAGS: export(e) noexport(n)
 #+STARTUP: fold nodlcheck lognotestate content
 
-* Git configuration
 :PROPERTIES:
 :ID:       035e309f-dbb1-4267-8e9d-9666669f90f2
 :CUSTOM_ID: 346d19ae-70d9-4aa6-bc87-39ad97de12b1

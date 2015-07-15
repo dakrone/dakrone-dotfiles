@@ -1,6 +1,3 @@
-#+TITLE:   Bootstrapping Machines
-#+AUTHOR:  Lee Hinman
-#+EMAIL:   leehinman@fastmail.com
 #+LANGUAGE: en
 #+PROPERTY: header-args :eval no :results code replace :noweb yes :tangle no
 #+HTML_HEAD: <link rel="stylesheet" href="http://dakrone.github.io/org.css" type="text/css" />
@@ -13,7 +10,7 @@
 #+TAGS: export(e) noexport(n)
 #+STARTUP: fold nodlcheck lognotestate content
 
-* INPROGRESS Host machine configuration
+* Host machine configuration script
 :PROPERTIES:
 :ID:       5ac8245d-fe06-465a-9e09-a635fa7916f7
 :CUSTOM_ID: d3a5d179-7d9a-4469-a559-8ee94eb14bf8

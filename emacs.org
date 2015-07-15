@@ -1,6 +1,3 @@
-#+TITLE:   Lee's Emacs settings file
-#+AUTHOR:  Lee Hinman
-#+EMAIL:   leehinman@fastmail.com
 #+LANGUAGE: en
 #+PROPERTY: header-args :eval no :results output replace :noweb yes :tangle no
 #+PROPERTY: header-args:emacs-lisp :noweb yes :tangle .emacs.d/init.el
@@ -13,16 +10,6 @@
 #+TODO: WAITING(w@/!) HOLD(h@/!) | CANCELLED(c@/!)
 #+TAGS: export(e) noexport(n)
 #+STARTUP: fold nodlcheck lognotestate content
-
-* Emacs Configuration
-:PROPERTIES:
-:CUSTOM_ID: 5db7dd1c-8394-4dc8-bf4b-54516010fe54
-:END:
-This file is used by org-mode to load my personal emacs configuration file. The
-latest version of this file is always at
-[[https://github.com/dakrone/dakrone-dotfiles]]
-
-TODO: explain me!
 
 ** A note about keyboard shortcuts
 :PROPERTIES:

@@ -2729,9 +2729,10 @@ run. I use it for the path on OSX and JAVA_HOME everywhere else.
   :defer t
   :init
   (progn
-    (when (memq window-system '(mac ns))
-      (exec-path-from-shell-initialize))
-    (exec-path-from-shell-copy-env "JAVA_HOME")))
+    (setq exec-path-from-shell-variables '("JAVA_HOME"
+                                           "PATH"
+                                           "MANPATH"))
+    (exec-path-from-shell-initialize)))
 #+END_SRC
 
 ** vkill

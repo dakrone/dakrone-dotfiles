@@ -1,3 +1,4 @@
+
 [user]
   name = Lee Hinman
   email = lee@writequit.org
@@ -9,11 +10,22 @@
 [color]
   ui = auto
 
+[rerere]
+  enabled = 1
+
+[push]
+  default = tracking
+
+[diff]
+  algorithm = patience
+
+[diff "clojure"]
+  xfuncname = "^\\(.*"
+
 [alias]
   co = checkout
   cob = checkout -b
   cot = checkout -t
-  count = shortlog -sn
   st = status -sb
   stat = status -sb
   status = status -sb
@@ -34,18 +46,8 @@
   token = !cat ~/.github.token
   oauth-token = !cat ~/.github.oauth-token
 
-[rerere]
-  enabled = 1
-
-[diff "clojure"]
-  xfuncname = "^\\(.*"
-
-[push]
-  default = tracking
-
 [ghi]
   token = !cat ~/.github.token
+
 [annex]
-	genmetadata = true
-[diff]
-	algorithm = patience
+  genmetadata = true

@@ -28,23 +28,6 @@ This file was last exported: {{{time(%Y-%m-%d %H:%M)}}}
 :CUSTOM_ID: 6017d330-9337-4d97-82f2-2e605b7a262a
 :END:
 
-** Warning for auto generated files
-:PROPERTIES:
-:CUSTOM_ID: fd176063-8dcc-4e48-8811-1fb67007349a
-:END:
-This a nice header that can go in all the shell files to warn about changing
-them directly, instead this org-mode file should be changed and then re-tangled.
-
-#+NAME: warning
-#+BEGIN_SRC sh
-
-############
-## WARNING
-## This file has been automatically generated from an org-mode file
-## Change at your own risk, as it may be overwritten later!
-############
-#+END_SRC
-
 #+INCLUDE bootstrap.org
 
 #+INCLUDE zsh.org
@@ -52,3 +35,5 @@ them directly, instead this org-mode file should be changed and then re-tangled.
 #+INCLUDE git.org
 
 #+INCLUDE tmux.org
+
+#+INCLUDE emacs.org

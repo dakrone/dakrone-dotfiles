@@ -1,0 +1,143 @@
+#+TITLE:   Git configuration
+#+AUTHOR:  Lee Hinman
+#+EMAIL:   leehinman@fastmail.com
+#+LANGUAGE: en
+#+PROPERTY: header-args :eval no :results code replace :noweb yes :tangle no
+#+HTML_HEAD: <link rel="stylesheet" href="http://dakrone.github.io/org.css" type="text/css" />
+#+EXPORT_SELECT_TAGS: export
+#+EXPORT_EXCLUDE_TAGS: noexport
+#+OPTIONS: H:4 num:nil toc:t \n:nil @:t ::t |:t ^:{} -:t f:t *:t
+#+OPTIONS: skip:nil d:(HIDE) tags:not-in-toc
+#+TODO: SOMEDAY(s) TODO(t) INPROGRESS(i) WAITING(w@/!) NEEDSREVIEW(n@/!) | DONE(d)
+#+TODO: WAITING(w@/!) HOLD(h@/!) | CANCELLED(c@/!)
+#+TAGS: export(e) noexport(n)
+#+STARTUP: fold nodlcheck lognotestate content
+
+* Git configuration
+:PROPERTIES:
+:ID:       035e309f-dbb1-4267-8e9d-9666669f90f2
+:CUSTOM_ID: 346d19ae-70d9-4aa6-bc87-39ad97de12b1
+:END:
+First, let's start with who I am
+
+#+BEGIN_SRC conf :tangle .gitconfig
+[user]
+  name = Lee Hinman
+  email = lee@writequit.org
+  signingkey = 3ACECAE0
+#+END_SRC
+
+I globally ignore anything in =~/.gitignore=, which allows me to ignore things
+like =TAGS= files
+
+#+BEGIN_SRC conf :tangle .gitconfig
+[core]
+  excludesfile = /home/hinmanm/.gitignore
+#+END_SRC
+
+Turn on color and [[http://git-scm.com/2010/03/08/rerere.html][rerere]] everywhere. Additionally I default pushing to track the
+branch if it isn't already.
+
+#+BEGIN_SRC conf :tangle .gitconfig
+[color]
+  ui = auto
+
+[rerere]
+  enabled = 1
+
+[push]
+  default = tracking
+#+END_SRC
+
+There's a separate diffing algorithm called "patience" that I've been trying
+out, to see if maybe it helps with conflicts and reading patches, so configure
+that here.
+
+For Clojure code in particular, I set up a variable that tells git what the
+function name is, so for something like:
+
+#+BEGIN_SRC clojure
+(defn myfunc [x]
+  (+ 1 thing))
+#+END_SRC
+
+If you change the =(+ 1 thing)= line, git can use the =^\\(.*= regex to display
+the name of the function in the diff.
+
+#+BEGIN_SRC conf :tangle .gitconfig
+[diff]
+  algorithm = patience
+
+[diff "clojure"]
+  xfuncname = "^\\(.*"
+#+END_SRC
+
+Set up the various aliases that I end up using. Out of these I probably use
+=co=, =rips=, =pr=, and =sync= the most.
+
+#+BEGIN_SRC conf :tangle .gitconfig
+[alias]
+  co = checkout
+  cob = checkout -b
+  cot = checkout -t
+  st = status -sb
+  stat = status -sb
+  status = status -sb
+  unpushed = log --branches --not --remotes --simplify-by-decoration --decorate --oneline
+  lg = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr)%Creset' --abbrev-commit --date=relative
+  l = log --pretty="format:'%C(yellow)%h %C(red)%G? %C(blue)%aN%C(reset)  %s'" --show-signature
+  lol = log --graph --decorate --pretty=oneline --abbrev-commit
+  lola = log --graph --decorate --pretty=oneline --abbrev-commit --all
+  rips = rebase -i -p -s subtree
+  headless = !sh -c 'git symbolic-ref HEAD refs/heads/$0 && rm .git/index && git clean -fdx'
+  vtags = !sh -c 'git tag -l | xargs git tag -v'
+  ver = "!git log --pretty=format:'%ai %h' -1 | perl -pe 's,(\\d\\d\\d\\d)-(\\d\\d)-(\\d\\d) (\\d\\d):(\\d\\d):(\\d\\d) [^ ]+ ([a-z0-9]+),\\1\\2\\3+\\7,'"
+  pr = "!f() { git fetch origin pull/$1/head:pr/$1; }; f"
+  sync = annex sync
+#+END_SRC
+
+There are a couple of tools that use Github config settings, which I store in a
+separate file, but make available through the config here.
+
+#+BEGIN_SRC conf :tangle .gitconfig
+[github]
+  user = dakrone
+  token = !cat ~/.github.token
+  oauth-token = !cat ~/.github.oauth-token
+
+[ghi]
+  token = !cat ~/.github.token
+#+END_SRC
+
+Finally, for the [[http://git-annex.branchable.com/][git-annex]] tool that [[http://writequit.org/articles/getting-started-with-git-annex.html][I use quite a bit]], I configure git-annex to
+automatically generate metadata for files added to a repo. Quite handy for
+storing pictures and not having to manually tag each one.
+
+#+BEGIN_SRC conf :tangle .gitconfig
+[annex]
+  genmetadata = true
+#+END_SRC
+
+** Global gitignore
+:PROPERTIES:
+:CUSTOM_ID: ee1d229a-c36b-43d2-8782-4b786c61a0ef
+:END:
+Basically a list of files or directories I always want to ignore in git
+repositories. Since it's read from =~/.gitconfig=, I don't have to configure
+every individual repository to ignore these files separately.
+
+#+BEGIN_SRC :tangle .gitignore
+.tern-port
+TAGS
+GTAGS
+GPATH
+GRTAGS
+GSYM*
+.DS_Store
+.dir-locals.el
+LUCENE-*.patch
+.lein-repl*
+pom.xml.asc
+core/data
+#+END_SRC
+

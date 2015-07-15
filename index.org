@@ -28,12 +28,22 @@ This file was last exported: {{{time(%Y-%m-%d %H:%M)}}}
 :CUSTOM_ID: 6017d330-9337-4d97-82f2-2e605b7a262a
 :END:
 
-#+INCLUDE bootstrap.org
+* Bootstrapping machines
 
-#+INCLUDE zsh.org
+#+INCLUDE: bootstrap.org
 
-#+INCLUDE git.org
+* ZSH Configuration
 
-#+INCLUDE tmux.org
+#+INCLUDE: zsh.org
 
-#+INCLUDE emacs.org
+* Git Configuration
+
+#+INCLUDE: git.org
+
+* Tmux Configuration
+
+#+INCLUDE: tmux.org
+
+* Emacs Configuration
+
+#+INCLUDE: emacs.org

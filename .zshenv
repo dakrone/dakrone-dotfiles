@@ -30,11 +30,23 @@ HISTFILE=$HOME/.zsh-history
 HISTSIZE=10000
 SAVEHIST=5000
 
+## Sourcing OS-specific things
 OS=$(uname -s); export OS
+if [[ -f ~/.zsh.d/zsh.${OS} ]]; then
+    if [[ ! -z $ZSHDEBUG ]]; then
+        echo +++ ~/.zsh.d/zsh.${OS}
+    fi
+    source ~/.zsh.d/zsh.${OS}
+fi
 
-export JAVA_HOME
-[[ $OS == "Darwin" ]] && \
-   JAVA_HOME=$(/usr/libexec/java_home -v 1.8)
+## Sourcing machine-specific things
+export HOSTPREFIX=`hostname | cut -d. -f1 | sed 's/.*/\L&/'`
+if [[ -f ~/.zsh.d/zsh.${HOSTPREFIX} ]]; then
+    if [[ ! -z $ZSHDEBUG ]]; then
+        echo +++ ~/.zsh.d/zsh.${HOSTPREFIX}
+    fi
+    source ~/.zsh.d/zsh.${HOSTPREFIX}
+fi
 
 ## With Emacs 23, I've found this needs to go in ~root/.zshrc too to
 ## help with Tramp hangs.

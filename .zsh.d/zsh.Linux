@@ -1,20 +1,24 @@
-OS=$(uname)
+#!/usr/bin/env zsh
 
-## Emacs stuff
-if [[ $OS == "Linux" ]]; then
-    # make emacs have 256 colors
-    alias emacs='TERM=xterm-256color emacs -nw'
+#
+#############
+### WARNING
+### This file has been automatically generated from an org-mode file
+### Change at your own risk, as it may be overwritten later!
+#############
 
-    alias ec="emacsclient"
+# make emacs have 256 colors
+alias emacs='TERM=xterm-256color emacs -nw'
 
-    function ekill() { emacsclient -e '(kill-emacs)' }
+alias ec="emacsclient"
 
-    alias e='emacs -nw'
+function ekill() { emacsclient -e '(kill-emacs)' }
 
-    export EDITOR="emacs -nw"
+alias e='emacs -nw'
 
-    alias tmux='tmux -2'
+export EDITOR="emacs -nw"
 
-    # awesome
-    alias gps='ps -eo cmd,fname,pid,pcpu,time --sort=-pcpu | head -n 11 && echo && ps -eo cmd,fname,pid,pmem,rss --sort=-rss | head -n 9'
-fi
+alias tmux='tmux -2'
+
+# awesome
+alias gps='ps -eo cmd,fname,pid,pcpu,time --sort=-pcpu | head -n 11 && echo && ps -eo cmd,fname,pid,pmem,rss --sort=-rss | head -n 9'

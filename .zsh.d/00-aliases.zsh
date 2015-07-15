@@ -33,9 +33,6 @@ alias prox='ssh -nNT -R 4444:localhost:22 writequit.org'
 alias autoprox='autossh -M 22000 -nNT -R 4444:localhost:22 writequit.org'
 # open elinks quickly
 alias el='TERM=xterm-color elinks'
-# start a master tmux
-alias tmaster='tmux -2 -u -S /tmp/mastermux -f .tmux.master'
-
 # datetime aliases
 alias dt='gdate "+%Y-%m-%dT%H:%M:%S.%3N%zZ"'
 # Elasticsearch's basic_date_time
@@ -53,3 +50,6 @@ alias org2ivalice='rsync -azP --delete ~/org/ ivalice-local:~/org'
 alias ivalice2org='rsync -azP --delete ivalice-local:~/org/ ~/org'
 alias xanadu2org='rsync -azP --delete xanadu:~/org/ ~/org'
 alias org2xanadu='rsync -azP --delete ~/org/ xanadu:~/org'
+
+# start a master tmux
+alias tmaster='tmux -2 -u -S /tmp/mastermux -f .tmux.master.conf'

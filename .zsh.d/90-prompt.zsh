@@ -1,3 +1,12 @@
+#!/usr/bin/env zsh
+
+#
+#############
+### WARNING
+### This file has been automatically generated from an org-mode file
+### Change at your own risk, as it may be overwritten later!
+#############
+
 autoload -U add-zsh-hook
 autoload -U colors && colors
 autoload -Uz vcs_info
@@ -52,9 +61,6 @@ function +vi-git-stash() {
 }
 
 function colorSetup {
-    # ls colors
-    autoload colors; colors;
-
     # A script to make using 256 colors in zsh less painful.
     # P.C. Shyamshankar <sykora@lucentbeing.com>
     # Copied from http://github.com/sykora/etc/blob/master/zsh/functions/spectrum/
@@ -98,14 +104,7 @@ colorSetup
 PROMPT='$FG[032]%~ $FG[237]${vcs_info_msg_0_}
 $FG[105]%(?..${red}%?$FG[105] )%(!.#.»)%{$reset_color%} '
 
-function jump-setup {
-    if [ -s ~/bin/z.sh ] ; then
-        z --add "$(pwd -P)"
-    fi
-}
-
 add-zsh-hook precmd vcs_info
-#add-zsh-hook precmd jump-setup
 
 # Simple prompt setup
 # if not_in_cloud; then

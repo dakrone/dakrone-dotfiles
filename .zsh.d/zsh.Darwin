@@ -1,100 +1,51 @@
-OS=$(uname)
+#!/usr/bin/env zsh
 
-if [[ $OS == "Darwin" ]]; then
+#
+#############
+### WARNING
+### This file has been automatically generated from an org-mode file
+### Change at your own risk, as it may be overwritten later!
+#############
 
-    function java6() {
-        export JAVA_HOME=/System/Library/Frameworks/JavaVM.framework/Versions/1.6/Home
-    }
+export JAVA_HOME=$(/usr/libexec/java_home -v 1.8)
 
-    function java7() {
-        export JAVA_HOME=/Library/Java/JavaVirtualMachines/jdk1.7.0_55.jdk/Contents/Home
-    }
+export EMACS_HOME="/Applications/Emacs.app/Contents/MacOS"
+export ERC_HOME="/Applications/ERC.app/Contents/MacOS"
+export GNUS_HOME="/Applications/Gnus.app/Contents/MacOS"
 
-    function java7_55() {
-        export JAVA_HOME=/Library/Java/JavaVirtualMachines/jdk1.7.0_55.jdk/Contents/Home
-    }
-
-    function java7_51() {
-        export JAVA_HOME=/Library/Java/JavaVirtualMachines/jdk1.7.0_51.jdk/Contents/Home
-    }
-
-    function java7_25() {
-        export JAVA_HOME=/Library/Java/JavaVirtualMachines/jdk1.7.0_25.jdk/Contents/Home
-    }
-
-    function java7_40() {
-        export JAVA_HOME=/Library/Java/JavaVirtualMachines/jdk1.7.0_40.jdk/Contents/Home
-    }
-
-    function java7_45() {
-        export JAVA_HOME=/Library/Java/JavaVirtualMachines/jdk1.7.0_45.jdk/Contents/Home
-    }
-
-    function java8_00() {
-        export JAVA_HOME=/Library/Java/JavaVirtualMachines/jdk1.8.0.jdk/Contents/Home
-    }
-
-    function java8_20() {
-        export JAVA_HOME=/Library/Java/JavaVirtualMachines/jdk1.8.0_20.jdk/Contents/Home
-    }
-
-    function java8_25() {
-        export JAVA_HOME=/Library/Java/JavaVirtualMachines/jdk1.8.0_25.jdk/Contents/Home
-    }
-
-    function java8_31() {
-        export JAVA_HOME=/Library/Java/JavaVirtualMachines/jdk1.8.0_31.jdk/Contents/Home
-    }
-
-    function java8_40() {
-        export JAVA_HOME=/Library/Java/JavaVirtualMachines/jdk1.8.0_40.jdk/Contents/Home
-    }
-
-    function java8() {
-        export JAVA_HOME=/Library/Java/JavaVirtualMachines/jdk1.8.0_40.jdk/Contents/Home
-    }
-
-    export EMACS_HOME="/Applications/Emacs.app/Contents/MacOS"
-    export ERC_HOME="/Applications/ERC.app/Contents/MacOS"
-    export GNUS_HOME="/Applications/Gnus.app/Contents/MacOS"
-
-    if [ -s /usr/local/bin/emacs ]; then
-        alias emacs='TERM=xterm-256color emacs'
-        alias hb_emacs='/usr/local/bin/emacs'
-    fi
-
-    #function ec() { TERM=xterm-256color PATH=$EMACS_HOME/bin:$PATH emacsclient -t $@ }
-    alias e="TERM=xterm-256color PATH=$EMACS_HOME/bin:$PATH $EMACS_HOME/Emacs -nw"
-    alias ec="emacsclient"
-
-    #function el() { ps ax|grep Emacs }
-    function ekill() { emacsclient -e '(kill-emacs)' }
-
-    alias emacs="TERM=xterm-256color PATH=$EMACS_HOME/bin:$PATH $EMACS_HOME/Emacs -nw"
-    alias gemacs="TERM=xterm-256color PATH=$EMACS_HOME/bin:$PATH $EMACS_HOME/Emacs 2>&1 > /dev/null &"
-    alias erc="TERM=xterm-256color PATH=$ERC_HOME/bin:$PATH $ERC_HOME/Emacs 2>&1 > /dev/null &"
-    alias gnus="TERM=xterm-256color PATH=$GNUS_HOME/bin:$PATH $GNUS_HOME/Emacs 2>&1 > /dev/null &"
-
-    # for a separate emacs instance
-    # export EDITOR="TERM=xterm-256color PATH=$EMACS_HOME/bin:$PATH $EMACS_HOME/Emacs -nw"
-
-    # for connection to a running emacs
-    export EDITOR="emacsclient"
-    export ALTERNATIVE_EDITOR="TERM=xterm-256color PATH=$EMACS_HOME/bin:$PATH $EMACS_HOME/Emacs -nw"
-
-    # Use MacVim's vim for terminal sessions, since it has everything compiled in.
-    alias vim='/Applications/MacVim.app/Contents/MacOS/Vim'
-
-    # Remove ctrl+y from the keybinds for delayed suspend
-    stty dsusp undef
-
-    # awesome
-    alias gps="ps -c -r -ax -o command,pid,pcpu,time | sed 's/\(PID *\)%/\1 %/' | head -n 11 && echo && ps -c -m -ax -o command,pid,pmem,rss=RSIZE | sed 's/\(.\{23\}\)/\1 /' | head -n 9"
-
-    alias tmux='tmux -2 -f .tmux.osx'
-
-    # A function to mimic Linux's strace, whichout running the program as root
-    function strace {
-        sudo dtruss -f sudo -u `whoami` $*
-    }
+if [ -s /usr/local/bin/emacs ]; then
+    alias emacs='TERM=xterm-256color emacs'
+    alias hb_emacs='/usr/local/bin/emacs'
 fi
+
+#function ec() { TERM=xterm-256color PATH=$EMACS_HOME/bin:$PATH emacsclient -t $@ }
+alias e="TERM=xterm-256color PATH=$EMACS_HOME/bin:$PATH $EMACS_HOME/Emacs -nw"
+alias ec="emacsclient"
+
+#function el() { ps ax|grep Emacs }
+function ekill() { emacsclient -e '(kill-emacs)' }
+
+alias emacs="TERM=xterm-256color PATH=$EMACS_HOME/bin:$PATH $EMACS_HOME/Emacs -nw"
+alias gemacs="TERM=xterm-256color PATH=$EMACS_HOME/bin:$PATH $EMACS_HOME/Emacs 2>&1 > /dev/null &"
+alias erc="TERM=xterm-256color PATH=$ERC_HOME/bin:$PATH $ERC_HOME/Emacs 2>&1 > /dev/null &"
+alias gnus="TERM=xterm-256color PATH=$GNUS_HOME/bin:$PATH $GNUS_HOME/Emacs 2>&1 > /dev/null &"
+
+# for connection to a running emacs
+export EDITOR="emacsclient"
+export ALTERNATIVE_EDITOR="TERM=xterm-256color PATH=$EMACS_HOME/bin:$PATH $EMACS_HOME/Emacs -nw"
+
+# Use MacVim's vim for terminal sessions, since it has everything compiled in.
+alias vim='/Applications/MacVim.app/Contents/MacOS/Vim'
+
+# Remove ctrl+y from the keybinds for delayed suspend
+stty dsusp undef
+
+# awesome
+alias gps="ps -c -r -ax -o command,pid,pcpu,time | sed 's/\(PID *\)%/\1 %/' | head -n 11 && echo && ps -c -m -ax -o command,pid,pmem,rss=RSIZE | sed 's/\(.\{23\}\)/\1 /' | head -n 9"
+
+alias tmux='tmux -2 -f .tmux.osx.conf'
+
+# A function to mimic Linux's strace, whichout running the program as root
+function strace {
+    sudo dtruss -f sudo -u `whoami` $*
+}

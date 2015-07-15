@@ -56,7 +56,8 @@ cp -f ~/.pylintrc .
 # TMUX
 echo "copying screen and tmux..."
 cp -f ~/.screenrc .
-cp -f ~/.tmux.* .
+cp -f ~/.tmux.conf .
+cp -f ~/.tmux.*.conf .
 
 # Lein
 echo "copying leiningen profiles..."

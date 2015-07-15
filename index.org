@@ -11,7 +11,7 @@
 #+TODO: SOMEDAY(s) TODO(t) INPROGRESS(i) WAITING(w@/!) NEEDSREVIEW(n@/!) | DONE(d)
 #+TODO: WAITING(w@/!) HOLD(h@/!) | CANCELLED(c@/!)
 #+TAGS: export(e) noexport(n)
-#+STARTUP: fold nodlcheck lognotestate content
+#+STARTUP: fold nodlcheck lognotestate showall
 
 * Introduction 
 :PROPERTIES:
@@ -52,9 +52,3 @@ them directly, instead this org-mode file should be changed and then re-tangled.
 #+INCLUDE git.org
 
 #+INCLUDE tmux.org
-
-
-* TODO Other configuration
-:PROPERTIES:
-:CUSTOM_ID: d179b5dd-4fbf-46fa-8279-b9af50bb5c83
-:END:

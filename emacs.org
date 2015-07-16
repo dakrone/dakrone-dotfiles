@@ -4170,12 +4170,12 @@ can remember what all I can toggle.
   :init
   (progn
     (defhydra hydra-toggle-map nil
-        "
-^Toggle^            
+      "
+^Toggle^
 ^^^^^^^^--------------------
-_d_: debug-on-error 
+_d_: debug-on-error
 _D_: debug-on-quit
-_f_: auto-fill-mode 
+_f_: auto-fill-mode
 _l_: toggle-truncate-lines
 _h_: hl-line-mode
 _r_: read-only-mode
@@ -4184,31 +4184,28 @@ _n_: narrow-or-widen-dwim
 _g_: golden-ratio-mode
 _q_: quit
 "
-        ("d" toggle-debug-on-error :exit t)
-        ("D" toggle-debug-on-quit :exit t)
-        ("g" golden-ratio-mode :exit t)
-        ("f" auto-fill-mode :exit t)
-        ("l" toggle-truncate-lines :exit t)
-        ("r" read-only-mode :exit t)
-        ("h" hl-line-mode :exit t)
-        ("v" my/turn-on-viewing-mode :exit t)
-        ("n" my/narrow-or-widen-dwim :exit t)
-        ("q" nil :exit t))
-    
-    (global-set-key (kbd "C-x t") 'hydra-toggle-map/body)))
-#+END_SRC
+      ("d" toggle-debug-on-error :exit t)
+      ("D" toggle-debug-on-quit :exit t)
+      ("g" golden-ratio-mode :exit t)
+      ("f" auto-fill-mode :exit t)
+      ("l" toggle-truncate-lines :exit t)
+      ("r" read-only-mode :exit t)
+      ("h" hl-line-mode :exit t)
+      ("v" my/turn-on-viewing-mode :exit t)
+      ("n" my/narrow-or-widen-dwim :exit t)
+      ("q" nil :exit t))
 
-Jump between errors in a buffer:
+    (global-set-key (kbd "C-x t") 'hydra-toggle-map/body)
 
-#+BEGIN_SRC emacs-lisp
-(defhydra hydra-next-error (global-map "C-x")
-  "next-error"
-  ("`" next-error "next")
-  ("j" next-error "next" :bind nil)
-  ("n" next-error "next" :bind nil)
-  ("k" previous-error "previous" :bind nil)
-  ("p" previous-error "previous" :bind nil)
-  ("l" flycheck-list-errors "list-errors" :exit t))
+    ;; Jump between errors in a buffer:
+    (defhydra hydra-next-error (global-map "C-x")
+      "next-error"
+      ("`" next-error "next")
+      ("j" next-error "next" :bind nil)
+      ("n" next-error "next" :bind nil)
+      ("k" previous-error "previous" :bind nil)
+      ("p" previous-error "previous" :bind nil)
+      ("l" flycheck-list-errors "list-errors" :exit t))))
 #+END_SRC
 
 ** yasnippet

@@ -11,6 +11,9 @@
 #+TAGS: export(e) noexport(n)
 #+STARTUP: fold nodlcheck lognotestate content
 
+* Introduction
+This is my Emacs setup. There are many like it, but this one is mine.
+
 ** A note about keyboard shortcuts
 :PROPERTIES:
 :CUSTOM_ID: 2898d51b-0ea3-4a30-8ca1-0d78d9eecf64
@@ -139,6 +142,7 @@ things add hooks that don't work if packages aren't installed.
     smooth-scrolling ace-jump-mode multiple-cursors easy-kill
     simple-call-tree simple-call-tree+ editorconfig ggtags bookmark+
     fill-column-indicator golden-ratio wc-mode eyebrowse vlf origami
+    hydra
 
     ;; external process things
     prodigy vkill

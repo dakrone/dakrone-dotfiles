@@ -87,7 +87,7 @@ set -g base-index 0
 First, a nice alias to help us. I start it on a separate socket so it doesn't
 really interfere with anything.
 
-#+BEGIN_SRC sh :tangle .zsh.d/00-aliases.zsh
+#+BEGIN_SRC sh
 # start a master tmux
 alias tmaster='tmux -2 -u -S /tmp/mastermux -f .tmux.master.conf'
 #+END_SRC

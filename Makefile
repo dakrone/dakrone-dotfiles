@@ -12,7 +12,7 @@ install: all
 	ln -s -v -i $(DOTFILES_DIR)/.zsh* ~/
 	ln -s -v -i $(DOTFILES_DIR)/.git?* ~/
 	ln -s -v -i $(DOTFILES_DIR)/.tmux* ~/
-	ln -s -v -i $(DOTFILES_DIR)/.emacs.d ~/.emacs.d/
+	ln -s -v -i $(DOTFILES_DIR)/.emacs.d ~/
 
 force-install: all
 	ln -s -v -f $(DOTFILES_DIR)/.zsh* ~/

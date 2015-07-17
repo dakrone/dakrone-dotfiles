@@ -141,8 +141,7 @@ things add hooks that don't work if packages aren't installed.
     ido-vertical-mode yasnippet smart-tab anzu smartparens flx-ido projectile
     smooth-scrolling ace-jump-mode multiple-cursors easy-kill
     simple-call-tree simple-call-tree+ editorconfig ggtags bookmark+
-    fill-column-indicator golden-ratio wc-mode eyebrowse vlf origami
-    hydra
+    fill-column-indicator golden-ratio wc-mode eyebrowse vlf hydra
 
     ;; external process things
     prodigy vkill
@@ -4659,24 +4658,6 @@ Eyebrowse is a great package for workspaces in Emacs.
     (add-hook 'after-init-hook #'my/create-eyebrowse-setup)))
 #+END_SRC
 
-** origami
-:PROPERTIES:
-:ID:       1cc60ab6-e168-4684-9eb5-b5126b907f48
-:CUSTOM_ID: a98e90ce-6d25-4bd5-8e12-98421d818ffc
-:END:
-[[https://github.com/gregsexton/origami.el][Origami]] is a folding mode that supports a pretty good subset of languages, so
-I'm giving it a try.
-
-#+BEGIN_SRC emacs-lisp
-(use-package origami
-  :bind (("C-c TAB" . origami-recursively-toggle-node)
-         ("C-\\" . origami-recursively-toggle-node)
-         ("M-\\" . origami-close-all-nodes)
-         ("M-+" . origami-open-all-nodes))
-  :init
-  (global-origami-mode))
-#+END_SRC
-
 ** hideshow
 :PROPERTIES:
    :ID:       609C859C-86A7-4CB7-9A27-BE540E9A6CDF
@@ -4690,7 +4671,6 @@ for now.
 
 #+BEGIN_SRC emacs-lisp
 (use-package hideshow
-  :disabled t
   :bind (("C-c TAB" . hs-toggle-hiding)
          ("C-\\" . hs-toggle-hiding)
          ("M-\\" . hs-hide-all)

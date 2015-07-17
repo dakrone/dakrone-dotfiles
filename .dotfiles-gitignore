@@ -1,1 +1,8 @@
 *.html
+.emacs.d
+.tmux.*
+.gitconfig
+.gitignore
+.zsh.d
+.zshenv
+.zshrc

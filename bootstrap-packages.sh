@@ -1,28 +1,5 @@
-#+LANGUAGE: en
-#+PROPERTY: header-args :eval no :results code replace :noweb yes :tangle no
-#+HTML_HEAD: <link rel="stylesheet" href="http://dakrone.github.io/org.css" type="text/css" />
-#+EXPORT_SELECT_TAGS: export
-#+EXPORT_EXCLUDE_TAGS: noexport
-#+OPTIONS: H:4 num:nil toc:t \n:nil @:t ::t |:t ^:{} -:t f:t *:t
-#+OPTIONS: skip:nil d:(HIDE) tags:not-in-toc
-#+TODO: SOMEDAY(s) TODO(t) INPROGRESS(i) WAITING(w@/!) NEEDSREVIEW(n@/!) | DONE(d)
-#+TODO: WAITING(w@/!) HOLD(h@/!) | CANCELLED(c@/!)
-#+TAGS: export(e) noexport(n)
-#+STARTUP: fold nodlcheck lognotestate content
+#!/usr/bin/env zsh
 
-* Host machine configuration script
-:PROPERTIES:
-:ID:       5ac8245d-fe06-465a-9e09-a635fa7916f7
-:CUSTOM_ID: d3a5d179-7d9a-4469-a559-8ee94eb14bf8
-:END:
-I spend probably 90% of my time on various Linux machines, usually either a
-[[http://fedoraproject.org][Fedora]] or [[http://ubuntu.com][Ubuntu]] machine, and the other 9.99% on Mac OSX. The remaining 0.01% of
-my time is spent in Windows, so it isn't covered much here.
-
-I need to make sure a number of packages are installed and set up correctly on
-each machine, so the following should pass:
-
-#+BEGIN_SRC sh :tangle bootstrap-packages.sh
 #!/bin/bash
 
 #####################################################
@@ -55,7 +32,7 @@ function setup_linux() {
             # We can *try* to set up Debian like Ubuntu, but it's not tested
             setup_ubuntu
             ;;
-        ,*)
+        *)
             echo "Sorry, I haven't implemented anything for this OS ($DISTRO) yet"
             exit 1
     esac
@@ -115,18 +92,9 @@ case $OS in
     Linux)
         setup_linux
         ;;
-    ,*)
+    *)
         echo "Operating system ($OS) not supported!"
         exit 1
 esac
 
 echo "[+] Finished setup"
-#+END_SRC
-
-This should then be manually run by running:
-
-#+BEGIN_SRC
-$ sh ~/bootstrap-packages.sh
-#+END_SRC
-
-Note that you'll need password-less (or caching) sudo access for this.

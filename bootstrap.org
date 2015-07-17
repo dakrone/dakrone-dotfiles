@@ -90,7 +90,7 @@ function setup_fedora() {
 }
 
 function setup_ubuntu() {
-    PACKAGES="git tmux zsh htop keychain the_silver_searcher"
+    PACKAGES="git tmux zsh htop keychain silversearcher-ag"
     
     echo "[-] Setting up Ubuntu"
 

@@ -1,0 +1,26 @@
+#+TITLE:   Readme
+#+AUTHOR:  Lee Hinman
+#+EMAIL:   leehinman@fastmail.com
+#+LANGUAGE: en
+#+PROPERTY: header-args :results code replace :exports both :noweb yes :comments org :tangle no
+#+PROPERTY: header-args:sh :shebang "#!/usr/bin/env zsh"
+#+PROPERTY: header-args:python :shebang "#!/usr/bin/env python"
+#+HTML_HEAD: <link rel="stylesheet" href="http://dakrone.github.io/org.css" type="text/css" />
+#+EXPORT_SELECT_TAGS: export
+#+EXPORT_EXCLUDE_TAGS: noexport
+#+OPTIONS: H:2 num:nil toc:t \n:nil @:t ::t |:t ^:{} -:t f:t *:t
+#+OPTIONS: skip:nil d:(HIDE) tags:not-in-toc
+#+TODO: SOMEDAY(s) TODO(t) INPROGRESS(i) WAITING(w@/!) NEEDSREVIEW(n@/!) | DONE(d)
+#+TODO: WAITING(w@/!) HOLD(h@/!) | CANCELLED(c@/!)
+#+TAGS: export(e) noexport(n)
+#+STARTUP: align fold nodlcheck lognotestate content
+
+* Introduction
+
+* Notes
+
+Note, I use a non-standard gitignore file for this repo, so you will need to do:
+
+#+BEGIN_SRC sh
+git config --local core.excludesFile .dotfiles-gitignore
+#+END_SRC

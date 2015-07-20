@@ -3619,6 +3619,7 @@ Per-project navigation
          ("C-c p b" . projectile-switch-to-buffer)
          ("C-c p K" . projectile-kill-buffers))
   :init (projectile-global-mode 1)
+  :diminish ""
   :config
   (progn
     (defconst projectile-mode-line-lighter " P")))

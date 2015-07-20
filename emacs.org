@@ -4146,7 +4146,7 @@ requiring the Dash app or online connectivity (great for planes).
   (progn
     ;; Use the Java and Elasticsearch common docsets everywhere
     (setq helm-dash-common-docsets
-          '(Java_SE7
+          '(Java
             ElasticSearch))))
 #+END_SRC
 

@@ -3631,10 +3631,14 @@ Per-project navigation
          ("C-c p b" . projectile-switch-to-buffer)
          ("C-c p K" . projectile-kill-buffers))
   :init (projectile-global-mode 1)
-  :diminish ""
+  :diminish "P"
   :config
   (progn
-    (defconst projectile-mode-line-lighter " P")))
+    (use-package helm
+      :init
+      (progn
+        (setq projectile-completion-system 'helm)
+        (helm-projectile-on)))))
 #+END_SRC
 
 ** prodigy
@@ -3854,6 +3858,7 @@ https://tuhdo.github.io/helm-intro.html
    ("M-y" . helm-show-kill-ring)
    ("C-h a" . helm-apropos)
    ("C-h m" . helm-man-woman)
+   ("C-h SPC" . helm-all-mark-rings)
    ("M-g >" . helm-ag-this-file)
    ("M-g ," . helm-ag-pop-stack)
    ("M-g ." . helm-do-grep)
@@ -3864,8 +3869,8 @@ https://tuhdo.github.io/helm-intro.html
    ("C-x b" . helm-mini)
    ("C-h t" . helm-world-time))
   :init (progn
-          ;;(helm-autoresize-mode 1)
-          (helm-mode 1))
+          (helm-mode 1)
+          (helm-autoresize-mode 1))
   :diminish ""
   :config
   (progn
@@ -3924,7 +3929,6 @@ https://tuhdo.github.io/helm-intro.html
     (setq helm-idle-delay 0.01
           helm-exit-idle-delay 0.1
           helm-input-idle-delay 0.01
-          helm-buffers-fuzzy-matching t
           ;; truncate long lines in helm completion
           helm-truncate-lines t
           ;; may be overridden if 'ggrep' is in path (see below)
@@ -3936,6 +3940,9 @@ https://tuhdo.github.io/helm-intro.html
           helm-quick-update t
           ;; be idle for this many seconds, before updating in delayed sources.
           helm-idle-delay 0.01
+          ;; use 40% of the window for things
+          helm-autoresize-max-height 40
+          helm-autoresize-min-height 40
           ;; be idle for this many seconds, before updating candidate buffer
           helm-input-idle-delay 0.01
           ;; open helm buffer in another window
@@ -3944,7 +3951,7 @@ https://tuhdo.github.io/helm-intro.html
           helm-split-window-in-side-p t
           ;; limit the number of displayed canidates
           helm-candidate-number-limit 200
-          ;; don't use recentf stuff in helm-ff
+          ;; don't use recentf stuff in helm-ff, I use C-x C-r for this
           helm-ff-file-name-history-use-recentf nil
           ;; move to end or beginning of source when reaching top or bottom
           ;; of source
@@ -3952,9 +3959,14 @@ https://tuhdo.github.io/helm-intro.html
           ;; don't displace the header line
           helm-display-header-line nil
           ;; fuzzy matching
+          helm-recentf-fuzzy-match t
+          helm-locate-fuzzy-match t
+          helm-M-x-fuzzy-match t
           helm-buffers-fuzzy-matching t
           helm-semantic-fuzzy-match t
+          helm-apropos-fuzzy-match t
           helm-imenu-fuzzy-match t
+          helm-lisp-fuzzy-completion t
           helm-completion-in-region-fuzzy-match t
           ;; Here are the things helm-mini shows, I add `helm-source-bookmarks'
           ;; here to the regular default list
@@ -4585,6 +4597,7 @@ Smex is IDO, but for =M-x=
 
 #+BEGIN_SRC emacs-lisp
 (use-package smex
+  :disabled t
   :bind (("M-x" . smex)
          ("M-X" . smex-major-mode-commands)))
 #+END_SRC

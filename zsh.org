@@ -764,6 +764,12 @@ There's probably more I need to put here, but for now it's empty.
 
 #+BEGIN_SRC sh :tangle .zsh.d/zsh.xanadu
 #<<warning>>
+
+# Xanadu had better be a linux machine...
+if [[ $OS == "Linux" ]]; then
+   export JAVA_HOME=/opt/jdk1.8.0_51
+   export PATH=$JAVA_HOME/bin:$PATH
+fi
 #+END_SRC
 
 **** Ivalice (main desktop)

@@ -56,7 +56,7 @@ function setup_fedora() {
     echo "Enabling sshd..."
     sudo systemctl enable sshd.service
     sudo systemctl start sshd.service
-    
+
     # Install the minimal necessary software I need
     echo "Installing software..."
     sudo dnf group install -y "Development Tools"
@@ -68,7 +68,7 @@ function setup_fedora() {
 
 function setup_ubuntu() {
     PACKAGES="git tmux zsh htop keychain silversearcher-ag"
-    
+
     echo "[-] Setting up Ubuntu"
 
     echo "Installing software..."
@@ -79,22 +79,45 @@ function setup_ubuntu() {
     echo "[-] Done setting up Ubuntu"
 }
 
+function setup_generic() {
+    echo "[-] Setting up OS-agnostic things..."
+
+    mkdir -p ~/.zsh
+    if [ ! -d ~/.zsh/zsh-completions ]; then
+        echo "Installing zsh completions"
+        cd ~/.zsh && git clone https://github.com/zsh-users/zsh-completions.git
+    fi
+
+    if [ ! -d ~/.zsh/zsh-syntax-highlighting ]; then
+        echo "Installing zsh syntax highlighting"
+        cd ~/.zsh && git clone https://github.com/zsh-users/zsh-syntax-highlighting.git
+    fi
+
+    echo "[-] Done Setting up OS-agnostic things"
+}
+
+function main() {
+    echo "[+] Starting setup"
+
+    OS=`uname`
+
+    case $OS in
+        Darwin)
+            setup_osx
+            ;;
+        Linux)
+            setup_linux
+            ;;
+        *)
+            echo "Operating system ($OS) not supported!"
+            exit 1
+    esac
+
+    setup_generic
+
+    echo "[+] Finished setup"
+}
+
 ### Start of actual script
 
-echo "[+] Starting setup"
-
-OS=`uname`
-
-case $OS in
-    Darwin)
-        setup_osx
-        ;;
-    Linux)
-        setup_linux
-        ;;
-    *)
-        echo "Operating system ($OS) not supported!"
-        exit 1
-esac
-
-echo "[+] Finished setup"
+main

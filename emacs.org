@@ -1907,7 +1907,10 @@ nice.
     :disabled t
     :init (load-theme 'material t))
   (use-package apropospriate-theme
-    :init (load-theme 'apropospriate-dark t)))
+    :disabled t
+    :init (load-theme 'apropospriate-dark t))
+  (use-package color-theme-sanityinc-tomorrow
+    :init (load-theme 'sanityinc-tomorrow-night t)))
 
 (defun dakrone-light ()
   (interactive)

@@ -1706,16 +1706,6 @@ work with the ES codebase.
 (add-hook 'java-mode-hook 'setup-java)
 #+END_SRC
 
-**** jdee
-So since JDEE was restarted, I figured I'd give it a try for the ol' emacs
-configuration.
-
-#+BEGIN_SRC emacs-lisp
-(when (file-exists-p "~/src/elisp/jdee/dist/jdee-2.4.2/lisp")
-  (add-to-list 'load-path "~/src/elisp/jdee/dist/jdee-2.4.2/lisp")
-  (load "jde-autoload"))
-#+END_SRC
-
 **** malabar-mode
 :PROPERTIES:
      :ID:       341FC2D0-2E0A-4A55-9BCA-7C41A1260781

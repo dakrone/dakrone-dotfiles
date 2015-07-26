@@ -2530,8 +2530,8 @@ Publishing org-mode files to my hosting provider:
                                     "writequit-files"))
 
           ;; Org-mode files for ~/.emacs.d/settings.org
-          ("emacs dotfiles"
-           :base-directory ,(file-truename "~/.emacs.d/")
+          ("dotfiles"
+           :base-directory ,(file-truename "~/.emacs.d/../")
            :base-extension "org\\|html"
            :publishing-directory
            "/ssh:writequit.org:~/www/org/"

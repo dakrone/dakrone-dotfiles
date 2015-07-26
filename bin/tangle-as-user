@@ -15,10 +15,23 @@ DIR=`pwd`
 FILES=""
 for i in $@; do
     echo "File: $i"
-    $EMACSCMD -nw --batch --eval "
+    $EMACSCMD -nw -u `whoami` --batch --eval "
 (progn
   (require 'org-install)
   (find-file (expand-file-name \"$i\" \"$DIR\"))
   (org-babel-tangle)
   (kill-buffer))" 2>&1 | grep "Tangled"
 done
+
+# The "-u `whoami`" loads your emacs config in case you have user-specific
+# org-babel configuration (as I do).
+# $EMACSCMD -nw -u `whoami` --batch --eval "
+# (progn
+#   (require 'org-install)
+#   (mapc
+#     (lambda (file)
+#       (find-file (expand-file-name file \"$DIR\"))
+#       (org-babel-tangle)
+#       (kill-buffer))
+#     '($FILES))
+# )" 2>&1 | grep "Tangled"

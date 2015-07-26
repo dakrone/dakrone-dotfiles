@@ -3829,6 +3829,8 @@ https://tuhdo.github.io/helm-intro.html
           ;; use 40% of the window for things
           helm-autoresize-max-height 40
           helm-autoresize-min-height 40
+          ;; wider buffer name in helm-buffers-list
+          helm-buffer-max-length 25 ;; default is 20
           ;; be idle for this many seconds, before updating candidate buffer
           helm-input-idle-delay 0.01
           ;; open helm buffer in another window

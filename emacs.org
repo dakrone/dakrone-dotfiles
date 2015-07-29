@@ -4720,6 +4720,7 @@ Wait, no, I mean the Emacs web browser built in to 24.4
     (t (:background "magenta"))) "")
 
 (use-package visible-mark
+  :disabled t
   :init (global-visible-mark-mode 1)
   :config
   (progn

@@ -618,6 +618,14 @@ dired buffers.
 
 #+BEGIN_SRC emacs-lisp
 (when (eq system-type 'gnu/linux)
+
+  (defun my/max-fullscreen ()
+    (interactive)
+    (toggle-frame-maximized))
+
+  ;; fullscreen
+  (add-hook 'after-init-hook #'my/max-fullscreen)
+
   (setq dired-listing-switches "-lFaGh1v --group-directories-first")
   (defun yank-to-x-clipboard ()
     (interactive)
@@ -1706,20 +1714,19 @@ work with the ES codebase.
 (add-hook 'java-mode-hook 'setup-java)
 #+END_SRC
 
-**** malabar-mode
-:PROPERTIES:
-     :ID:       341FC2D0-2E0A-4A55-9BCA-7C41A1260781
-:CUSTOM_ID: a42d1d23-8def-4dc0-b183-f943787db8a5
-     :END:
-Malabar mode is for dealing with maven projects, such as [[https://github.com/elasticsearch/elasticsearch][Elasticsearch]], where it
-is nice to be able to compile the code.
+**** eclim
 
 #+BEGIN_SRC emacs-lisp
-(defun my/malabar-java-hook ()
-  (use-package malabar-mode)
-  (malabar-mode 1))
-
-;; (add-hook 'java-mode-hook #'my/malabar-java-hook)
+(use-package emacs-eclim
+  :init
+  (progn
+    ;; only show errors
+    (setq-default eclim--problems-filter "e")
+    (global-eclim-mode))
+  :config
+  (progn
+    (use-package company-emacs-eclim
+      :init (company-emacs-eclim-setup))))
 #+END_SRC
 
 *** Ruby
@@ -3523,6 +3530,7 @@ Per-project navigation
     (use-package helm
       :init
       (progn
+        (use-package grep) ;; required for helm-ag to work properly
         (setq projectile-completion-system 'helm)
         (helm-projectile-on)))))
 #+END_SRC

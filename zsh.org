@@ -71,6 +71,13 @@ if [[ -f ~/.zsh.d/zsh.${HOSTPREFIX} ]]; then
 fi
 #+END_SRC
 
+Vagrant seems to want to use libvirt instead of VirtualBox on my machines, so I
+want to force it to use VirtualBox
+
+#+BEGIN_SRC sh :tangle .zshenv
+export VAGRANT_DEFAULT_PROVIDER=virtualbox
+#+END_SRC
+
 Finally, if this a dumb term (running =M-x shell= in Emacs, unset some things
 and make it really dumb.
 

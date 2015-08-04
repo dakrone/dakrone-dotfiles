@@ -54,6 +54,7 @@ function setup_linux() {
         Debian)
             # We can *try* to set up Debian like Ubuntu, but it's not tested
             setup_ubuntu
+            setup_linux_generic
             ;;
         ,*)
             echo "Sorry, I haven't implemented anything for this OS ($DISTRO) yet"

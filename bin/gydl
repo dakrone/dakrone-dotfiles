@@ -1,3 +1,0 @@
-#!/usr/bin/env bash
-
-youtube-dl "$1" -o 'gt_%(title)s-%(id)s.%(ext)s' --restrict-filenames

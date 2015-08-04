@@ -23,10 +23,51 @@ my everyday computer usage.
 
 This file was last exported: {{{time(%Y-%m-%d %H:%M)}}}
 
-** TODO How to use this file
+** How to use these files
 :PROPERTIES:
 :CUSTOM_ID: 6017d330-9337-4d97-82f2-2e605b7a262a
 :END:
+
+My dotfiles setup uses a slightly different setup than most peoples'.
+
+Instead of a repo full of configuration files that people can put into place, my
+setup consists of a number of [[http://orgmode.org/][org-mode]] files that contain source code in them.
+Using [[https://www.gnu.org/software/emacs/][Emacs]] they are then "[[http://orgmode.org/org.html#Working-With-Source-Code][tangled]]" to produce specific files. For example, the
+=zsh.org= file can be tangled to produce the =.zshenv=, =.zshrc= and other
+ZSH-related configuration files.
+
+So how would you use this?
+
+I include the =bin/tangle= script, which invokes Emacs in such a manner to
+produce the files a particular org file would produce. Generally if you want to
+actually use these, you wouldn't have to do that because I provide a =Makefile=
+that will perform the tangling for you. So generally you could do:
+
+#+BEGIN_SRC sh
+git clone https://github.com/dakrone/dakrone-dotfiles.git ~/dotfiles
+cd ~/dotfiles
+./bootstrap-packages.sh # see caveats below
+make
+
+# And then, if you wanted to symlink the files to be "installed"
+make install # or `make force-install` to overwrite files
+#+END_SRC
+
+When an update is posted, I usually do:
+
+#+BEGIN_SRC sh
+cd ~/dotfiles
+make
+#+END_SRC
+
+And since the installation consists of symlinks, there is no install needed.
+Makefile will only regenerate the config files for files that have changes.
+
+*** Caveat
+
+The only caveat to this is the =bootstrap-packages.sh= file, because this
+installs the files necessary for tangling, therefore it needs to be runable
+directly from the repo. It can be regenerated however, from =bootstrap.org=.
 
 * Bootstrapping machines
 

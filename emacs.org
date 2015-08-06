@@ -603,6 +603,21 @@ Quit as fast as possible with =kill -USR1 <pid>=
 (define-key special-event-map (kbd "<sigusr1>") #'my/quit-emacs-unconditionally)
 #+END_SRC
 
+Emacs (foolishly) defaults to adding the =--insecure= flag. It also supports the
+(incredibly broken) SSL version 3. What are you thinking Emacs!?!
+
+Here I set it back to a *sane* value:
+
+#+BEGIN_SRC emacs-lisp
+(setq tls-program
+      ;; Defaults:
+      ;; '("gnutls-cli --insecure -p %p %h"
+      ;;   "gnutls-cli --insecure -p %p %h --protocols ssl3"
+      ;;   "openssl s_client -connect %h:%p -no_ssl2 -ign_eof")
+      '("gnutls-cli -p %p %h"
+        "openssl s_client -connect %h:%p -no_ssl2 -no_ssl3 -ign_eof"))
+#+END_SRC
+
 *** OS-specific settings
 :PROPERTIES:
     :ID:       2A3B6DDC-9AC8-4D8A-AC46-84D3D65DF2EF

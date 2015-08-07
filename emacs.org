@@ -1877,23 +1877,13 @@ There's =tern= also, but I leave it turned off by default
       (use-package es-mode
         :init (use-package ob-elasticsearch)
         ;; Don't warn me about delete statements
-        :config (setq es-warn-on-delete-query nil))
-      (use-package org
-        :config
-        (org-babel-do-load-languages
-         'org-babel-load-languages
-         '((elasticsearch . t)))))
+        :config (setq es-warn-on-delete-query nil)))
   (progn
     (use-package es-mode
       :ensure t
       :init (use-package ob-elasticsearch)
       ;; Don't warn me about delete statements
-      :config (setq es-warn-on-delete-query nil))
-    (use-package org
-      :config
-      (org-babel-do-load-languages
-       'org-babel-load-languages
-       '((elasticsearch . t))))))
+      :config (setq es-warn-on-delete-query nil))))
 #+END_SRC
 
 *** LaTeX
@@ -2101,6 +2091,7 @@ And now the huge org-mode configuration
   :config
   (progn
     (use-package org-install)
+    (use-package org-babel)
     ;; org-export
     (use-package ox)
     ;; Enable archiving things
@@ -2327,11 +2318,11 @@ And now the huge org-mode configuration
     (org-babel-do-load-languages
      'org-babel-load-languages
      '((emacs-lisp . t)
+       (elasticsearch . t)
        (clojure . t)
        (dot . t)
        (sh . t)
        (ruby . t)
-       (R . t)
        (python . t)
        (gnuplot . t)
        (plantuml . t)

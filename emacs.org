@@ -33,13 +33,19 @@ This list is in no way exhaustive.
 |-------------+---------------------------------------------------------------+--------------------------|
 | =C-c a SPC= | open my custom agenda view                                    | Every time I start emacs |
 | =C-x m=     | open eshell                                                   | Every time I start emacs |
+| =M-1=       | open first eshell                                             | Every time I start emacs |
+| =M-2=       | open second eshell                                            | Every time I start emacs |
+| =M-3=       | open third eshell                                             | Every time I start emacs |
+| =M-4=       | open fourth eshell                                            | Every time I start emacs |
 | =C-x C-r=   | helm-mini                                                     | Very                     |
 | =C-x b=     | helm-mini                                                     | Very                     |
 | =C-x f=     | helm-projectile                                               | Very                     |
+| =C-p s s=   | helm-ag-project (search entire project for some text)         | Very                     |
 | =C-c b=     | switch between org-mode buffers                               | Very                     |
 | =M-g M-g=   | open Magit                                                    | Very                     |
 | =C-x C-i=   | open helm's semantic imenu                                    | Very                     |
 | =C-c n=     | cleanup buffer (reindent, clean whitespace)                   | Often                    |
+| =C-x d=     | open my remote (TRAMP) eshell buffer                          | Often                    |
 | =C-x C-j=   | open dired folder for current file                            | Often                    |
 | =C-M-n=     | scroll half a page down                                       | Often                    |
 | =C-M-p=     | scroll half a page up                                         | Often                    |
@@ -47,7 +53,7 @@ This list is in no way exhaustive.
 | =<F11>=     | prompt for recent headlines to clock into                     | Often                    |
 | =<F12>=     | clock out of current task                                     | Often                    |
 | =M-g .=     | helm-grep, with C-u prefix, rgrep                             | Sometimes                |
-| =C-c p s=   | switch projectile projecs                                     | Sometimes                |
+| =C-c p p=   | switch projectile projecs                                     | Sometimes                |
 | =C-h b=     | see the current bindings (helm-descbinds)                     | Sometimes                |
 | =C-h a=     | look through all emacs vars, functions, faces (helm-apropos)  | Sometimes                |
 | =C-h t=     | see the current time in different locations (helm-world-time) | Sometimes                |

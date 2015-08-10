@@ -21,6 +21,8 @@ For the main introduction, please see [[file:index.org][index.org]]
 
 You can also see the latest exported version of this at [[http://writequit.org/org]]
 
+Some of my older dotfiles are in the =old= directory.
+
 * Notes
 
 Note, I use a non-standard gitignore file for this repo, so you will need to do:

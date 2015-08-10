@@ -3653,7 +3653,6 @@ p= bindings.
 
 #+BEGIN_SRC emacs-lisp
 (use-package git-gutter
-  :disabled t
   :defer t
   :bind (("C-x =" . git-gutter:popup-hunk)
          ("C-c P" . git-gutter:previous-hunk)
@@ -3692,6 +3691,7 @@ fringe, so I'm trying it out...
 
 #+BEGIN_SRC emacs-lisp
 (use-package diff-hl
+  :disabled t
   :defer t
   :bind (("C-c G" . diff-hl-diff-goto-hunk))
   :init

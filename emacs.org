@@ -1732,10 +1732,23 @@ work with the ES codebase.
 (add-hook 'java-mode-hook 'setup-java)
 #+END_SRC
 
+**** jdee
+So [[https://github.com/jdee-emacs/jdee/][JDEE]] just had a resurgence, so I've been playing a bit with it.
+
+#+BEGIN_SRC emacs-lisp
+(when (file-exists-p "~/src/elisp/jdee/dist/jdee-2.4.2/lisp")
+  (add-to-list 'load-path "~/src/elisp/jdee/dist/jdee-2.4.2/lisp")
+  (load "jde-autoload"))
+#+END_SRC
+
 **** eclim
+Eclim is decent for emacs-java integration, but isn't quite there for showing
+errors or things like that. Unfortunately I still have to jump back into
+Intellij all the time for things.
 
 #+BEGIN_SRC emacs-lisp
 (use-package emacs-eclim
+  :disabled t
   :init
   (progn
     ;; only show errors

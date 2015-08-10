@@ -1919,12 +1919,12 @@ nice.
   ;; (use-package color-theme-sanityinc-tomorrow
   ;;   :init (color-theme-sanityinc-tomorrow-night))
   (use-package material-theme
-    :disabled t
     :init (load-theme 'material t))
   (use-package apropospriate-theme
     :disabled t
     :init (load-theme 'apropospriate-dark t))
   (use-package color-theme-sanityinc-tomorrow
+    :disabled t
     :init (load-theme 'sanityinc-tomorrow-night t)))
 
 (defun dakrone-light ()

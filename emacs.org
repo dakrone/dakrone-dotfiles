@@ -1009,6 +1009,26 @@ d=, if the buffer doesn't exist it is created.
 (global-set-key (kbd "M-4") 'my/create-or-switch-to-eshell-4)
 #+END_SRC
 
+**** eshell aliases
+Like zsh, I use a lot of aliases in eshell, so I need to set those up here:
+
+#+BEGIN_SRC emacs-lisp :tangle .emacs.d/eshell/alias
+alias aria2c aria2c -c -x5 -s10 -m0 $*
+alias bdt gdate "+%Y%m%dT%H%M%S.%3N%z"
+alias delete curl -s -XDELETE $*
+alias dt gdate "+%Y-%m-%dT%H:%M:%S.%3N%zZ"
+alias epoch date +%s
+alias ga git annex $*
+alias get curl -s -XGET $*
+alias ivalice2org rsync -azP --delete ivalice-local:~/org/ ~/org
+alias org2ivalice rsync -azP --delete ~/org/ ivalice-local:~/org
+alias org2xanadu rsync -azP --delete ~/org/ xanadu:~/org
+alias post curl -s -XPOST $*
+alias put curl -s -XPUT $*
+alias se tar zxvf $*
+alias xanadu2org rsync -azP --delete xanadu:~/org/ ~/org
+#+END_SRC
+
 *** Tramp settings
 :PROPERTIES:
     :ID:       0167743B-7497-4819-BE9D-8480A26CCBEC

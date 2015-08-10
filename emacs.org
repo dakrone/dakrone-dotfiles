@@ -870,7 +870,7 @@ completion, prompt and term settings:
               ;; auto truncate after 12k lines
               eshell-buffer-maximum-lines 12000
               ;; history size
-              eshell-history-size 350
+              eshell-history-size 500
               ;; buffer shorthand -> echo foo > #'buffer
               eshell-buffer-shorthand t
               ;; my prompt is easy enough to see
@@ -932,17 +932,14 @@ completion, prompt and term settings:
     (if (boundp 'eshell-save-history-on-exit)
         ;; Don't ask, just save
         (setq eshell-save-history-on-exit t))
-    (if (boundp 'eshell-ask-to-save-history)
-        ;; For older(?) version
-        (setq eshell-ask-to-save-history 'always))
 
     ;; See: https://github.com/kaihaosw/eshell-prompt-extras
     (use-package eshell-prompt-extras
       :init
       (progn
         (setq eshell-highlight-prompt nil
-              ;; epe-git-dirty-char "Ϟ"
-              epe-git-dirty-char "*"
+              epe-git-dirty-char " Ϟ"
+              ;; epe-git-dirty-char "*"
               eshell-prompt-function 'epe-theme-dakrone)))
 
     (defun eshell/magit ()
@@ -3665,6 +3662,7 @@ p= bindings.
   (progn
     ;; Only a few programming modes
     (add-hook 'java-mode-hook 'git-gutter-mode)
+    (add-hook 'org-mode-hook 'git-gutter-mode)
     (add-hook 'clojure-mode-hook 'git-gutter-mode)
     (add-hook 'ruby-mode-hook 'git-gutter-mode)
     (add-hook 'python-mode-hook 'git-gutter-mode)))

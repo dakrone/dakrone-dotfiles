@@ -198,7 +198,7 @@ things add hooks that don't work if packages aren't installed.
     go-mode
 
     ;; java
-    malabar-mode groovy-mode javap-mode
+    malabar-mode groovy-mode javap-mode emacs-eclim
 
     ;; javascript
     tern json-mode js2-mode

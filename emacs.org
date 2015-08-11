@@ -3899,7 +3899,7 @@ https://tuhdo.github.io/helm-intro.html
           helm-display-header-line nil
           ;; fuzzy matching
           helm-recentf-fuzzy-match t
-          helm-locate-fuzzy-match t
+          helm-locate-fuzzy-match nil ;; locate fuzzy is worthless
           helm-M-x-fuzzy-match t
           helm-buffers-fuzzy-matching t
           helm-semantic-fuzzy-match t

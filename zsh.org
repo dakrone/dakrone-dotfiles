@@ -493,6 +493,14 @@ fi
 export GTAGSLABEL=ctags
 #+END_SRC
 
+*** GVM
+Kind of like RVM, but for Groovy. Testing this for [[https://github.com/m0smith/malabar-mode/][malabar-mode]] integration
+
+#+BEGIN_SRC sh :tangle .zsh.d/16-gvm.zsh
+if [ -f ~/.gvm/bin/gvm-init.sh ]; then
+    source ~/.gvm/bin/gvm-init.sh
+fi
+#+END_SRC
 *** Prompt
 :PROPERTIES:
 :ID:       072a7074-27aa-4f32-b6c3-1952716675a6

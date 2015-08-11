@@ -4667,7 +4667,7 @@ helpful to auto-correct.
   :diminish ""
   :config
   (progn
-    (define-key ctl-x-map "\C-a" 'my/ispell-word-then-abbrev)
+    (define-key ctl-x-map "\M-a" 'my/ispell-word-then-abbrev)
 
     (defun my/ispell-word-then-abbrev (p)
       "Call `ispell-word'. Then create an abbrev for the correction made.

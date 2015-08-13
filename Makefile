@@ -1,7 +1,7 @@
 # Directory where this Makefile exists (the dotfiles directory)
 DOTFILES_DIR := $(dir $(abspath $(lastword $(MAKEFILE_LIST))))
 
-all: bootstrap zsh tmux git emacs
+all: bootstrap zsh tmux git emacs esvm
 
 bootstrap: bootstrap-packages.sh
 
@@ -28,14 +28,21 @@ git: .gitconfig
 .gitconfig: git.org
 	bin/tangle git.org
 
+esvm: .esvmrc
+
+.esvmrc: esvm.org
+	bin/tangle esvm.org
+
 install: all
 	ln -s -v -i $(DOTFILES_DIR)/.zsh* ~/
 	ln -s -v -i $(DOTFILES_DIR)/.git?* ~/
 	ln -s -v -i $(DOTFILES_DIR)/.tmux* ~/
 	ln -s -v -i $(DOTFILES_DIR)/.emacs.d ~/
+	ln -s -v -i $(DOTFILES_DIR)/.esvmrc ~/
 
 force-install: all
 	ln -s -v -f $(DOTFILES_DIR)/.zsh* ~/
 	ln -s -v -f $(DOTFILES_DIR)/.git?* ~/
 	ln -s -v -f $(DOTFILES_DIR)/.tmux* ~/
 	ln -s -v -f $(DOTFILES_DIR)/.emacs.d ~/
+	ln -s -v -f $(DOTFILES_DIR)/.esvmrc ~/

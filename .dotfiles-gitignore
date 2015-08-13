@@ -6,3 +6,4 @@
 .zsh.d
 .zshenv
 .zshrc
+.esvmrc

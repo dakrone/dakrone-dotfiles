@@ -1,0 +1,52 @@
+#+LANGUAGE: en
+#+PROPERTY: header-args :eval no :results code replace :noweb yes :tangle no
+#+HTML_HEAD: <link rel="stylesheet" href="http://dakrone.github.io/org.css" type="text/css" />
+#+EXPORT_SELECT_TAGS: export
+#+EXPORT_EXCLUDE_TAGS: noexport
+#+OPTIONS: H:4 num:nil toc:t \n:nil @:t ::t |:t ^:{} -:t f:t *:t
+#+OPTIONS: skip:nil d:(HIDE) tags:not-in-toc
+#+TODO: SOMEDAY(s) TODO(t) INPROGRESS(i) WAITING(w@/!) NEEDSREVIEW(n@/!) | DONE(d)
+#+TODO: WAITING(w@/!) HOLD(h@/!) | CANCELLED(c@/!)
+#+TAGS: export(e) noexport(n)
+#+STARTUP: fold nodlcheck lognotestate content
+
+* Introduction
+
+I've been using [[https://github.com/simianhacker/esvm][esvm]] for managing starting up multiple ES nodes when I need to
+test something using the rest API. Here's my configuration for it that tangles
+and installs into =~/.esvmrc=
+
+#+BEGIN_SRC json :tangle .esvmrc
+{
+  "defaults": {
+    "plugins": [],
+    "config": {
+      "node.add_id_to_custom_path": false,
+      "node.enable_custom_paths": true,
+      "script.inline": "on",
+      "script.indexed": "on",
+      "path.shared_data": "/tmp"
+      "path.repo": "/tmp"
+      "cluster.name": "es-lee"
+    }
+  },
+  "clusters": {
+    "1.7": {
+      "branch": "1.7",
+      "nodes": 1
+    },
+    "2node": {
+      "branch": "1.7",
+      "nodes": 2
+    },
+    "3node": {
+      "branch": "1.7",
+      "nodes": 3
+    },
+    "master": {
+      "branch": "master",
+      "nodes": 1
+    }
+  }
+}
+#+END_SRC

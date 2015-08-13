@@ -88,3 +88,7 @@ directly from the repo. It can be regenerated however, from =bootstrap.org=.
 * Emacs Configuration
 
 #+INCLUDE: emacs.org
+
+* ESVM configuration
+
+#+INCLUDE: esvm.org

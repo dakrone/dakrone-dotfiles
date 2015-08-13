@@ -3563,40 +3563,8 @@ Per-project navigation
    :END:
 I basically use this to start up ES when I need to test something really quickly
 
-I have been trying out [[https://www.npmjs.com/package/esvm][esvm]] for this lately also, with this config in
-=~/.esvmrc=:
-
-#+BEGIN_SRC json :tangle ~/.esvmrc
-{
-  "defaults": {
-    "plugins": [],
-    "config": {
-      "node.add_id_to_custom_path": false,
-      "node.enable_custom_paths": true,
-      "script.disable_dynamic": false,
-      "cluster.name": "es-lee"
-    }
-  },
-  "clusters": {
-    "1node": {
-      "branch": "1.6",
-      "nodes": 1
-    },
-    "2node": {
-      "branch": "1.6",
-      "nodes": 2
-    },
-    "3node": {
-      "branch": "1.6",
-      "nodes": 3
-    },
-    "10node": {
-      "branch": "1.6",
-      "nodes": 10
-    }
-  }
-}
-#+END_SRC
+I have been trying out [[https://www.npmjs.com/package/esvm][esvm]] for this lately also, check out my ESVM
+configuration elsewhere in my dotfiles
 
 So I configure prodigy like so:
 
@@ -3607,15 +3575,7 @@ So I configure prodigy like so:
   :config
   (progn
     (prodigy-define-service
-      :name "ES 1.6, 10 nodes"
-      :cwd "~/ies/"
-      :command "esvm"
-      :args '("10node")
-      :tags '(work test es)
-      :port 9200)
-
-    (prodigy-define-service
-      :name "ES 1.6, 3 nodes"
+      :name "ES 1.7, 3 nodes"
       :cwd "~/ies/"
       :command "esvm"
       :args '("3node")
@@ -3623,7 +3583,7 @@ So I configure prodigy like so:
       :port 9200)
 
     (prodigy-define-service
-      :name "ES 1.6, 2 nodes"
+      :name "ES 1.7, 2 nodes"
       :cwd "~/ies/"
       :command "esvm"
       :args '("2node")
@@ -3631,23 +3591,23 @@ So I configure prodigy like so:
       :port 9200)
 
     (prodigy-define-service
-      :name "Elasticsearch 1.6.0"
-      :cwd "~/ies/elasticsearch-1.6.0"
-      :command "~/ies/elasticsearch-1.6.0/bin/elasticsearch"
+      :name "ES master branch"
+      :cwd "~/ies/"
+      :command "esvm"
+      :args '("master")
       :tags '(work test es)
       :port 9200)
 
     (prodigy-define-service
-      :name "Elasticsearch 1.5.2"
-      :cwd "~/ies/elasticsearch-1.5.2"
-      :command "~/ies/elasticsearch-1.5.2/bin/elasticsearch"
+      :name "Elasticsearch 1.7.1"
+      :cwd "~/ies/elasticsearch-1.7.1"
+      :command "~/ies/elasticsearch-1.7.1/bin/elasticsearch"
       :tags '(work test es)
       :port 9200)
-
     (prodigy-define-service
-      :name "Elasticsearch 1.4.5"
-      :cwd "~/ies/elasticsearch-1.4.5"
-      :command "~/ies/elasticsearch-1.4.5/bin/elasticsearch"
+      :name "Elasticsearch 1.6.2"
+      :cwd "~/ies/elasticsearch-1.6.2"
+      :command "~/ies/elasticsearch-1.6.2/bin/elasticsearch"
       :tags '(work test es)
       :port 9200)))
 #+END_SRC

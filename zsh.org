@@ -340,7 +340,7 @@ function del-branch() {
 # look up a process quickly
 function pg {
     # doing it again afterwards for the coloration
-    ps aux | fgrep -i $1 | fgrep -v fgrep | fgrep -i $1
+    ps aux | grep -F -i $1 | grep -F -v grep | grep -F -i $1
 }
 
 # cd back up to the highest level git repo dir

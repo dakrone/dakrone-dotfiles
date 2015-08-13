@@ -3145,7 +3145,8 @@ passed in. Also supports ignoring the msg at the point."
               ("maildir:/fastmail/INBOX"     "Fastmail"             ?f)
               ("maildir:/elastic/INBOX"      "Elastic"              ?s)
               ("maildir:/gmail/INBOX"        "Gmail"                ?g)
-              ("maildir:/elastic/INBOX OR maildir:/gmail/INBOX" "All Mail" ?a)))
+              ("maildir:/elastic/INBOX OR maildir:/gmail/INBOX OR maildir:/fastmail/INBOX"
+               "All Mail" ?a)))
 
       ;; start mu4e
       (mu4e~start)

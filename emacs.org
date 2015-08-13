@@ -2841,15 +2841,21 @@ if running in windowed mode, because I don't use ERC otherwise:
    :ID:       E3FFEF22-68F6-4EC7-8381-5054850B4567
 :CUSTOM_ID: b65eb4b0-08fe-48bd-ad39-0e60e61c0a9c
    :END:
-I usually install [[http://www.djcbsoftware.nl/code/mu/][mu]] from source, with =./configure --prefix=/usr/local=, I
-unpack it to ~/src/mu-0.9.11 (or whatever version) so I can reference the mu4e
-elisp files. Then run =make= and =make install= to install mu.
+I usually install [[http://www.djcbsoftware.nl/code/mu/][mu]] from source. I unpack it to ~/src/mu-0.9.12 (or whatever
+version) so I can reference the mu4e elisp files. Then run the following to
+install mu:
+
+: autoreconf -i
+: ./configure --prefix=/usr/local
+: make
+: sudo make install
 
 #+BEGIN_SRC emacs-lisp
 (defun mail ()
   (interactive)
-  (add-to-list 'load-path "~/src/mu-0.9.11/mu4e")
-  (nyan-mode 1) ;; nyan-mode for mail!
+  (add-to-list 'load-path "~/src/mu-0.9.12/mu4e")
+  (use-package :nyan-mode
+    :init (nyan-mode 1)) ;; nyan-mode for mail!
   (use-package mu4e
     :config
     (progn
@@ -2859,10 +2865,13 @@ elisp files. Then run =make= and =make install= to install mu.
         :init (epa-file-enable))
 
       ;; Various mu4e settings
-      (setq mu4e-mu-binary "/usr/local/bin/mu"
+      (setq mu4e-mu-binary (executable-find "mu")
             ;;mu4e-sent-messages-behavior 'delete
             mu4e-user-mail-address-list
-            '("matthew.hinman@gmail.com" "lee@writequit.org" "lee@elastic.co")
+            '("matthew.hinman@gmail.com"
+              "lee@writequit.org"
+              "leehinman@fastmail.com"
+              "lee@elastic.co")
             ;; save attachments to the Downloads folder
             mu4e-attachment-dir "~/Downloads"
             ;; attempt to show images
@@ -2873,36 +2882,32 @@ elisp files. Then run =make= and =make install= to install mu.
             smtpmail-queue-dir "~/.mail/queue/"
             mml2015-use 'epg
             pgg-default-user-id "3acecae0"
-            epg-gpg-program "/usr/local/bin/gpg"
+            epg-gpg-program (executable-find "gpg")
             message-kill-buffer-on-exit t ;; kill sent msg buffers
             ;; use msmtp
             message-send-mail-function 'message-send-mail-with-sendmail
-            sendmail-program   "/usr/local/bin/msmtp"
+            sendmail-program (executable-find "msmtp")
             ;; Look at the from header to determine the account from which
-            ;; to send. Might not be needed b/c of kdl-msmtp
+            ;; to send. Might not be needed b/c of mlh-msmtp
             mail-specify-envelope-from t
             mail-envelope-from 'header
             message-sendmail-envelope-from 'header
             ;; emacs email defaults
-            user-mail-address  "lee@writequit.org"
-            user-full-name     "Lee Hinman"
-            mail-host-address  "writequit.org"
+            user-full-name "Lee Hinman"
+            user-mail-address "leehinman@fastmail.com"
+            mail-host-address "fastmail.com"
             ;; no signature
-            mu4e-compose-signature nil
+            mu4e-compose-signature ";; Lee"
             ;; mu4e defaults
             mu4e-maildir       "~/.mail"
-            ;; misc mu settings
-            ;; Unicode FTW
+            ;; don't use unicode
             mu4e-use-fancy-chars nil
-            ;; use the python html2text shell command to strip html
-            ;; brew/apt-get install html2text
-            ;; brew/apt-get install elinks
-            mu4e-html2text-command "/usr/local/bin/elinks -dump"
-            ;; mu4e-html2text-command "/usr/local/bin/html2text -nobs"
-            ;; mu4e-html2text-command
-            ;; "/usr/bin/html2markdown | fgrep -v '&nbsp_place_holder;'"
-            ;; check for new messages every 600 seconds (10 min)
-            mu4e-update-interval 600)
+            ;; check for new messages every 90 seconds (3 min)
+            mu4e-update-interval 90)
+
+      ;; the default is html2text, and elinks does a slightly better option
+      (when (executable-find "elinks")
+        (setq mu4e-html2text-command (concat (executable-find "elinks") " -dump")))
 
       (add-hook 'dired-mode-hook 'turn-on-gnus-dired-mode)
       (use-package gnus-dired
@@ -2924,10 +2929,10 @@ elisp files. Then run =make= and =make install= to install mu.
           (setq gnus-dired-mail-mode 'mu4e-user-agent)))
 
       ;; Vars used below
-      (defvar kdl-mu4e-new-mail nil
+      (defvar mlh-mu4e-new-mail nil
         "Boolean to represent if there is new mail.")
 
-      (defvar kdl-mu4e-url-location-list '()
+      (defvar mlh-mu4e-url-location-list '()
         "Stores the location of each link in a mu4e view buffer")
 
       ;; This is also defined in init.el, but b/c ESK runs all files in the
@@ -2936,7 +2941,7 @@ elisp files. Then run =make= and =make install= to install mu.
         "regexps to filter matched msgs from the echo area when message is called")
 
       ;; Multi-account support
-      (defun kdl-mu4e-current-account (&optional msg ignore-message-at-point)
+      (defun mlh-mu4e-current-account (&optional msg ignore-message-at-point)
         "Figure out what the current account is based on the message being
 composed, the message under the point, or (optionally) the message
 passed in. Also supports ignoring the msg at the point."
@@ -2961,20 +2966,20 @@ passed in. Also supports ignoring the msg at the point."
 
       ;; Support for multiple accounts
       (setq mu4e-sent-folder   (lambda (msg)
-                                 (mlh-folder-for (kdl-mu4e-current-account msg)
+                                 (mlh-folder-for (mlh-mu4e-current-account msg)
                                                  "Sent Mail" "Sent"))
             mu4e-drafts-folder (lambda (msg)
-                                 (mlh-folder-for (kdl-mu4e-current-account msg)
+                                 (mlh-folder-for (mlh-mu4e-current-account msg)
                                                  "Drafts" "Drafts"))
             mu4e-trash-folder  (lambda (msg)
-                                 (mlh-folder-for (kdl-mu4e-current-account msg)
+                                 (mlh-folder-for (mlh-mu4e-current-account msg)
                                                  "Trash" "Trash"))
             mu4e-refile-folder (lambda (msg)
-                                 (mlh-folder-for (kdl-mu4e-current-account msg)
+                                 (mlh-folder-for (mlh-mu4e-current-account msg)
                                                  "All Mail" "Archive"))
             ;; The following list represents the account followed by key /
             ;; value pairs of vars to set when the account is chosen
-            kdl-mu4e-account-alist
+            mlh-mu4e-account-alist
             '(("gmail"
                (user-mail-address   "matthew.hinman@gmail.com")
                (msmtp-account       "gmail")
@@ -2983,39 +2988,39 @@ passed in. Also supports ignoring the msg at the point."
                (user-mail-address   "lee@elastic.co")
                (msmtp-account       "elastic")
                (mu4e-sent-messages-behavior delete))
-              ;; ("writequit"
-              ;;  (user-mail-address   "lee@writequit.org")
-              ;;  (msmtp-account       "writequit")
-              ;;  (mu4e-sent-messages-behavior sent))
+              ("fastmail"
+               (user-mail-address   "leehinman@fastmail.com")
+               (msmtp-account       "fastmail")
+               (mu4e-sent-messages-behavior sent))
               )
             ;; These are used when mu4e checks for new messages
             mu4e-my-email-addresses
             (mapcar (lambda (acct) (cadr (assoc 'user-mail-address (cdr acct))))
-                    kdl-mu4e-account-alist))
+                    mlh-mu4e-account-alist))
 
-      (defun kdl-mu4e-choose-account ()
+      (defun mlh-mu4e-choose-account ()
         "Prompt the user for an account to use"
         (completing-read (format "Compose with account: (%s) "
                                  (mapconcat #'(lambda (var) (car var))
-                                            kdl-mu4e-account-alist "/"))
+                                            mlh-mu4e-account-alist "/"))
                          (mapcar #'(lambda (var) (car var))
-                                 kdl-mu4e-account-alist)
-                         nil t nil nil (caar kdl-mu4e-account-alist)))
+                                 mlh-mu4e-account-alist)
+                         nil t nil nil (caar mlh-mu4e-account-alist)))
 
-      (defun kdl-mu4e-set-compose-account ()
+      (defun mlh-mu4e-set-compose-account ()
         "Set various vars when composing a message. The vars to set are
-  defined in kdl-mu4e-account-alist."
-        (let* ((account (or (kdl-mu4e-current-account nil t)
-                            (kdl-mu4e-choose-account)))
-               (account-vars (cdr (assoc account kdl-mu4e-account-alist))))
+  defined in `mlh-mu4e-account-alist'."
+        (let* ((account (or (mlh-mu4e-current-account nil t)
+                            (mlh-mu4e-choose-account)))
+               (account-vars (cdr (assoc account mlh-mu4e-account-alist))))
           (when account-vars
             (mapc #'(lambda (var)
                       (set (car var) (cadr var)))
                   account-vars))))
-      (add-hook 'mu4e-compose-pre-hook 'kdl-mu4e-set-compose-account)
+      (add-hook 'mu4e-compose-pre-hook 'mlh-mu4e-set-compose-account)
 
       ;; Send mail through msmtp (setq stuff is below)
-      (defun kdl-msmtp ()
+      (defun mlh-msmtp ()
         "Add some arguments to the msmtp call in order to route the message
   through the right account."
         (if (message-mail-p)
@@ -3023,19 +3028,19 @@ passed in. Also supports ignoring the msg at the point."
               (let* ((from (save-restriction (message-narrow-to-headers)
                                              (message-fetch-field "from"))))
                 (setq message-sendmail-extra-arguments (list "-a" msmtp-account))))))
-      (add-hook 'message-send-mail-hook 'kdl-msmtp)
+      (add-hook 'message-send-mail-hook 'mlh-msmtp)
 
       ;; Notification stuff
       (setq global-mode-string
-            (if (string-match-p "kdl-mu4e-new-mail"
+            (if (string-match-p "mlh-mu4e-new-mail"
                                 (prin1-to-string global-mode-string))
                 global-mode-string
               (cons
-               ;;         '(kdl-mu4e-new-mail "✉" "")
-               '(kdl-mu4e-new-mail "Mail" "")
+               ;;         '(mlh-mu4e-new-mail "✉" "")
+               '(mlh-mu4e-new-mail "Mail" "")
                global-mode-string)))
 
-      (defun kdl-mu4e-unread-mail-query ()
+      (defun mlh-mu4e-unread-mail-query ()
         "The query to look for unread messages in all account INBOXes.
   More generally, change this code to affect not only when the
   envelope icon appears in the modeline, but also what shows up in
@@ -3048,122 +3053,104 @@ passed in. Also supports ignoring the msg at the point."
                                   (format fmt name))
                                 '("flag:unread AND maildir:/%s/INBOX")
                                 " "))))
-         kdl-mu4e-account-alist
+         mlh-mu4e-account-alist
          " OR "))
 
-      (defun kdl-mu4e-new-mail-p ()
+      (defun mlh-mu4e-new-mail-p ()
         "Predicate for if there is new mail or not"
         (not (eq 0 (string-to-number
                     (replace-regexp-in-string
                      "[ \t\n\r]" "" (shell-command-to-string
                                      (concat "mu find "
-                                             (kdl-mu4e-unread-mail-query)
+                                             (mlh-mu4e-unread-mail-query)
                                              " | wc -l")))))))
 
-      (defun kdl-mu4e-notify ()
+      (defun mlh-mu4e-notify ()
         "Function called to update the new-mail flag used in the mode-line"
         ;; This delay is to give emacs and mu a chance to have changed the
         ;; status of the mail in the index
         (run-with-idle-timer
-         1 nil (lambda () (setq kdl-mu4e-new-mail (kdl-mu4e-new-mail-p)))))
+         1 nil (lambda () (setq mlh-mu4e-new-mail (mlh-mu4e-new-mail-p)))))
 
       ;; I put a lot of effort (probably too much) into getting the
       ;; 'new mail' icon to go away by showing or hiding it:
       ;; - periodically (this runs even when mu4e isn't running)
-      (setq kdl-mu4e-notify-timer (run-with-timer 0 500 'kdl-mu4e-notify))
+      (setq mlh-mu4e-notify-timer (run-with-timer 0 500 'mlh-mu4e-notify))
       ;; - when the index is updated (this runs when mu4e is running)
-      (add-hook 'mu4e-index-updated-hook 'kdl-mu4e-notify)
+      (add-hook 'mu4e-index-updated-hook 'mlh-mu4e-notify)
       ;; - after mail is processed (try to make the icon go away)
       (defadvice mu4e-mark-execute-all
-          (after mu4e-mark-execute-all-notify activate) 'kdl-mu4e-notify)
+          (after mu4e-mark-execute-all-notify activate) 'mlh-mu4e-notify)
       ;; - when a message is opened (try to make the icon go away)
-      (add-hook 'mu4e-view-mode-hook 'kdl-mu4e-notify)
+      (add-hook 'mu4e-view-mode-hook 'mlh-mu4e-notify)
       ;; wrap lines
       (add-hook 'mu4e-view-mode-hook 'visual-line-mode)
 
-      (defun kdl-mu4e-quit-and-notify ()
+      (defun mlh-mu4e-quit-and-notify ()
         "Bury the buffer and check for new messages. Mainly this is intended
   to clear out the envelope icon when done reading mail."
         (interactive)
         (bury-buffer)
-        (kdl-mu4e-notify))
+        (mlh-mu4e-notify))
 
       ;; Make 'quit' just bury the buffer
-      (define-key mu4e-headers-mode-map "q" 'kdl-mu4e-quit-and-notify)
-      (define-key mu4e-main-mode-map "q" 'kdl-mu4e-quit-and-notify)
+      (define-key mu4e-headers-mode-map "q" 'mlh-mu4e-quit-and-notify)
+      (define-key mu4e-main-mode-map "q" 'mlh-mu4e-quit-and-notify)
 
       ;; View mode stuff
       ;; Make it possible to tab between links
-      (defun kdl-mu4e-populate-url-locations (&optional force)
+      (defun mlh-mu4e-populate-url-locations (&optional force)
         "Scans the view buffer for the links that mu4e has identified and
   notes their locations"
-        (when (or (null kdl-mu4e-url-location-list) force)
-          (make-local-variable 'kdl-mu4e-url-location-list)
+        (when (or (null mlh-mu4e-url-location-list) force)
+          (make-local-variable 'mlh-mu4e-url-location-list)
           (let ((pt (next-single-property-change (point-min) 'face)))
             (while pt
               (when (equal (get-text-property pt 'face) 'mu4e-view-link-face)
-                (add-to-list 'kdl-mu4e-url-location-list pt t))
+                (add-to-list 'mlh-mu4e-url-location-list pt t))
               (setq pt (next-single-property-change pt 'face)))))
-        kdl-mu4e-url-location-list)
+        mlh-mu4e-url-location-list)
 
-      (defun kdl-mu4e-move-to-link (pt)
+      (defun mlh-mu4e-move-to-link (pt)
         (if pt
             (goto-char pt)
           (error "No link found.")))
 
-      (defun kdl-mu4e-forward-url ()
+      (defun mlh-mu4e-forward-url ()
         "Move the point to the beginning of the next link in the buffer"
         (interactive)
-        (let* ((pt-list (kdl-mu4e-populate-url-locations)))
-          (kdl-mu4e-move-to-link
+        (let* ((pt-list (mlh-mu4e-populate-url-locations)))
+          (mlh-mu4e-move-to-link
            (or (some (lambda (pt) (when (> pt (point)) pt)) pt-list)
                (some (lambda (pt) (when (> pt (point-min)) pt)) pt-list)))))
 
-      (defun kdl-mu4e-backward-url ()
+      (defun mlh-mu4e-backward-url ()
         "Move the point to the beginning of the previous link in the buffer"
         (interactive)
-        (let* ((pt-list (reverse (kdl-mu4e-populate-url-locations))))
-          (kdl-mu4e-move-to-link
+        (let* ((pt-list (reverse (mlh-mu4e-populate-url-locations))))
+          (mlh-mu4e-move-to-link
            (or (some (lambda (pt) (when (< pt (point)) pt)) pt-list)
                (some (lambda (pt) (when (< pt (point-max)) pt)) pt-list)))))
 
-      (define-key mu4e-view-mode-map (kbd "TAB") 'kdl-mu4e-forward-url)
-      (define-key mu4e-view-mode-map (kbd "<backtab>") 'kdl-mu4e-backward-url)
+      (define-key mu4e-view-mode-map (kbd "TAB") 'mlh-mu4e-forward-url)
+      (define-key mu4e-view-mode-map (kbd "<backtab>") 'mlh-mu4e-backward-url)
 
       ;; Misc
       ;; The bookmarks for the main screen
       (setq mu4e-bookmarks
-            `((,(kdl-mu4e-unread-mail-query) "New messages"         ?b)
-              ("maildir:/elastic/build"      "Build failures"      ?B)
+            `((,(mlh-mu4e-unread-mail-query) "New messages"         ?b)
+              ("maildir:/elastic/build"      "Build failures"       ?B)
               ("date:today..now"             "Today's messages"     ?t)
               ("date:7d..now"                "Last 7 days"          ?W)
-              ;;("maildir:/writequit/INBOX"    "Writequit"            ?w)
+              ("maildir:/fastmail/INBOX"     "Fastmail"             ?f)
               ("maildir:/elastic/INBOX"      "Elastic"              ?s)
               ("maildir:/gmail/INBOX"        "Gmail"                ?g)
-              ;; ("maildir:/writequit/INBOX OR maildir:/elastic/INBOX OR maildir:/gmail/INBOX"
-              ;;  "All Mail" ?a)
               ("maildir:/elastic/INBOX OR maildir:/gmail/INBOX" "All Mail" ?a)))
 
-      ;; Skip the main mu4e screen and go right to unread
-      (defun kdl-mu4e-view-unread ()
-        "Open the Unread bookmark directly"
-        (interactive)
-        (mu4e~start)
-        (mu4e-headers-search-bookmark (mu4e-get-bookmark-query ?b)))
-
-      (global-set-key (kbd "C-c 2") 'kdl-mu4e-view-unread)
-
-      ;; Don't echo some mu4e messages
-      (add-to-list 'message-filter-regexp-list "mu4e.*Indexing.*processed")
-      (add-to-list 'message-filter-regexp-list "mu4e.*Retrieving mail")
-      (add-to-list 'message-filter-regexp-list "mu4e.*Started")
-
-      ;; Start it up
-      (when (eq window-system 'ns)
-        ;; start mu4e
-        (mu4e~start)
-        ;; check for unread messages
-        (kdl-mu4e-notify))
+      ;; start mu4e
+      (mu4e~start)
+      ;; check for unread messages
+      (mlh-mu4e-notify)
 
       (add-to-list 'mu4e-view-actions
                    '("ViewInBrowser" . mu4e-action-view-in-browser) t)
@@ -3173,19 +3160,10 @@ passed in. Also supports ignoring the msg at the point."
 
       (define-key mu4e-headers-mode-map (kbd "J") 'mu4e~headers-jump-to-maildir)
       (define-key mu4e-headers-mode-map (kbd "j") 'next-line)
-      (define-key mu4e-headers-mode-map (kbd "k") 'previous-line)
-
-      (when (eq my/background 'light)
-        (set-face-background 'mu4e-header-highlight-face "#e0e0e0"))))
+      (define-key mu4e-headers-mode-map (kbd "k") 'previous-line)))
 
   (global-set-key (kbd "C-c m") 'mu4e))
 #+END_SRC
-
-** Email (gnus) configuration
-:PROPERTIES:
-:CUSTOM_ID: 20d320db-4e23-4c3f-9b46-37daf5213fbf
-:END:
-See: ~/.gnus.el
 
 ** ace-jump-mode
 :PROPERTIES:

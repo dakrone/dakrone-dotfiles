@@ -18,18 +18,6 @@ and installs into =~/.esvmrc=
 
 #+BEGIN_SRC json :tangle .esvmrc
 {
-  "defaults": {
-    "plugins": [],
-    "config": {
-      "node.add_id_to_custom_path": false,
-      "node.enable_custom_paths": true,
-      "script.inline": "on",
-      "script.indexed": "on",
-      "path.shared_data": "/tmp"
-      "path.repo": "/tmp"
-      "cluster.name": "es-lee"
-    }
-  },
   "clusters": {
     "1.7": {
       "branch": "1.7",
@@ -47,6 +35,18 @@ and installs into =~/.esvmrc=
       "branch": "master",
       "nodes": 1
     }
+  },
+  "defaults": {
+    "config": {
+      "cluster.name": "es-lee",
+      "node.add_id_to_custom_path": false,
+      "node.enable_custom_paths": true,
+      "path.repo": "/tmp",
+      "path.shared_data": "/tmp",
+      "script.indexed": "on",
+      "script.inline": "on"
+    },
+    "plugins": []
   }
 }
 #+END_SRC

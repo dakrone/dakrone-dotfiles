@@ -42,6 +42,9 @@ export PATH=~/bin:~/.cabal/bin:/usr/local/bin:/usr/local/sbin:$PATH
 # Node/npm
 export PATH=$PATH:~/node_modules/.bin
 
+# Cask
+export PATH=$PATH:~/.cask/bin
+
 # history
 HISTFILE=$HOME/.zsh-history
 HISTSIZE=10000

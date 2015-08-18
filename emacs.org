@@ -165,7 +165,7 @@ things add hooks that don't work if packages aren't installed.
     auctex
 
     ;; org-mode
-    org htmlize gnuplot-mode gnuplot ox-reveal ox-gfm
+    org htmlize gnuplot-mode gnuplot
 
     ;; buffer utils
     popwin dired+
@@ -223,9 +223,6 @@ things add hooks that don't work if packages aren't installed.
     ;; eshell
     eshell-prompt-extras
 
-    ;; gnus
-    gnus-x-gm-raw
-
     ;; eww
     eww-lnum
     ))
@@ -237,7 +234,12 @@ things add hooks that don't work if packages aren't installed.
     (unless packages-refreshed?
       (package-refresh-contents)
       (setq packages-refreshed? t))
-    (package-install pack)))
+    (unwind-protect
+        (condition-case ex
+            (package-install pack)
+          ('error (message "Failed to install package [%s], caught exception: [%s]"
+                           pack ex)))
+      (message "Installed %s" pack))))
 
 ;; Load use-package, used for loading packages everywhere else
 (require 'use-package)
@@ -2668,21 +2670,6 @@ Publishing org-mode files to my hosting provider:
 
 Then, when I'm editing ~/org/es/feature-foo.org, I can hit =C-c C-e P f= and
 export the file to show up in http://p.writequit.org/org
-
-** org-reveal (ox-reveal)
-:PROPERTIES:
-   :ID:       E8ED353B-62C4-480D-99CE-B94A61ED7A54
-:CUSTOM_ID: c688f488-eba7-4b0d-875c-5c013a014637
-   :END:
-Exporting org-mode to [[http://lab.hakim.se/reveal-js/#/][reveal.js]] presentations
-
-#+BEGIN_SRC emacs-lisp
-(use-package ox-reveal
-  :defer t
-  :config
-  (progn
-    (setq org-reveal-root "http://cdn.jsdelivr.net/reveal.js/2.5.0/")))
-#+END_SRC
 
 ** exec-path-from-shell
 :PROPERTIES:

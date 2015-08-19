@@ -148,6 +148,7 @@ things add hooks that don't work if packages aren't installed.
     smooth-scrolling ace-jump-mode multiple-cursors easy-kill
     simple-call-tree simple-call-tree+ editorconfig ggtags bookmark+
     fill-column-indicator golden-ratio wc-mode eyebrowse vlf hydra
+    shrink-whitespace
 
     ;; external process things
     prodigy vkill
@@ -4239,6 +4240,21 @@ Used smart-tab to complete everywhere except for ERC, shell and mu4e.
     (add-to-list 'smart-tab-disabled-major-modes 'mu4e-compose-mode)
     (add-to-list 'smart-tab-disabled-major-modes 'erc-mode)
     (add-to-list 'smart-tab-disabled-major-modes 'shell-mode)))
+#+END_SRC
+
+** shrink-whitespace
+Usually =M-SPC= is bound to ~just-one-space~, but [[https://github.com/jcpetkovich/shrink-whitespace.el][shrink-whitespace]] is actually
+a better alternative because it can shrink space between lines.
+
+Thanks to
+http://pragmaticemacs.com/emacs/delete-blank-lines-and-shrink-whitespace/ for
+the link to this package.
+
+#+BEGIN_SRC emacs-lisp
+(use-package shrink-whitespace
+  :defer t
+  :bind (("M-SPC" . shrink-whitespace)
+         ("M-S-SPC" . shrink-whitespace)))
 #+END_SRC
 
 ** undo-tree

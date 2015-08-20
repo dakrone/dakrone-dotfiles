@@ -504,6 +504,19 @@ if [ -f ~/.gvm/bin/gvm-init.sh ]; then
     source ~/.gvm/bin/gvm-init.sh
 fi
 #+END_SRC
+
+*** Virtualenvwrapper
+So [[http://virtualenvwrapper.readthedocs.org/en/latest/][virtualenvwrapper]] is a handy thing for managing virtualenv sessions, but it
+needs to be sourced if available.
+
+Use =pip install virtualenvwrapper= to install it
+
+#+BEGIN_SRC sh :tangle .zsh.d/17-virtualenv.zsh
+if whence -cp virtualenvwrapper.sh > /dev/null 2>&1; then
+    source `whence -cp virtualenvwrapper.sh`
+fi
+#+END_SRC
+
 *** Prompt
 :PROPERTIES:
 :ID:       072a7074-27aa-4f32-b6c3-1952716675a6

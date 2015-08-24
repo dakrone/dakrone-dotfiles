@@ -199,7 +199,7 @@ things add hooks that don't work if packages aren't installed.
     go-mode
 
     ;; java
-    malabar-mode groovy-mode javap-mode emacs-eclim
+    malabar-mode groovy-mode javap-mode emacs-eclim jdee
 
     ;; javascript
     tern json-mode js2-mode
@@ -1793,9 +1793,7 @@ work with the ES codebase.
 So [[https://github.com/jdee-emacs/jdee/][JDEE]] just had a resurgence, so I've been playing a bit with it.
 
 #+BEGIN_SRC emacs-lisp
-(when (file-exists-p "~/src/elisp/jdee/dist/jdee-2.4.2/lisp")
-  (add-to-list 'load-path "~/src/elisp/jdee/dist/jdee-2.4.2/lisp")
-  (load "jde-autoload"))
+(use-package jdee)
 #+END_SRC
 
 **** eclim

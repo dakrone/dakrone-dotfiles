@@ -187,7 +187,7 @@ things add hooks that don't work if packages aren't installed.
     cperl-mode
 
     ;; python
-    hy-mode jedi
+    hy-mode jedi virtualenvwrapper
 
     ;; ruby
     ruby-mode ruby-test-mode inf-ruby puppet-mode rbenv chruby
@@ -246,6 +246,26 @@ things add hooks that don't work if packages aren't installed.
 (require 'use-package)
 ;; Set to t to debug package loading
 (setq use-package-verbose nil)
+#+END_SRC
+
+** Setting up $PATH and other vars
+:PROPERTIES:
+   :ID:       D6DF0536-C011-4219-BA84-C67072ED8543
+:CUSTOM_ID: 37da3bd7-0468-43ac-ae12-6eaa339e8db5
+   :END:
+This allows a GUI emacs to inherit =$PATH= and other things from the shell when
+run. I use it for the path on OSX and JAVA_HOME everywhere else.
+
+#+BEGIN_SRC emacs-lisp
+(use-package exec-path-from-shell
+  :defer t
+  :init
+  (progn
+    (setq exec-path-from-shell-variables '("JAVA_HOME"
+                                           "PATH"
+                                           "WORKON_HOME"
+                                           "MANPATH"))
+    (exec-path-from-shell-initialize)))
 #+END_SRC
 
 ** Basics and settings used everywhere
@@ -1678,6 +1698,20 @@ keys, the custom hook only loads jedi when editing python files:
     (add-hook 'python-mode-hook #'my/setup-jedi)))
 #+END_SRC
 
+**** virtualenv
+I'm using the [[https://github.com/porterjamesj/virtualenvwrapper.el][virtualenvwrapper]] package for managing these
+
+#+BEGIN_SRC emacs-lisp
+(use-package virtualenvwrapper
+  :defer t
+  :init
+  (progn
+    (venv-initialize-interactive-shells)
+    (venv-initialize-eshell)
+    (setq venv-location (or (getenv "WORKON_HOME")
+                            "~/.venvs"))))
+#+END_SRC
+
 *** Java
 :PROPERTIES:
     :ID:       EBD5666F-94FB-4C56-95C8-45181D2B3805
@@ -2671,25 +2705,6 @@ Publishing org-mode files to my hosting provider:
 
 Then, when I'm editing ~/org/es/feature-foo.org, I can hit =C-c C-e P f= and
 export the file to show up in http://p.writequit.org/org
-
-** exec-path-from-shell
-:PROPERTIES:
-   :ID:       D6DF0536-C011-4219-BA84-C67072ED8543
-:CUSTOM_ID: 37da3bd7-0468-43ac-ae12-6eaa339e8db5
-   :END:
-This allows a GUI emacs to inherit =$PATH= and other things from the shell when
-run. I use it for the path on OSX and JAVA_HOME everywhere else.
-
-#+BEGIN_SRC emacs-lisp
-(use-package exec-path-from-shell
-  :defer t
-  :init
-  (progn
-    (setq exec-path-from-shell-variables '("JAVA_HOME"
-                                           "PATH"
-                                           "MANPATH"))
-    (exec-path-from-shell-initialize)))
-#+END_SRC
 
 ** vkill
 :PROPERTIES:

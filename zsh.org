@@ -45,6 +45,12 @@ export PATH=$PATH:~/node_modules/.bin
 # Cask
 export PATH=$PATH:~/.cask/bin
 
+# Virtualenvwrapper environment home
+export WORKON_HOME=~/.venvs
+if [ -d "$WORKON_HOME" ]; then
+    mkdir -p "$WORKON_HOME"
+fi
+
 # history
 HISTFILE=$HOME/.zsh-history
 HISTSIZE=10000

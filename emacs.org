@@ -129,7 +129,7 @@ things add hooks that don't work if packages aren't installed.
     rainbow-mode leuven-theme dakrone-theme color-identifiers-mode
     moe-theme nyan-mode color-theme-sanityinc-tomorrow powerline
     volatile-highlights apropospriate-theme material-theme
-    visible-mark smart-mode-line
+    smart-mode-line
 
     ;; misc
     diminish gist scpaste async sx exec-path-from-shell bbdb
@@ -145,10 +145,9 @@ things add hooks that don't work if packages aren't installed.
     ;; editing utilities
     expand-region smex windresize ag undo-tree iedit ido-ubiquitous
     ido-vertical-mode yasnippet smart-tab anzu smartparens flx-ido projectile
-    smooth-scrolling ace-jump-mode multiple-cursors easy-kill
-    simple-call-tree simple-call-tree+ editorconfig ggtags bookmark+
-    fill-column-indicator golden-ratio wc-mode eyebrowse vlf hydra
-    shrink-whitespace
+    smooth-scrolling multiple-cursors easy-kill simple-call-tree
+    simple-call-tree+ editorconfig ggtags bookmark+ golden-ratio wc-mode
+    eyebrowse vlf hydra shrink-whitespace ix
 
     ;; external process things
     prodigy vkill
@@ -3122,20 +3121,6 @@ passed in. Also supports ignoring the msg at the point."
   (global-set-key (kbd "C-c m") 'mu4e))
 #+END_SRC
 
-** ace-jump-mode
-:PROPERTIES:
-   :ID:       07163E57-90A2-48E2-8188-88CA677038CF
-:CUSTOM_ID: c79cfcc4-8403-473a-b906-ad0566707d16
-   :END:
-Jump quickly between words or lines, I mostly use it with eww.
-
-#+BEGIN_SRC emacs-lisp
-(use-package ace-jump-mode
-  :defer t
-  :bind (("C-c SPC" . ace-jump-mode)
-         ("C-c M-SPC" . ace-jump-line-mode)))
-#+END_SRC
-
 ** ediff
 :PROPERTIES:
    :ID:       58F8D12D-B8E4-4857-8633-699CCF66120E
@@ -4459,18 +4444,18 @@ Smex is IDO, but for =M-x=
 Highlights things like undo, copy, paste, etc.
 
 #+BEGIN_SRC emacs-lisp
-   (defun my/turn-on-volatile-highlights ()
-     (interactive)
-     (volatile-highlights-mode t)
-     (diminish 'volatile-highlights-mode))
+(defun my/turn-on-volatile-highlights ()
+  (interactive)
+  (volatile-highlights-mode t)
+  (diminish 'volatile-highlights-mode))
 
-   (use-package volatile-highlights
-     :defer t
-     :init
-     (progn
-       (require 'volatile-highlights) ;; vh has a problem with autoloads
-       (add-hook 'org-mode-hook #'my/turn-on-volatile-highlights)
-       (add-hook 'prog-mode-hook #'my/turn-on-volatile-highlights)))
+(use-package volatile-highlights
+  :defer t
+  :init
+  (progn
+    (require 'volatile-highlights) ;; vh has a problem with autoloads
+    (add-hook 'org-mode-hook #'my/turn-on-volatile-highlights)
+    (add-hook 'prog-mode-hook #'my/turn-on-volatile-highlights)))
 #+END_SRC
 
 ** color-identifiers-mode
@@ -4659,47 +4644,6 @@ Wait, no, I mean the Emacs web browser built in to 24.4
       (eval-after-load "eww"
         '(progn (define-key eww-mode-map "f" 'eww-lnum-follow)
                 (define-key eww-mode-map "F" 'eww-lnum-universal))))))
-#+END_SRC
-
-** visible-mark
-:PROPERTIES:
-:ID:       27ba4f50-e852-4654-8899-e2196a3f0b5f
-:CUSTOM_ID: 00f1193d-8314-4a70-965a-5e131fb9ef6b
-:END:
-
-#+BEGIN_SRC emacs-lisp
-(defface visible-mark-active ;; put this before (use-package visible-mark)
-  '((((type tty) (class mono)))
-    (t (:background "magenta"))) "")
-
-(use-package visible-mark
-  :disabled t
-  :init (global-visible-mark-mode 1)
-  :config
-  (progn
-    (setq visible-mark-max 2)
-    (setq visible-mark-faces `(visible-mark-face1 visible-mark-face2))))
-#+END_SRC
-
-** fill-column-indicator
-:PROPERTIES:
-   :ID:       A6D8211C-8ACA-4E0F-B7B3-10475DE21268
-:CUSTOM_ID: 10382c65-0924-45f0-b17f-10927a713c09
-   :END:
-While I would love to enable this, it's disabled because of
-https://github.com/alpaker/Fill-Column-Indicator/issues/45
-
-#+BEGIN_SRC emacs-lisp
-(defun my/turn-on-fill-column-indicator ()
-  (interactive)
-  (fci-mode 1))
-
-(use-package fill-column-indicator
-  :disabled t
-  :init (add-hook 'prog-mode-hook #'my/turn-on-fill-column-indicator)
-  :config
-  (progn
-    (setq fci-rule-column 80)))
 #+END_SRC
 
 ** idle-highlight-mode

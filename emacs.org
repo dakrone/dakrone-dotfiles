@@ -2769,7 +2769,13 @@ To use this, I just need to do =(alert "this is a message")=.
     (progn
       (use-package rcirc-color)
       (use-package rcirc-alertify
-        :init (rcirc-alertify-enable))))
+        :init (rcirc-alertify-enable))
+      ;; Scroll to the bottom
+      (add-hook 'rcirc-mode-hook
+                (lambda ()
+                  (set (make-local-variable 'scroll-conservatively)
+                       8192)))
+      (add-hook 'rcirc-mode-hook 'rcirc-omit-mode)))
 
   (defun my/enable-rcirc-track ()
     (interactive)
@@ -2779,8 +2785,7 @@ To use this, I just need to do =(alert "this is a message")=.
          '("gnutls-cli --priority secure256 --x509certfile ~/host.pem -p %p %h"
            "openssl s_client -connect %h:%p -no_ssl2 -ign_eof -cert ~/host.pem")))
     (rcirc nil)
-    (add-hook 'rcirc-mode-hook #'my/enable-rcirc-track)
-    (add-hook 'rcirc-mode-hook 'rcirc-omit-mode)))
+    (add-hook 'rcirc-mode-hook #'my/enable-rcirc-track)))
 #+END_SRC
 
 ** email (mu4e) Configuration

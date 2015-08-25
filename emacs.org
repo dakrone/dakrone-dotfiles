@@ -137,7 +137,7 @@ things add hooks that don't work if packages aren't installed.
     ;; es-mode is run from a  git checkout
 
     ;; IRC/ERC and social stuff
-    erc-hl-nicks ercn alert twittering-mode
+    alert twittering-mode rcirc-color rcirc-alertify
 
     ;; for auto-complete
     fuzzy popup company
@@ -2746,98 +2746,42 @@ though.
 
 To use this, I just need to do =(alert "this is a message")=.
 
-** ERC Configuration (IRC)
-:PROPERTIES:
-   :ID:       C237A28C-3097-4869-8761-52758D803525
-:CUSTOM_ID: d8e05cc2-2b85-4607-b133-b0f58c85b64e
-   :END:
-ERC (IRC) configuration, requires the ERC package.
-
-I use ercn for IRC notifications, written by the honorable Mr. Leatherman
-
-And finally the giant setting of ERC configuration variables, only
-if running in windowed mode, because I don't use ERC otherwise:
+** Rcirc
 
 #+BEGIN_SRC emacs-lisp
-(defun start-irc ()
+(defun start-rcirc ()
   (interactive)
-  (when (file-exists-p "~/.ercpass")
-    (load-file "~/.ercpass"))
-
-  (use-package erc
+  (load-file "~/.ercpass")
+  (use-package rcirc
+    :init
+    (progn
+      (setq rcirc-server-alist
+            `(("irc.writequit.org"
+               :nick "dakrone"
+               :port 31425
+               :password ,freenode-znc-pass
+               :full-name "Lee"
+               :encryption tls
+               :channels
+               ("#emacs")))))
     :config
     (progn
-      (setq erc-fill-column 78
-            erc-server-coding-system '(utf-8 . utf-8)
-            erc-hide-list '("JOIN" "PART" "QUIT" "NICK")
-            erc-track-exclude-types (append '("324" "329" "332" "333"
-                                              "353" "477" "MODE")
-                                            erc-hide-list)
-            erc-nick '("dakrone" "dakrone_" "dakrone__")
-            erc-flood-protect nil
-            erc-pals '("hiredman" "danlarkin" "drewr" "pjstadig" "scgilardi"
-                       "joegallo" "jimduey" "leathekd" "zkim" "imotov"
-                       "technomancy" "yazirian" "danielglauser")
-            erc-pal-highlight-type 'nil
-            erc-keywords '("dakrone" "dakrone_" "clj-http" "cheshire"
-                           "clojure-opennlp" "opennlp" "circuit breaker"
-                           "simple_query_string")
-            erc-ignore-list '()
-            erc-track-exclude-types '("JOIN" "NICK" "PART" "QUIT" "MODE"
-                                      "324" "329" "332" "333" "353" "477")
-            erc-log-matches-types-alist
-            '((keyword . "ERC keywords")
-              (current-nick . "ERC messages for me"))
-            erc-prompt-for-nickserv-password nil
-            erc-server-reconnect-timeout 5
-            erc-fill-function 'erc-fill-static
-            erc-fill-static-center 18
-            ;; update ERC prompt with room name
-            erc-prompt (lambda ()
-                         (if (and (boundp 'erc-default-recipients)
-                                  (erc-default-target))
-                             (erc-propertize (concat (erc-default-target) ">")
-                                             'read-only t 'rear-nonsticky t
-                                             'front-nonsticky t)
-                           (erc-propertize (concat "ERC>") 'read-only t
-                                           'rear-nonsticky t
-                                           'front-nonsticky t))))
+      (use-package rcirc-color)
+      (use-package rcirc-alertify
+        :init (rcirc-alertify-enable))))
 
-      ;; Turn on company-mode in ERC
-      (add-hook 'erc-mode-hook 'company-mode)
-
-      ;; other random services (spelling)
-      (use-package erc-services
-        :init
-        (progn
-          (add-to-list 'erc-modules 'spelling)
-          (erc-services-mode 1)
-          (erc-spelling-mode 1)))
-      (erc-update-modules)))
-
-  (use-package ercn
-  :config
-  (progn
-    (setq ercn-notify-rules
-          '((current-nick . all)
-            (keyword . all)
-            (pal . ("#84115"))
-            (query-buffer . all)))
-    (defun do-notify (nickname message)
-      (alert message :title (concat (buffer-name) ": " nickname)))
-    (add-hook 'ercn-notify-hook #'do-notify)))
+  (defun my/enable-rcirc-track ()
+    (interactive)
+    (rcirc-track-minor-mode 1))
 
   (let ((tls-program
-         '("openssl s_client -connect %h:%p -no_ssl2 -ign_eof -cert ~/host.pem"
-           "gnutls-cli --priority secure256 --x509certfile ~/host.pem -p %p %h"
-           "gnutls-cli --priority secure256 -p %p %h")))
-    (erc-tls :server "freenode" :port 31425
-             :nick "dakrone" :password freenode-znc-pass)
-    (erc-tls :server "oftc" :port 31425
-             :nick "dakrone" :password oftc-znc-pass)))
+         '("gnutls-cli --priority secure256 --x509certfile ~/host.pem -p %p %h"
+           "openssl s_client -connect %h:%p -no_ssl2 -ign_eof -cert ~/host.pem")))
+    (rcirc nil)
+    (add-hook 'rcirc-mode-hook #'my/enable-rcirc-track)))
 #+END_SRC
 
-** Email (mu4e) Configuration
+** email (mu4e) Configuration
 :PROPERTIES:
    :ID:       E3FFEF22-68F6-4EC7-8381-5054850B4567
 :CUSTOM_ID: b65eb4b0-08fe-48bd-ad39-0e60e61c0a9c

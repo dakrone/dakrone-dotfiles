@@ -2763,7 +2763,8 @@ To use this, I just need to do =(alert "this is a message")=.
                :full-name "Lee"
                :encryption tls
                :channels
-               ("#emacs")))))
+               ("#emacs")))
+            rcirc-omit-responses '("JOIN" "PART" "QUIT" "NICK" "AWAY")))
     :config
     (progn
       (use-package rcirc-color)
@@ -2778,7 +2779,8 @@ To use this, I just need to do =(alert "this is a message")=.
          '("gnutls-cli --priority secure256 --x509certfile ~/host.pem -p %p %h"
            "openssl s_client -connect %h:%p -no_ssl2 -ign_eof -cert ~/host.pem")))
     (rcirc nil)
-    (add-hook 'rcirc-mode-hook #'my/enable-rcirc-track)))
+    (add-hook 'rcirc-mode-hook #'my/enable-rcirc-track)
+    (add-hook 'rcirc-mode-hook 'rcirc-omit-mode)))
 #+END_SRC
 
 ** email (mu4e) Configuration

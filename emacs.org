@@ -349,14 +349,6 @@ Make gnutls a bit safer
 (setq gnutls-min-prime-bits 4096)
 #+END_SRC
 
-Fix some things for scrolling a bit better
-
-#+BEGIN_SRC emacs-lisp
-(setq scroll-conservatively 10000
-      scroll-preserve-screen-position t)
-#+END_SRC
-
-
 Echo commands I haven't finished quicker than the default of 1 second:
 
 #+BEGIN_SRC emacs-lisp
@@ -3162,7 +3154,11 @@ buffer.
 (use-package smooth-scrolling
   :defer t
   :config
-  (setq smooth-scroll-margin 4))
+  (setq smooth-scroll-margin 4
+        scroll-margin 4
+        scroll-conservatively 101
+        scroll-preserve-screen-position t
+        auto-window-vscroll nil))
 #+END_SRC
 
 ** paredit

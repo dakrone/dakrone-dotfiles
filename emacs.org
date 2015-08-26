@@ -3809,6 +3809,8 @@ https://tuhdo.github.io/helm-intro.html
     (define-key helm-map (kbd "C-n")   'helm-next-line)
     (define-key helm-map (kbd "C-M-n") 'helm-next-source)
     (define-key helm-map (kbd "C-M-p") 'helm-previous-source)
+    (define-key helm-map (kbd "M-N") 'helm-next-source)
+    (define-key helm-map (kbd "M-P") 'helm-previous-source)
     ;; The normal binding is C-c h M-g s which is insane
     (global-set-key (kbd "C-c h g")    'helm-do-grep)
     (global-set-key (kbd "C-c h a")    'helm-do-ag)

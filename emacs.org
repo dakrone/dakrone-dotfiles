@@ -147,7 +147,7 @@ things add hooks that don't work if packages aren't installed.
     ido-vertical-mode yasnippet smart-tab anzu smartparens flx-ido projectile
     smooth-scrolling multiple-cursors easy-kill simple-call-tree
     simple-call-tree+ editorconfig ggtags bookmark+ golden-ratio wc-mode
-    eyebrowse vlf hydra shrink-whitespace ix
+    eyebrowse vlf hydra shrink-whitespace ix quick-preview
 
     ;; external process things
     prodigy vkill
@@ -2766,7 +2766,31 @@ To use this, I just need to do =(alert "this is a message")=.
                 (lambda ()
                   (set (make-local-variable 'scroll-conservatively)
                        8192)))
-      (add-hook 'rcirc-mode-hook 'rcirc-omit-mode)))
+      (add-hook 'rcirc-mode-hook 'rcirc-omit-mode)
+
+      ;; Allows using /reconnect
+      (defun-rcirc-command reconnect (arg)
+        "Reconnect the server process."
+        (interactive "i")
+        (unless process
+          (error "There's no process for this target"))
+        (let* ((server (car (process-contact process)))
+               (port (process-contact process :service))
+               (nick (rcirc-nick process))
+               channels query-buffers)
+          (dolist (buf (buffer-list))
+            (with-current-buffer buf
+              (when (eq process (rcirc-buffer-process))
+                (remove-hook 'change-major-mode-hook
+                             'rcirc-change-major-mode-hook)
+                (if (rcirc-channel-p rcirc-target)
+                    (setq channels (cons rcirc-target channels))
+                  (setq query-buffers (cons buf query-buffers))))))
+          (delete-process process)
+          (rcirc-connect server port nick
+                         rcirc-default-user-name
+                         rcirc-default-full-name
+                         channels)))))
 
   (defun my/enable-rcirc-track ()
     (interactive)
@@ -3407,6 +3431,19 @@ Great for selecting the inside of Elasticsearch queries
   :defer t
   :bind (("C-c e" . er/expand-region)
          ("C-M-@" . er/contract-region)))
+#+END_SRC
+
+** quick-preview
+Provides a quick preview of the thing at point
+
+#+BEGIN_SRC emacs-lisp
+(use-package quick-preview
+  :init
+  (progn
+    (when (executable-find "gloobus-preview")
+      (setq quick-preview-method 'gloobus))
+    (global-set-key (kbd "C-c q") 'quick-preview-at-point)
+    (define-key dired-mode-map (kbd "Q") 'quick-preview-at-point)))
 #+END_SRC
 
 ** with-editor

@@ -3178,8 +3178,8 @@ buffer.
 (use-package smooth-scrolling
   :defer t
   :config
-  (setq smooth-scroll-margin 4
-        scroll-margin 4
+  (setq smooth-scroll-margin 3
+        scroll-margin 3
         scroll-conservatively 101
         scroll-preserve-screen-position t
         auto-window-vscroll nil))

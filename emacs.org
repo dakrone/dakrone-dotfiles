@@ -3440,8 +3440,6 @@ Provides a quick preview of the thing at point
 (use-package quick-preview
   :init
   (progn
-    (when (executable-find "gloobus-preview")
-      (setq quick-preview-method 'gloobus))
     (global-set-key (kbd "C-c q") 'quick-preview-at-point)
     (define-key dired-mode-map (kbd "Q") 'quick-preview-at-point)))
 #+END_SRC

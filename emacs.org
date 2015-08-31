@@ -2755,7 +2755,8 @@ To use this, I just need to do =(alert "this is a message")=.
                :encryption tls
                :channels
                ("#emacs")))
-            rcirc-omit-responses '("JOIN" "PART" "QUIT" "NICK" "AWAY")))
+            rcirc-omit-responses '("315" "345" "JOIN" "PART"
+                                   "QUIT" "NICK" "AWAY")))
     :config
     (progn
       (use-package rcirc-color)

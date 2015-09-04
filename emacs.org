@@ -177,7 +177,7 @@ things add hooks that don't work if packages aren't installed.
     ssh-config-mode
 
     ;; flycheck
-    flycheck flycheck-tip flycheck-haskell
+    flycheck flycheck-tip flycheck-haskell flycheck-status-emoji
 
     ;; clojure
     clojure-mode clojure-mode-extra-font-locking cider paredit paren-face
@@ -3339,9 +3339,9 @@ Pretty minimally configured, but awesome tool for most dynamic languages.
          ("M-g M-p" . flycheck-previous-error)
          ("M-g M-=" . flycheck-list-errors))
   :init (global-flycheck-mode)
-  :diminish ""
   :config
   (progn
+    (use-package flycheck-status-emoji)
     (setq-default flycheck-disabled-checkers '(emacs-lisp-checkdoc))
     (use-package flycheck-tip
       :config (add-hook 'flycheck-mode-hook #'my/flycheck-customize))

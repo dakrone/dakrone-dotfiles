@@ -4927,7 +4927,7 @@ a lot.
     :END:
 Let's say you have a list like:
 
-#+BEGIN_SRC
+#+BEGIN_SRC fundamental :tangle no
 First Item
 Second Item
 Third Item
@@ -4936,7 +4936,7 @@ Fourth Item
 
 And you want to number it to look like:
 
-#+BEGIN_SRC
+#+BEGIN_SRC fundamental :tangle no
 1. First Item
 2. Second Item
 3. Third Item

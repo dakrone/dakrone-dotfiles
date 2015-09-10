@@ -149,7 +149,7 @@ main
 
 This should then be manually run by running:
 
-#+BEGIN_SRC
+#+BEGIN_SRC fundamental :tangle no
 $ sh ~/bootstrap-packages.sh
 #+END_SRC
 

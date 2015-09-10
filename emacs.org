@@ -83,6 +83,7 @@ everything else fails entirely.
 
 ;; initalize all ELPA packages
 (require 'package)
+(package-initialize)
 
 (add-to-list 'package-archives
              '("melpa" . "http://melpa.org/packages/"))
@@ -97,8 +98,6 @@ everything else fails entirely.
           (company-cider                     . "melpa-stable")
           (malabar-mode                      . "melpa-stable"))))
 
-(package-initialize)
-(setq package-enable-at-startup nil)
 (let ((elapsed (float-time (time-subtract (current-time)
                                           emacs-start-time))))
   (message "Loaded packages in %.3fs" elapsed))
@@ -2377,7 +2376,7 @@ And now the huge org-mode configuration
        (elasticsearch . t)
        (clojure . t)
        (dot . t)
-       (sh . t)
+       (shell . t)
        (ruby . t)
        (python . t)
        (gnuplot . t)

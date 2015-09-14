@@ -301,7 +301,7 @@ Now some personal information about me:
 
 #+BEGIN_SRC emacs-lisp
 (setq user-full-name "Lee Hinman"
-      user-mail-address "leehinman@gmail.com")
+      user-mail-address "leehinman@fastmail.com")
 #+END_SRC
 
 Always, *always*, prefer UTF-8, anything else is insanity
@@ -2602,6 +2602,16 @@ Publishing org-mode files to my hosting provider:
           ("writequit" :components ("writequit-org"
                                     "writequit-images"
                                     "writequit-files"))
+
+          ;; Denver emacs site
+          ("denver-emacs"
+           :base-directory ,(file-truename "~/org/denver-emacs-meetup/")
+           :base-extension "org\\|html"
+           :publishing-directory
+           "/ssh:writequit.org:~/www/denver-emacs"
+           :publishing-function org-html-publish-to-html
+           :with-toc nil
+           :html-preamble t)
 
           ;; Org-mode files for ~/.emacs.d/settings.org
           ("dotfiles"

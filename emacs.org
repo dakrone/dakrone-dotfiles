@@ -1782,7 +1782,8 @@ work with the ES codebase.
 So [[https://github.com/jdee-emacs/jdee/][JDEE]] just had a resurgence, so I've been playing a bit with it.
 
 #+BEGIN_SRC emacs-lisp
-(use-package jdee)
+(add-hook 'java-mode-hook
+          (lambda () (use-package jdee)))
 #+END_SRC
 
 **** eclim

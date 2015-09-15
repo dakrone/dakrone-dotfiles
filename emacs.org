@@ -151,7 +151,7 @@ things add hooks that don't work if packages aren't installed.
     prodigy
 
     ;; logs
-    log4j-mode logstash-conf
+    log4j-mode logview logstash-conf
 
     ;; infrastructure stuff
     restclient company-restclient
@@ -4100,7 +4100,16 @@ Need =hl-line-mode= for this
 
 #+BEGIN_SRC emacs-lisp
 (use-package log4j-mode
+  :disabled t
   :init (add-hook 'log4j-mode-hook #'my/turn-on-viewing-mode))
+#+END_SRC
+
+** logview
+I'm testing out =[[https://github.com/doublep/logview][logview]]= as an alternative to log4j-mode, since it supposedly
+supports more modes and seems more updated
+
+#+BEGIN_SRC emacs-lisp
+(use-package logview)
 #+END_SRC
 
 ** bookmark+

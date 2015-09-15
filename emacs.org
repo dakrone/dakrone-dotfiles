@@ -149,7 +149,7 @@ things add hooks that don't work if packages aren't installed.
     eyebrowse vlf hydra shrink-whitespace ix quick-preview pdf-tools
 
     ;; external process things
-    prodigy vkill
+    prodigy
 
     ;; logs
     log4j-mode logstash-conf
@@ -2696,27 +2696,6 @@ Publishing org-mode files to my hosting provider:
 
 Then, when I'm editing ~/org/es/feature-foo.org, I can hit =C-c C-e P f= and
 export the file to show up in http://p.writequit.org/org
-
-** vkill
-:PROPERTIES:
-   :ID:       83B9CE5B-BA6F-43D5-A1F2-E63692057C64
-:CUSTOM_ID: 4c07054f-afdd-402d-b72d-3e9c4c09f494
-   :END:
-Visually kill programs and processes, I use helm-occur here (thanks John
-Wiegley!) because it makes selecting things much easier.
-
-#+BEGIN_SRC emacs-lisp
-(use-package vkill
-  :defer t
-  :commands vkill
-  :bind ("C-x L" . vkill-and-helm-occur)
-  :init
-  (defun vkill-and-helm-occur ()
-    (interactive)
-    (vkill)
-    (my/turn-on-hl-line-mode)
-    (call-interactively #'helm-occur)))
-#+END_SRC
 
 ** alert (notifications)
 :PROPERTIES:

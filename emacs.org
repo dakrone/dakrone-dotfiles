@@ -2241,10 +2241,6 @@ And now the huge org-mode configuration
           org-agenda-time-grid (quote ((daily today remove-match)
                                        #("----------------" 0 16 (org-heading t))
                                        (0900 1100 1300 1500 1700)))
-          ;; Include the diary file in the agenda
-          org-agenda-include-diary t
-          org-agenda-diary-file "~/diary"
-          org-agenda-insert-diary-extract-time t
           ;; keep the agenda filter until manually removed
           org-agenda-persistent-filter t
           org-agenda-repeating-timestamp-show-all t
@@ -2256,9 +2252,6 @@ And now the huge org-mode configuration
                              ,(file-truename "~/org/es/design/")
                              ,(file-truename "~/org/book/")))
 
-    ;; Save all org-mode buffers every hour at :59
-    (run-at-time "00:59" 3600 'org-save-all-org-buffers)
-
     ;; Org todo keywords
     (setq org-todo-keywords
           (quote
@@ -2268,23 +2261,23 @@ And now the huge org-mode configuration
                       "|" "CANCELLED(c@/!)"))))
     ;; Org faces
     (setq org-todo-keyword-faces
-          (quote (("TODO" :foreground "red" :weight bold)
-                  ("INPROGRESS" :foreground "deep sky blue" :weight bold)
-                  ("SOMEDAY" :foreground "purple" :weight bold)
-                  ("NEEDSREVIEW" :foreground "#edd400" :weight bold)
-                  ("DONE" :foreground "forest green" :weight bold)
-                  ("WAITING" :foreground "orange" :weight bold)
-                  ("HOLD" :foreground "magenta" :weight bold)
-                  ("CANCELLED" :foreground "forest green" :weight bold))))
+          '(("TODO" :foreground "red" :weight bold)
+            ("INPROGRESS" :foreground "deep sky blue" :weight bold)
+            ("SOMEDAY" :foreground "purple" :weight bold)
+            ("NEEDSREVIEW" :foreground "#edd400" :weight bold)
+            ("DONE" :foreground "forest green" :weight bold)
+            ("WAITING" :foreground "orange" :weight bold)
+            ("HOLD" :foreground "magenta" :weight bold)
+            ("CANCELLED" :foreground "forest green" :weight bold)))
     ;; add or remove tags on state change
     (setq org-todo-state-tags-triggers
-          (quote (("CANCELLED" ("CANCELLED" . t))
-                  ("WAITING" ("WAITING" . t))
-                  ("HOLD" ("WAITING") ("HOLD" . t))
-                  (done ("WAITING") ("HOLD"))
-                  ("TODO" ("WAITING") ("CANCELLED") ("HOLD"))
-                  ("INPROGRESS" ("WAITING") ("CANCELLED") ("HOLD"))
-                  ("DONE" ("WAITING") ("CANCELLED") ("HOLD")))))
+          '(("CANCELLED" ("CANCELLED" . t))
+            ("WAITING" ("WAITING" . t))
+            ("HOLD" ("WAITING") ("HOLD" . t))
+            (done ("WAITING") ("HOLD"))
+            ("TODO" ("WAITING") ("CANCELLED") ("HOLD"))
+            ("INPROGRESS" ("WAITING") ("CANCELLED") ("HOLD"))
+            ("DONE" ("WAITING") ("CANCELLED") ("HOLD"))))
     ;; refile targets all level 1 and 2 headers in current file and agenda files
     (setq org-refile-targets '((nil :maxlevel . 2)
                                (org-agenda-files :maxlevel . 2)))
@@ -2300,16 +2293,17 @@ And now the huge org-mode configuration
             ("noexport" . ?n)))
     ;; capture templates
     (setq org-capture-templates
-          (quote
-           (("t" "Todo" entry (file "~/org/refile.org")
+          '(("t" "Todo" entry (file "~/org/refile.org")
              "* TODO %?\n%U\n")
             ("n" "Notes" entry (file+headline "~/org/notes.org" "Notes")
+             "* %? :NOTE:\n%U\n")
+            ("e" "Emacs note" entry (file+headline "~/org/notes.org" "Emacs Links")
              "* %? :NOTE:\n%U\n")
             ("j" "Journal" entry (file+datetree "~/org/journal.org")
              "* %?\n%U\n")
             ("b" "Book/Bibliography" entry
              (file+headline "~/org/bibliography.org" "Refile")
-             "* %?%^{TITLE}p%^{AUTHOR}p%^{TYPE}p"))))
+             "* %?%^{TITLE}p%^{AUTHOR}p%^{TYPE}p")))
     ;; Custom agenda command definitions
     (setq org-agenda-custom-commands
           (quote

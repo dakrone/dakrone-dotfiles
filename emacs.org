@@ -395,7 +395,7 @@ know Emacs is starting.
 
 #+BEGIN_SRC emacs-lisp
 (setq ring-bell-function (lambda ()))
-(setq inhibit-startup-message t
+(setq inhibit-startup-screen t
       initial-major-mode 'fundamental-mode)
 #+END_SRC
 

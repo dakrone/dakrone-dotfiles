@@ -127,8 +127,7 @@ things add hooks that don't work if packages aren't installed.
     ;; themeing
     rainbow-mode leuven-theme dakrone-theme color-identifiers-mode
     moe-theme nyan-mode color-theme-sanityinc-tomorrow powerline
-    volatile-highlights apropospriate-theme material-theme
-    smart-mode-line
+    apropospriate-theme material-theme smart-mode-line
 
     ;; misc
     diminish gist scpaste async sx exec-path-from-shell bbdb
@@ -145,8 +144,8 @@ things add hooks that don't work if packages aren't installed.
     expand-region smex windresize ag undo-tree iedit ido-ubiquitous
     ido-vertical-mode yasnippet smart-tab anzu smartparens flx-ido projectile
     smooth-scrolling multiple-cursors easy-kill simple-call-tree
-    simple-call-tree+ editorconfig ggtags bookmark+ golden-ratio wc-mode
-    eyebrowse vlf hydra shrink-whitespace ix quick-preview pdf-tools
+    simple-call-tree+ ggtags bookmark+ golden-ratio wc-mode eyebrowse
+    vlf hydra shrink-whitespace ix quick-preview pdf-tools
 
     ;; external process things
     prodigy
@@ -4077,34 +4076,6 @@ Snippets for coding, loading while idle so startup is faster.
           (yas-reload-all)))
 #+END_SRC
 
-And some niceties to allow choosing a snippet using helm:
-
-#+BEGIN_SRC emacs-lisp
-(use-package helm-config
-  :defer t
-  :config
-  (use-package yasnippet
-    :bind ("M-=" . yas-insert-snippet)
-    :config
-    (progn
-      (defun my-yas/prompt (prompt choices &optional display-fn)
-        (let* ((names (loop for choice in choices
-                            collect (or (and display-fn
-                                             (funcall display-fn choice))
-                                        choice)))
-               (selected (helm-other-buffer
-                          `(((name . ,(format "%s" prompt))
-                             (candidates . names)
-                             (action . (("Insert snippet" . (lambda (arg)
-                                                              arg))))))
-                          "*helm yas/prompt*")))
-          (if selected
-              (let ((n (position selected names :test 'equal)))
-                (nth n choices))
-            (signal 'quit "user quit!"))))
-      (custom-set-variables '(yas/prompt-functions '(my-yas/prompt))))))
-#+END_SRC
-
 ** markdown-mode
 :PROPERTIES:
    :ID:       DE084266-9678-4BB9-988C-C8EFE857313B
@@ -4113,7 +4084,11 @@ And some niceties to allow choosing a snippet using helm:
 Various markdown-related settings. Not much here.
 
 #+BEGIN_SRC emacs-lisp
-(use-package markdown-mode)
+(autoload 'markdown-mode "markdown-mode"
+  "Major mode for editing Markdown files" t)
+(add-to-list 'auto-mode-alist '("\\.text\\'" . markdown-mode))
+(add-to-list 'auto-mode-alist '("\\.markdown\\'" . markdown-mode))
+(add-to-list 'auto-mode-alist '("\\.md\\'" . markdown-mode))
 #+END_SRC
 
 ** log4j-mode
@@ -4142,20 +4117,6 @@ Extended bookmarks, which I've started used for dired buffers and so on
     (setq bookmark-version-control t
           ;; auto-save bookmarks
           bookmark-save-flag 1)))
-#+END_SRC
-
-** editorconfig
-:PROPERTIES:
-   :ID:       1A29F869-4512-4828-A21C-75CADA25C2CC
-:CUSTOM_ID: b835d667-c0cc-42a4-a4d7-be33ead63a24
-   :END:
-EditorConfig is a per-project cross-editor way of specifying settings. See:
-http://editorconfig.org/
-
-Mainly used by non-Emacs people, but we should always try to play nice :)
-
-#+BEGIN_SRC emacs-lisp
-(use-package editorconfig)
 #+END_SRC
 
 ** company-mode (auto-complete)
@@ -4259,7 +4220,6 @@ helpful for documentation buffers and so on.
 
     ;; basic
     (push '("*Help*" :stick t :noselect t) popwin:special-display-config)
-    (push '("*helm world time*" :stick t :noselect t) popwin:special-display-config)
     (push '("*Pp Eval Output*" :stick t) popwin:special-display-config)
 
     ;; magit
@@ -4433,8 +4393,8 @@ scp-ing an HTML version of the current buffer somewhere
 (use-package scpaste
   :defer t
   :config
-  (setq scpaste-http-destination "http://p.writequit.org"
-        scpaste-scp-destination "writequit:public_html/wq/paste/"))
+  (setq scpaste-http-destination "http://writequit.org/paste/"
+        scpaste-scp-destination "writequit.org:www/paste/"))
 #+END_SRC
 
 ** smex
@@ -4449,28 +4409,6 @@ Smex is IDO, but for =M-x=
   :disabled t
   :bind (("M-x" . smex)
          ("M-X" . smex-major-mode-commands)))
-#+END_SRC
-
-** volatile-highlights
-:PROPERTIES:
-:ID:       17C19DE9-FD8F-45C3-ACB2-9CAD4462BE04
-:CUSTOM_ID: 79c0c5a0-52b2-4977-86e1-53e44fac8dda
-:END:
-Highlights things like undo, copy, paste, etc.
-
-#+BEGIN_SRC emacs-lisp
-(defun my/turn-on-volatile-highlights ()
-  (interactive)
-  (volatile-highlights-mode t)
-  (diminish 'volatile-highlights-mode))
-
-(use-package volatile-highlights
-  :defer t
-  :init
-  (progn
-    (require 'volatile-highlights) ;; vh has a problem with autoloads
-    (add-hook 'org-mode-hook #'my/turn-on-volatile-highlights)
-    (add-hook 'prog-mode-hook #'my/turn-on-volatile-highlights)))
 #+END_SRC
 
 ** color-identifiers-mode

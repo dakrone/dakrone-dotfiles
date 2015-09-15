@@ -2173,12 +2173,6 @@ And now the huge org-mode configuration
           org-src-preserve-indentation t
           ;; Imenu should use 3 depth instead of 2
           org-imenu-depth 3
-          ;; always start the agenda on today
-          org-agenda-start-on-weekday nil
-          ;; Use sticky agenda's so they persist
-          org-agenda-sticky t
-          ;; show 4 agenda days
-          org-agenda-span 4
           ;; special begin/end of line to skip tags and stars
           org-special-ctrl-a/e t
           ;; special keys for killing a headline
@@ -2191,7 +2185,6 @@ And now the huge org-mode configuration
           org-src-strip-leading-and-trailing-blank-lines t
           ;; how org-src windows are set up when hitting C-c '
           org-src-window-setup 'current-window
-          ;;org-src-window-setup 'other-window
           ;; Overwrite the current window with the agenda
           org-agenda-window-setup 'current-window
           ;; Use full outline paths for refile targets - we file directly with IDO
@@ -2199,7 +2192,7 @@ And now the huge org-mode configuration
           ;; Targets complete directly with IDO
           org-outline-path-complete-in-steps nil
           ;; Allow refile to create parent tasks with confirmation
-          org-refile-allow-creating-parent-nodes (quote confirm)
+          org-refile-allow-creating-parent-nodes 'confirm
           ;; never leave empty lines in collapsed view
           org-cycle-separator-lines 0
           ;; Use cider as the clojure backend
@@ -2217,33 +2210,41 @@ And now the huge org-mode configuration
                 (assq-delete-all :exports org-babel-default-header-args))
           ;; I don't want to be prompted on every code block evaluation
           org-confirm-babel-evaluate nil
-          ;; Do not dim blocked tasks
-          org-agenda-dim-blocked-tasks nil
-          ;; Compact the block agenda view
-          org-agenda-compact-blocks t
           ;; Mark entries as done when archiving
           org-archive-mark-done nil
           ;; Where to put headlines when archiving them
           org-archive-location "%s_archive::* Archived Tasks"
           ;; Sorting order for tasks on the agenda
           org-agenda-sorting-strategy
-          (quote ((agenda habit-down
-                          time-up
-                          priority-down
-                          user-defined-up
-                          effort-up
-                          category-keep)
-                  (todo priority-down category-up effort-up)
-                  (tags priority-down category-up effort-up)
-                  (search priority-down category-up)))
-
-          ;; Enable display of the time grid so we can see the marker for the current time
-          org-agenda-time-grid (quote ((daily today remove-match)
-                                       #("----------------" 0 16 (org-heading t))
-                                       (0900 1100 1300 1500 1700)))
+          '((agenda habit-down
+                    time-up
+                    priority-down
+                    user-defined-up
+                    effort-up
+                    category-keep)
+            (todo priority-down category-up effort-up)
+            (tags priority-down category-up effort-up)
+            (search priority-down category-up))
+          ;; Enable display of the time grid so we can see the marker for the
+          ;; current time
+          org-agenda-time-grid
+          '((daily today remove-match)
+            #("----------------" 0 16 (org-heading t))
+            (0900 1100 1300 1500 1700))
           ;; keep the agenda filter until manually removed
           org-agenda-persistent-filter t
+          ;; show all occurrences of repeating tasks
           org-agenda-repeating-timestamp-show-all t
+          ;; always start the agenda on today
+          org-agenda-start-on-weekday nil
+          ;; Use sticky agenda's so they persist
+          org-agenda-sticky t
+          ;; show 4 agenda days
+          org-agenda-span 4
+          ;; Do not dim blocked tasks
+          org-agenda-dim-blocked-tasks nil
+          ;; Compact the block agenda view
+          org-agenda-compact-blocks t
           ;; Show all agenda dates - even if they are empty
           org-agenda-show-all-dates t
           ;; Agenda org-mode files
@@ -2254,11 +2255,14 @@ And now the huge org-mode configuration
 
     ;; Org todo keywords
     (setq org-todo-keywords
-          (quote
-           ((sequence "SOMEDAY(s)" "TODO(t)" "INPROGRESS(i)" "WAITING(w@/!)" "NEEDSREVIEW(n@/!)"
+          '((sequence "SOMEDAY(s)"
+                      "TODO(t)"
+                      "INPROGRESS(i)"
+                      "WAITING(w@/!)"
+                      "NEEDSREVIEW(n@/!)"
                       "|" "DONE(d)")
             (sequence "WAITING(w@/!)" "HOLD(h@/!)"
-                      "|" "CANCELLED(c@/!)"))))
+                      "|" "CANCELLED(c@/!)")))
     ;; Org faces
     (setq org-todo-keyword-faces
           '(("TODO" :foreground "red" :weight bold)
@@ -2297,7 +2301,8 @@ And now the huge org-mode configuration
              "* TODO %?\n%U\n")
             ("n" "Notes" entry (file+headline "~/org/notes.org" "Notes")
              "* %? :NOTE:\n%U\n")
-            ("e" "Emacs note" entry (file+headline "~/org/notes.org" "Emacs Links")
+            ("e" "Emacs note" entry
+             (file+headline "~/org/notes.org" "Emacs Links")
              "* %? :NOTE:\n%U\n")
             ("j" "Journal" entry (file+datetree "~/org/journal.org")
              "* %?\n%U\n")
@@ -2306,8 +2311,7 @@ And now the huge org-mode configuration
              "* %?%^{TITLE}p%^{AUTHOR}p%^{TYPE}p")))
     ;; Custom agenda command definitions
     (setq org-agenda-custom-commands
-          (quote
-           (("N" "Notes" tags "NOTE"
+          '(("N" "Notes" tags "NOTE"
              ((org-agenda-overriding-header "Notes")
               (org-tags-match-list-sublevels t)))
             (" " "Agenda"
@@ -2336,13 +2340,8 @@ And now the huge org-mode configuration
                       '(time-up priority-down category-keep))))
               ;; Everything on hold
               (todo "HOLD"
-                    ((org-agenda-overriding-header "On-hold")))
-              ;; Everything that's done and archivable
-              ;; (todo "DONE"
-              ;;       ((org-agenda-overriding-header "Tasks for archive")
-              ;;        (org-agenda-skip-function 'my/skip-non-archivable-tasks)))
-              )
-             nil))))
+                    ((org-agenda-overriding-header "On-hold"))))
+             nil)))
 
     ;; Exclude DONE state tasks from refile targets
     (defun my/verify-refile-target ()
@@ -2377,9 +2376,8 @@ And now the huge org-mode configuration
        (plantuml . t)
        (latex . t)))
 
-    ;; plantuml jar path
-    (setq org-plantuml-jar-path
-          "/usr/local/Cellar/plantuml/8002/plantuml.8002.jar")
+    ;; this is where Fedora installs it, YMMV
+    (setq org-plantuml-jar-path "/usr/share/java/plantuml.jar")
 
     ;; Use org.css from the :wq website for export document stylesheets
     (setq org-html-head-extra
@@ -2392,7 +2390,7 @@ And now the huge org-mode configuration
 
     ;; add a default shebang header argument shell scripts
     (add-to-list 'org-babel-default-header-args:sh
-                 '(:shebang . "#!/usr/bin/env zsh"))
+                 '(:shebang . "#!/usr/bin/env bash"))
 
     ;; add a default shebang header argument for python
     (add-to-list 'org-babel-default-header-args:python
@@ -2500,8 +2498,9 @@ And now the huge org-mode configuration
            org-html-head-extra
            (concat
             org-html-head-extra
-            (format "<style type=\"text/css\">\n pre.src {background-color: %s; color: %s;}</style>\n"
-                    my-pre-bg my-pre-fg))))))
+            (format
+             "<style type=\"text/css\">\n pre.src {background-color: %s; color: %s;}</style>\n"
+             my-pre-bg my-pre-fg))))))
 
     (add-hook 'org-export-before-processing-hook #'my/org-inline-css-hook)))
 #+END_SRC

@@ -3545,6 +3545,14 @@ So I configure prodigy like so:
       :port 9200)
 
     (prodigy-define-service
+      :name "ES 1.7, 1 node"
+      :cwd "~/ies/"
+      :command "esvm"
+      :args '("1.7")
+      :tags '(work test es)
+      :port 9200)
+
+    (prodigy-define-service
       :name "ES master branch"
       :cwd "~/ies/"
       :command "esvm"

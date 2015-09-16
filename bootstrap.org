@@ -1,5 +1,5 @@
 #+LANGUAGE: en
-#+PROPERTY: header-args :eval no :results code replace :noweb yes :tangle no
+#+PROPERTY: header-args :eval no :results code replace :noweb no :tangle no
 #+HTML_HEAD: <link rel="stylesheet" href="http://dakrone.github.io/org.css" type="text/css" />
 #+EXPORT_SELECT_TAGS: export
 #+EXPORT_EXCLUDE_TAGS: noexport

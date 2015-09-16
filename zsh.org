@@ -1,5 +1,5 @@
 #+LANGUAGE: en
-#+PROPERTY: header-args :eval no :results code replace :noweb yes :tangle no
+#+PROPERTY: header-args :eval no :results code replace :noweb no :tangle no
 #+HTML_HEAD: <link rel="stylesheet" href="http://dakrone.github.io/org.css" type="text/css" />
 #+EXPORT_SELECT_TAGS: export
 #+EXPORT_EXCLUDE_TAGS: noexport
@@ -22,8 +22,6 @@ and it's a pretty good place to put PATH stuff and other env variables that
 don't cause a lot of interaction.
 
 #+BEGIN_SRC sh :tangle .zshenv
-#<<warning>>
-
 [[ -o interactive ]] && echo "+++Reading .zshenv"
 
 MANPATH=/opt/local/man:/usr/local/man:$MANPATH
@@ -110,8 +108,6 @@ I don't currently use =~/.zprofile=, but I should...
 :END:
 
 #+BEGIN_SRC sh :tangle .zshrc
-#<<warning>>
-
 # Handle dumb terms
 [[ $TERM == "dumb" ]] && unsetopt zle && PS1='$ ' && return
 
@@ -253,8 +249,6 @@ First, aliases, for which I have many!
 :END:
 
 #+BEGIN_SRC sh :tangle .zsh.d/00-aliases.zsh
-#<<warning>>
-
 # colorful ls for whichever platform
 if ls -F --color=auto >&/dev/null; then
     alias ls="ls --color=auto -F"
@@ -311,8 +305,6 @@ alias tmaster='tmux -2 -u -S /tmp/mastermux -f .tmux.master.conf'
 Next, some functions, when shell aliases just won't do!
 
 #+BEGIN_SRC sh :tangle .zsh.d/01-functions.zsh
-#<<warning>>
-
 # functions
 function history-all { history -E 1 }
 
@@ -376,8 +368,6 @@ Keybindings for the shell, in this case, mostly Emacs-compatible, but with some
 disabled to prevent dumb things. (Mostly me being dumb)
 
 #+BEGIN_SRC sh :tangle .zsh.d/02-bindkey.zsh
-#<<warning>>
-
 bindkey -e
 bindkey "^?"    backward-delete-char
 bindkey "^H"    backward-delete-char
@@ -407,8 +397,6 @@ I'm using [[http://www.funtoo.org/Keychain][Keychain]] to manage SSH agent inher
 eval-ed when nodes start up. It loads the key in =~/.ssh/id_rsa=.
 
 #+BEGIN_SRC sh :tangle .zsh.d/03-ssh.zsh
-#<<warning>>
-
 eval $(keychain --eval --agents ssh -Q id_rsa)
 #+END_SRC
 
@@ -420,8 +408,6 @@ eval $(keychain --eval --agents ssh -Q id_rsa)
 Next, I need to set up some colors and formatting that ZSH will use for VCS info
 
 #+BEGIN_SRC sh :tangle .zsh.d/05-vcs.zsh
-#<<warning>>
-
 autoload colors
 colors
 
@@ -472,8 +458,6 @@ Very small, but since I do so much HTTP testing for Elasticsearch on the command
 line, they end up saving a lot of time.
 
 #+BEGIN_SRC sh :tangle .zsh.d/10-http.zsh
-#<<warning>>
-
 # HTTP verbs
 alias get='curl -s -XGET'
 alias post='curl -s -XPOST'
@@ -491,8 +475,6 @@ install by hand since most package managers have outdated versions. So I set
 some various things for the config here
 
 #+BEGIN_SRC sh :tangle .zsh.d/15-gtags.zsh
-#<<warning>>
-
 if [ -f ~/.globalrc ]; then
     export GTAGSCONF=$HOME/.globalrc
 elif [ -f /usr/local/share/gtags/gtags.conf ] ; then
@@ -546,8 +528,6 @@ When used, it looks something like this (with more colors):
 And it's not /too/ unreadable...
 
 #+BEGIN_SRC sh :tangle .zsh.d/90-prompt.zsh
-#<<warning>>
-
 autoload -U add-zsh-hook
 autoload -U colors && colors
 autoload -Uz vcs_info
@@ -670,8 +650,6 @@ Just a couple of left overs for very dumb terminals (running shells inside of
 things, mostly). It tangles to =99-dumb.zsh= to ensure it's loaded last.
 
 #+BEGIN_SRC sh :tangle .zsh.d/99-dumb.zsh
-#<<warning>>
-
 # Things for dumb terminals
 if [[ "$EMACSx" == "tx" || "$TERM" == "dumb" ]]; then
     unsetopt zle
@@ -719,8 +697,6 @@ On OSX, I mostly just have to do a lot of nonsense to get Emacs stuff to work
 correctly.
 
 #+BEGIN_SRC sh :tangle .zsh.d/zsh.Darwin
-#<<warning>>
-
 export JAVA_HOME=$(/usr/libexec/java_home -v 1.8)
 
 export EMACS_HOME="/Applications/Emacs.app/Contents/MacOS"
@@ -773,8 +749,6 @@ function strace {
 Linux has less customization, mostly differing aliases.
 
 #+BEGIN_SRC sh :tangle .zsh.d/zsh.Linux
-#<<warning>>
-
 # make emacs have 256 colors
 alias emacs='TERM=xterm-256color emacs -nw'
 
@@ -800,8 +774,6 @@ alias gps='ps -eo cmd,fname,pid,pcpu,time --sort=-pcpu | head -n 11 && echo && p
 There's probably more I need to put here, but for now it's empty.
 
 #+BEGIN_SRC sh :tangle .zsh.d/zsh.xanadu
-#<<warning>>
-
 # Xanadu had better be a linux machine...
 if [[ $OS == "Linux" ]]; then
    export JAVA_HOME=/opt/jdk1.8.0_51
@@ -817,8 +789,6 @@ fi
 I am using a specific JDK on this machine, so I set it here.
 
 #+BEGIN_SRC sh :tangle .zsh.d/zsh.ivalice
-#<<warning>>
-
 # Ivalice had better be a linux machine...
 if [[ $OS == "Linux" ]]; then
    export JAVA_HOME=/opt/jdk1.8.0_45

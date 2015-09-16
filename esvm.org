@@ -16,19 +16,26 @@ I've been using [[https://github.com/simianhacker/esvm][esvm]] for managing star
 test something using the rest API. Here's my configuration for it that tangles
 and installs into =~/.esvmrc=
 
+Here is the branch with the latest release I use:
+
+#+NAME: es-branch
+#+BEGIN_SRC json :tangle no
+1.7
+#+END_SRC
+
 #+BEGIN_SRC json :tangle .esvmrc
 {
   "clusters": {
-    "1.7": {
-      "branch": "1.7",
+    "<<es-branch>>": {
+      "branch": "<<es-branch>>",
       "nodes": 1
     },
     "2node": {
-      "branch": "1.7",
+      "branch": "<<es-branch>>",
       "nodes": 2
     },
     "3node": {
-      "branch": "1.7",
+      "branch": "<<es-branch>>",
       "nodes": 3
     },
     "master": {

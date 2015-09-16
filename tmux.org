@@ -1,5 +1,5 @@
 #+LANGUAGE: en
-#+PROPERTY: header-args :eval no :results code replace :noweb yes :tangle no
+#+PROPERTY: header-args :eval no :results code replace :noweb no :tangle no
 #+HTML_HEAD: <link rel="stylesheet" href="http://dakrone.github.io/org.css" type="text/css" />
 #+EXPORT_SELECT_TAGS: export
 #+EXPORT_EXCLUDE_TAGS: noexport
@@ -35,8 +35,6 @@ So, starting with the most specific
 :END:
 
 #+BEGIN_SRC conf :tangle .tmux.osx.conf
-#<<warning>>
-
 # OSX tmux config that uses the wrapper from 
 # https://github.com/ChrisJohnsen/tmux-MacOSX-pasteboard
 
@@ -57,8 +55,6 @@ because I use a different bind-key for the master tmux, so I only want it in
 certain cases.
 
 #+BEGIN_SRC conf :tangle .tmux.conf
-#<<warning>>
-
 source-file ~/.tmux.shared.conf
 
 # Set the prefix to ^z
@@ -101,8 +97,6 @@ The =bind-key= in this case gets changed to =M-C-z= (control-alt-z) instead of
 my regular =C-z= bind-key, which allows nesting to work.
 
 #+BEGIN_SRC conf :tangle .tmux.master.conf
-#<<warning>>
-
 # master client conf
 
 source-file ~/.tmux.shared.conf
@@ -190,7 +184,6 @@ regardless or where or how they're invoked.
 TODO: document all of this.
 
 #+BEGIN_SRC conf :tangle .tmux.shared.conf
-#<<warning>>
 # Emacs mode keys
 setw -g mode-keys emacs
 

@@ -766,7 +766,18 @@ alias tmux='tmux -2'
 alias gps='ps -eo cmd,fname,pid,pcpu,time --sort=-pcpu | head -n 11 && echo && ps -eo cmd,fname,pid,pmem,rss --sort=-rss | head -n 9'
 #+END_SRC
 
-**** Xanadu (main laptop) 
+**** Thulcandra (main laptop)
+There's probably more I need to put here, but for now it's empty.
+
+#+BEGIN_SRC sh :tangle .zsh.d/zsh.thulcandra
+# Thulcandra had better be a linux machine...
+if [[ $OS == "Linux" ]]; then
+   export JAVA_HOME=/opt/jdk1.8.0_60
+   export PATH=$JAVA_HOME/bin:$PATH
+fi
+#+END_SRC
+
+**** Xanadu (old laptop) 
 :PROPERTIES:
 :ID:       75a87db8-21e2-4059-91f2-0baa7a5318ad
 :CUSTOM_ID: df929141-bd90-4999-aa09-e4b7d1225860

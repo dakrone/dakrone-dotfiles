@@ -126,7 +126,7 @@ things add hooks that don't work if packages aren't installed.
 
     ;; themeing
     rainbow-mode leuven-theme dakrone-theme color-identifiers-mode
-    moe-theme nyan-mode color-theme-sanityinc-tomorrow powerline
+    moe-theme nyan-mode color-theme-sanityinc-tomorrow
     apropospriate-theme material-theme smart-mode-line
 
     ;; misc
@@ -203,9 +203,6 @@ things add hooks that don't work if packages aren't installed.
 
     ;; emacs-lisp
     elisp-slime-nav paredit
-
-    ;; racket
-    racket-mode
 
     ;; markup language
     markdown-mode markdown-mode+ yaml-mode zencoding-mode adoc-mode
@@ -1471,7 +1468,6 @@ highlighted so they stand out:
 
 (add-hook 'prog-mode-hook #'my/add-watchwords)
 (add-hook 'prog-mode-hook #'my/turn-on-hl-line-mode)
-(add-hook 'org-mode-hook #'my/turn-on-hl-line-mode)
 #+END_SRC
 
 *** Clojure
@@ -2054,13 +2050,6 @@ Config for Linux/X11 systems:
 :ID:       DF0A0FE7-21E8-4708-A074-0F21D1B08824
 :CUSTOM_ID: 6850ea37-7f67-46da-8a62-bf3544471fd7
 :END:
-Ehh.. I go back and forth.
-
-#+BEGIN_SRC emacs-lisp
-(use-package powerline
-  :disabled t
-  :init (powerline-default-theme))
-#+END_SRC
 
 #+BEGIN_SRC emacs-lisp
 (use-package smart-mode-line
@@ -2115,6 +2104,7 @@ modes
   (interactive)
   (turn-on-auto-fill)
   (turn-on-flyspell)
+  (my/turn-on-hl-line-mode)
   (yas-minor-mode-on)
   (when (fboundp 'my/enable-abbrev-mode)
     (my/enable-abbrev-mode))

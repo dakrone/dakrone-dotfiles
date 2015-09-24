@@ -2708,7 +2708,7 @@ though.
 
 To use this, I just need to do =(alert "this is a message")=.
 
-** Rcirc
+** rcirc
 
 #+BEGIN_SRC emacs-lisp
 (defun start-rcirc ()
@@ -2789,11 +2789,16 @@ install mu:
 : make
 : sudo make install
 
+Keep in mind this configuration is a lot more complex than it needs to be, but
+that's because I manage 3 different email accounts from a single mu4e session,
+and they have account-specific mail directories so a lot of functions are needed
+to return the correct path depending on the account the email is from.
+
 #+BEGIN_SRC emacs-lisp
 (defun mail ()
   (interactive)
   (add-to-list 'load-path "~/src/mu-0.9.13/mu4e")
-  (use-package :nyan-mode
+  (use-package nyan-mode
     :init (nyan-mode 1)) ;; nyan-mode for mail!
   (use-package mu4e
     :config
@@ -4626,7 +4631,7 @@ Highlight idle things, but only in certain modes
     (add-hook 'clojure-lisp-mode-hook #'turn-on-idle-highlight-mode)))
 #+END_SRC
 
-** Bindings
+** Key Bindings
 :PROPERTIES:
    :ID:       3F1D7832-2DB7-4D45-A78A-267C823DC4A3
 :CUSTOM_ID: 6a7b04f8-ab04-4d6f-a3ef-3a907aa0e5d2

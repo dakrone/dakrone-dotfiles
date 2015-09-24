@@ -2780,7 +2780,7 @@ To use this, I just need to do =(alert "this is a message")=.
    :ID:       E3FFEF22-68F6-4EC7-8381-5054850B4567
 :CUSTOM_ID: b65eb4b0-08fe-48bd-ad39-0e60e61c0a9c
    :END:
-I usually install [[http://www.djcbsoftware.nl/code/mu/][mu]] from source. I unpack it to ~/src/mu-0.9.12 (or whatever
+I usually install [[http://www.djcbsoftware.nl/code/mu/][mu]] from source. I unpack it to ~/src/mu-0.9.13 (or whatever
 version) so I can reference the mu4e elisp files. Then run the following to
 install mu:
 
@@ -2792,7 +2792,7 @@ install mu:
 #+BEGIN_SRC emacs-lisp
 (defun mail ()
   (interactive)
-  (add-to-list 'load-path "~/src/mu-0.9.12/mu4e")
+  (add-to-list 'load-path "~/src/mu-0.9.13/mu4e")
   (use-package :nyan-mode
     :init (nyan-mode 1)) ;; nyan-mode for mail!
   (use-package mu4e

@@ -1090,22 +1090,17 @@ Hunspell isn't available:
 
 ;; Mostly taken from
 ;; http://blog.binchen.org/posts/what-s-the-best-spell-check-set-up-in-emacs.html
-;; if (aspell installed) { use aspell }
-;; else if (hunspell installed) { use hunspell }
-;; whatever spell checker I use, I always use English dictionary
-(setq ispell-program-name (executable-find "aspell"))
-(setq ispell-extra-args
-      (list "--sug-mode=fast" ;; ultra|fast|normal|bad-spellers
-            "--lang=en_US"
-            "--ignore=3"))
+(when (executable-find "aspell")
+  (setq ispell-program-name (executable-find "aspell"))
+  (setq ispell-extra-args
+        (list "--sug-mode=fast" ;; ultra|fast|normal|bad-spellers
+              "--lang=en_US"
+              "--ignore=4")))
 
 ;; hunspell
-;; (setq ispell-program-name "hunspell")
-;; ;; just reset dictionary to the safe one "en_US" for hunspell.
-;; ;; if we need use different dictionary, we specify it in command line arguments
-;; (setq ispell-local-dictionary "en_US")
-;; (setq ispell-local-dictionary-alist
-;;       '(("en_US" "[[:alpha:]]" "[^[:alpha:]]" "[']" nil nil nil utf-8)))
+(when (executable-find "hunspell")
+  (setq ispell-program-name (executable-find "hunspell"))
+  (setq ispell-extra-args '("-d en_US")))
 
 (add-to-list 'ispell-skip-region-alist '("[^\000-\377]+"))
 (add-to-list 'ispell-skip-region-alist '(":\\(PROPERTIES\\|LOGBOOK\\):" . ":END:"))
@@ -4147,9 +4142,9 @@ Standard auto-completion configuration with company-mode
   :init (add-hook 'prog-mode-hook 'company-mode)
   :config
   (progn
-    (setq company-idle-delay 0.1
-          ;; min prefix of 1 chars
-          company-minimum-prefix-length 1
+    (setq company-idle-delay 0.3
+          ;; min prefix of 3 chars
+          company-minimum-prefix-length 3
           company-selection-wrap-around t
           company-show-numbers t
           company-dabbrev-downcase nil

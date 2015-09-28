@@ -3304,6 +3304,10 @@ Pretty minimally configured, but awesome tool for most dynamic languages.
   (global-set-key (kbd "C-c C-n") 'flycheck-tip-cycle)
   (global-set-key (kbd "C-c C-p") 'flycheck-tip-cycle-reverse))
 
+(defun my/enable-fc-emoji ()
+  (interactive)
+  (flycheck-status-emoji-mode 1))
+
 (use-package flycheck
   :defer t
   :bind (("M-g M-n" . flycheck-next-error)
@@ -3312,7 +3316,8 @@ Pretty minimally configured, but awesome tool for most dynamic languages.
   :init (global-flycheck-mode)
   :config
   (progn
-    (use-package flycheck-status-emoji)
+    (use-package flycheck-status-emoji
+      :init (add-hook 'flycheck-mode-hook #'my/enable-fc-emoji))
     (setq-default flycheck-disabled-checkers '(emacs-lisp-checkdoc))
     (use-package flycheck-tip
       :config (add-hook 'flycheck-mode-hook #'my/flycheck-customize))

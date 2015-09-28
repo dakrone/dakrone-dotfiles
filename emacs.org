@@ -350,6 +350,12 @@ Echo commands I haven't finished quicker than the default of 1 second:
 (setq echo-keystrokes 0.4)
 #+END_SRC
 
+When I select a region and start typing, just delete the region automatically
+
+#+BEGIN_SRC emacs-lisp
+(delete-selection-mode 1)
+#+END_SRC
+
 Don't warn me about large files unless they're at least 25mb:
 
 #+BEGIN_SRC emacs-lisp
@@ -2324,7 +2330,7 @@ And now the huge org-mode configuration
                     ((org-agenda-overriding-header "Waiting on reviews")))
               ;; All "WAITING" items without a "support" tag
               (tags "WAITING-support"
-                    ((org-agenda-overriding-header "Waiting for feedback")))
+                    ((org-agenda-overriding-header "Waiting for something")))
               ;; All TODO items
               (todo "TODO"
                     ((org-agenda-overriding-header "Task list")
@@ -3306,15 +3312,6 @@ using a big font size and I need more eshell space
 Pretty minimally configured, but awesome tool for most dynamic languages.
 
 #+BEGIN_SRC emacs-lisp
-(defun my/flycheck-customize ()
-  (interactive)
-  (global-set-key (kbd "C-c C-n") 'flycheck-tip-cycle)
-  (global-set-key (kbd "C-c C-p") 'flycheck-tip-cycle-reverse))
-
-(defun my/enable-fc-emoji ()
-  (interactive)
-  (flycheck-status-emoji-mode 1))
-
 (use-package flycheck
   :defer t
   :bind (("M-g M-n" . flycheck-next-error)
@@ -3324,8 +3321,8 @@ Pretty minimally configured, but awesome tool for most dynamic languages.
   :config
   (progn
     (setq-default flycheck-disabled-checkers '(emacs-lisp-checkdoc))
-    (use-package flycheck-tip
-      :config (add-hook 'flycheck-mode-hook #'my/flycheck-customize))
+    (use-package flycheck-pos-tip
+      :init (setq flycheck-display-errors-function #'flycheck-pos-tip-error-messages))
     (use-package helm-flycheck
       :init (define-key flycheck-mode-map (kbd "C-c ! h") 'helm-flycheck))
     (use-package flycheck-haskell

@@ -74,6 +74,14 @@ This list is in no way exhaustive.
 This is stuff that *absolutely* must be set up, because I want it available if
 everything else fails entirely.
 
+Turn on debugging, it will be turned off at the end. In case something happens
+during loading that breaks something, it's nice to have a debug information.
+
+#+BEGIN_SRC emacs-lisp
+(setq debug-on-error t)
+(setq debug-on-quit t)
+#+END_SRC
+
 #+BEGIN_SRC emacs-lisp
 ;; Dvorak nicety, regardless of loading settings
 (define-key key-translation-map "\C-t" "\C-x")
@@ -175,7 +183,7 @@ things add hooks that don't work if packages aren't installed.
     ssh-config-mode
 
     ;; flycheck
-    flycheck flycheck-tip flycheck-haskell flycheck-status-emoji
+    flycheck flycheck-tip flycheck-haskell
 
     ;; clojure
     clojure-mode clojure-mode-extra-font-locking cider paredit paren-face
@@ -275,14 +283,6 @@ built-in packages.
     :ID:       4AE7470D-E61E-48C4-959B-CB8C19A10725
 :CUSTOM_ID: 13ebbbbd-30d6-45eb-96ec-cb3c3a0b1e86
     :END:
-Turn on debugging, it will be turned off at the end. In case something happens
-during loading that breaks something, it's nice to have a debug information.
-
-#+BEGIN_SRC emacs-lisp
-(setq debug-on-error t)
-(setq debug-on-quit t)
-#+END_SRC
-
 First, let's determine whether I'm going to be using a dark theme,
 or a light theme. I set a var to either '=light= or '=dark=
 depending on whatever I'm in the mood for. This is used later on for the
@@ -2048,12 +2048,19 @@ Config for Linux/X11 systems:
 
 #+BEGIN_SRC emacs-lisp
 (use-package smart-mode-line
+  :disabled t
   :init (sml/setup)
   :config
   (setq sml/shorten-directory t
         sml/shorten-modes t)
   (add-to-list 'sml/replacer-regexp-list '("^~/src/elasticsearch/" ":ES:") t)
   (add-to-list 'sml/replacer-regexp-list '("^~/es/x-plugins/" ":x-plugins:") t))
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(require 'spaceline-config)
+(setq powerline-default-separator 'wave)
+(spaceline-spacemacs-theme)
 #+END_SRC
 
 *** fringe
@@ -3316,8 +3323,6 @@ Pretty minimally configured, but awesome tool for most dynamic languages.
   :init (global-flycheck-mode)
   :config
   (progn
-    (use-package flycheck-status-emoji
-      :init (add-hook 'flycheck-mode-hook #'my/enable-fc-emoji))
     (setq-default flycheck-disabled-checkers '(emacs-lisp-checkdoc))
     (use-package flycheck-tip
       :config (add-hook 'flycheck-mode-hook #'my/flycheck-customize))

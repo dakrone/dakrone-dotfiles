@@ -293,12 +293,6 @@ modeline theme, as well as the general theme for things.
 ;;(defvar my/background 'dark)
 #+END_SRC
 
-Save the desktop when quiting Emacs
-
-#+BEGIN_SRC emacs-lisp
-(desktop-save-mode 1)
-#+END_SRC
-
 Now some personal information about me:
 
 #+BEGIN_SRC emacs-lisp
@@ -2036,10 +2030,12 @@ Config for Linux/X11 systems:
   (interactive)
   (when (eq window-system 'x)
     ;; Font family
-    (add-to-list 'default-frame-alist '(font . "DejaVu Sans Mono-9"))
-    ;; Font size
-    ;;(set-face-attribute 'default nil :height 90)
-    ))
+    (set-frame-font "DejaVu Sans Mono")
+    ;; (set-frame-font "Hack")
+    ;; (set-frame-font "Fantasque Sans Mono")
+    ;; (set-frame-font "Anonymous Pro")
+    ;; (set-frame-font "Inconsolata")
+    (set-face-attribute 'default nil :height 105)))
 
 (when (eq window-system 'x)
   (add-hook 'after-init-hook #'my/setup-x11-fonts))
@@ -2720,9 +2716,10 @@ To use this, I just need to do =(alert "this is a message")=.
 #+BEGIN_SRC emacs-lisp
 (defun start-rcirc ()
   (interactive)
-  ;; Disable desktop save mode for the "IRC" emacs
-  (desktop-save-mode-off)
   (load-file "~/.ercpass")
+  ;; Don't need flycheck for IRC
+  (when (fboundp 'global-flycheck-mode)
+    (global-flycheck-mode -1))
   (use-package rcirc
     :init
     (progn
@@ -2806,9 +2803,10 @@ to return the correct path depending on the account the email is from.
 #+BEGIN_SRC emacs-lisp
 (defun mail ()
   (interactive)
-  ;; Disable desktop save mode for the "email" emacs
-  (desktop-save-mode-off)
   (add-to-list 'load-path "~/src/mu-0.9.13/mu4e")
+  ;; Don't need flycheck for Email
+  (when (fboundp 'global-flycheck-mode)
+    (global-flycheck-mode -1))
   (use-package nyan-mode
     :init (nyan-mode 1)) ;; nyan-mode for mail!
   (use-package mu4e

@@ -289,8 +289,8 @@ depending on whatever I'm in the mood for. This is used later on for the
 modeline theme, as well as the general theme for things.
 
 #+BEGIN_SRC emacs-lisp
-;;(defvar my/background 'light)
-(defvar my/background 'dark)
+(defvar my/background 'light)
+;;(defvar my/background 'dark)
 #+END_SRC
 
 Save the desktop when quiting Emacs
@@ -1984,7 +1984,8 @@ nice.
   (interactive)
   (use-package leuven-theme
     :init (load-theme 'leuven t)
-    :config (set-background-color "#f0f0f0"))
+    ;;:config (set-background-color "#f0f0f0")
+    )
   (use-package material-theme
     :disabled t
     :init (load-theme 'material-light t)))

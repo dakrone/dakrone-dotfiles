@@ -204,7 +204,7 @@ things add hooks that don't work if packages aren't installed.
     go-mode
 
     ;; java
-    malabar-mode groovy-mode javap-mode emacs-eclim jdee
+    malabar-mode groovy-mode javap-mode emacs-eclim
 
     ;; javascript
     tern json-mode js2-mode
@@ -291,6 +291,13 @@ modeline theme, as well as the general theme for things.
 #+BEGIN_SRC emacs-lisp
 ;;(defvar my/background 'light)
 (defvar my/background 'dark)
+#+END_SRC
+
+Another var that will be checked at the end
+
+#+BEGIN_SRC emacs-lisp
+(defvar my/enable-desktop-save t
+  "Var to tell my config whether to enable desktop save mode")
 #+END_SRC
 
 Now some personal information about me:
@@ -1775,14 +1782,6 @@ work with the ES codebase.
 (add-hook 'java-mode-hook 'setup-java)
 #+END_SRC
 
-**** jdee
-So [[https://github.com/jdee-emacs/jdee/][JDEE]] just had a resurgence, so I've been playing a bit with it.
-
-#+BEGIN_SRC emacs-lisp
-(add-hook 'java-mode-hook
-          (lambda () (use-package jdee)))
-#+END_SRC
-
 **** eclim
 Eclim is decent for emacs-java integration, but isn't quite there for showing
 errors or things like that. Unfortunately I still have to jump back into
@@ -2721,6 +2720,8 @@ To use this, I just need to do =(alert "this is a message")=.
 #+BEGIN_SRC emacs-lisp
 (defun start-rcirc ()
   (interactive)
+  ;; Disable desktop save mode for the "IRC" emacs
+  (setq my/enable-desktop-save nil)
   (load-file "~/.ercpass")
   (use-package rcirc
     :init
@@ -2805,6 +2806,8 @@ to return the correct path depending on the account the email is from.
 #+BEGIN_SRC emacs-lisp
 (defun mail ()
   (interactive)
+  ;; Disable desktop save mode for the "email" emacs
+  (setq my/enable-desktop-save nil)
   (add-to-list 'load-path "~/src/mu-0.9.13/mu4e")
   (use-package nyan-mode
     :init (nyan-mode 1)) ;; nyan-mode for mail!
@@ -5117,4 +5120,11 @@ Turn off debugging, now that initialization has ended
                                           emacs-start-time))))
   (message "Loading settings...done (%.3fs)" elapsed))
 (put 'narrow-to-region 'disabled nil)
+#+END_SRC
+
+Save the desktop by default (will be turned off for IRC and email Emacs flavors
+
+#+BEGIN_SRC emacs-lisp
+(when my/enable-desktop-save
+  (desktop-save-mode 1))
 #+END_SRC

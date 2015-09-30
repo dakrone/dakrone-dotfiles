@@ -1155,9 +1155,6 @@ install mupdf= on osx)
    ("C-M-p" . View-scroll-half-page-backward))
   :config
   (progn
-    ;; When in view-mode, the buffer is read-only:
-    (setq view-read-only t)
-
     (defun View-goto-line-last (&optional line)
       "goto last line"
       (interactive "P")
@@ -3136,22 +3133,13 @@ Ediff is fantastic for looking through diffs, a lot of these settings are taken
 from http://oremacs.com/2015/01/17/setting-up-ediff/
 
 #+BEGIN_SRC emacs-lisp
-(defun my/setup-ediff ()
-  (interactive)
-  (ediff-setup-keymap)
-  (define-key ediff-mode-map "j" #'ediff-next-difference)
-  (define-key ediff-mode-map "k" #'ediff-previous-difference))
-
 (use-package ediff
   :defer t
-  :init (add-hook 'ediff-mode-hook 'my/setup-ediff)
   :config
   (progn
     (setq
      ;; Always split nicely for wide screens
-     ediff-split-window-function 'split-window-horizontally
-     ;; Ignore whitespace
-     ediff-diff-options "-w")))
+     ediff-split-window-function 'split-window-horizontally)))
 #+END_SRC
 
 ** smooth-scrolling

@@ -484,12 +484,12 @@ fi
 export GTAGSLABEL=ctags
 #+END_SRC
 
-*** GVM
-Kind of like RVM, but for Groovy. Testing this for [[https://github.com/m0smith/malabar-mode/][malabar-mode]] integration
+*** SDKman
+Kind of like RVM, but for Groovy/Gradle/etc.
 
-#+BEGIN_SRC sh :tangle .zsh.d/16-gvm.zsh
-if [ -f ~/.gvm/bin/gvm-init.sh ]; then
-    source ~/.gvm/bin/gvm-init.sh
+#+BEGIN_SRC sh :tangle .zsh.d/16-sdkman.zsh
+if [ -f ~/.sdkman/bin/sdkman-init.sh ]; then
+    source ~/.sdkman/bin/sdkman-init.sh
 fi
 #+END_SRC
 

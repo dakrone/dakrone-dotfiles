@@ -872,7 +872,6 @@ completion, prompt and term settings:
   :config
   (progn
     (defalias 'emacs 'find-file)
-    (defalias 'ec 'find-file)
     (setenv "PAGER" "cat")
     (use-package esh-opt
       :config
@@ -931,12 +930,17 @@ completion, prompt and term settings:
         (defun eshell/la (&rest args) "Same as `ls -alh'"
                (apply #'eshell/ls "-alh" args))
 
+        (defun eshell/ec (pattern)
+          (if (stringp pattern)
+              (find-file pattern)
+            (mapc #'find-file (mapcar #'expand-file-name pattern))))
+
         (defun eshell/clear ()
           "Clear the eshell buffer"
           (interactive)
           (let ((eshell-buffer-maximum-lines 0))
             (eshell-truncate-buffer)))))
- 
+
     (add-hook 'eshell-mode-hook #'my/setup-eshell)
 
     ;; See eshell-prompt-function below

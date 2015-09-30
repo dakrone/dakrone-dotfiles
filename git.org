@@ -137,5 +137,6 @@ LUCENE-*.patch
 .lein-repl*
 pom.xml.asc
 core/data
+.projectile
 #+END_SRC
 

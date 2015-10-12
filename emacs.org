@@ -4501,7 +4501,9 @@ Uses =M-n= and =M-p= to jump between the same variable in multiple places
 
 #+BEGIN_SRC emacs-lisp
 (use-package smartscan
-  :init (global-smartscan-mode 1))
+  :init (global-smartscan-mode 1)
+  :config
+  (define-key smartscan-map (kbd "M-'") #'other-window))
 #+END_SRC
 
 ** hideshow

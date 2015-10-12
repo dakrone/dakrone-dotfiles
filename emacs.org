@@ -153,7 +153,8 @@ things add hooks that don't work if packages aren't installed.
     ido-vertical-mode yasnippet smart-tab anzu smartparens flx-ido projectile
     smooth-scrolling multiple-cursors easy-kill simple-call-tree
     simple-call-tree+ ggtags bookmark+ golden-ratio wc-mode eyebrowse
-    vlf hydra shrink-whitespace ix quick-preview pdf-tools
+    vlf hydra shrink-whitespace ix quick-preview pdf-tools origami
+    smartscan
 
     ;; external process things
     prodigy
@@ -289,8 +290,8 @@ depending on whatever I'm in the mood for. This is used later on for the
 modeline theme, as well as the general theme for things.
 
 #+BEGIN_SRC emacs-lisp
-(defvar my/background 'light)
-;;(defvar my/background 'dark)
+;;(defvar my/background 'light)
+(defvar my/background 'dark)
 #+END_SRC
 
 Now some personal information about me:
@@ -1967,12 +1968,12 @@ nice.
   ;; (use-package color-theme-sanityinc-tomorrow
   ;;   :init (color-theme-sanityinc-tomorrow-night))
   (use-package material-theme
+    :disabled t
     :init (load-theme 'material t))
   (use-package apropospriate-theme
     :disabled t
     :init (load-theme 'apropospriate-dark t))
   (use-package color-theme-sanityinc-tomorrow
-    :disabled t
     :init (load-theme 'sanityinc-tomorrow-night t)))
 
 (defun dakrone-light ()
@@ -4476,6 +4477,31 @@ Eyebrowse is a great package for workspaces in Emacs.
     (eyebrowse-mode 1)
     (global-set-key (kbd "C-'") 'eyebrowse-next-window-config)
     (add-hook 'after-init-hook #'my/create-eyebrowse-setup)))
+#+END_SRC
+
+** origami
+Origami is another folding method, but a bit different than hideshow.
+
+#+BEGIN_SRC emacs-lisp
+(use-package origami
+  :init
+  (progn
+    (add-hook 'java-mode-hook #'origami-mode)
+    (add-hook 'clojure-mode-hook #'origami-mode)
+    (add-hook 'emacs-lisp-mode-hook #'origami-mode))
+  :config
+  (progn
+    (define-key origami-mode-map (kbd "<C-return>") 'origami-recursively-toggle-node)
+    (define-key origami-mode-map (kbd "<C-M-return>") 'origami-toggle-all-nodes)
+    (define-key origami-mode-map (kbd "<C-S-return>") 'origami-show-only-node)))
+#+END_SRC
+
+** smartscan
+Uses =M-n= and =M-p= to jump between the same variable in multiple places
+
+#+BEGIN_SRC emacs-lisp
+(use-package smartscan
+  :init (global-smartscan-mode 1))
 #+END_SRC
 
 ** hideshow

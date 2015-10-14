@@ -870,7 +870,9 @@ First, a function to be called when eshell-mode is entered
   ;; turn off hl-line-mode
   (hl-line-mode -1)
   (define-key eshell-mode-map (kbd "M-l")
-    'helm-eshell-history))
+    'helm-eshell-history)
+  (when (fboundp smartscan-mode)
+    (smartscan-mode -1)))
 #+END_SRC
 
 Also, after eshell has loaded its options, let's load some other niceties like

@@ -218,7 +218,7 @@ things add hooks that don't work if packages aren't installed.
 
     ;; helm
     helm helm-descbinds helm-ag helm-projectile helm-swoop
-    helm-gtags helm-ls-git helm-flycheck helm-flyspell helm-dash
+    helm-gtags helm-ls-git helm-flycheck helm-flyspell helm-dash helm-flx
 
     ;; git
     magit git-gutter git-timemachine magit-gh-pulls with-editor git-annex
@@ -638,6 +638,14 @@ Here I set it back to a *sane* value:
       ;;   "openssl s_client -connect %h:%p -no_ssl2 -ign_eof")
       '("gnutls-cli -p %p %h"
         "openssl s_client -connect %h:%p -no_ssl2 -no_ssl3 -ign_eof"))
+#+END_SRC
+
+Before we load any helm things, need to load [[https://github.com/PythonNut/helm-flx][helm-flx]] so it uses flx instead of
+helm's fuzzy matching.
+
+#+BEGIN_SRC emacs-lisp
+(use-package helm-flx
+  :init (helm-flx-mode +1))
 #+END_SRC
 
 *** OS-specific settings

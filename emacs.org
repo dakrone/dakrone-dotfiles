@@ -89,6 +89,10 @@ during loading that breaks something, it's nice to have a debug information.
 ;; Keep track of loading time
 (defconst emacs-start-time (current-time))
 
+;; Load a development version of CEDET instead of the built-in Emacs one
+(when (file-exists-p "~/src/elisp/cedet/cedet-devel-load.el")
+  (load-file "~/src/elisp/cedet/cedet-devel-load.el"))
+
 ;; initalize all ELPA packages
 (require 'package)
 (package-initialize)

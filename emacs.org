@@ -130,7 +130,7 @@ things add hooks that don't work if packages aren't installed.
 (defvar my/install-packages
   '(
     ;; package management
-    use-package
+    use-package paradox
 
     ;; themeing
     rainbow-mode leuven-theme dakrone-theme color-identifiers-mode

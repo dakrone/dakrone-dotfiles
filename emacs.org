@@ -1788,15 +1788,13 @@ work with the ES codebase.
       (statement-case-open   . +)
       (statement-cont        . ++)
       (arglist-intro         . 0)
-      ;; (arglist-intro         . c-lineup-arglist-intro-after-paren)
-      (arglist-cont-nonempty . ++)
+      (arglist-cont-nonempty . (my/arglist-cont-nonempty-indentation
+                                c-lineup-arglist))
       (arglist-close         . --)
-      ;; (arglist-close         . c-lineup-arglist)
       (inexpr-class          . 0)
       (access-label          . 0)
       (inher-intro           . ++)
       (inher-cont            . ++)
-      ;; (brace-list-intro      . ++)
       (brace-list-intro      . +)
       (func-decl-cont        . ++))))
   "Elasticsearch's Intellij Java Programming Style")
@@ -1806,11 +1804,6 @@ work with the ES codebase.
                         '((java-mode . "intellij")
                           (awk-mode . "awk")
                           (other . "gnu")))
-
-(push '(arglist-cont-nonempty
-        my/arglist-cont-nonempty-indentation
-        c-lineup-arglist)
-      c-offsets-alist)
 
 (defun setup-java ()
   (interactive)

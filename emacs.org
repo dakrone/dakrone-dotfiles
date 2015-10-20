@@ -1729,19 +1729,46 @@ Elasticsearch, which are a little weird in some cases, but needed in order to
 work with the ES codebase.
 
 #+BEGIN_SRC emacs-lisp
-(defun java-line-up-only-constructor-or-dont (thing)
-  "If at a class constructor, line up with the paren, if not, use
- ++ indentation"
-  (interactive)
+;; via http://emacs.stackexchange.com/questions/17327/how-to-have-c-offset-style-correctly-detect-a-java-constructor-and-change-indent
+(defun my/point-in-defun-declaration-p ()
+  (let ((bod (save-excursion (c-beginning-of-defun)
+                             (point))))
+    (<= bod
+        (point)
+        (save-excursion (goto-char bod)
+                        (re-search-forward "{")
+                        (point)))))
+
+(defun my/is-string-concatenation-p ()
   (save-excursion
-    (beginning-of-line)
-    (backward-up-list 1)
-    (backward-word 2)
-    ;; Now at either "new" or something else
-    (let* ((sym (semantic-ctxt-current-symbol)))
-      (if (eq '("new") sym)
-          '++
-        (c-lineup-arglist-intro-after-paren thing)))))
+    (let ((start (point)))
+      (forward-line -1)
+      (if (re-search-forward " \\\+$" start t) t nil))))
+
+(defun my/inside-java-lambda-p ()
+  (save-excursion
+    (c-beginning-of-statement-1)
+    (let ((start (point)))
+      (forward-line -1)
+      (if (search-forward " -> {" start t) t nil))))
+
+(defun my/arglist-cont-nonempty-indentation (arg)
+  (if (my/inside-java-lambda-p)
+      '+
+    (if (my/is-string-concatenation-p)
+        16 ;; TODO don't hard-code
+      (unless (my/point-in-defun-declaration-p) '++))))
+
+(defun my/statement-block-intro (arg)
+  (if (and (c-at-statement-start-p)
+           (my/inside-java-lambda-p))
+      0
+    '+))
+
+(defun my/block-close (arg)
+  (if (my/inside-java-lambda-p)
+      '-
+    0))
 
 (defconst intellij-java-style
   '((c-basic-offset . 4)
@@ -1751,7 +1778,8 @@ work with the ES codebase.
      .
      ((inline-open . 0)
       (topmost-intro-cont    . +)
-      (statement-block-intro . +)
+      (statement-block-intro . my/statement-block-intro)
+      (block-close           . my/block-close)
       (knr-argdecl-intro     . +)
       (substatement-open     . +)
       (substatement-label    . +)
@@ -1762,7 +1790,6 @@ work with the ES codebase.
       (arglist-intro         . 0)
       ;; (arglist-intro         . c-lineup-arglist-intro-after-paren)
       (arglist-cont-nonempty . ++)
-      ;; (arglist-cont-nonempty . java-line-up-only-constructor-or-dont)
       (arglist-close         . --)
       ;; (arglist-close         . c-lineup-arglist)
       (inexpr-class          . 0)
@@ -1779,6 +1806,11 @@ work with the ES codebase.
                         '((java-mode . "intellij")
                           (awk-mode . "awk")
                           (other . "gnu")))
+
+(push '(arglist-cont-nonempty
+        my/arglist-cont-nonempty-indentation
+        c-lineup-arglist)
+      c-offsets-alist)
 
 (defun setup-java ()
   (interactive)

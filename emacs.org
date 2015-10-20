@@ -127,9 +127,9 @@ during loading that breaks something, it's nice to have a debug information.
 
 ** Packages that need to be installed
 :PROPERTIES:
-   :ID:       4E6CD76C-67B9-48E2-9937-9352914FB936
+:ID:       4E6CD76C-67B9-48E2-9937-9352914FB936
 :CUSTOM_ID: 31dd2915-08a6-499f-a56d-481ef578efc9
-   :END:
+:END:
 This is code that installs packages before any config is loaded, since a lot of
 things add hooks that don't work if packages aren't installed.
 
@@ -260,9 +260,9 @@ things add hooks that don't work if packages aren't installed.
 
 ** Setting up $PATH and other vars
 :PROPERTIES:
-   :ID:       D6DF0536-C011-4219-BA84-C67072ED8543
+:ID:       D6DF0536-C011-4219-BA84-C67072ED8543
 :CUSTOM_ID: 37da3bd7-0468-43ac-ae12-6eaa339e8db5
-   :END:
+:END:
 This allows a GUI emacs to inherit =$PATH= and other things from the shell when
 run. I use it for the path on OSX and JAVA_HOME everywhere else.
 
@@ -288,9 +288,9 @@ built-in packages.
 
 *** General settings
 :PROPERTIES:
-    :ID:       4AE7470D-E61E-48C4-959B-CB8C19A10725
+:ID:       4AE7470D-E61E-48C4-959B-CB8C19A10725
 :CUSTOM_ID: 13ebbbbd-30d6-45eb-96ec-cb3c3a0b1e86
-    :END:
+:END:
 First, let's determine whether I'm going to be using a dark theme,
 or a light theme. I set a var to either '=light= or '=dark=
 depending on whatever I'm in the mood for. This is used later on for the
@@ -657,9 +657,9 @@ helm's fuzzy matching.
 
 *** OS-specific settings
 :PROPERTIES:
-    :ID:       2A3B6DDC-9AC8-4D8A-AC46-84D3D65DF2EF
+:ID:       2A3B6DDC-9AC8-4D8A-AC46-84D3D65DF2EF
 :CUSTOM_ID: 1ecd56e8-2313-4cd8-a21f-68e790497860
-    :END:
+:END:
 These are settings that are applied depending on what OS I'm
 currently running on. On gnu/linux systems, I bind =C-M-w= to the
 yank-to-x-clipboard method, which uses =xsel= to yank text. On OSX, I use the
@@ -757,9 +757,9 @@ Hahahahaha, you must be joking.
 
 *** Clipboard settings
 :PROPERTIES:
-    :ID:       20A3D321-20FC-4773-B4BA-5CB8B2152617
+:ID:       20A3D321-20FC-4773-B4BA-5CB8B2152617
 :CUSTOM_ID: a8bb8f66-d470-4911-a3c4-56df64251042
-    :END:
+:END:
 Change the clipboard settings to better integrate into Linux:
 
 #+BEGIN_SRC emacs-lisp
@@ -777,9 +777,9 @@ Emacs' text.
 
 *** Temporary file settings
 :PROPERTIES:
-    :ID:       AE671223-5EB1-42B7-BBBB-D257ED16B61F
+:ID:       AE671223-5EB1-42B7-BBBB-D257ED16B61F
 :CUSTOM_ID: b84146b7-7e27-4ec4-a2fb-64d1a0075988
-    :END:
+:END:
 Settings for what to do with temporary files.
 
 #+BEGIN_SRC emacs-lisp
@@ -802,9 +802,9 @@ Settings for what to do with temporary files.
 
 *** Shell settings
 :PROPERTIES:
-    :ID:       F30C2479-0B6D-464B-A3E8-A67379FBBF6D
+:ID:       F30C2479-0B6D-464B-A3E8-A67379FBBF6D
 :CUSTOM_ID: 99ce4211-8cbf-4da6-a617-89129e550e9f
-    :END:
+:END:
 Things for running shells inside of emacs
 
 First, Emacs doesn't handle =less= well, so use =cat= instead for the shell
@@ -861,9 +861,9 @@ comint-replace-by-expanded-history-before-point."
 
 *** Eshell settings
 :PROPERTIES:
-    :ID:       526FD9BE-DB34-48E1-9AA5-0879EAAF5D81
+:ID:       526FD9BE-DB34-48E1-9AA5-0879EAAF5D81
 :CUSTOM_ID: c4cdb5dc-5c10-49fc-9ab7-0d3e9f49de1d
-    :END:
+:END:
 Eshell is great for one-off shell things, but I use ZSH too much for it to be a
 full replacement. Regardless, it needs some tweaks in order to be fully useful.
 
@@ -1068,9 +1068,9 @@ alias xanadu2org rsync -azP --delete xanadu:~/org/ ~/org
 
 *** Tramp settings
 :PROPERTIES:
-    :ID:       0167743B-7497-4819-BE9D-8480A26CCBEC
+:ID:       0167743B-7497-4819-BE9D-8480A26CCBEC
 :CUSTOM_ID: be4eb9c3-5207-4cca-bb10-94fefc2e022c
-    :END:
+:END:
 I have really been getting into TRAMP lately, I use it with eshell all the time,
 and dired tramp buffers are great for file management.
 
@@ -1102,9 +1102,9 @@ and dired tramp buffers are great for file management.
 
 *** Spell check and flyspell settings
 :PROPERTIES:
-    :ID:       0B80EB46-83A6-484B-90E5-32F71985DC20
+:ID:       0B80EB46-83A6-484B-90E5-32F71985DC20
 :CUSTOM_ID: 1cb51ce4-c282-41b1-9457-524533f5d14e
-    :END:
+:END:
 I use Hunspell and Aspell checking spelling, ignoring words under 3 characters
 and running very quickly. My personal word dictionary is at
 =~/.flydict=.
@@ -1156,9 +1156,9 @@ In most non-programming modes, =M-.= can be used to spellcheck the word
 
 *** View-mode and doc-view
 :PROPERTIES:
-    :ID:       1C24504D-1E64-4FAE-A9F2-F6506D9C5729
+:ID:       1C24504D-1E64-4FAE-A9F2-F6506D9C5729
 :CUSTOM_ID: 4784b06a-8467-403b-af88-9d079181e59c
-    :END:
+:END:
 Read-only viewing of files. Keybindings for paging through stuff
 in a less/vim manner.
 
@@ -1202,9 +1202,9 @@ install mupdf= on osx)
 
 *** Dired
 :PROPERTIES:
-    :ID:       54C2ABF2-0B43-4E5B-BC78-3BB4EBF01A61
+:ID:       54C2ABF2-0B43-4E5B-BC78-3BB4EBF01A61
 :CUSTOM_ID: 6848cd59-f733-43a8-b805-196480ee6906
-    :END:
+:END:
 Dired is sweet, I require =dired-x= also so I can hit =C-x C-j=
 and go directly to a dired buffer.
 
@@ -1273,9 +1273,9 @@ Disabled, I actually start up a background =emacs --daemon= for this
 
 *** saveplace
 :PROPERTIES:
-    :ID:       3B238F14-3042-479C-9C59-B5EEEC8E99AD
+:ID:       3B238F14-3042-479C-9C59-B5EEEC8E99AD
 :CUSTOM_ID: 8ff79441-5f7e-4023-9c20-5e2d6c4226c6
-    :END:
+:END:
 Navigates back to where you were editing a file next time you open it
 
 #+BEGIN_SRC emacs-lisp
@@ -1288,9 +1288,9 @@ Navigates back to where you were editing a file next time you open it
 
 *** recentf
 :PROPERTIES:
-    :ID:       06350DD1-59B7-4EDC-A1B5-2B6A89E8150B
+:ID:       06350DD1-59B7-4EDC-A1B5-2B6A89E8150B
 :CUSTOM_ID: ecb45301-e0f6-4cd6-826f-ad3f400dc02e
-    :END:
+:END:
 Set up keeping track of recent files, up to 2000 of them.
 
 If emacs has been idle for 10 minutes, clean up the recent files.
@@ -1352,9 +1352,9 @@ file to write to."
 
 *** whitespace-mode
 :PROPERTIES:
-    :ID:       53B9FB30-6FA8-48C4-8B69-92C6217DB39C
+:ID:       53B9FB30-6FA8-48C4-8B69-92C6217DB39C
 :CUSTOM_ID: 6723ab3b-7cb8-41f3-a10c-ec94a3b1fd53
-    :END:
+:END:
 
 I set the width to 140, because although it should be 80, I only want
 highlighting past 140 columns, otherwise Java is unreadable.
@@ -1426,9 +1426,9 @@ ruby > java > everything else=.
 
 *** CEDET (semantic-mode)
 :PROPERTIES:
-    :ID:       C8755D4E-FAAF-4C0C-90EE-FDF8E92CD782
+:ID:       C8755D4E-FAAF-4C0C-90EE-FDF8E92CD782
 :CUSTOM_ID: b0c4ed96-30d6-42f1-ba91-d41814bcd249
-    :END:
+:END:
 Basic semantic-mode things
 
 First, use a development version of cedet if applicable, I download the latest
@@ -1461,9 +1461,9 @@ And then things to set up semantic mode
 
 *** General prog-mode hooks
 :PROPERTIES:
-    :ID:       AADAA305-C49A-4FD8-99DF-7466CD380751
+:ID:       AADAA305-C49A-4FD8-99DF-7466CD380751
 :CUSTOM_ID: e5ac862c-bc57-49d5-ac43-9cec3d480012
-    :END:
+:END:
 
 Remove some back-ends from vc-mode, no need to check all this ancient things:
 
@@ -1492,9 +1492,9 @@ highlighted so they stand out:
 
 *** Clojure
 :PROPERTIES:
-    :ID:       751B0DF1-CC5D-4386-B0CA-1519325B01DA
+:ID:       751B0DF1-CC5D-4386-B0CA-1519325B01DA
 :CUSTOM_ID: fb341ab2-acbd-42a0-98fc-277761e8e0e2
-    :END:
+:END:
 Some helper functions for jumping between tests, I prefer
 test/foo.clj instead of foo_test.clj
 
@@ -1573,9 +1573,9 @@ And then finally use them if cider and ac-nrepl packages are available:
 
 *** Shell
 :PROPERTIES:
-    :ID:       43CC0B6F-A8BB-46E0-A224-AAD8F1D9A0BB
+:ID:       43CC0B6F-A8BB-46E0-A224-AAD8F1D9A0BB
 :CUSTOM_ID: 1fc02df0-1e5a-404a-8ff9-a0d8bd8769eb
-    :END:
+:END:
 I write a LOT of shell-scripts, I turn off show-paren-mode (I have
 show-smartparen-mode anyway) and flycheck (I don't want to run
 it!) as well as not blinking the matching paren.
@@ -1592,9 +1592,9 @@ it!) as well as not blinking the matching paren.
 
 *** Elisp
 :PROPERTIES:
-    :ID:       5AA7C6BC-6DAD-45D9-ABD5-36BF0BD344F1
+:ID:       5AA7C6BC-6DAD-45D9-ABD5-36BF0BD344F1
 :CUSTOM_ID: 8711a5dd-fbbd-452c-bc18-85318d9c9c9b
-    :END:
+:END:
 This contains the configuration for elisp programming
 
 First, turn on eldoc everywhere it's useful:
@@ -1672,9 +1672,9 @@ Borrowed from Steve Purcell's config. This pretty-prints the results.
 
 *** Python
 :PROPERTIES:
-    :ID:       772D69FD-48DB-4A5C-B107-06CD508CAE05
+:ID:       772D69FD-48DB-4A5C-B107-06CD508CAE05
 :CUSTOM_ID: 651c592a-1ac5-4282-8bcb-ca696c4013bd
-    :END:
+:END:
 Some various python settings, including loading jedi if needed to set up
 keys, the custom hook only loads jedi when editing python files:
 
@@ -1719,9 +1719,9 @@ I'm using the [[https://github.com/porterjamesj/virtualenvwrapper.el][virtualenv
 
 *** Java
 :PROPERTIES:
-    :ID:       EBD5666F-94FB-4C56-95C8-45181D2B3805
+:ID:       EBD5666F-94FB-4C56-95C8-45181D2B3805
 :CUSTOM_ID: 26d24e14-39b6-4e6b-8b05-9ca761f0b456
-    :END:
+:END:
 Java uses eclim and/or malabar to make life at least a little bit livable.
 
 =intellij-java-style= is a copy of our Intellij indentation rules for
@@ -1815,9 +1815,9 @@ Intellij all the time for things.
 
 *** Ruby
 :PROPERTIES:
-    :ID:       390CB4F5-A029-4AA9-886C-8905C0EFDA23
+:ID:       390CB4F5-A029-4AA9-886C-8905C0EFDA23
 :CUSTOM_ID: d9f0531b-c3fc-4908-a7db-b81f4e25fb8d
-    :END:
+:END:
 Using rbenv, set it up correctly when idle
 
 #+BEGIN_SRC emacs-lisp
@@ -1839,9 +1839,9 @@ Or, chruby, which is much simpler (no shims)
 
 *** Haskell
 :PROPERTIES:
-    :ID:       8C6CB946-3189-4EE0-B353-70FECC754648
+:ID:       8C6CB946-3189-4EE0-B353-70FECC754648
 :CUSTOM_ID: 3a2fd8ab-a240-4b91-ac55-81a8a006a2b8
-    :END:
+:END:
 Use GHC for haskell mode, and turn on auto-complete and some doc/indent
 modes:
 
@@ -1899,9 +1899,9 @@ modes:
 
 *** Javascript
 :PROPERTIES:
-    :ID:       FDD2C909-F169-4170-BBA3-697C059F0FFA
+:ID:       FDD2C909-F169-4170-BBA3-697C059F0FFA
 :CUSTOM_ID: c86cfe3e-3d9f-4fff-a37c-e0e7e60f8846
-    :END:
+:END:
 Bleh javascript. js2-mode is better than nothing.
 
 #+BEGIN_SRC emacs-lisp
@@ -1928,9 +1928,9 @@ There's =tern= also, but I leave it turned off by default
 
 *** Elasticsearch (es-mode)
 :PROPERTIES:
-    :ID:       9C431FD2-4BCB-4F58-B1F2-F9C263264B79
+:ID:       9C431FD2-4BCB-4F58-B1F2-F9C263264B79
 :CUSTOM_ID: 96d19f24-e726-4bd3-bd5d-efb267f4aafc
-    :END:
+:END:
 ([[https://github.com/dakrone/es-mode][es-mode]]) stuff, loaded from disk so I can develop on it quickly.
 
 #+BEGIN_SRC emacs-lisp
@@ -1968,9 +1968,9 @@ Misc theme settings
 
 *** color theme
 :PROPERTIES:
-    :ID:       EADAA476-50E8-416E-AC6F-13F278735435
+:ID:       EADAA476-50E8-416E-AC6F-13F278735435
 :CUSTOM_ID: eba05de0-2322-4a52-b762-2d54b9e8eb56
-    :END:
+:END:
 For light-colored backgrounds, I used [[https://github.com/fniessen/emacs-leuven-theme][leuven-theme]]. For dark-colored
 backgrounds (most of the time), I use my own custom theme, called [[https://github.com/dakrone/dakrone-theme][dakrone-theme]].
 Sometimes I use [[https://github.com/kuanyui/moe-theme.el][moe-theme]] for a dark background also, although the magenta text
@@ -2010,9 +2010,9 @@ nice.
 
 *** fonts
 :PROPERTIES:
-    :ID:       92694D10-4647-46AD-A9A7-35B59DF46512
+:ID:       92694D10-4647-46AD-A9A7-35B59DF46512
 :CUSTOM_ID: ab893513-3d80-47b9-b666-7cee1fab621f
-    :END:
+:END:
 I've been using [[https://github.com/belluzj/fantasque-sans][Fantasque Sans Mono]] lately, it looks pretty nice to me. On Linux
 I've been using Bitstream Vera Sans Mono. I also use [[http://www.marksimonson.com/fonts/view/anonymous-pro][Anonymous Pro]] and
 Inconsolata a lot.
@@ -2109,9 +2109,9 @@ So, fringe is nice actually, I set it to the same color as the background
 
 ** org-mode
 :PROPERTIES:
-   :ID:       07EAD909-1415-41FB-8079-8E59DB55D0E3
+:ID:       07EAD909-1415-41FB-8079-8E59DB55D0E3
 :CUSTOM_ID: b07ea95e-d7cb-4714-ae83-9bd624e1c19d
-   :END:
+:END:
 I use [[http://orgmode.org/][org-mode]] a ton, so it get's its own page here.
 
 A great lot of this was taken from http://doc.norang.ca/org-mode.html, to which
@@ -2519,9 +2519,9 @@ And now the huge org-mode configuration
 
 ** org-clock
 :PROPERTIES:
-   :ID:       DA59822F-1D94-4E05-B28C-9B984C3E8431
+:ID:       DA59822F-1D94-4E05-B28C-9B984C3E8431
 :CUSTOM_ID: cd0460b6-1af9-4033-a923-1a7b7b5ac50b
-   :END:
+:END:
 Now, my org-mode clocking configuration:
 
 First, a function to use for clocking in
@@ -2574,9 +2574,9 @@ First, a function to use for clocking in
 
 ** org-publishing
 :PROPERTIES:
-   :ID:       C5C2E0C3-5E0B-4913-BB9E-955E8051243E
+:ID:       C5C2E0C3-5E0B-4913-BB9E-955E8051243E
 :CUSTOM_ID: 40ef52c5-c17e-4e72-a006-460cdee2a479
-   :END:
+:END:
 Publishing org-mode files to my hosting provider:
 
 #+BEGIN_SRC emacs-lisp
@@ -2711,9 +2711,9 @@ export the file to show up in http://p.writequit.org/org
 
 ** alert (notifications)
 :PROPERTIES:
-   :ID:       0D493EEE-3EEC-434A-9CB5-57061ECC9371
+:ID:       0D493EEE-3EEC-434A-9CB5-57061ECC9371
 :CUSTOM_ID: b4966789-fd8f-43ac-bfac-e137abac5ed6
-   :END:
+:END:
 Yep. I need to actually make this work for OSX, for Linux it's no problem
 though.
 
@@ -2802,9 +2802,9 @@ To use this, I just need to do =(alert "this is a message")=.
 
 ** email (mu4e) Configuration
 :PROPERTIES:
-   :ID:       E3FFEF22-68F6-4EC7-8381-5054850B4567
+:ID:       E3FFEF22-68F6-4EC7-8381-5054850B4567
 :CUSTOM_ID: b65eb4b0-08fe-48bd-ad39-0e60e61c0a9c
-   :END:
+:END:
 I usually install [[http://www.djcbsoftware.nl/code/mu/][mu]] from source. I unpack it to ~/src/mu-0.9.13 (or whatever
 version) so I can reference the mu4e elisp files. Then run the following to
 install mu:
@@ -3144,9 +3144,9 @@ passed in. Also supports ignoring the msg at the point."
 
 ** ediff
 :PROPERTIES:
-   :ID:       58F8D12D-B8E4-4857-8633-699CCF66120E
+:ID:       58F8D12D-B8E4-4857-8633-699CCF66120E
 :CUSTOM_ID: 00144653-d2e9-4ce8-8a7d-c3c5fc5b46b0
-   :END:
+:END:
 Ediff is fantastic for looking through diffs, a lot of these settings are taken
 from http://oremacs.com/2015/01/17/setting-up-ediff/
 
@@ -3162,9 +3162,9 @@ from http://oremacs.com/2015/01/17/setting-up-ediff/
 
 ** smooth-scrolling
 :PROPERTIES:
-   :ID:       9DA976B9-A476-4096-B319-0FAF87FE9228
+:ID:       9DA976B9-A476-4096-B319-0FAF87FE9228
 :CUSTOM_ID: 3e078394-1e31-4857-a9bd-b2f2907e1a69
-   :END:
+:END:
 Smooth scrolling means when you hit =C-n= to go to the next line at the bottom
 of the page, instead of doing a page-down, it shifts down by a single line. The
 margin means that much space is kept between the cursor and the bottom of the
@@ -3183,9 +3183,9 @@ buffer.
 
 ** paredit
 :PROPERTIES:
-   :ID:       C9D5995F-AD80-4FB3-B9EF-E046708AF582
+:ID:       C9D5995F-AD80-4FB3-B9EF-E046708AF582
 :CUSTOM_ID: 56da35e3-158f-427f-a554-d0e9deb0046b
-   :END:
+:END:
 Paredit for all the lisps.
 
 #+BEGIN_SRC emacs-lisp
@@ -3203,9 +3203,9 @@ Paredit for all the lisps.
 
 ** smartparens
 :PROPERTIES:
-   :ID:       54D306B0-B753-4AD6-B2A5-39C28F5A1E3B
+:ID:       54D306B0-B753-4AD6-B2A5-39C28F5A1E3B
 :CUSTOM_ID: 77f9a23d-51c9-4aa0-8c91-212d36770f14
-   :END:
+:END:
 So, paredit is great, however, it doesn't work for non-lisp modes. Smartparens
 works pretty well, so I use it everywhere paredit-mode doesn't work.
 
@@ -3291,9 +3291,9 @@ works pretty well, so I use it everywhere paredit-mode doesn't work.
 
 ** golden-ratio
 :PROPERTIES:
-   :ID:       3F7614A1-18AE-44F4-A5BB-C086AE2BE23C
+:ID:       3F7614A1-18AE-44F4-A5BB-C086AE2BE23C
 :CUSTOM_ID: e2b3c6b8-9044-49c3-90e9-61e3be87c1d7
-   :END:
+:END:
 Automagically resizes the windows to be the golden ratio (1.618), nice when
 using a big font size and I need more eshell space
 
@@ -3317,9 +3317,9 @@ using a big font size and I need more eshell space
 
 ** flycheck
 :PROPERTIES:
-   :ID:       038CD023-00E4-45DC-BD49-DC25F4BAA109
+:ID:       038CD023-00E4-45DC-BD49-DC25F4BAA109
 :CUSTOM_ID: a198b462-0004-459e-9ac3-a3fdaa6fc5a6
-   :END:
+:END:
 Pretty minimally configured, but awesome tool for most dynamic languages.
 
 #+BEGIN_SRC emacs-lisp
@@ -3342,9 +3342,9 @@ Pretty minimally configured, but awesome tool for most dynamic languages.
 
 ** ggtags
 :PROPERTIES:
-   :ID:       A67F4467-70AC-4ECC-9E49-CFDB1CAD12C0
+:ID:       A67F4467-70AC-4ECC-9E49-CFDB1CAD12C0
 :CUSTOM_ID: ead388bd-10d2-454d-b306-aa5652f08e1a
-   :END:
+:END:
 See: https://github.com/leoliu/ggtags
 
 If on OSX, you'll need to:
@@ -3411,9 +3411,9 @@ In order to get this to work also
 
 ** expand-region
 :PROPERTIES:
-   :ID:       773D748F-D504-4D4E-958E-56525E54B19C
+:ID:       773D748F-D504-4D4E-958E-56525E54B19C
 :CUSTOM_ID: e4ccaffb-e5e9-4840-ab8b-270bd6e51740
-   :END:
+:END:
 Great for selecting the inside of Elasticsearch queries
 
 #+BEGIN_SRC emacs-lisp
@@ -3436,9 +3436,9 @@ Provides a quick preview of the thing at point
 
 ** with-editor
 :PROPERTIES:
-   :ID:       03A09A41-5906-4391-B5E7-B61D738A2944
+:ID:       03A09A41-5906-4391-B5E7-B61D738A2944
 :CUSTOM_ID: 844607fc-3842-42dd-9369-20fed1dd1692
-   :END:
+:END:
 Sets up the =with-editor= package so things that invoke =$EDITOR= will use the
 current emacs if I'm already inside of emacs
 
@@ -3452,9 +3452,9 @@ current emacs if I'm already inside of emacs
 
 ** magit
 :PROPERTIES:
-   :ID:       3451126F-CE8E-41D7-BE9E-6936E52F35B1
+:ID:       3451126F-CE8E-41D7-BE9E-6936E52F35B1
 :CUSTOM_ID: 8b0ea675-db0a-471b-9e11-cfc8d56de8c3
-   :END:
+:END:
 I use =M-g M-g= everywhere to go directly to Magit.
 
 #+BEGIN_SRC emacs-lisp
@@ -3494,9 +3494,9 @@ I use =M-g M-g= everywhere to go directly to Magit.
 
 ** projectile
 :PROPERTIES:
-   :ID:       0107185D-D5FC-42DD-A3FB-0FE125672D5D
+:ID:       0107185D-D5FC-42DD-A3FB-0FE125672D5D
 :CUSTOM_ID: c29b4df8-aff4-452a-859a-b300515838df
-   :END:
+:END:
 Per-project navigation
 
 #+BEGIN_SRC emacs-lisp
@@ -3528,9 +3528,9 @@ Per-project navigation
 
 ** prodigy
 :PROPERTIES:
-   :ID:       81D275FC-E69D-4510-AD8D-13E201AF9005
+:ID:       81D275FC-E69D-4510-AD8D-13E201AF9005
 :CUSTOM_ID: 61be01aa-a2dc-4d8d-80dd-44bc98f8a963
-   :END:
+:END:
 I basically use this to start up ES when I need to test something really quickly
 
 I have been trying out [[https://www.npmjs.com/package/esvm][esvm]] for this lately also, check out my ESVM
@@ -3592,9 +3592,9 @@ So I configure prodigy like so:
 
 ** git-gutter
 :PROPERTIES:
-   :ID:       31AE28C7-8A61-4CCB-88B3-C8B43C306A18
+:ID:       31AE28C7-8A61-4CCB-88B3-C8B43C306A18
 :CUSTOM_ID: eb22f325-377a-4fa0-b300-115c81cb7a01
-   :END:
+:END:
 Only enabled in a few modes, but quite useful, as well as the =C-x n= and =C-x
 p= bindings.
 
@@ -3650,9 +3650,9 @@ fringe, so I'm trying it out...
 
 ** anzu
 :PROPERTIES:
-   :ID:       0BC46C36-559A-44BE-85E8-6DCB2A0AEDD9
+:ID:       0BC46C36-559A-44BE-85E8-6DCB2A0AEDD9
 :CUSTOM_ID: 573ef0e4-92bc-465e-b215-6b4fa3ff0c58
-   :END:
+:END:
 Anzu shows the number of search hits in the modeline, which is handy.
 
 It can also be used for a "refactor-like" thing similar to query-replace.
@@ -3682,9 +3682,9 @@ Also, add a thing for yanking the entire symbol into the query while searching:
 
 ** easy-kill
 :PROPERTIES:
-   :ID:       217A366E-7A0F-4317-8D43-B7F9B703E5E7
+:ID:       217A366E-7A0F-4317-8D43-B7F9B703E5E7
 :CUSTOM_ID: 70ad56a3-5ff9-4269-a241-21f55d83d700
-   :END:
+:END:
 #+BEGIN_SRC emacs-lisp
 (use-package easy-kill
   :defer t
@@ -3693,9 +3693,9 @@ Also, add a thing for yanking the entire symbol into the query while searching:
 
 ** helm
 :PROPERTIES:
-   :ID:       77F30740-7325-40DA-A85A-B5E7EA56A2ED
+:ID:       77F30740-7325-40DA-A85A-B5E7EA56A2ED
 :CUSTOM_ID: 951ffe53-84fc-4311-95dc-87e085839f79
-   :END:
+:END:
 There are many helm things. I use it a lot.
 
 A lot of things are taken from taken from
@@ -4081,9 +4081,9 @@ _q_: quit
 
 ** yasnippet
 :PROPERTIES:
-   :ID:       43ACEE5A-0858-4192-B716-D6DF67F61631
+:ID:       43ACEE5A-0858-4192-B716-D6DF67F61631
 :CUSTOM_ID: c7e93784-d1a9-4980-963d-294d7334975e
-   :END:
+:END:
 Snippets for coding, loading while idle so startup is faster.
 
 #+BEGIN_SRC emacs-lisp
@@ -4097,9 +4097,9 @@ Snippets for coding, loading while idle so startup is faster.
 
 ** markdown-mode
 :PROPERTIES:
-   :ID:       DE084266-9678-4BB9-988C-C8EFE857313B
+:ID:       DE084266-9678-4BB9-988C-C8EFE857313B
 :CUSTOM_ID: 5b0cb56f-3d32-4894-aa66-b94c779a1cb6
-   :END:
+:END:
 Various markdown-related settings. Not much here.
 
 #+BEGIN_SRC emacs-lisp
@@ -4133,9 +4133,9 @@ supports more modes and seems more updated
 
 ** bookmark+
 :PROPERTIES:
-   :ID:       21C4007E-AC7B-43DE-B306-340B434806E2
+:ID:       21C4007E-AC7B-43DE-B306-340B434806E2
 :CUSTOM_ID: 63f1debb-c267-4f28-88b7-4df87da94af9
-   :END:
+:END:
 Extended bookmarks, which I've started used for dired buffers and so on
 
 #+BEGIN_SRC emacs-lisp
@@ -4149,9 +4149,9 @@ Extended bookmarks, which I've started used for dired buffers and so on
 
 ** company-mode (auto-complete)
 :PROPERTIES:
-   :ID:       C02A1935-39EF-42A6-BA96-D3270541B8A8
+:ID:       C02A1935-39EF-42A6-BA96-D3270541B8A8
 :CUSTOM_ID: 1c3194f8-73fb-4833-9f74-5a8114eb1b2b
-   :END:
+:END:
 Standard auto-completion configuration with company-mode
 
 #+BEGIN_SRC emacs-lisp
@@ -4178,9 +4178,9 @@ Standard auto-completion configuration with company-mode
 
 ** smart-tab
 :PROPERTIES:
-   :ID:       A48BFFD0-6A96-451E-840A-081C1EA5A0F0
+:ID:       A48BFFD0-6A96-451E-840A-081C1EA5A0F0
 :CUSTOM_ID: 2998eb49-7081-4869-bd94-984aad8f32b7
-   :END:
+:END:
 Used smart-tab to complete everywhere except for ERC, shell and mu4e.
 
 #+BEGIN_SRC emacs-lisp
@@ -4212,9 +4212,9 @@ the link to this package.
 
 ** undo-tree
 :PROPERTIES:
-   :ID:       EFE332E2-5DC2-416E-B757-08240F7B86E9
+:ID:       EFE332E2-5DC2-416E-B757-08240F7B86E9
 :CUSTOM_ID: 63332a32-ae0d-48af-bc78-4c2980316739
-   :END:
+:END:
 Undo-tree allows me to have sane undo defaults, as well as being able to
 visualize it in ascii art if needed.
 
@@ -4231,9 +4231,9 @@ visualize it in ascii art if needed.
 
 ** popwin
 :PROPERTIES:
-   :ID:       BE8D337A-4A25-4D3B-89FA-D15DCD2AE551
+:ID:       BE8D337A-4A25-4D3B-89FA-D15DCD2AE551
 :CUSTOM_ID: c54eb043-efb2-48c3-aedf-1612cab67631
-   :END:
+:END:
 Popwin handles little popup windows at the bottom of the screen, which is very
 helpful for documentation buffers and so on.
 
@@ -4293,7 +4293,7 @@ helpful for documentation buffers and so on.
     ;; es-results-mode
     (push '(es-result-mode :stick t :width 0.5)
           popwin:special-display-config)
-    
+
     ;; direx
     (push '(direx:direx-mode :position left :width 40 :dedicated t)
           popwin:special-display-config)
@@ -4332,9 +4332,9 @@ helpful for documentation buffers and so on.
 
 ** paren-face
 :PROPERTIES:
-   :ID:       E1253E75-A67B-42DC-8BD3-E95F8A3BDEA7
+:ID:       E1253E75-A67B-42DC-8BD3-E95F8A3BDEA7
 :CUSTOM_ID: a35a9ed7-b85e-4a5f-9055-ac964cc1c778
-   :END:
+:END:
 Paren-face adds a face for parentheses, which is used by themes to darken the
 parens.
 
@@ -4345,9 +4345,9 @@ parens.
 
 ** ido-mode
 :PROPERTIES:
-   :ID:       6AB3103C-8D02-42CA-B0F6-1DC1E01B3DCF
+:ID:       6AB3103C-8D02-42CA-B0F6-1DC1E01B3DCF
 :CUSTOM_ID: 7d414a99-d269-40ab-b2e7-1f343a130418
-   :END:
+:END:
 First, turn on ido-mode everywhere, and if flx-ido is installed, enable it
 everywhere as well.
 
@@ -4380,9 +4380,9 @@ instead of rigid completions
 
 ** multiple-cursors
 :PROPERTIES:
-   :ID:       4E368E6A-2B98-4C8D-8AD3-C1E7B4E30252
+:ID:       4E368E6A-2B98-4C8D-8AD3-C1E7B4E30252
 :CUSTOM_ID: 61b1e8d8-0392-4035-b383-48ad042699a2
-   :END:
+:END:
 Mulitple cursors is like rectangular selection/insertion but on steroids
 
 #+BEGIN_SRC emacs-lisp
@@ -4395,9 +4395,9 @@ Mulitple cursors is like rectangular selection/insertion but on steroids
 
 ** twittering-mode
 :PROPERTIES:
-   :ID:       126F7155-25C0-43F9-8C0B-0FB269D16437
+:ID:       126F7155-25C0-43F9-8C0B-0FB269D16437
 :CUSTOM_ID: fa20e5fd-056d-4bc9-a2b2-117fa9492daa
-   :END:
+:END:
 Load up twittering mode, but defer it since I'm probably not loading emacs to
 immediately use Twitter :P
 
@@ -4412,9 +4412,9 @@ immediately use Twitter :P
 
 ** scpaste
 :PROPERTIES:
-   :ID:       99855C54-2273-4BFB-A5BC-46E8481F4C84
+:ID:       99855C54-2273-4BFB-A5BC-46E8481F4C84
 :CUSTOM_ID: ce27dce5-de98-4b5a-a05c-b8a6c47f2b10
-   :END:
+:END:
 scp-ing an HTML version of the current buffer somewhere
 
 #+BEGIN_SRC emacs-lisp
@@ -4427,9 +4427,9 @@ scp-ing an HTML version of the current buffer somewhere
 
 ** smex
 :PROPERTIES:
-   :ID:       53E196A2-C782-4E01-80EA-03CA2A130D5E
+:ID:       53E196A2-C782-4E01-80EA-03CA2A130D5E
 :CUSTOM_ID: 51bd136c-f119-47eb-b1d9-9293ea774596
-   :END:
+:END:
 Smex is IDO, but for =M-x=
 
 #+BEGIN_SRC emacs-lisp
@@ -4441,9 +4441,9 @@ Smex is IDO, but for =M-x=
 
 ** color-identifiers-mode
 :PROPERTIES:
-   :ID:       1CDDEE23-7A7E-4265-ADBF-FBFCDDE45B31
+:ID:       1CDDEE23-7A7E-4265-ADBF-FBFCDDE45B31
 :CUSTOM_ID: 4ad91939-794a-4749-9565-afe33b07dbc3
-   :END:
+:END:
 Color-identifiers-mode gives colors to unique variables passed into functions.
 Can be really handy to see if you've misspelled a variable name.
 
@@ -4453,9 +4453,9 @@ Can be really handy to see if you've misspelled a variable name.
 
 ** iedit
 :PROPERTIES:
-   :ID:       D9CE4E35-A04E-42C3-8FFB-A3AC36B50062
+:ID:       D9CE4E35-A04E-42C3-8FFB-A3AC36B50062
 :CUSTOM_ID: 64b618c2-87ce-4bb8-95cc-7d2fb16c74ee
-   :END:
+:END:
 Iedit is interactive edit, where if you are on a word and you enter iedit-mode,
 you're basically editing every instance of that word/variable in the buffer.
 
@@ -4466,9 +4466,9 @@ you're basically editing every instance of that word/variable in the buffer.
 
 ** eyebrowse
 :PROPERTIES:
-   :ID:       C1AC79D7-6880-4D3B-B3C7-0FF4AED722F7
+:ID:       C1AC79D7-6880-4D3B-B3C7-0FF4AED722F7
 :CUSTOM_ID: 65778226-87e5-40f9-a0a2-e5e319b4118c
-   :END:
+:END:
 Eyebrowse is a great package for workspaces in Emacs.
 
 #+BEGIN_SRC emacs-lisp
@@ -4519,9 +4519,9 @@ Uses =M-n= and =M-p= to jump between the same variable in multiple places
 
 ** hideshow
 :PROPERTIES:
-   :ID:       609C859C-86A7-4CB7-9A27-BE540E9A6CDF
+:ID:       609C859C-86A7-4CB7-9A27-BE540E9A6CDF
 :CUSTOM_ID: 142bffd2-92ad-4c0a-803e-ea066000624e
-   :END:
+:END:
 Kind of like Vim's folding, but manually done right now.
 
 I'm in the process of trying out [[https://github.com/gregsexton/origami.el][Origami]] as a replacement, since it's a bit
@@ -4558,9 +4558,9 @@ for now.
 
 ** abbrev
 :PROPERTIES:
-   :ID:       38BDCB09-7989-49BF-AFA3-146413628E79
+:ID:       38BDCB09-7989-49BF-AFA3-146413628E79
 :CUSTOM_ID: 16d348b1-1d1b-49b3-ab85-69151eb16386
-   :END:
+:END:
 I use abbrev-mode to automatically correct misspellings I usually make. In this
 case, I misspell elasticsearch all the time, and I type it all the time, so it's
 helpful to auto-correct.
@@ -4607,9 +4607,9 @@ Exclude very large buffers from dabbrev
 
 ** vlf (view large files)
 :PROPERTIES:
-   :ID:       4D147BA4-C02D-4563-88AF-6FD86375A5BD
+:ID:       4D147BA4-C02D-4563-88AF-6FD86375A5BD
 :CUSTOM_ID: 4ecba33f-8c77-4abf-8673-85c0b8858fcb
-   :END:
+:END:
 [[https://github.com/m00natic/vlfi][VLF]] lets me handle things like 2gb files gracefully.
 
 #+BEGIN_SRC emacs-lisp
@@ -4618,9 +4618,9 @@ Exclude very large buffers from dabbrev
 
 ** eww
 :PROPERTIES:
-   :ID:       B9806739-ABEF-4DB0-90E0-2B7169529C9A
+:ID:       B9806739-ABEF-4DB0-90E0-2B7169529C9A
 :CUSTOM_ID: e1bbe37a-071b-42c9-a1b4-0c386e1eb0db
-   :END:
+:END:
 Ewwwwww...
 
 Wait, no, I mean the Emacs web browser built in to 24.4
@@ -4675,9 +4675,9 @@ Highlight idle things, but only in certain modes
 
 ** Key Bindings
 :PROPERTIES:
-   :ID:       3F1D7832-2DB7-4D45-A78A-267C823DC4A3
+:ID:       3F1D7832-2DB7-4D45-A78A-267C823DC4A3
 :CUSTOM_ID: 6a7b04f8-ab04-4d6f-a3ef-3a907aa0e5d2
-   :END:
+:END:
 These are miscellaneous bindings used all over the place that don't
 really fit in anywhere else.
 
@@ -4777,9 +4777,9 @@ Various methods I call interactively for things.
 
 *** Fixing SSH agent settings
 :PROPERTIES:
-    :ID:       8A39A744-6596-4507-939D-F39B3E907232
+:ID:       8A39A744-6596-4507-939D-F39B3E907232
 :CUSTOM_ID: 75a2b523-f5ea-497e-9f35-e8eeee73af98
-    :END:
+:END:
 This is for correctly finding the SSH agent:
 
 #+BEGIN_SRC emacs-lisp
@@ -4801,9 +4801,9 @@ This is for correctly finding the SSH agent:
 
 *** Format JSON more beautifully
 :PROPERTIES:
-    :ID:       60F93542-6EBA-4846-9937-18E3F3FD9F88
+:ID:       60F93542-6EBA-4846-9937-18E3F3FD9F88
 :CUSTOM_ID: fd29be2f-c121-4845-8af3-17899cc60968
-    :END:
+:END:
 I work with a ton of JSON, so I need to be able to format it
 nicely. Fortunately this is really easy with Python:
 
@@ -4818,9 +4818,9 @@ nicely. Fortunately this is really easy with Python:
 
 *** Recompile startup elisp files
 :PROPERTIES:
-    :ID:       1AD9DD71-86CC-48B2-A24C-A18911F075A1
+:ID:       1AD9DD71-86CC-48B2-A24C-A18911F075A1
 :CUSTOM_ID: e4839094-66b7-4915-86ee-8014b724c8bd
-    :END:
+:END:
 Byte-compile startup stuff.
 
 #+BEGIN_SRC emacs-lisp
@@ -4832,9 +4832,9 @@ Byte-compile startup stuff.
 
 *** Adding directories to $PATH
 :PROPERTIES:
-    :ID:       E1F8A656-8CA9-47D0-BD77-6BB68D5A1706
+:ID:       E1F8A656-8CA9-47D0-BD77-6BB68D5A1706
 :CUSTOM_ID: 4c834b6a-9d7b-4719-8269-f9b6502a9a47
-    :END:
+:END:
 A utility method to add things to the $PATH, if needed.
 
 #+BEGIN_SRC emacs-lisp
@@ -4849,9 +4849,9 @@ A utility method to add things to the $PATH, if needed.
 
 *** Misc methods for cleaning up a buffer
 :PROPERTIES:
-    :ID:       614BAADB-AE74-4AFE-86FD-BB6E5976072C
+:ID:       614BAADB-AE74-4AFE-86FD-BB6E5976072C
 :CUSTOM_ID: e7b93f3d-52ab-4653-893e-24c8947bba28
-    :END:
+:END:
 
 #+BEGIN_SRC emacs-lisp
 (defun untabify-buffer ()
@@ -4872,9 +4872,9 @@ A utility method to add things to the $PATH, if needed.
 
 *** Browsing URLs
 :PROPERTIES:
-    :ID:       1ADA1690-3625-426F-9A7C-EBD573E5BB3F
+:ID:       1ADA1690-3625-426F-9A7C-EBD573E5BB3F
 :CUSTOM_ID: 54a6304f-0d68-4f08-afb9-c202a5fbb0a3
-    :END:
+:END:
 Search backwards, prompting to open any URL found. This is
 fantastic for ERC buffers. I bind this to =C-c u= because I use it
 a lot.
@@ -4897,9 +4897,9 @@ a lot.
 
 *** Numbering rectangles
 :PROPERTIES:
-    :ID:       7E1A9E29-8EA0-4AB9-9599-29D0A5DD945B
+:ID:       7E1A9E29-8EA0-4AB9-9599-29D0A5DD945B
 :CUSTOM_ID: 5fd147b8-6ce9-400d-8f44-3e7529b1f1d7
-    :END:
+:END:
 Let's say you have a list like:
 
 #+BEGIN_SRC fundamental :tangle no
@@ -4949,9 +4949,9 @@ and starting offset to number lines in rectangular-selection mode:
 
 *** Insert look of disapproval
 :PROPERTIES:
-    :ID:       58415EAA-7673-4287-A372-124BA2A3C75C
+:ID:       58415EAA-7673-4287-A372-124BA2A3C75C
 :CUSTOM_ID: 6e723b93-b05f-4edd-b191-37dd08d0612e
-    :END:
+:END:
 Used more often than you'd think...
 
 #+BEGIN_SRC emacs-lisp
@@ -4965,9 +4965,9 @@ Used more often than you'd think...
 
 *** Browse Elasticsearch documentation
 :PROPERTIES:
-    :ID:       E8FDEA15-2A6D-4527-A620-075F70B534A2
+:ID:       E8FDEA15-2A6D-4527-A620-075F70B534A2
 :CUSTOM_ID: e6e7e394-ef2f-42f4-8c43-a8fe9096bfb6
-    :END:
+:END:
 A function to search/browse ES docs from Emacs using =eww=
 
 #+BEGIN_SRC emacs-lisp
@@ -4983,9 +4983,9 @@ A function to search/browse ES docs from Emacs using =eww=
 
 *** Narrow-widen DWIM (do what I mean)
 :PROPERTIES:
-    :ID:       AABD5381-60FE-4574-B43D-B5D87B37D078
+:ID:       AABD5381-60FE-4574-B43D-B5D87B37D078
 :CUSTOM_ID: 27ec757c-86b7-448c-a067-34784722ff8f
-    :END:
+:END:
 
 #+BEGIN_SRC emacs-lisp
 (defun my/narrow-or-widen-dwim (p)
@@ -5015,9 +5015,9 @@ narrowed."
 
 *** Move by block of text
 :PROPERTIES:
-    :ID:       4CA16478-FE46-48D9-9A55-1AEFAAD2D542
+:ID:       4CA16478-FE46-48D9-9A55-1AEFAAD2D542
 :CUSTOM_ID: 1c44d47c-b5e6-4522-b8f2-130f227cd335
-    :END:
+:END:
 See: http://ergoemacs.org/emacs/emacs_move_by_paragraph.html
 
 #+BEGIN_SRC emacs-lisp
@@ -5044,9 +5044,9 @@ See: `xah-forward-block'"
 
 *** File previews
 :PROPERTIES:
-    :ID:       BF495BC5-2138-4AEB-9B31-05D20548F216
+:ID:       BF495BC5-2138-4AEB-9B31-05D20548F216
 :CUSTOM_ID: 952584d4-fb67-410d-a2fd-e6fa9ff7907a
-    :END:
+:END:
 Taken from ...
 
 #+BEGIN_SRC emacs-lisp
@@ -5095,9 +5095,9 @@ buffer preview will still display."
 
 *** Replace smart quotes
 :PROPERTIES:
-    :ID:       1903AC5A-3971-4844-9D82-29A635DA8A74
+:ID:       1903AC5A-3971-4844-9D82-29A635DA8A74
 :CUSTOM_ID: 46fa060e-5d62-402e-a542-b5c3c5616293
-    :END:
+:END:
 I hate smart quotes
 
 #+BEGIN_SRC emacs-lisp
@@ -5122,9 +5122,9 @@ I hate smart quotes
 
 *** Change number of replicas for an index
 :PROPERTIES:
-    :ID:       DE1610A5-5789-4FC1-83B8-B77CB6787CF4
+:ID:       DE1610A5-5789-4FC1-83B8-B77CB6787CF4
 :CUSTOM_ID: 62c7901e-7c1f-4877-8faa-a69f3c3c7298
-    :END:
+:END:
 So, I'd like something to prompt me for an index name and the number of replicas
 to change to, because I do this quite a bit...
 
@@ -5143,9 +5143,9 @@ to change to, because I do this quite a bit...
 
 ** Finalizers
 :PROPERTIES:
-  :ID:       D390967C-40C7-47AD-B01B-37AF15DEC7BA
+:ID:       D390967C-40C7-47AD-B01B-37AF15DEC7BA
 :CUSTOM_ID: 5b614285-acff-4563-9902-aa419b07b2ec
-  :END:
+:END:
 Turn off debugging, now that initialization has ended
 
 #+BEGIN_SRC emacs-lisp

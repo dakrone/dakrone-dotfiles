@@ -1740,12 +1740,14 @@ work with the ES codebase.
                         (point)))))
 
 (defun my/is-string-concatenation-p ()
+  "Returns true if the previous line is a string concatenation"
   (save-excursion
     (let ((start (point)))
       (forward-line -1)
       (if (re-search-forward " \\\+$" start t) t nil))))
 
 (defun my/inside-java-lambda-p ()
+  "Returns true if point is the first statement inside of a lambda"
   (save-excursion
     (c-beginning-of-statement-1)
     (let ((start (point)))
@@ -1760,15 +1762,10 @@ work with the ES codebase.
       (unless (my/point-in-defun-declaration-p) '++))))
 
 (defun my/statement-block-intro (arg)
-  (if (and (c-at-statement-start-p)
-           (my/inside-java-lambda-p))
-      0
-    '+))
+  (if (and (c-at-statement-start-p) (my/inside-java-lambda-p)) 0 '+))
 
 (defun my/block-close (arg)
-  (if (my/inside-java-lambda-p)
-      '-
-    0))
+  (if (my/inside-java-lambda-p) '- 0))
 
 (defconst intellij-java-style
   '((c-basic-offset . 4)

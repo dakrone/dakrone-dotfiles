@@ -142,7 +142,7 @@ things add hooks that don't work if packages aren't installed.
     ;; themeing
     rainbow-mode leuven-theme dakrone-theme color-identifiers-mode
     moe-theme nyan-mode color-theme-sanityinc-tomorrow
-    apropospriate-theme material-theme smart-mode-line
+    apropospriate-theme material-theme smart-mode-line beacon
 
     ;; misc
     diminish gist scpaste async sx exec-path-from-shell bbdb
@@ -4504,6 +4504,14 @@ you're basically editing every instance of that word/variable in the buffer.
 #+BEGIN_SRC emacs-lisp
 (use-package iedit
   :bind ("C-;" . iedit-mode))
+#+END_SRC
+
+** beacon
+Beacon flashes the cursor whenever you adjust position
+
+#+BEGIN_SRC emacs-lisp
+(use-package beacon
+  :init (beacon-mode 1))
 #+END_SRC
 
 ** eyebrowse

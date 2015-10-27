@@ -1754,6 +1754,21 @@ work with the ES codebase.
       (forward-line -1)
       (if (search-forward " -> {" start t) t nil))))
 
+(defun my/trailing-paren-p ()
+  "Returns true if point is a training paren and semicolon"
+  (save-excursion
+    (end-of-line)
+    (let ((endpoint (point)))
+      (beginning-of-line)
+      (if (re-search-forward "[ ]*);$" endpoint t) t nil))))
+
+(defun my/prev-line-call-with-no-args-p ()
+  "Return true if the previous line is a function call with no arguments"
+  (save-excursion
+    (let ((start (point)))
+      (forward-line -1)
+      (if (re-search-forward ".($" start t) t nil))))
+
 (defun my/arglist-cont-nonempty-indentation (arg)
   (if (my/inside-java-lambda-p)
       '+
@@ -1766,6 +1781,11 @@ work with the ES codebase.
 
 (defun my/block-close (arg)
   (if (my/inside-java-lambda-p) '- 0))
+
+(defun my/arglist-close (arg) (if (my/trailing-paren-p) 0 '--))
+
+(defun my/arglist-intro (arg)
+  (if (my/prev-line-call-with-no-args-p) '++ 0))
 
 (defconst intellij-java-style
   '((c-basic-offset . 4)
@@ -1783,11 +1803,10 @@ work with the ES codebase.
       (case-label            . +)
       (label                 . +)
       (statement-case-open   . +)
-      (statement-cont        . ++)
-      (arglist-intro         . 0)
-      (arglist-cont-nonempty . (my/arglist-cont-nonempty-indentation
-                                c-lineup-arglist))
-      (arglist-close         . --)
+      (statement-cont        . +)
+      (arglist-intro         . my/arglist-intro)
+      (arglist-cont-nonempty . (my/arglist-cont-nonempty-indentation c-lineup-arglist))
+      (arglist-close         . my/arglist-close)
       (inexpr-class          . 0)
       (access-label          . 0)
       (inher-intro           . ++)

@@ -505,6 +505,15 @@ if whence -cp virtualenvwrapper.sh > /dev/null 2>&1; then
 fi
 #+END_SRC
 
+*** Opam (ocaml)
+I'm checking this out...
+
+#+BEGIN_SRC sh :tangle .zsh.d/18-opam.zsh
+if [ -f ~/.opam/opam-init/init.zsh ]; then
+  . ~/.opam/opam-init/init.zsh > /dev/null 2> /dev/null || true
+fi
+#+END_SRC
+
 *** Prompt
 :PROPERTIES:
 :ID:       072a7074-27aa-4f32-b6c3-1952716675a6

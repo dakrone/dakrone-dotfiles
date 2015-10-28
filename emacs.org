@@ -2206,6 +2206,8 @@ And now the huge org-mode configuration
     ;; Enable archiving things
     (use-package org-archive)
     (add-hook 'org-mode-hook #'my/org-mode-hook)
+    ;; enabled export backends
+    (custom-set-variables '(org-export-backends '(ascii html latex beamer md odt)))
     (setq org-directory (file-truename "~/org")
           ;; follow links by pressing ENTER on them
           org-return-follows-link t

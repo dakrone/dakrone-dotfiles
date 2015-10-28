@@ -3259,23 +3259,14 @@ works pretty well, so I use it everywhere paredit-mode doesn't work.
          ("M-0" . sp-forward-sexp))
   :init
   (progn
-    (add-hook 'prog-mode-hook #'turn-on-smartparens-mode)
-    ;; turn on showing the match for clojure and elisp
-    (add-hook 'clojure-mode-hook #'turn-on-show-smartparens-mode)
-    (add-hook 'emacs-lisp-mode-hook #'turn-on-show-smartparens-mode)
-    (add-hook 'java-mode-hook #'turn-on-show-smartparens-mode)
-    (add-hook 'c-mode-hook #'turn-on-show-smartparens-mode))
+    (show-smartparens-global-mode t)
+    (add-hook 'prog-mode-hook #'turn-on-smartparens-strict-mode))
   :config
   (progn
     (add-to-list 'sp-sexp-suffix '(json-mode regex ""))
     (add-to-list 'sp-sexp-suffix '(es-mode regex ""))
 
     (use-package smartparens-config)
-    (add-hook 'sh-mode-hook
-              (lambda ()
-                ;; Remove when https://github.com/Fuco1/smartparens/issues/257
-                ;; is fixed
-                (setq sp-autoescape-string-quote nil)))
 
     ;; Remove the M-<backspace> binding that smartparens adds
     (let ((disabled '("M-<backspace>")))

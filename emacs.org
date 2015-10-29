@@ -141,8 +141,8 @@ things add hooks that don't work if packages aren't installed.
 
     ;; themeing
     rainbow-mode leuven-theme dakrone-theme color-identifiers-mode
-    moe-theme nyan-mode color-theme-sanityinc-tomorrow
-    apropospriate-theme material-theme smart-mode-line beacon
+    nyan-mode color-theme-sanityinc-tomorrow apropospriate-theme
+    material-theme smart-mode-line beacon aurora-theme moe-theme
 
     ;; misc
     diminish gist scpaste async sx exec-path-from-shell bbdb
@@ -2032,13 +2032,15 @@ nice.
     :disabled t
     :init (load-theme 'apropospriate-dark t))
   (use-package color-theme-sanityinc-tomorrow
-    :init (load-theme 'sanityinc-tomorrow-night t)))
+    :init (load-theme 'sanityinc-tomorrow-night t))
+  (use-package aurora-theme
+    :disabled t
+    :init (load-theme 'aurora t)))
 
 (defun dakrone-light ()
   (interactive)
   (use-package leuven-theme
-    :init (load-theme 'leuven t)
-    ;;:config (set-background-color "#f0f0f0")
+    :init (load-theme 'leuven t) ;;:config (set-background-color "#f0f0f0")
     )
   (use-package material-theme
     :disabled t
@@ -2110,7 +2112,10 @@ Config for Linux/X11 systems:
 #+BEGIN_SRC emacs-lisp
 (use-package smart-mode-line
   :disabled t
-  :init (sml/setup)
+  :init
+  (progn
+    (setq sml/theme my/background)
+    (sml/setup))
   :config
   (setq sml/shorten-directory t
         sml/shorten-modes t)
@@ -3596,20 +3601,19 @@ So I configure prodigy like so:
       :port 9200)
 
     (prodigy-define-service
-      :name "ES 2.x, 1 node"
-      :cwd "~/ies/"
-      :command "esvm"
-      :args '("2.x")
-      :tags '(work test es)
-      :port 9200)
-
-    (prodigy-define-service
       :name "ES master branch"
       :cwd "~/ies/"
       :command "esvm"
       :args '("master")
       :tags '(work test es)
       :port 9200)
+
+    (prodigy-define-service
+      :name "Kibana 4.2.0"
+      :cwd "~/ies/kibana-4.2.0-linux-x64"
+      :command "~/ies/kibana-4.2.0-linux-x64/bin/kibana"
+      :tags '(work kibana)
+      :port 5601)
 
     (prodigy-define-service
       :name "Elasticsearch 1.7.3"

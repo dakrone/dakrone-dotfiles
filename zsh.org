@@ -49,6 +49,11 @@ if [ -d "$WORKON_HOME" ]; then
     mkdir -p "$WORKON_HOME"
 fi
 
+# Read sdkman config for all shells
+if [ -f ~/.sdkman/bin/sdkman-init.sh ]; then
+    source ~/.sdkman/bin/sdkman-init.sh
+fi
+
 # history
 HISTFILE=$HOME/.zsh-history
 HISTSIZE=10000
@@ -482,15 +487,6 @@ elif [ -f /usr/local/share/gtags/gtags.conf ] ; then
 fi
 
 export GTAGSLABEL=ctags
-#+END_SRC
-
-*** SDKman
-Kind of like RVM, but for Groovy/Gradle/etc.
-
-#+BEGIN_SRC sh :tangle .zsh.d/16-sdkman.zsh
-if [ -f ~/.sdkman/bin/sdkman-init.sh ]; then
-    source ~/.sdkman/bin/sdkman-init.sh
-fi
 #+END_SRC
 
 *** Virtualenvwrapper

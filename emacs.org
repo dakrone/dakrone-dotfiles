@@ -3580,7 +3580,7 @@ So I configure prodigy like so:
   :config
   (progn
     (prodigy-define-service
-      :name "ES 1.7, 3 nodes"
+      :name "ES 2.x, 3 nodes"
       :cwd "~/ies/"
       :command "esvm"
       :args '("3node")
@@ -3588,7 +3588,7 @@ So I configure prodigy like so:
       :port 9200)
 
     (prodigy-define-service
-      :name "ES 1.7, 2 nodes"
+      :name "ES 2.x, 2 nodes"
       :cwd "~/ies/"
       :command "esvm"
       :args '("2node")
@@ -3596,10 +3596,10 @@ So I configure prodigy like so:
       :port 9200)
 
     (prodigy-define-service
-      :name "ES 1.7, 1 node"
+      :name "ES 2.x, 1 node"
       :cwd "~/ies/"
       :command "esvm"
-      :args '("1.7")
+      :args '("2.x")
       :tags '(work test es)
       :port 9200)
 
@@ -3618,9 +3618,9 @@ So I configure prodigy like so:
       :tags '(work test es)
       :port 9200)
     (prodigy-define-service
-      :name "Elasticsearch 1.6.2"
-      :cwd "~/ies/elasticsearch-1.6.2"
-      :command "~/ies/elasticsearch-1.6.2/bin/elasticsearch"
+      :name "Elasticsearch 2.0.0"
+      :cwd "~/ies/elasticsearch-2.0.0"
+      :command "~/ies/elasticsearch-2.0.0/bin/elasticsearch"
       :tags '(work test es)
       :port 9200)))
 #+END_SRC

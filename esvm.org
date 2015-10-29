@@ -20,7 +20,7 @@ Here is the branch with the latest release I use:
 
 #+NAME: es-branch
 #+BEGIN_SRC json :tangle no
-1.7
+2.x
 #+END_SRC
 
 #+BEGIN_SRC json :tangle .esvmrc

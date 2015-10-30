@@ -167,7 +167,7 @@ things add hooks that don't work if packages aren't installed.
     prodigy
 
     ;; logs
-    log4j-mode logview logstash-conf
+    log4j-mode logstash-conf
 
     ;; infrastructure stuff
     restclient company-restclient
@@ -179,7 +179,7 @@ things add hooks that don't work if packages aren't installed.
     auctex
 
     ;; org-mode
-    org htmlize gnuplot-mode gnuplot
+    org htmlize gnuplot-mode gnuplot org-alert
 
     ;; buffer utils
     popwin dired+
@@ -225,7 +225,7 @@ things add hooks that don't work if packages aren't installed.
 
     ;; helm
     helm helm-descbinds helm-ag helm-projectile helm-swoop
-    helm-gtags helm-ls-git helm-flycheck helm-flyspell helm-dash helm-flx
+    helm-gtags helm-ls-git helm-flycheck helm-flyspell helm-flx
 
     ;; git
     magit git-gutter git-timemachine magit-gh-pulls with-editor git-annex
@@ -2765,6 +2765,15 @@ Publishing org-mode files to my hosting provider:
 Then, when I'm editing ~/org/es/feature-foo.org, I can hit =C-c C-e P f= and
 export the file to show up in http://p.writequit.org/org
 
+** org-alert
+Notifications for upcoming org statuses!
+
+#+BEGIN_SRC emacs-lisp
+(use-package org-alert
+  :defer t
+  :init (org-alert-enable))
+#+END_SRC
+
 ** alert (notifications)
 :PROPERTIES:
 :ID:       0D493EEE-3EEC-434A-9CB5-57061ECC9371
@@ -3203,8 +3212,7 @@ passed in. Also supports ignoring the msg at the point."
 :ID:       58F8D12D-B8E4-4857-8633-699CCF66120E
 :CUSTOM_ID: 00144653-d2e9-4ce8-8a7d-c3c5fc5b46b0
 :END:
-Ediff is fantastic for looking through diffs, a lot of these settings are taken
-from http://oremacs.com/2015/01/17/setting-up-ediff/
+Ediff is fantastic for looking through diffs
 
 #+BEGIN_SRC emacs-lisp
 (use-package ediff
@@ -4055,24 +4063,6 @@ Uses =git grep= for that
   :bind ("C-x C-d" . helm-browse-project))
 #+END_SRC
 
-** helm-dash
-:PROPERTIES:
-:ID:       c8dbc79e-c8f7-4d20-9339-0abb2cf53d40
-:CUSTOM_ID: d2513304-5246-42fb-9e12-1b2b87d4b891
-:END:
-=helm-dash= allows querying and loading [[http://www.kapeli.com/dash][Dash]] docsets from helm, without
-requiring the Dash app or online connectivity (great for planes).
-
-#+BEGIN_SRC emacs-lisp
-(use-package helm-dash
-  :init
-  (progn
-    ;; Use the Java and Elasticsearch common docsets everywhere
-    (setq helm-dash-common-docsets
-          '(Java
-            ElasticSearch))))
-#+END_SRC
-
 ** hydra
 :PROPERTIES:
 :ID:       3e03600f-b085-40b0-8877-c5008b010187
@@ -4167,14 +4157,6 @@ Need =hl-line-mode= for this
 (use-package log4j-mode
   :disabled t
   :init (add-hook 'log4j-mode-hook #'my/turn-on-viewing-mode))
-#+END_SRC
-
-** logview
-I'm testing out =[[https://github.com/doublep/logview][logview]]= as an alternative to log4j-mode, since it supposedly
-supports more modes and seems more updated
-
-#+BEGIN_SRC emacs-lisp
-(use-package logview)
 #+END_SRC
 
 ** bookmark+
@@ -4456,21 +4438,6 @@ immediately use Twitter :P
           twittering-use-master-password t)))
 #+END_SRC
 
-** scpaste
-:PROPERTIES:
-:ID:       99855C54-2273-4BFB-A5BC-46E8481F4C84
-:CUSTOM_ID: ce27dce5-de98-4b5a-a05c-b8a6c47f2b10
-:END:
-scp-ing an HTML version of the current buffer somewhere
-
-#+BEGIN_SRC emacs-lisp
-(use-package scpaste
-  :defer t
-  :config
-  (setq scpaste-http-destination "http://writequit.org/paste/"
-        scpaste-scp-destination "writequit.org:www/paste/"))
-#+END_SRC
-
 ** smex
 :PROPERTIES:
 :ID:       53E196A2-C782-4E01-80EA-03CA2A130D5E
@@ -4483,18 +4450,6 @@ Smex is IDO, but for =M-x=
   :disabled t
   :bind (("M-x" . smex)
          ("M-X" . smex-major-mode-commands)))
-#+END_SRC
-
-** color-identifiers-mode
-:PROPERTIES:
-:ID:       1CDDEE23-7A7E-4265-ADBF-FBFCDDE45B31
-:CUSTOM_ID: 4ad91939-794a-4749-9565-afe33b07dbc3
-:END:
-Color-identifiers-mode gives colors to unique variables passed into functions.
-Can be really handy to see if you've misspelled a variable name.
-
-#+BEGIN_SRC emacs-lisp
-(use-package color-identifiers-mode)
 #+END_SRC
 
 ** iedit
@@ -4743,7 +4698,6 @@ really fit in anywhere else.
 (defun my/turn-on-viewing-mode ()
   "Turn on the viewing mode, to make looking through logs easier"
   (interactive)
-  (read-only-mode 1)
   (view-mode 1)
   (hl-line-mode 1))
 
@@ -4757,9 +4711,6 @@ Deletes whitespace at join."
     (kill-line arg)))
 
 (global-set-key (kbd "C-k") 'kill-and-join-forward)
-
-;; You know, like Readline.
-(global-set-key (kbd "C-M-h") 'backward-kill-word)
 
 ;; Completion that uses many different methods to find options.
 (global-set-key (kbd "M-/") 'hippie-expand)
@@ -4806,21 +4757,6 @@ Deletes whitespace at join."
 (global-set-key (kbd "H-'") 'other-window)
 (global-set-key [C-tab] 'other-window)
 (global-set-key [C-S-tab] 'my/other-window-backwards)
-
-;; ==== transpose buffers ====
-(defun transpose-buffers (arg)
-  "Transpose the buffers shown in two windows."
-  (interactive "p")
-  (let ((selector (if (>= arg 0) 'next-window 'previous-window)))
-    (while (/= arg 0)
-      (let ((this-win (window-buffer))
-            (next-win (window-buffer (funcall selector))))
-        (set-window-buffer (selected-window) next-win)
-        (set-window-buffer (funcall selector) this-win)
-        (select-window (funcall selector)))
-      (setq arg (if (plusp arg) (1- arg) (1+ arg))))))
-
-(global-set-key (kbd "C-x 4 t") 'transpose-buffers)
 #+END_SRC
 
 ** Utility methods
@@ -5193,6 +5129,24 @@ to change to, because I do this quite a bit...
     "/_settings' -d'{\"index\": {\"number_of_replicas\": "
     replicas
     "}}'")))
+#+END_SRC
+
+*** Transpose buffers
+
+#+BEGIN_SRC emacs-lisp
+(defun transpose-buffers (arg)
+  "Transpose the buffers shown in two windows."
+  (interactive "p")
+  (let ((selector (if (>= arg 0) 'next-window 'previous-window)))
+    (while (/= arg 0)
+      (let ((this-win (window-buffer))
+            (next-win (window-buffer (funcall selector))))
+        (set-window-buffer (selected-window) next-win)
+        (set-window-buffer (funcall selector) this-win)
+        (select-window (funcall selector)))
+      (setq arg (if (plusp arg) (1- arg) (1+ arg))))))
+
+(global-set-key (kbd "C-x 4 t") 'transpose-buffers)
 #+END_SRC
 
 ** Finalizers

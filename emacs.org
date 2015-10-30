@@ -2358,7 +2358,8 @@ And now the huge org-mode configuration
             ("support" . ?s)
             ("docs" . ?d)
             ("export" . ?e)
-            ("noexport" . ?n)))
+            ("noexport" . ?n)
+            ("recurring" . ?r)))
     ;; capture templates
     (setq org-capture-templates
           '(("t" "Todo" entry (file "~/org/refile.org")

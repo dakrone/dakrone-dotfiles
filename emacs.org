@@ -2187,7 +2187,8 @@ modes
   (define-key org-mode-map (kbd "C-'")
     'eyebrowse-next-window-config)
   (define-key org-mode-map (kbd "C-c C-x C-f") 'org-refile)
-  (define-key org-agenda-mode-map (kbd "C-c C-x C-f") 'org-agenda-refile))
+  (when (boundp 'org-agenda-mode-map)
+    (define-key org-agenda-mode-map (kbd "C-c C-x C-f") 'org-agenda-refile)))
 #+END_SRC
 
 And now the huge org-mode configuration
@@ -2316,14 +2317,15 @@ And now the huge org-mode configuration
 
     ;; Org todo keywords
     (setq org-todo-keywords
-          '((sequence "SOMEDAY(s)"
-                      "TODO(t)"
+          '((sequence "TODO(t)" "|" "DONE(d)")
+            (sequence "TODO(t)"
+                      "SOMEDAY(s)"
                       "INPROGRESS(i)"
+                      "HOLD(h)"
                       "WAITING(w@/!)"
                       "NEEDSREVIEW(n@/!)"
                       "|" "DONE(d)")
-            (sequence "WAITING(w@/!)" "HOLD(h@/!)"
-                      "|" "CANCELLED(c@/!)")))
+            (sequence "TODO(t)" "INPROGRESS(i)" "|" "CANCELLED(c@/!)")))
     ;; Org faces
     (setq org-todo-keyword-faces
           '(("TODO" :foreground "red" :weight bold)
@@ -2351,6 +2353,7 @@ And now the huge org-mode configuration
           '(("oss" . ?o)
             ("home" . ?h)
             ("work" . ?w)
+            ("xplugins" . ?x)
             ("book" . ?b)
             ("support" . ?s)
             ("docs" . ?d)
@@ -2401,7 +2404,10 @@ And now the huge org-mode configuration
                       '(time-up priority-down category-keep))))
               ;; Everything on hold
               (todo "HOLD"
-                    ((org-agenda-overriding-header "On-hold"))))
+                    ((org-agenda-overriding-header "On-hold")))
+              ;; All headings with the "recurring" tag
+              (tags "recurring/!"
+                    ((org-agenda-overriding-header "Recurring"))))
              nil)))
 
     ;; Exclude DONE state tasks from refile targets

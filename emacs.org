@@ -143,6 +143,7 @@ things add hooks that don't work if packages aren't installed.
     rainbow-mode leuven-theme dakrone-theme color-identifiers-mode
     nyan-mode color-theme-sanityinc-tomorrow apropospriate-theme
     material-theme smart-mode-line beacon aurora-theme moe-theme
+    spaceline
 
     ;; misc
     diminish gist scpaste async sx exec-path-from-shell bbdb
@@ -191,7 +192,7 @@ things add hooks that don't work if packages aren't installed.
     ssh-config-mode
 
     ;; flycheck
-    flycheck flycheck-tip flycheck-haskell
+    flycheck flycheck-tip flycheck-haskell flycheck-pos-tip
 
     ;; clojure
     clojure-mode clojure-mode-extra-font-locking cider paredit paren-face
@@ -2206,14 +2207,14 @@ And now the huge org-mode configuration
   :config
   (progn
     (use-package org-install)
-    (use-package org-babel)
+    (use-package ob-core)
     ;; org-export
     (use-package ox)
     ;; Enable archiving things
     (use-package org-archive)
     (add-hook 'org-mode-hook #'my/org-mode-hook)
     ;; enabled export backends
-    (custom-set-variables '(org-export-backends '(ascii html latex beamer md odt)))
+    (custom-set-variables '(org-export-backends '(ascii html latex beamer md)))
     (setq org-directory (file-truename "~/org")
           ;; follow links by pressing ENTER on them
           org-return-follows-link t
@@ -2437,7 +2438,9 @@ And now the huge org-mode configuration
        (elasticsearch . t)
        (clojure . t)
        (dot . t)
-       (shell . t)
+       (sh . t)
+       (js . t)
+       (haskell . t)
        (ruby . t)
        (python . t)
        (gnuplot . t)
@@ -2449,8 +2452,8 @@ And now the huge org-mode configuration
 
     ;; Use org.css from the :wq website for export document stylesheets
     (setq org-html-head-extra
-          "<link rel=\"stylesheet\" href=\"http://dakrone.github.io/org.css\" type=\"text/css\" />")
-    (setq org-html-head-include-default-style nil)
+          "<link rel=\"stylesheet\" href=\"http://dakrone.github.io/org.css\" type=\"text/css\" />"
+          org-html-head-include-default-style nil)
 
     ;; ensure this variable is defined
     (unless (boundp 'org-babel-default-header-args:sh)
@@ -2770,7 +2773,7 @@ Notifications for upcoming org statuses!
 
 #+BEGIN_SRC emacs-lisp
 (use-package org-alert
-  :defer t
+  :disabled t
   :init (org-alert-enable))
 #+END_SRC
 
@@ -3386,7 +3389,7 @@ Pretty minimally configured, but awesome tool for most dynamic languages.
   :init (global-flycheck-mode)
   :config
   (progn
-    (setq-default flycheck-disabled-checkers '(emacs-lisp-checkdoc))
+    (setq-default flycheck-disabled-checkers '(emacs-lisp-checkdoc json-jsonlint json-python-json))
     (use-package flycheck-pos-tip
       :init (setq flycheck-display-errors-function #'flycheck-pos-tip-error-messages))
     (use-package helm-flycheck

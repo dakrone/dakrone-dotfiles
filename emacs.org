@@ -146,7 +146,7 @@ things add hooks that don't work if packages aren't installed.
     spaceline
 
     ;; misc
-    diminish gist scpaste async sx exec-path-from-shell bbdb
+    diminish gist async sx exec-path-from-shell bbdb
 
     ;; es-mode is run from a  git checkout
 
@@ -161,8 +161,7 @@ things add hooks that don't work if packages aren't installed.
     ido-vertical-mode yasnippet smart-tab anzu smartparens flx-ido projectile
     smooth-scrolling multiple-cursors easy-kill simple-call-tree
     simple-call-tree+ ggtags bookmark+ golden-ratio wc-mode eyebrowse
-    vlf hydra shrink-whitespace ix quick-preview pdf-tools origami
-    smartscan
+    vlf hydra shrink-whitespace ix quick-preview pdf-tools smartscan
 
     ;; external process things
     prodigy
@@ -255,8 +254,8 @@ things add hooks that don't work if packages aren't installed.
 
 ;; Load use-package, used for loading packages everywhere else
 (require 'use-package)
-;; Set to t to debug package loading
-(setq use-package-verbose nil)
+;; Set to t to debug package loading or nil to disable
+(setq use-package-verbose t)
 #+END_SRC
 
 ** Setting up $PATH and other vars
@@ -323,6 +322,12 @@ Turn on syntax highlighting for all buffers:
 
 #+BEGIN_SRC emacs-lisp
 (global-font-lock-mode t)
+#+END_SRC
+
+Raise the maximum number of logs in the =*Messages*= buffer:
+
+#+BEGIN_SRC emacs-lisp
+(setq message-log-max 16384)
 #+END_SRC
 
 We don't really need to garbage collect as frequently as Emacs
@@ -888,103 +893,104 @@ completion, prompt and term settings:
 
 #+BEGIN_SRC emacs-lisp
 (use-package eshell
+  :commands (eshell eshell-command)
   :config
-  (progn
-    (defalias 'emacs 'find-file)
-    (setenv "PAGER" "cat")
-    (use-package esh-opt
-      :config
-      (progn
-        (use-package em-cmpl)
-        (use-package em-prompt)
-        (use-package em-term)
+  (defalias 'emacs 'find-file)
+  (setenv "PAGER" "cat")
+  (use-package esh-opt
+    :config
+    (use-package em-cmpl)
+    (use-package em-prompt)
+    (use-package em-term)
 
-        (setq eshell-cmpl-cycle-completions nil
-              ;; auto truncate after 12k lines
-              eshell-buffer-maximum-lines 12000
-              ;; history size
-              eshell-history-size 500
-              ;; buffer shorthand -> echo foo > #'buffer
-              eshell-buffer-shorthand t
-              ;; my prompt is easy enough to see
-              eshell-highlight-prompt nil
-              ;; treat 'echo' like shell echo
-              eshell-plain-echo-behavior t)
+    (setq eshell-cmpl-cycle-completions nil
+          ;; auto truncate after 12k lines
+          eshell-buffer-maximum-lines 12000
+          ;; history size
+          eshell-history-size 500
+          ;; buffer shorthand -> echo foo > #'buffer
+          eshell-buffer-shorthand t
+          ;; my prompt is easy enough to see
+          eshell-highlight-prompt nil
+          ;; treat 'echo' like shell echo
+          eshell-plain-echo-behavior t)
 
-        ;; Visual commands
-        (setq eshell-visual-commands '("vi" "screen" "top" "less" "more" "lynx"
-                                       "ncftp" "pine" "tin" "trn" "elm" "vim"
-                                       "nmtui" "alsamixer" "htop" "el" "elinks"
-                                       ))
-        (setq eshell-visual-subcommands '(("git" "log" "diff" "show")))
+    ;; Visual commands
+    (setq eshell-visual-commands '("vi" "screen" "top" "less" "more" "lynx"
+                                   "ncftp" "pine" "tin" "trn" "elm" "vim"
+                                   "nmtui" "alsamixer" "htop" "el" "elinks"
+                                   ))
+    (setq eshell-visual-subcommands '(("git" "log" "diff" "show")))
 
-        (defun my/truncate-eshell-buffers ()
-          "Truncates all eshell buffers"
-          (interactive)
-          (save-current-buffer
-            (dolist (buffer (buffer-list t))
-              (set-buffer buffer)
-              (when (eq major-mode 'eshell-mode)
-                (eshell-truncate-buffer)))))
-
-        ;; After being idle for 5 seconds, truncate all the eshell-buffers if
-        ;; needed. If this needs to be canceled, you can run `(cancel-timer
-        ;; my/eshell-truncate-timer)'
-        (setq my/eshell-truncate-timer
-              (run-with-idle-timer 5 t #'my/truncate-eshell-buffers))
-
-        (when (not (functionp 'eshell/rgrep))
-          (defun eshell/rgrep (&rest args)
-            "Use Emacs grep facility instead of calling external grep."
-            (eshell-grep "rgrep" args t)))
-
-        (defun eshell/cds ()
-          "Change directory to the project's root."
-          (eshell/cd (locate-dominating-file default-directory ".git")))
-
-        (defun eshell/l (&rest args) "Same as `ls -lh'"
-               (apply #'eshell/ls "-lh" args))
-        (defun eshell/ll (&rest args) "Same as `ls -lh'"
-               (apply #'eshell/ls "-lh" args))
-        (defun eshell/la (&rest args) "Same as `ls -alh'"
-               (apply #'eshell/ls "-alh" args))
-
-        (defun eshell/ec (pattern)
-          (if (stringp pattern)
-              (find-file pattern)
-            (mapc #'find-file (mapcar #'expand-file-name pattern))))
-
-        (defun eshell/clear ()
-          "Clear the eshell buffer"
-          (interactive)
-          (let ((eshell-buffer-maximum-lines 0))
+    (defun my/truncate-eshell-buffers ()
+      "Truncates all eshell buffers"
+      (interactive)
+      (save-current-buffer
+        (dolist (buffer (buffer-list t))
+          (set-buffer buffer)
+          (when (eq major-mode 'eshell-mode)
             (eshell-truncate-buffer)))))
 
-    (add-hook 'eshell-mode-hook #'my/setup-eshell)
+    ;; After being idle for 5 seconds, truncate all the eshell-buffers if
+    ;; needed. If this needs to be canceled, you can run `(cancel-timer
+    ;; my/eshell-truncate-timer)'
+    (setq my/eshell-truncate-timer
+          (run-with-idle-timer 5 t #'my/truncate-eshell-buffers))
 
-    ;; See eshell-prompt-function below
-    (setq eshell-prompt-regexp "^[^#$\n]* [#$] ")
+    (when (not (functionp 'eshell/rgrep))
+      (defun eshell/rgrep (&rest args)
+        "Use Emacs grep facility instead of calling external grep."
+        (eshell-grep "rgrep" args t)))
 
-    ;; So the history vars are defined
-    (require 'em-hist)
-    (if (boundp 'eshell-save-history-on-exit)
-        ;; Don't ask, just save
-        (setq eshell-save-history-on-exit t))
+    (defun eshell/cds ()
+      "Change directory to the project's root."
+      (eshell/cd (locate-dominating-file default-directory ".git")))
 
-    ;; See: https://github.com/kaihaosw/eshell-prompt-extras
-    (use-package eshell-prompt-extras
-      :init
-      (progn
-        (setq eshell-highlight-prompt nil
-              epe-git-dirty-char " Ϟ"
-              ;; epe-git-dirty-char "*"
-              eshell-prompt-function 'epe-theme-dakrone)))
+    (defun eshell/l (&rest args) "Same as `ls -lh'"
+           (apply #'eshell/ls "-lh" args))
+    (defun eshell/ll (&rest args) "Same as `ls -lh'"
+           (apply #'eshell/ls "-lh" args))
+    (defun eshell/la (&rest args) "Same as `ls -alh'"
+           (apply #'eshell/ls "-alh" args))
 
-    (defun eshell/magit ()
-      "Function to open magit-status for the current directory"
+    (defun eshell/ec (pattern)
+      (if (stringp pattern)
+          (find-file pattern)
+        (mapc #'find-file (mapcar #'expand-file-name pattern))))
+
+    (defun eshell/clear ()
+      "Clear the eshell buffer"
       (interactive)
-      (magit-status default-directory)
-      nil)))
+      (let ((eshell-buffer-maximum-lines 0))
+        (eshell-truncate-buffer))))
+  (use-package helm-eshell
+    :init (bind-key "M-l" #'helm-eshell-history eshell-mode-map))
+
+  (add-hook 'eshell-mode-hook #'my/setup-eshell)
+
+  ;; See eshell-prompt-function below
+  (setq eshell-prompt-regexp "^[^#$\n]* [#$] ")
+
+  ;; So the history vars are defined
+  (require 'em-hist)
+  (if (boundp 'eshell-save-history-on-exit)
+      ;; Don't ask, just save
+      (setq eshell-save-history-on-exit t))
+
+  ;; See: https://github.com/kaihaosw/eshell-prompt-extras
+  (use-package eshell-prompt-extras
+    :init
+    (progn
+      (setq eshell-highlight-prompt nil
+            epe-git-dirty-char " Ϟ"
+            ;; epe-git-dirty-char "*"
+            eshell-prompt-function 'epe-theme-dakrone)))
+
+  (defun eshell/magit ()
+    "Function to open magit-status for the current directory"
+    (interactive)
+    (magit-status default-directory)
+    nil))
 #+END_SRC
 
 I use a dedicated buffer for connection to my desktop, with a binding of =C-x
@@ -1077,28 +1083,26 @@ and dired tramp buffers are great for file management.
 
 #+BEGIN_SRC emacs-lisp
 (use-package tramp
-  :defer t
+  :defer 5
   :config
-  (progn
-    (with-eval-after-load 'tramp-cache
-      (setq tramp-persistency-file-name "~/.emacs.d/etc/tramp"))
-    (setq tramp-default-user-alist '(("\\`su\\(do\\)?\\'" nil "root"))
-          tramp-adb-program "/Users/hinmanm/android-sdk-macosx/platform-tools/adb"
-          ;; use the settings in ~/.ssh/config instead of Tramp's
-          tramp-use-ssh-controlmaster-options nil
-          backup-enable-predicate
-          (lambda (name)
-            (and (normal-backup-enable-predicate name)
-                 (not (let ((method (file-remote-p name 'method)))
-                        (when (stringp method)
-                          (member method '("su" "sudo"))))))))
+  (with-eval-after-load 'tramp-cache
+    (setq tramp-persistency-file-name "~/.emacs.d/etc/tramp"))
+  (setq tramp-default-user-alist '(("\\`su\\(do\\)?\\'" nil "root"))
+        tramp-adb-program "/Users/hinmanm/android-sdk-macosx/platform-tools/adb"
+        ;; use the settings in ~/.ssh/config instead of Tramp's
+        tramp-use-ssh-controlmaster-options nil
+        backup-enable-predicate
+        (lambda (name)
+          (and (normal-backup-enable-predicate name)
+               (not (let ((method (file-remote-p name 'method)))
+                      (when (stringp method)
+                        (member method '("su" "sudo"))))))))
 
-    (use-package tramp-sh
-      :config
-      (progn
-        (add-to-list 'tramp-remote-path "/usr/local/sbin")
-        (add-to-list 'tramp-remote-path "/opt/java/current/bin")
-        (add-to-list 'tramp-remote-path "~/bin")))))
+  (use-package tramp-sh
+    :config
+    (add-to-list 'tramp-remote-path "/usr/local/sbin")
+    (add-to-list 'tramp-remote-path "/opt/java/current/bin")
+    (add-to-list 'tramp-remote-path "~/bin")))
 #+END_SRC
 
 *** Spell check and flyspell settings
@@ -1152,7 +1156,7 @@ In most non-programming modes, =M-.= can be used to spellcheck the word
   :config
   (use-package helm-flyspell
     :init
-    (define-key flyspell-mode-map (kbd "M-S") 'helm-flyspell-correct)))
+    (define-key flyspell-mode-map (kbd "M-S") #'helm-flyspell-correct)))
 #+END_SRC
 
 *** View-mode and doc-view
@@ -1168,7 +1172,7 @@ install mupdf= on osx)
 
 #+BEGIN_SRC emacs-lisp
 (use-package view
-  :defer t
+  :defer 15
   :bind
   (("C-M-n" . View-scroll-half-page-forward)
    ("C-M-p" . View-scroll-half-page-backward))
@@ -1213,55 +1217,43 @@ Setting =ls-lisp-dirs-first= means directories are always at the
 top. Always copy and delete recursively. Also enable
 =hl-line-mode= in dired, since it's easier to see the cursor then.
 
-To start, a helper to use "=open=" to open files in dired-mode with =M-o=
-(similar to Finder in OSX).
-
-#+BEGIN_SRC emacs-lisp
-(defun my/dired-open ()
-  "Use the OSX `open' command to open a file with the correct editor"
-  (interactive)
-  (save-window-excursion
-    (dired-do-async-shell-command
-     "~/bin/open" current-prefix-arg
-     (dired-get-marked-files t current-prefix-arg))))
-#+END_SRC
-
 And then some other things to setup when dired runs. =C-x C-q= to edit
 writable-dired mode is aawwweeeesssoooommee, it makes renames super easy.
 
 #+BEGIN_SRC emacs-lisp
 (defun my/dired-mode-hook ()
-  (my/turn-on-hl-line-mode)
   (toggle-truncate-lines 1))
 
 (use-package dired
   :bind ("C-x C-j" . dired-jump)
   :config
-  (progn
-    (use-package dired-x
-      :init (setq-default dired-omit-files-p t)
-      :config
-      (add-to-list 'dired-omit-extensions ".DS_Store"))
-    (customize-set-variable 'diredp-hide-details-initially-flag nil)
-    (use-package dired+)
-    (use-package dired-aux
-      :init (use-package dired-async))
-    (put 'dired-find-alternate-file 'disabled nil)
-    (setq ls-lisp-dirs-first t
-          dired-recursive-copies 'always
-          dired-recursive-deletes 'always
-          dired-dwim-target t
-          ;; -F marks links with @
-          dired-ls-F-marks-symlinks t
-          delete-by-moving-to-trash t
-          ;; Auto refresh dired
-          global-auto-revert-non-file-buffers t
-          wdired-allow-to-change-permissions t)
-    (define-key dired-mode-map (kbd "RET") 'dired-find-alternate-file)
-    (define-key dired-mode-map (kbd "C-M-u") 'dired-up-directory)
-    (define-key dired-mode-map (kbd "M-o") #'my/dired-open)
-    (define-key dired-mode-map (kbd "C-x C-q") 'wdired-change-to-wdired-mode)
-    (add-hook 'dired-mode-hook #'my/dired-mode-hook)))
+  (use-package dired-x
+    :init (setq-default dired-omit-files-p t)
+    :config
+    (add-to-list 'dired-omit-extensions ".DS_Store"))
+  (customize-set-variable 'diredp-hide-details-initially-flag nil)
+  (use-package dired+)
+  (use-package dired-aux
+    :init (use-package dired-async))
+  (put 'dired-find-alternate-file 'disabled nil)
+  (setq ls-lisp-dirs-first t
+        dired-recursive-copies 'always
+        dired-recursive-deletes 'always
+        dired-dwim-target t
+        ;; -F marks links with @
+        dired-ls-F-marks-symlinks t
+        delete-by-moving-to-trash t
+        ;; Auto refresh dired
+        global-auto-revert-non-file-buffers t
+        wdired-allow-to-change-permissions t)
+  (define-key dired-mode-map (kbd "RET") 'dired-find-alternate-file)
+  (define-key dired-mode-map (kbd "C-M-u") 'dired-up-directory)
+  (define-key dired-mode-map (kbd "M-o") #'my/dired-open)
+  (define-key dired-mode-map (kbd "C-x C-q") 'wdired-change-to-wdired-mode)
+  (bind-key "l" #'dired-up-directory dired-mode-map)
+  (bind-key "M-!" #'async-shell-command dired-mode-map)
+  (add-hook 'dired-mode-hook #'hl-line-mode)
+  (add-hook 'dired-mode-hook #'my/dired-mode-hook))
 #+END_SRC
 
 *** emacsclient
@@ -1301,54 +1293,57 @@ This also only enables recentf-mode if idle, so that emacs starts up faster.
 
 #+BEGIN_SRC emacs-lisp
 (use-package recentf
-  :defer t
+  :defer 10
+  :commands (recentf-mode
+             recentf-add-file
+             recentf-apply-filename-handlers)
   :init
-  (progn
-    (setq recentf-max-saved-items 300
-          recentf-exclude '("/auto-install/" ".recentf" "/repos/" "/elpa/"
-                            "\\.mime-example" "\\.ido.last" "COMMIT_EDITMSG"
-                            ".gz"
-                            "~$" "/tmp/" "/ssh:" "/sudo:" "/scp:")
-          recentf-auto-cleanup 600)
-    (when (not noninteractive) (recentf-mode 1))
+  (setq recentf-max-saved-items 300
+        recentf-exclude '("/auto-install/" ".recentf" "/repos/" "/elpa/"
+                          "\\.mime-example" "\\.ido.last" "COMMIT_EDITMSG"
+                          ".gz"
+                          "~$" "/tmp/" "/ssh:" "/sudo:" "/scp:")
+        recentf-auto-cleanup 600)
+  (when (not noninteractive) (recentf-mode 1))
 
-    (defun recentf-save-list ()
-      "Save the recent list.
+  (defun recentf-save-list ()
+    "Save the recent list.
 Load the list from the file specified by `recentf-save-file',
 merge the changes of your current session, and save it back to
 the file."
-      (interactive)
-      (let ((instance-list (cl-copy-list recentf-list)))
-        (recentf-load-list)
-        (recentf-merge-with-default-list instance-list)
-        (recentf-write-list-to-file)))
+    (interactive)
+    (let ((instance-list (cl-copy-list recentf-list)))
+      (recentf-load-list)
+      (recentf-merge-with-default-list instance-list)
+      (recentf-write-list-to-file)))
 
-    (defun recentf-merge-with-default-list (other-list)
-      "Add all items from `other-list' to `recentf-list'."
-      (dolist (oitem other-list)
-        ;; add-to-list already checks for equal'ity
-        (add-to-list 'recentf-list oitem)))
+  (defun recentf-merge-with-default-list (other-list)
+    "Add all items from `other-list' to `recentf-list'."
+    (dolist (oitem other-list)
+      ;; add-to-list already checks for equal'ity
+      (add-to-list 'recentf-list oitem)))
 
-    (defun recentf-write-list-to-file ()
-      "Write the recent files list to file.
+  (defun recentf-write-list-to-file ()
+    "Write the recent files list to file.
 Uses `recentf-list' as the list and `recentf-save-file' as the
 file to write to."
-      (condition-case error
-          (with-temp-buffer
-            (erase-buffer)
-            (set-buffer-file-coding-system recentf-save-file-coding-system)
-            (insert (format recentf-save-file-header (current-time-string)))
-            (recentf-dump-variable 'recentf-list recentf-max-saved-items)
-            (recentf-dump-variable 'recentf-filter-changer-current)
-            (insert "\n \n;;; Local Variables:\n"
-                    (format ";;; coding: %s\n" recentf-save-file-coding-system)
-                    ";;; End:\n")
-            (write-file (expand-file-name recentf-save-file))
-            (when recentf-save-file-modes
-              (set-file-modes recentf-save-file recentf-save-file-modes))
-            nil)
-        (error
-         (warn "recentf mode: %s" (error-message-string error)))))))
+    (condition-case error
+        (with-temp-buffer
+          (erase-buffer)
+          (set-buffer-file-coding-system recentf-save-file-coding-system)
+          (insert (format recentf-save-file-header (current-time-string)))
+          (recentf-dump-variable 'recentf-list recentf-max-saved-items)
+          (recentf-dump-variable 'recentf-filter-changer-current)
+          (insert "\n \n;;; Local Variables:\n"
+                  (format ";;; coding: %s\n" recentf-save-file-coding-system)
+                  ";;; End:\n")
+          (write-file (expand-file-name recentf-save-file))
+          (when recentf-save-file-modes
+            (set-file-modes recentf-save-file recentf-save-file-modes))
+          nil)
+      (error
+       (warn "recentf mode: %s" (error-message-string error)))))
+  (recentf-mode 1))
 #+END_SRC
 
 *** whitespace-mode
@@ -1477,21 +1472,16 @@ highlighted so they stand out:
 
 #+BEGIN_SRC emacs-lisp
 (defun my/add-watchwords ()
-  "Highlight FIXME, TODO, and NOCOMMIT in code"
+  "Highlight FIXME, TODO, and NOCOMMIT in code TODO"
   (font-lock-add-keywords
-   nil '(("\\<\\(FIXME\\|TODO\\|NOCOMMIT\\)\\>"
+   nil '(("\\<\\(FIXME:?\\|TODO:?\\|NOCOMMIT:?\\)\\>"
           1 '((:foreground "#d7a3ad") (:weight bold)) t))))
 
-(defun my/turn-on-hl-line-mode ()
-  "Turn on hl-line-mode"
-  (interactive)
-  (hl-line-mode 1))
-
 (add-hook 'prog-mode-hook #'my/add-watchwords)
-(add-hook 'prog-mode-hook #'my/turn-on-hl-line-mode)
+(add-hook 'prog-mode-hook #'hl-line-mode)
 #+END_SRC
 
-*** Clojure
+*** Clojure (also cider)
 :PROPERTIES:
 :ID:       751B0DF1-CC5D-4386-B0CA-1519325B01DA
 :CUSTOM_ID: fb341ab2-acbd-42a0-98fc-277761e8e0e2
@@ -1540,9 +1530,8 @@ Other Clojure-specific settings:
   (paredit-mode 1))
 
 (use-package clojure-mode
-  :config
-  (progn
-    (add-hook 'clojure-mode-hook 'my/clojure-things-hook)))
+  :init
+  (add-hook #'clojure-mode-hook #'my/clojure-things-hook))
 #+END_SRC
 
 Let's define a couple of helper functions for setting up the cider and
@@ -1550,26 +1539,26 @@ ac-nrepl packages:
 
 #+BEGIN_SRC emacs-lisp
 (defun my/setup-cider ()
-  (lambda ()
-    (setq cider-history-file "~/.nrepl-history"
-          cider-hide-special-buffers t
-          cider-repl-history-size 10000
-          cider-prefer-local-resources t
-          cider-popup-stacktraces-in-repl t)
-    (paredit-mode 1)
-    (eldoc-mode 1)))
+  (interactive)
+  (setq cider-history-file "~/.nrepl-history"
+        cider-hide-special-buffers t
+        cider-repl-history-size 10000
+        cider-prefer-local-resources t
+        cider-popup-stacktraces-in-repl t)
+  (paredit-mode 1)
+  (eldoc-mode 1))
 #+END_SRC
 
 And then finally use them if cider and ac-nrepl packages are available:
 
 #+BEGIN_SRC emacs-lisp
 (use-package cider
+  :defer 30
   :init
-  (progn
-    (add-hook 'cider-mode-hook 'my/setup-cider)
-    (add-hook 'cider-repl-mode-hook 'my/setup-cider)
-    (add-hook 'cider-mode-hook 'my/clojure-things-hook)
-    (add-hook 'cider-repl-mode-hook 'my/clojure-things-hook)))
+  (add-hook #'cider-mode-hook #'my/setup-cider)
+  (add-hook #'cider-repl-mode-hook #'my/setup-cider)
+  (add-hook #'cider-mode-hook #'my/clojure-things-hook)
+  (add-hook #'cider-repl-mode-hook #'my/clojure-things-hook))
 #+END_SRC
 
 *** Shell
@@ -1614,15 +1603,12 @@ And some various eldoc settings:
 
 #+BEGIN_SRC emacs-lisp
 (use-package eldoc
+  :diminish eldoc-mode
   :config
-  (progn
-    (use-package diminish
-      :init
-      (progn (diminish 'eldoc-mode "")))
-    (setq eldoc-idle-delay 0.3)
-    (set-face-attribute 'eldoc-highlight-function-argument nil
-                        :underline t :foreground "green"
-                        :weight 'bold)))
+  (setq eldoc-idle-delay 0.3)
+  (set-face-attribute 'eldoc-highlight-function-argument nil
+                      :underline t :foreground "green"
+                      :weight 'bold))
 #+END_SRC
 
 Change the faces for elisp regex grouping:
@@ -1948,24 +1934,17 @@ Bleh javascript. js2-mode is better than nothing.
 
 #+BEGIN_SRC emacs-lisp
 (use-package js2-mode
-  :init
-  (progn
-    (add-to-list 'auto-mode-alist '("\\.js\\'" . js2-mode))
-    (defalias 'javascript-generic-mode 'js2-mode))
+  :mode "\\.js\\'"
   :config
-  (progn
-    (js2-imenu-extras-setup)
-    (setq-default js-auto-indent-flag nil
-                  js-indent-level 2)))
-
+  (js2-imenu-extras-setup)
+  (setq-default js-auto-indent-flag nil
+                js-indent-level 2))
 #+END_SRC
 
 There's =tern= also, but I leave it turned off by default
 
 #+BEGIN_SRC emacs-lisp
-(use-package tern
-  :init ;;(add-hook 'js-mode-hook (lambda () (tern-mode t)))
-  )
+(use-package tern)
 #+END_SRC
 
 *** Elasticsearch (es-mode)
@@ -2174,7 +2153,6 @@ modes
   (interactive)
   (turn-on-auto-fill)
   (turn-on-flyspell)
-  (my/turn-on-hl-line-mode)
   (yas-minor-mode-on)
   (when (fboundp 'my/enable-abbrev-mode)
     (my/enable-abbrev-mode))
@@ -2204,6 +2182,7 @@ And now the huge org-mode configuration
          ("C-c M-n" . org-babel-next-src-block)
          ("C-c S" . org-babel-previous-src-block)
          ("C-c s" . org-babel-next-src-block))
+  :defer 30
   :config
   (progn
     (use-package org-install)
@@ -2212,6 +2191,7 @@ And now the huge org-mode configuration
     (use-package ox)
     ;; Enable archiving things
     (use-package org-archive)
+    (add-hook 'org-mode-hook #'hl-line-mode)
     (add-hook 'org-mode-hook #'my/org-mode-hook)
     ;; enabled export backends
     (custom-set-variables '(org-export-backends '(ascii html latex beamer md)))
@@ -2787,7 +2767,6 @@ though.
 
 #+BEGIN_SRC emacs-lisp
 (use-package alert
-  :defer t
   :config
   (progn
     (when (eq system-type 'darwin)
@@ -3219,7 +3198,6 @@ Ediff is fantastic for looking through diffs
 
 #+BEGIN_SRC emacs-lisp
 (use-package ediff
-  :defer t
   :config
   (progn
     (setq
@@ -3257,15 +3235,14 @@ Paredit for all the lisps.
 
 #+BEGIN_SRC emacs-lisp
 (use-package paredit
-  :defer t
+  :commands paredit-mode
   :diminish "()"
   :config
-  (progn
-    (define-key paredit-mode-map (kbd "M-)") 'paredit-forward-slurp-sexp)
-    (define-key paredit-mode-map (kbd "C-(") 'paredit-forward-barf-sexp)
-    (define-key paredit-mode-map (kbd "C-)") 'paredit-forward-slurp-sexp)
-    (define-key paredit-mode-map (kbd ")") 'paredit-close-parenthesis)
-    (define-key paredit-mode-map (kbd "M-\"") 'my/other-window-backwards)))
+  (bind-key "M-)" #'paredit-forward-slurp-sexp paredit-mode-map)
+  (bind-key "C-(" #'paredit-forward-barf-sexp paredit-mode-map)
+  (bind-key "C-)" #'paredit-forward-slurp-sexp paredit-mode-map)
+  (bind-key ")" #'paredit-close-parenthesis paredit-mode-map)
+  (bind-key "M-\"" #'my/other-window-backwards paredit-mode-map))
 #+END_SRC
 
 ** smartparens
@@ -3278,73 +3255,72 @@ works pretty well, so I use it everywhere paredit-mode doesn't work.
 
 #+BEGIN_SRC emacs-lisp
 (use-package smartparens
-  :defer t
-  :diminish ""
+  :defer 5
+  :diminish smartparens-mode
   :bind (("M-9" . sp-backward-sexp)
          ("M-0" . sp-forward-sexp))
   :init
-  (progn
-    (show-smartparens-global-mode t)
-    (add-hook 'prog-mode-hook #'turn-on-smartparens-strict-mode))
+  (show-smartparens-global-mode t)
+  (add-hook 'prog-mode-hook #'turn-on-smartparens-strict-mode)
+
   :config
-  (progn
-    (add-to-list 'sp-sexp-suffix '(json-mode regex ""))
-    (add-to-list 'sp-sexp-suffix '(es-mode regex ""))
+  (add-to-list 'sp-sexp-suffix '(json-mode regex ""))
+  (add-to-list 'sp-sexp-suffix '(es-mode regex ""))
 
-    (use-package smartparens-config)
+  (use-package smartparens-config)
 
-    ;; Remove the M-<backspace> binding that smartparens adds
-    (let ((disabled '("M-<backspace>")))
-      (setq sp-smartparens-bindings
-            (cl-remove-if (lambda (key-command)
-                            (member (car key-command) disabled))
-                          sp-smartparens-bindings)))
+  ;; Remove the M-<backspace> binding that smartparens adds
+  (let ((disabled '("M-<backspace>")))
+    (setq sp-smartparens-bindings
+          (cl-remove-if (lambda (key-command)
+                          (member (car key-command) disabled))
+                        sp-smartparens-bindings)))
 
-    (define-key sp-keymap (kbd "C-(") 'sp-forward-barf-sexp)
-    (define-key sp-keymap (kbd "C-)") 'sp-forward-slurp-sexp)
-    (define-key sp-keymap (kbd "M-(") 'sp-forward-barf-sexp)
-    (define-key sp-keymap (kbd "M-)") 'sp-forward-slurp-sexp)
-    (define-key sp-keymap (kbd "C-M-f") 'sp-forward-sexp)
-    (define-key sp-keymap (kbd "C-M-b") 'sp-backward-sexp)
-    (define-key sp-keymap (kbd "C-M-f") 'sp-forward-sexp)
-    (define-key sp-keymap (kbd "C-M-b") 'sp-backward-sexp)
-    (define-key sp-keymap (kbd "C-M-d") 'sp-down-sexp)
-    (define-key sp-keymap (kbd "C-M-a") 'sp-backward-down-sexp)
-    (define-key sp-keymap (kbd "C-S-a") 'sp-beginning-of-sexp)
-    (define-key sp-keymap (kbd "C-S-d") 'sp-end-of-sexp)
-    (define-key sp-keymap (kbd "C-M-e") 'sp-up-sexp)
-    (define-key emacs-lisp-mode-map (kbd ")") 'sp-up-sexp)
-    (define-key sp-keymap (kbd "C-M-u") 'sp-backward-up-sexp)
-    (define-key sp-keymap (kbd "C-M-t") 'sp-transpose-sexp)
-    ;; (define-key sp-keymap (kbd "C-M-n") 'sp-next-sexp)
-    ;; (define-key sp-keymap (kbd "C-M-p") 'sp-previous-sexp)
-    (define-key sp-keymap (kbd "C-M-k") 'sp-kill-sexp)
-    (define-key sp-keymap (kbd "C-M-w") 'sp-copy-sexp)
-    (define-key sp-keymap (kbd "M-D") 'sp-splice-sexp)
-    (define-key sp-keymap (kbd "C-]") 'sp-select-next-thing-exchange)
-    (define-key sp-keymap (kbd "C-<left_bracket>") 'sp-select-previous-thing)
-    (define-key sp-keymap (kbd "C-M-]") 'sp-select-next-thing)
-    (define-key sp-keymap (kbd "M-F") 'sp-forward-symbol)
-    (define-key sp-keymap (kbd "M-B") 'sp-backward-symbol)
-    (define-key sp-keymap (kbd "H-t") 'sp-prefix-tag-object)
-    (define-key sp-keymap (kbd "H-p") 'sp-prefix-pair-object)
-    (define-key sp-keymap (kbd "H-s c") 'sp-convolute-sexp)
-    (define-key sp-keymap (kbd "H-s a") 'sp-absorb-sexp)
-    (define-key sp-keymap (kbd "H-s e") 'sp-emit-sexp)
-    (define-key sp-keymap (kbd "H-s p") 'sp-add-to-previous-sexp)
-    (define-key sp-keymap (kbd "H-s n") 'sp-add-to-next-sexp)
-    (define-key sp-keymap (kbd "H-s j") 'sp-join-sexp)
-    (define-key sp-keymap (kbd "H-s s") 'sp-split-sexp)
+  (define-key sp-keymap (kbd "C-(") 'sp-forward-barf-sexp)
+  (define-key sp-keymap (kbd "C-)") 'sp-forward-slurp-sexp)
+  (define-key sp-keymap (kbd "M-(") 'sp-forward-barf-sexp)
+  (define-key sp-keymap (kbd "M-)") 'sp-forward-slurp-sexp)
+  (define-key sp-keymap (kbd "C-M-f") 'sp-forward-sexp)
+  (define-key sp-keymap (kbd "C-M-b") 'sp-backward-sexp)
+  (define-key sp-keymap (kbd "C-M-f") 'sp-forward-sexp)
+  (define-key sp-keymap (kbd "C-M-b") 'sp-backward-sexp)
+  (define-key sp-keymap (kbd "C-M-d") 'sp-down-sexp)
+  (define-key sp-keymap (kbd "C-M-a") 'sp-backward-down-sexp)
+  (define-key sp-keymap (kbd "C-S-a") 'sp-beginning-of-sexp)
+  (define-key sp-keymap (kbd "C-S-d") 'sp-end-of-sexp)
+  (define-key sp-keymap (kbd "C-M-e") 'sp-up-sexp)
+  (define-key emacs-lisp-mode-map (kbd ")") 'sp-up-sexp)
+  (define-key sp-keymap (kbd "C-M-u") 'sp-backward-up-sexp)
+  (define-key sp-keymap (kbd "C-M-t") 'sp-transpose-sexp)
+  ;; (define-key sp-keymap (kbd "C-M-n") 'sp-next-sexp)
+  ;; (define-key sp-keymap (kbd "C-M-p") 'sp-previous-sexp)
+  (define-key sp-keymap (kbd "C-M-k") 'sp-kill-sexp)
+  (define-key sp-keymap (kbd "C-M-w") 'sp-copy-sexp)
+  (define-key sp-keymap (kbd "M-D") 'sp-splice-sexp)
+  (define-key sp-keymap (kbd "C-]") 'sp-select-next-thing-exchange)
+  (define-key sp-keymap (kbd "C-<left_bracket>") 'sp-select-previous-thing)
+  (define-key sp-keymap (kbd "C-M-]") 'sp-select-next-thing)
+  (define-key sp-keymap (kbd "M-F") 'sp-forward-symbol)
+  (define-key sp-keymap (kbd "M-B") 'sp-backward-symbol)
+  (define-key sp-keymap (kbd "H-t") 'sp-prefix-tag-object)
+  (define-key sp-keymap (kbd "H-p") 'sp-prefix-pair-object)
+  (define-key sp-keymap (kbd "H-s c") 'sp-convolute-sexp)
+  (define-key sp-keymap (kbd "H-s a") 'sp-absorb-sexp)
+  (define-key sp-keymap (kbd "H-s e") 'sp-emit-sexp)
+  (define-key sp-keymap (kbd "H-s p") 'sp-add-to-previous-sexp)
+  (define-key sp-keymap (kbd "H-s n") 'sp-add-to-next-sexp)
+  (define-key sp-keymap (kbd "H-s j") 'sp-join-sexp)
+  (define-key sp-keymap (kbd "H-s s") 'sp-split-sexp)
 
-    (sp-local-pair 'minibuffer-inactive-mode "'" nil :actions nil)
-    ;; Remove '' pairing in elisp because quoting is used a ton
-    (sp-local-pair 'emacs-lisp-mode "'" nil :actions nil)
+  (sp-local-pair 'minibuffer-inactive-mode "'" nil :actions nil)
+  ;; Remove '' pairing in elisp because quoting is used a ton
+  (sp-local-pair 'emacs-lisp-mode "'" nil :actions nil)
 
-    (sp-with-modes '(html-mode sgml-mode)
-      (sp-local-pair "<" ">"))
+  (sp-with-modes '(html-mode sgml-mode)
+    (sp-local-pair "<" ">"))
 
-    (sp-with-modes sp--lisp-modes
-      (sp-local-pair "(" nil :bind "C-("))))
+  (sp-with-modes sp--lisp-modes
+    (sp-local-pair "(" nil :bind "C-(")))
 #+END_SRC
 
 ** golden-ratio
@@ -3382,7 +3358,7 @@ Pretty minimally configured, but awesome tool for most dynamic languages.
 
 #+BEGIN_SRC emacs-lisp
 (use-package flycheck
-  :defer t
+  :defer 5
   :bind (("M-g M-n" . flycheck-next-error)
          ("M-g M-p" . flycheck-previous-error)
          ("M-g M-=" . flycheck-list-errors))
@@ -3517,37 +3493,35 @@ I use =M-g M-g= everywhere to go directly to Magit.
 
 #+BEGIN_SRC emacs-lisp
 (use-package magit
-  :defer t
-  :bind ("M-g M-g" . magit-status)
-  :init (defvar magit-emacsclient-executable nil) ;; fix for emacs-mac
+  :bind (("M-g M-g" . magit-status)
+         ("C-x g" . magit-status))
+  :init (add-hook 'magit-mode-hook 'hl-line-mode)
   :config
-  (progn
-    (if (file-exists-p  "/usr/local/bin/emacsclient")
-        (setq magit-emacsclient-executable "/usr/local/bin/emacsclient")
-      (setq magit-emacsclient-executable (executable-find "emacsclient")))
-    (defun my/magit-browse ()
-      "Browse to the project's github URL, if available"
-      (interactive)
-      (let ((url (with-temp-buffer
-                   (unless (zerop (call-process-shell-command
-                                   "git remote -v" nil t))
-                     (error "Failed: 'git remote -v'"))
-                   (goto-char (point-min))
-                   (when (re-search-forward
-                          "github\\.com[:/]\\(.+?\\)\\.git" nil t)
-                     (format "https://github.com/%s" (match-string 1))))))
-        (unless url
-          (error "Can't find repository URL"))
-        (browse-url url)))
+  (setenv "GIT_PAGER" "")
+  (if (file-exists-p  "/usr/local/bin/emacsclient")
+      (setq magit-emacsclient-executable "/usr/local/bin/emacsclient")
+    (setq magit-emacsclient-executable (executable-find "emacsclient")))
+  (defun my/magit-browse ()
+    "Browse to the project's github URL, if available"
+    (interactive)
+    (let ((url (with-temp-buffer
+                 (unless (zerop (call-process-shell-command
+                                 "git remote -v" nil t))
+                   (error "Failed: 'git remote -v'"))
+                 (goto-char (point-min))
+                 (when (re-search-forward
+                        "github\\.com[:/]\\(.+?\\)\\.git" nil t)
+                   (format "https://github.com/%s" (match-string 1))))))
+      (unless url
+        (error "Can't find repository URL"))
+      (browse-url url)))
 
-    (define-key magit-mode-map (kbd "C-c C-b") #'my/magit-browse)
-    ;; Magit has its own binding, so re-bind them
-    (define-key magit-mode-map (kbd "M-1") #'my/create-or-switch-to-eshell-1)
-    (define-key magit-mode-map (kbd "M-2") #'my/create-or-switch-to-eshell-2)
-    (define-key magit-mode-map (kbd "M-3") #'my/create-or-switch-to-eshell-3)
-    (define-key magit-mode-map (kbd "M-4") #'my/create-or-switch-to-eshell-4)
-    (define-key magit-status-mode-map (kbd "W") 'magit-toggle-whitespace)
-    (setq magit-completing-read-function 'magit-ido-completing-read)))
+  (define-key magit-mode-map (kbd "C-c C-b") #'my/magit-browse)
+  ;; Magit has its own binding, so re-bind them
+  (bind-key "M-1" #'my/create-or-switch-to-eshell-1 magit-mode-map)
+  (bind-key "M-2" #'my/create-or-switch-to-eshell-2 magit-mode-map)
+  (bind-key "M-3" #'my/create-or-switch-to-eshell-3 magit-mode-map)
+  (bind-key "M-4" #'my/create-or-switch-to-eshell-4 magit-mode-map))
 #+END_SRC
 
 ** projectile
@@ -3559,29 +3533,30 @@ Per-project navigation
 
 #+BEGIN_SRC emacs-lisp
 (use-package projectile
-  :defer t
-  :bind (("C-c p b" . projectile-switch-to-buffer)
-         ("C-c p K" . projectile-kill-buffers))
-  :init (projectile-global-mode 1)
-  :diminish ""
+  :defer 5
+  :commands projectile-global-mode
+  :diminish projectile-mode
   :config
-  (progn
-    (add-to-list 'projectile-globally-ignored-files ".tern-port")
-    (add-to-list 'projectile-globally-ignored-files "GTAGS")
-    (add-to-list 'projectile-globally-ignored-files "GPATH")
-    (add-to-list 'projectile-globally-ignored-files "GRTAGS")
-    (add-to-list 'projectile-globally-ignored-files "GSYMS")
-    (add-to-list 'projectile-globally-ignored-files ".DS_Store")
-    ;; always ignore .class files
-    (add-to-list 'projectile-globally-ignored-file-suffixes ".class")
-    (use-package helm
-      :init
-      (progn
-        (use-package grep) ;; required for helm-ag to work properly
-        (setq projectile-completion-system 'helm)
-        ;; no fuzziness for projectile-helm
-        (setq helm-projectile-fuzzy-match nil)
-        (helm-projectile-on)))))
+  (bind-key "C-c p b" #'projectile-switch-to-buffer #'projectile-command-map)
+  (bind-key "C-c p K" #'projectile-kill-buffers #'projectile-command-map)
+
+  ;; global ignores
+  (add-to-list 'projectile-globally-ignored-files ".tern-port")
+  (add-to-list 'projectile-globally-ignored-files "GTAGS")
+  (add-to-list 'projectile-globally-ignored-files "GPATH")
+  (add-to-list 'projectile-globally-ignored-files "GRTAGS")
+  (add-to-list 'projectile-globally-ignored-files "GSYMS")
+  (add-to-list 'projectile-globally-ignored-files ".DS_Store")
+  ;; always ignore .class files
+  (add-to-list 'projectile-globally-ignored-file-suffixes ".class")
+  (use-package helm-projectile
+    :init
+    (use-package grep) ;; required for helm-ag to work properly
+    (setq projectile-completion-system 'helm)
+    ;; no fuzziness for projectile-helm
+    (setq helm-projectile-fuzzy-match nil)
+    (helm-projectile-on))
+  (projectile-global-mode))
 #+END_SRC
 
 ** prodigy
@@ -3748,22 +3723,49 @@ Also, add a thing for yanking the entire symbol into the query while searching:
   :init (global-set-key [remap kill-ring-save] 'easy-kill))
 #+END_SRC
 
-** helm
-:PROPERTIES:
-:ID:       77F30740-7325-40DA-A85A-B5E7EA56A2ED
-:CUSTOM_ID: 951ffe53-84fc-4311-95dc-87e085839f79
-:END:
+** helm-swoop
+
+#+BEGIN_SRC emacs-lisp
+(use-package helm-swoop
+  :bind (("M-i" . helm-swoop)
+         ("M-I" . helm-swoop-back-to-last-point)
+         ("C-c M-i" . helm-multi-swoop))
+  :config
+  ;; When doing isearch, hand the word over to helm-swoop
+  (define-key isearch-mode-map (kbd "M-i") 'helm-swoop-from-isearch)
+  ;; From helm-swoop to helm-multi-swoop-all
+  (define-key helm-swoop-map (kbd "M-i") 'helm-multi-swoop-all-from-helm-swoop)
+  ;; Save buffer when helm-multi-swoop-edit complete
+  (setq helm-multi-swoop-edit-save t
+        ;; If this value is t, split window inside the current window
+        helm-swoop-split-with-multiple-windows nil
+        ;; Split direcion. 'split-window-vertically or 'split-window-horizontally
+        helm-swoop-split-direction 'split-window-vertically
+        ;; If nil, you can slightly boost invoke speed in exchange for text color
+        helm-swoop-speed-or-color nil))
+#+END_SRC
+
+** helm-descbinds
+
+#+BEGIN_SRC emacs-lisp
+(use-package helm-descbinds
+  :bind ("C-h b" . helm-descbinds)
+  :init (fset 'describe-bindings 'helm-descbinds)
+  :config (require 'helm-config))
+#+END_SRC
+
+** helm-config
 There are many helm things. I use it a lot.
 
 A lot of things are taken from taken from
 https://tuhdo.github.io/helm-intro.html
 
 #+BEGIN_SRC emacs-lisp
-(use-package helm
+(use-package helm-config
+  :demand t
   :bind
   (("C-M-z" . helm-resume)
    ("C-x C-f" . helm-find-files)
-   ("C-h b" . helm-descbinds)
    ("C-x C-r" . helm-mini)
    ("C-x M-o" . helm-occur)
    ("M-y" . helm-show-kill-ring)
@@ -3779,291 +3781,227 @@ https://tuhdo.github.io/helm-intro.html
    ("C-x C-r" . helm-mini)
    ("C-x b" . helm-mini)
    ("C-h t" . helm-world-time))
-  :init (progn (helm-mode 1))
-  :diminish ""
   :config
-  (progn
-    (use-package helm-config)
-    (use-package helm-files
-      :config
-      (progn
-        (setq helm-ff-file-compressed-list '("gz" "bz2" "zip" "7z" "tgz"))))
-    (use-package helm-grep
-      :config
-      (progn
-        (define-key helm-grep-mode-map (kbd "<return>")  'helm-grep-mode-jump-other-window)
-        (define-key helm-grep-mode-map (kbd "n")  'helm-grep-mode-jump-other-window-forward)
-        (define-key helm-grep-mode-map (kbd "p")  'helm-grep-mode-jump-other-window-backward)))
-    (use-package helm-man)
-    (use-package helm-misc)
-    (use-package helm-aliases)
-    (use-package helm-elisp)
-    (use-package helm-imenu)
-    (use-package helm-semantic)
-    (use-package helm-ring)
-    (use-package helm-bookmark
-      :bind (("C-x M-b" . helm-bookmarks)))
-    (use-package helm-projectile
-      :bind (("C-x f" . helm-projectile)
-             ("C-c p f" . helm-projectile-find-file)
-             ("C-c p s" . helm-projectile-switch-project)))
-    (use-package helm-eshell
-      :init (add-hook 'eshell-mode-hook
-                      (lambda ()
-                        (define-key eshell-mode-map (kbd "M-l")
-                          'helm-eshell-history))))
-    (use-package helm-descbinds
-      :init (helm-descbinds-mode t))
-    (use-package helm-ag
-      :bind ("C-M-s" . helm-ag-this-file))
+  (use-package helm-files
+    :config (setq helm-ff-file-compressed-list '("gz" "bz2" "zip" "tgz")))
+  (use-package helm-commands)
+  (use-package helm-buffers)
+  (use-package helm-mode
+    :diminish helm-mode
+    :init (helm-mode 1))
+  (use-package helm-ls-git
+    :bind ("C-x C-d" . helm-browse-project))
+  (use-package helm-grep
+    :config
+    (progn
+      (define-key helm-grep-mode-map (kbd "<return>")  'helm-grep-mode-jump-other-window)
+      (define-key helm-grep-mode-map (kbd "n")  'helm-grep-mode-jump-other-window-forward)
+      (define-key helm-grep-mode-map (kbd "p")  'helm-grep-mode-jump-other-window-backward)))
+  (use-package helm-man)
+  (use-package helm-misc)
+  (use-package helm-aliases)
+  (use-package helm-elisp)
+  (use-package helm-imenu)
+  (use-package helm-semantic)
+  (use-package helm-ring)
+  (use-package helm-bookmark
+    :bind ("C-x M-b" . helm-bookmarks))
+  (use-package helm-projectile
+    :bind (("C-x f" . helm-projectile)
+           ("C-c p f" . helm-projectile-find-file)
+           ("C-c p s" . helm-projectile-switch-project)))
 
-    ;; Via: http://www.reddit.com/r/emacs/comments/3asbyn/new_and_very_useful_helm_feature_enter_search/
-    ;; (setq helm-echo-input-in-header-line t)
-    ;; (defun helm-hide-minibuffer-maybe ()
-    ;;   (when (with-helm-buffer helm-echo-input-in-header-line)
-    ;;     (let ((ov (make-overlay (point-min) (point-max) nil nil t)))
-    ;;       (overlay-put ov 'window (selected-window))
-    ;;       (overlay-put ov 'face (let ((bg-color (face-background 'default nil)))
-    ;;                               `(:background ,bg-color :foreground ,bg-color)))
-    ;;       (setq-local cursor-type nil))))
-    ;; (add-hook 'helm-minibuffer-set-up-hook 'helm-hide-minibuffer-maybe)
+  (global-set-key (kbd "C-c h") 'helm-command-prefix)
+  (global-unset-key (kbd "C-x c"))
 
-    ;; The default "C-x c" is quite close to "C-x C-c", which quits Emacs.
-    ;; Changed to "C-c h". Note: We must set "C-c h" globally, because we
-    ;; cannot change `helm-command-prefix-key' once `helm-config' is loaded.
-    (global-set-key (kbd "C-c h") 'helm-command-prefix)
-    (global-unset-key (kbd "C-x c"))
+  (setq helm-idle-delay 0.01
+        helm-exit-idle-delay 0.1
+        helm-input-idle-delay 0.01
+        ;; truncate long lines in helm completion
+        helm-truncate-lines t
+        ;; may be overridden if 'ggrep' is in path (see below)
+        helm-grep-default-command
+        "grep -a -d skip %e -n%cH -e %p %f"
+        helm-grep-default-recurse-command
+        "grep -a -d recurse %e -n%cH -e %p %f"
+        ;; do not display invisible candidates
+        helm-quick-update t
+        ;; be idle for this many seconds, before updating in delayed sources.
+        helm-idle-delay 0.01
+        ;; use 40% of the window for things
+        ;; helm-autoresize-max-height 40
+        ;; helm-autoresize-min-height 40
+        ;; wider buffer name in helm-buffers-list
+        helm-buffer-max-length 25 ;; default is 20
+        ;; be idle for this many seconds, before updating candidate buffer
+        helm-input-idle-delay 0.01
+        ;; open helm buffer in another window
+        helm-split-window-default-side 'other
+        ;; open helm buffer inside current window, don't occupy whole other window
+        helm-split-window-in-side-p t
+        ;; limit the number of displayed canidates
+        helm-candidate-number-limit 200
+        ;; don't use recentf stuff in helm-ff, I use C-x C-r for this
+        helm-ff-file-name-history-use-recentf nil
+        ;; move to end or beginning of source when reaching top or bottom
+        ;; of source
+        helm-move-to-line-cycle-in-source t
+        ;; don't display the header line
+        helm-display-header-line nil
+        ;; fuzzy matching
+        helm-recentf-fuzzy-match t
+        helm-locate-fuzzy-match nil ;; locate fuzzy is worthless
+        helm-M-x-fuzzy-match t
+        helm-buffers-fuzzy-matching t
+        helm-semantic-fuzzy-match t
+        helm-apropos-fuzzy-match t
+        helm-imenu-fuzzy-match t
+        helm-lisp-fuzzy-completion t
+        helm-completion-in-region-fuzzy-match t
+        ;; Here are the things helm-mini shows, I add `helm-source-bookmarks'
+        ;; here to the regular default list
+        helm-mini-default-sources '(helm-source-buffers-list
+                                    helm-source-recentf
+                                    helm-source-bookmarks
+                                    helm-source-buffer-not-found))
 
-    (setq helm-idle-delay 0.01
-          helm-exit-idle-delay 0.1
-          helm-input-idle-delay 0.01
-          ;; truncate long lines in helm completion
-          helm-truncate-lines t
-          ;; may be overridden if 'ggrep' is in path (see below)
-          helm-grep-default-command
-          "grep -a -d skip %e -n%cH -e %p %f"
+  ;; List of times to show in helm-world-time
+  (setq display-time-world-list '(("PST8PDT" "Los Altos")
+                                  ("America/Denver" "Denver")
+                                  ("EST5EDT" "Boston")
+                                  ("UTC" "UTC")
+                                  ("Europe/London" "London")
+                                  ("Europe/Amsterdam" "Amsterdam")
+                                  ("Asia/Bangkok" "Bangkok")
+                                  ("Asia/Tokyo" "Tokyo")
+                                  ("Australia/Sydney" "Sydney")))
+
+  (define-key helm-map (kbd "<tab>") 'helm-execute-persistent-action) ; rebind tab to do persistent action
+  (define-key helm-map (kbd "C-i") 'helm-execute-persistent-action) ; make TAB works in terminal
+  (define-key helm-map (kbd "C-z")  'helm-select-action) ; list actions using C-z
+
+  (define-key helm-map (kbd "C-p")   'helm-previous-line)
+  (define-key helm-map (kbd "C-n")   'helm-next-line)
+  (define-key helm-map (kbd "C-M-n") 'helm-next-source)
+  (define-key helm-map (kbd "C-M-p") 'helm-previous-source)
+  (define-key helm-map (kbd "M-N")   'helm-next-source)
+  (define-key helm-map (kbd "M-P")   'helm-previous-source)
+  ;; The normal binding is C-c h M-g s which is insane
+  (global-set-key (kbd "C-c h g")    'helm-do-grep)
+  (global-set-key (kbd "C-c h a")    'helm-do-ag)
+
+  (when (executable-find "curl")
+    (setq helm-google-suggest-use-curl-p t))
+
+  ;; ggrep is gnu grep on OSX
+  (when (executable-find "ggrep")
+    (setq helm-grep-default-command
+          "ggrep -a -d skip %e -n%cH -e %p %f"
           helm-grep-default-recurse-command
-          "grep -a -d recurse %e -n%cH -e %p %f"
-          ;; do not display invisible candidates
-          helm-quick-update t
-          ;; be idle for this many seconds, before updating in delayed sources.
-          helm-idle-delay 0.01
-          ;; use 40% of the window for things
-          ;; helm-autoresize-max-height 40
-          ;; helm-autoresize-min-height 40
-          ;; wider buffer name in helm-buffers-list
-          helm-buffer-max-length 25 ;; default is 20
-          ;; be idle for this many seconds, before updating candidate buffer
-          helm-input-idle-delay 0.01
-          ;; open helm buffer in another window
-          helm-split-window-default-side 'other
-          ;; open helm buffer inside current window, don't occupy whole other window
-          helm-split-window-in-side-p t
-          ;; limit the number of displayed canidates
-          helm-candidate-number-limit 200
-          ;; don't use recentf stuff in helm-ff, I use C-x C-r for this
-          helm-ff-file-name-history-use-recentf nil
-          ;; move to end or beginning of source when reaching top or bottom
-          ;; of source
-          helm-move-to-line-cycle-in-source t
-          ;; don't display the header line
-          helm-display-header-line nil
-          ;; fuzzy matching
-          helm-recentf-fuzzy-match t
-          helm-locate-fuzzy-match nil ;; locate fuzzy is worthless
-          helm-M-x-fuzzy-match t
-          helm-buffers-fuzzy-matching t
-          helm-semantic-fuzzy-match t
-          helm-apropos-fuzzy-match t
-          helm-imenu-fuzzy-match t
-          helm-lisp-fuzzy-completion t
-          helm-completion-in-region-fuzzy-match t
-          ;; Here are the things helm-mini shows, I add `helm-source-bookmarks'
-          ;; here to the regular default list
-          helm-mini-default-sources '(helm-source-buffers-list
-                                      helm-source-recentf
-                                      helm-source-bookmarks
-                                      helm-source-buffer-not-found))
+          "ggrep -a -d recurse %e -n%cH -e %p %f"))
 
-    ;; List of times to show in helm-world-time
-    (setq display-time-world-list '(("PST8PDT" "Los Altos")
-                                    ("America/Denver" "Denver")
-                                    ("EST5EDT" "Boston")
-                                    ("UTC" "UTC")
-                                    ("Europe/London" "London")
-                                    ("Europe/Amsterdam" "Amsterdam")
-                                    ("Asia/Bangkok" "Bangkok")
-                                    ("Asia/Tokyo" "Tokyo")
-                                    ("Australia/Sydney" "Sydney")))
+  ;; helm-mini instead of recentf
+  (define-key 'help-command (kbd "C-f") 'helm-apropos)
+  (define-key 'help-command (kbd "r") 'helm-info-emacs)
 
-    (define-key helm-map (kbd "<tab>") 'helm-execute-persistent-action) ; rebind tab to do persistent action
-    (define-key helm-map (kbd "C-i") 'helm-execute-persistent-action) ; make TAB works in terminal
-    (define-key helm-map (kbd "C-z")  'helm-select-action) ; list actions using C-z
+  (defvar helm-httpstatus-source
+    '((name . "HTTP STATUS")
+      (candidates . (("100 Continue") ("101 Switching Protocols")
+                     ("102 Processing") ("200 OK")
+                     ("201 Created") ("202 Accepted")
+                     ("203 Non-Authoritative Information") ("204 No Content")
+                     ("205 Reset Content") ("206 Partial Content")
+                     ("207 Multi-Status") ("208 Already Reported")
+                     ("300 Multiple Choices") ("301 Moved Permanently")
+                     ("302 Found") ("303 See Other")
+                     ("304 Not Modified") ("305 Use Proxy")
+                     ("307 Temporary Redirect") ("400 Bad Request")
+                     ("401 Unauthorized") ("402 Payment Required")
+                     ("403 Forbidden") ("404 Not Found")
+                     ("405 Method Not Allowed") ("406 Not Acceptable")
+                     ("407 Proxy Authentication Required") ("408 Request Timeout")
+                     ("409 Conflict") ("410 Gone")
+                     ("411 Length Required") ("412 Precondition Failed")
+                     ("413 Request Entity Too Large")
+                     ("414 Request-URI Too Large")
+                     ("415 Unsupported Media Type")
+                     ("416 Request Range Not Satisfiable")
+                     ("417 Expectation Failed") ("418 I'm a teapot")
+                     ("422 Unprocessable Entity") ("423 Locked")
+                     ("424 Failed Dependency") ("425 No code")
+                     ("426 Upgrade Required") ("428 Precondition Required")
+                     ("429 Too Many Requests")
+                     ("431 Request Header Fields Too Large")
+                     ("449 Retry with") ("500 Internal Server Error")
+                     ("501 Not Implemented") ("502 Bad Gateway")
+                     ("503 Service Unavailable") ("504 Gateway Timeout")
+                     ("505 HTTP Version Not Supported")
+                     ("506 Variant Also Negotiates")
+                     ("507 Insufficient Storage") ("509 Bandwidth Limit Exceeded")
+                     ("510 Not Extended")
+                     ("511 Network Authentication Required")))
+      (action . message)))
 
-    (define-key helm-map (kbd "C-p")   'helm-previous-line)
-    (define-key helm-map (kbd "C-n")   'helm-next-line)
-    (define-key helm-map (kbd "C-M-n") 'helm-next-source)
-    (define-key helm-map (kbd "C-M-p") 'helm-previous-source)
-    (define-key helm-map (kbd "M-N")   'helm-next-source)
-    (define-key helm-map (kbd "M-P")   'helm-previous-source)
-    ;; The normal binding is C-c h M-g s which is insane
-    (global-set-key (kbd "C-c h g")    'helm-do-grep)
-    (global-set-key (kbd "C-c h a")    'helm-do-ag)
+  (defvar helm-clj-http-source
+    '((name . "clj-http options")
+      (candidates
+       .
+       ((":accept - keyword for content type to accept")
+        (":as - output coercion: :json, :json-string-keys, :clojure, :stream, :auto or string")
+        (":basic-auth - string or vector of basic auth creds")
+        (":body - body of request")
+        (":body-encoding - encoding type for body string")
+        (":client-params - apache http client params")
+        (":coerce - when to coerce response body: :always, :unexceptional, :exceptional")
+        (":conn-timeout - timeout for connection")
+        (":connection-manager - connection pooling manager")
+        (":content-type - content-type for request")
+        (":cookie-store - CookieStore object to store/retrieve cookies")
+        (":cookies - map of cookie name to cookie map")
+        (":debug - boolean to print info to stdout")
+        (":debug-body - boolean to print body debug info to stdout")
+        (":decode-body-headers - automatically decode body headers")
+        (":decompress-body - whether to decompress body automatically")
+        (":digest-auth - vector of digest authentication")
+        (":follow-redirects - boolean whether to follow HTTP redirects")
+        (":form-params - map of form parameters to send")
+        (":headers - map of headers")
+        (":ignore-unknown-host? - whether to ignore inability to resolve host")
+        (":insecure? - boolean whether to accept invalid SSL certs")
+        (":json-opts - map of json options to be used for form params")
+        (":keystore - file path to SSL keystore")
+        (":keystore-pass - password for keystore")
+        (":keystore-type - type of SSL keystore")
+        (":length - manually specified length of body")
+        (":max-redirects - maximum number of redirects to follow")
+        (":multipart - vector of multipart options")
+        (":oauth-token - oauth token")
+        (":proxy-host - hostname of proxy server")
+        (":proxy-ignore-hosts - set of hosts to ignore for proxy")
+        (":proxy-post - port for proxy server")
+        (":query-params - map of query parameters")
+        (":raw-headers - boolean whether to return raw headers with response")
+        (":response-interceptor - function called for each redirect")
+        (":retry-handler - function to handle HTTP retries on IOException")
+        (":save-request? - boolean to return original request with response")
+        (":socket-timeout - timeout for establishing socket")
+        (":throw-entire-message? - whether to throw the entire response on errors")
+        (":throw-exceptions - boolean whether to throw exceptions on 5xx & 4xx")
+        (":trust-store - file path to trust store")
+        (":trust-store-pass - password for trust store")
+        (":trust-store-type - type of trust store")))
+      (action . message)))
 
-    (when (executable-find "curl")
-      (setq helm-google-suggest-use-curl-p t))
+  (defun helm-httpstatus ()
+    (interactive)
+    (helm-other-buffer '(helm-httpstatus-source) "*helm httpstatus*"))
 
-    ;; ggrep is gnu grep on OSX
-    (when (executable-find "ggrep")
-      (setq helm-grep-default-command
-            "ggrep -a -d skip %e -n%cH -e %p %f"
-            helm-grep-default-recurse-command
-            "ggrep -a -d recurse %e -n%cH -e %p %f"))
+  (defun helm-clj-http ()
+    (interactive)
+    (helm-other-buffer '(helm-clj-http-source) "*helm clj-http flags*"))
 
-    (define-key helm-map (kbd "C-x 2") 'helm-select-2nd-action)
-    (define-key helm-map (kbd "C-x 3") 'helm-select-3rd-action)
-    (define-key helm-map (kbd "C-x 4") 'helm-select-4rd-action)
-
-    ;; helm-mini instead of recentf
-    (define-key 'help-command (kbd "C-f") 'helm-apropos)
-    (define-key 'help-command (kbd "r") 'helm-info-emacs)
-
-    ;; use helm to list eshell history
-    (add-hook 'eshell-mode-hook
-              #'(lambda ()
-                  (define-key eshell-mode-map (kbd "M-l")  'helm-eshell-history)))
-
-    (defvar helm-httpstatus-source
-      '((name . "HTTP STATUS")
-        (candidates . (("100 Continue") ("101 Switching Protocols")
-                       ("102 Processing") ("200 OK")
-                       ("201 Created") ("202 Accepted")
-                       ("203 Non-Authoritative Information") ("204 No Content")
-                       ("205 Reset Content") ("206 Partial Content")
-                       ("207 Multi-Status") ("208 Already Reported")
-                       ("300 Multiple Choices") ("301 Moved Permanently")
-                       ("302 Found") ("303 See Other")
-                       ("304 Not Modified") ("305 Use Proxy")
-                       ("307 Temporary Redirect") ("400 Bad Request")
-                       ("401 Unauthorized") ("402 Payment Required")
-                       ("403 Forbidden") ("404 Not Found")
-                       ("405 Method Not Allowed") ("406 Not Acceptable")
-                       ("407 Proxy Authentication Required") ("408 Request Timeout")
-                       ("409 Conflict") ("410 Gone")
-                       ("411 Length Required") ("412 Precondition Failed")
-                       ("413 Request Entity Too Large")
-                       ("414 Request-URI Too Large")
-                       ("415 Unsupported Media Type")
-                       ("416 Request Range Not Satisfiable")
-                       ("417 Expectation Failed") ("418 I'm a teapot")
-                       ("422 Unprocessable Entity") ("423 Locked")
-                       ("424 Failed Dependency") ("425 No code")
-                       ("426 Upgrade Required") ("428 Precondition Required")
-                       ("429 Too Many Requests")
-                       ("431 Request Header Fields Too Large")
-                       ("449 Retry with") ("500 Internal Server Error")
-                       ("501 Not Implemented") ("502 Bad Gateway")
-                       ("503 Service Unavailable") ("504 Gateway Timeout")
-                       ("505 HTTP Version Not Supported")
-                       ("506 Variant Also Negotiates")
-                       ("507 Insufficient Storage") ("509 Bandwidth Limit Exceeded")
-                       ("510 Not Extended")
-                       ("511 Network Authentication Required")))
-        (action . message)))
-
-    (defvar helm-clj-http-source
-      '((name . "clj-http options")
-        (candidates
-         .
-         ((":accept - keyword for content type to accept")
-          (":as - output coercion: :json, :json-string-keys, :clojure, :stream, :auto or string")
-          (":basic-auth - string or vector of basic auth creds")
-          (":body - body of request")
-          (":body-encoding - encoding type for body string")
-          (":client-params - apache http client params")
-          (":coerce - when to coerce response body: :always, :unexceptional, :exceptional")
-          (":conn-timeout - timeout for connection")
-          (":connection-manager - connection pooling manager")
-          (":content-type - content-type for request")
-          (":cookie-store - CookieStore object to store/retrieve cookies")
-          (":cookies - map of cookie name to cookie map")
-          (":debug - boolean to print info to stdout")
-          (":debug-body - boolean to print body debug info to stdout")
-          (":decode-body-headers - automatically decode body headers")
-          (":decompress-body - whether to decompress body automatically")
-          (":digest-auth - vector of digest authentication")
-          (":follow-redirects - boolean whether to follow HTTP redirects")
-          (":form-params - map of form parameters to send")
-          (":headers - map of headers")
-          (":ignore-unknown-host? - whether to ignore inability to resolve host")
-          (":insecure? - boolean whether to accept invalid SSL certs")
-          (":json-opts - map of json options to be used for form params")
-          (":keystore - file path to SSL keystore")
-          (":keystore-pass - password for keystore")
-          (":keystore-type - type of SSL keystore")
-          (":length - manually specified length of body")
-          (":max-redirects - maximum number of redirects to follow")
-          (":multipart - vector of multipart options")
-          (":oauth-token - oauth token")
-          (":proxy-host - hostname of proxy server")
-          (":proxy-ignore-hosts - set of hosts to ignore for proxy")
-          (":proxy-post - port for proxy server")
-          (":query-params - map of query parameters")
-          (":raw-headers - boolean whether to return raw headers with response")
-          (":response-interceptor - function called for each redirect")
-          (":retry-handler - function to handle HTTP retries on IOException")
-          (":save-request? - boolean to return original request with response")
-          (":socket-timeout - timeout for establishing socket")
-          (":throw-entire-message? - whether to throw the entire response on errors")
-          (":throw-exceptions - boolean whether to throw exceptions on 5xx & 4xx")
-          (":trust-store - file path to trust store")
-          (":trust-store-pass - password for trust store")
-          (":trust-store-type - type of trust store")))
-        (action . message)))
-
-    (defun helm-httpstatus ()
-      (interactive)
-      (helm-other-buffer '(helm-httpstatus-source) "*helm httpstatus*"))
-
-    (defun helm-clj-http ()
-      (interactive)
-      (helm-other-buffer '(helm-clj-http-source) "*helm clj-http flags*"))
-
-    (global-set-key (kbd "C-c M-C-h") 'helm-httpstatus)
-    (global-set-key (kbd "C-c M-h") 'helm-clj-http)
-
-    (use-package helm-swoop
-      :bind (("M-i" . helm-swoop)
-             ("M-I" . helm-swoop-back-to-last-point)
-             ("C-c M-i" . helm-multi-swoop))
-      :config
-      (progn
-        ;; When doing isearch, hand the word over to helm-swoop
-        (define-key isearch-mode-map (kbd "M-i") 'helm-swoop-from-isearch)
-        ;; From helm-swoop to helm-multi-swoop-all
-        (define-key helm-swoop-map (kbd "M-i") 'helm-multi-swoop-all-from-helm-swoop)
-        ;; Save buffer when helm-multi-swoop-edit complete
-        (setq helm-multi-swoop-edit-save t
-              ;; If this value is t, split window inside the current window
-              helm-swoop-split-with-multiple-windows nil
-              ;; Split direcion. 'split-window-vertically or 'split-window-horizontally
-              helm-swoop-split-direction 'split-window-vertically
-              ;; If nil, you can slightly boost invoke speed in exchange for text color
-              helm-swoop-speed-or-color nil)))
-    ))
-#+END_SRC
-
-** helm-ls-git
-:PROPERTIES:
-:ID:       17D50EB4-3BD0-41BB-9F3C-4FDB8143E568
-:CUSTOM_ID: e694e2c9-5269-433c-9907-7bff6e5739b1
-:END:
-Uses =git grep= for that
-
-#+BEGIN_SRC emacs-lisp
-(use-package helm-ls-git
-  :defer t
-  :bind ("C-x C-d" . helm-browse-project))
+  (global-set-key (kbd "C-c M-C-h") 'helm-httpstatus)
+  (global-set-key (kbd "C-c M-h") 'helm-clj-http))
 #+END_SRC
 
 ** hydra
@@ -4129,9 +4067,16 @@ Snippets for coding, loading while idle so startup is faster.
 (use-package yasnippet
   :defer t
   :diminish yas-minor-mode
-  :init (progn
-          (yas-global-mode 1)
-          (yas-reload-all)))
+  :commands (yas-expand yas-minor-mode)
+  :functions (yas-guess-snippet-directories yas-table-name)
+  :defines (yas-guessed-modes)
+  :mode ("/\\.emacs\\.d/snippets/" . snippet-mode)
+  :bind (("C-c Y TAB" . yas-expand)
+         ("C-c Y s"   . yas-insert-snippet))
+  :config
+  (yas-load-directory "~/.emacs.d/snippets/")
+  (yas-global-mode 1)
+  (bind-key "C-i" #'yas-next-field-or-maybe-expand yas-keymap))
 #+END_SRC
 
 ** markdown-mode
@@ -4142,11 +4087,11 @@ Snippets for coding, loading while idle so startup is faster.
 Various markdown-related settings. Not much here.
 
 #+BEGIN_SRC emacs-lisp
-(autoload 'markdown-mode "markdown-mode"
-  "Major mode for editing Markdown files" t)
-(add-to-list 'auto-mode-alist '("\\.text\\'" . markdown-mode))
-(add-to-list 'auto-mode-alist '("\\.markdown\\'" . markdown-mode))
-(add-to-list 'auto-mode-alist '("\\.md\\'" . markdown-mode))
+(use-package markdown-mode
+  :load-path "site-lisp/markdown-mode"
+  :mode (("\\`README\\.md\\'" . gfm-mode)
+         ("\\.md\\'"          . markdown-mode)
+         ("\\.markdown\\'"    . markdown-mode)))
 #+END_SRC
 
 ** log4j-mode
@@ -4158,8 +4103,7 @@ Need =hl-line-mode= for this
 
 #+BEGIN_SRC emacs-lisp
 (use-package log4j-mode
-  :disabled t
-  :init (add-hook 'log4j-mode-hook #'my/turn-on-viewing-mode))
+  :init (add-hook #'log4j-mode-hook #'my/turn-on-viewing-mode))
 #+END_SRC
 
 ** bookmark+
@@ -4171,6 +4115,7 @@ Extended bookmarks, which I've started used for dired buffers and so on
 
 #+BEGIN_SRC emacs-lisp
 (use-package bookmark+
+  :defer 10
   :config
   (progn
     (setq bookmark-version-control t
@@ -4188,9 +4133,9 @@ Standard auto-completion configuration with company-mode
 #+BEGIN_SRC emacs-lisp
 (use-package company
   :defer t
-  :diminish ""
+  :diminish company-mode
   :bind ("C-." . company-complete)
-  :init (add-hook 'prog-mode-hook 'company-mode)
+  :init (add-hook #'prog-mode-hook #'company-mode)
   :config
   (progn
     (setq company-idle-delay 0.3
@@ -4502,31 +4447,14 @@ Eyebrowse is a great package for workspaces in Emacs.
     (add-hook 'after-init-hook #'my/create-eyebrowse-setup)))
 #+END_SRC
 
-** origami
-Origami is another folding method, but a bit different than hideshow.
-
-#+BEGIN_SRC emacs-lisp
-(use-package origami
-  :init
-  (progn
-    (add-hook 'java-mode-hook #'origami-mode)
-    (add-hook 'clojure-mode-hook #'origami-mode)
-    (add-hook 'emacs-lisp-mode-hook #'origami-mode))
-  :config
-  (progn
-    (define-key origami-mode-map (kbd "<C-return>") 'origami-recursively-toggle-node)
-    (define-key origami-mode-map (kbd "<C-M-return>") 'origami-toggle-all-nodes)
-    (define-key origami-mode-map (kbd "<C-S-return>") 'origami-show-only-node)))
-#+END_SRC
-
 ** smartscan
 Uses =M-n= and =M-p= to jump between the same variable in multiple places
 
 #+BEGIN_SRC emacs-lisp
 (use-package smartscan
-  :init (add-hook 'prog-mode-hook #'smartscan-mode)
+  :init (add-hook #'prog-mode-hook #'smartscan-mode)
   :config
-  (define-key smartscan-map (kbd "M-'") #'other-window))
+  (bind-key "M-'" #'other-window smartscan-map))
 #+END_SRC
 
 ** hideshow
@@ -4546,26 +4474,16 @@ for now.
          ("C-\\" . hs-toggle-hiding)
          ("M-\\" . hs-hide-all)
          ("M-+" . hs-show-all))
-  :init
-  (progn
-    (defun my/enable-hs-minor-mode ()
-      (interactive)
-      (hs-minor-mode t))
-
-    ;; (add-hook 'javascript-mode-hook 'my/enable-hs-minor-mode)
-    ;; (add-hook 'js-mode-hook 'my/enable-hs-minor-mode)
-    ;; (add-hook 'java-mode-hook 'my/enable-hs-minor-mode)
-    (add-hook 'prog-mode-hook 'my/enable-hs-minor-mode))
+  :init (add-hook #'prog-mode-hook #'hs-minor-mode)
   :config
-  (progn
-    (defvar hs-special-modes-alist
-      (mapcar 'purecopy
-              '((c-mode "{" "}" "/[*/]" nil nil)
-                (c++-mode "{" "}" "/[*/]" nil nil)
-                (bibtex-mode ("@\\S(*\\(\\s(\\)" 1))
-                (java-mode "{" "}" "/[*/]" nil nil)
-                (js-mode "{" "}" "/[*/]" nil)
-                (javascript-mode  "{" "}" "/[*/]" nil))))))
+  (defvar hs-special-modes-alist
+    (mapcar 'purecopy
+            '((c-mode "{" "}" "/[*/]" nil nil)
+              (c++-mode "{" "}" "/[*/]" nil nil)
+              (bibtex-mode ("@\\S(*\\(\\s(\\)" 1))
+              (java-mode "{" "}" "/[*/]" nil nil)
+              (js-mode "{" "}" "/[*/]" nil)
+              (javascript-mode  "{" "}" "/[*/]" nil)))))
 #+END_SRC
 
 ** abbrev
@@ -4579,7 +4497,9 @@ helpful to auto-correct.
 
 #+BEGIN_SRC emacs-lisp
 (use-package abbrev
-  :diminish ""
+  :diminish abbrev-mode
+  :init (add-hook 'prog-mode-hook #'abbrev-mode)
+  :defer 30
   :config
   (progn
     (define-key ctl-x-map "\M-a" 'my/ispell-word-then-abbrev)
@@ -4600,12 +4520,6 @@ With prefix P, create local abbrev. Otherwise it will be global."
 
     (setq save-abbrevs t)
     (setq-default abbrev-mode t)))
-
-(defun my/enable-abbrev-mode ()
-  (interactive)
-  (abbrev-mode t))
-
-(add-hook 'prog-mode-hook #'my/enable-abbrev-mode)
 #+END_SRC
 
 From https://github.com/purcell/emacs.d/blob/master/lisp/init-auto-complete.el -
@@ -4656,14 +4570,12 @@ Wait, no, I mean the Emacs web browser built in to 24.4
       (eww (format "https://en.m.wikipedia.org/wiki/Special:Search?search=%s"
                    (url-encode-url text)))))
   :config
-  (progn
-    (define-key eww-mode-map "o" 'eww)
-    (define-key eww-mode-map "O" 'eww-browse-with-external-browser)
-    (use-package eww-lnum
-      :init
-      (eval-after-load "eww"
-        '(progn (define-key eww-mode-map "f" 'eww-lnum-follow)
-                (define-key eww-mode-map "F" 'eww-lnum-universal))))))
+  (define-key eww-mode-map "o" 'eww)
+  (define-key eww-mode-map "O" 'eww-browse-with-external-browser)
+  (use-package eww-lnum
+    :config
+    (bind-key "f" #'eww-lnum-follow eww-mode-map)
+    (bind-key "F" #'eww-lnum-universal eww-mode-map)))
 #+END_SRC
 
 ** idle-highlight-mode

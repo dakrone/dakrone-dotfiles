@@ -570,16 +570,16 @@ Automatically revert file if it's changed on disk:
 (setq auto-revert-verbose nil)
 #+END_SRC
 
-Start a server if not running, but a only for text-only:
+Start a server if not running, but a only for gui-only:
 
 #+BEGIN_SRC emacs-lisp
+;; Lame, server has bad autoloads :(
+(require 'server nil t)
 (use-package server
+  :if window-system
   :init
-  (progn
-    (when (not (window-system))
-      (if (server-running-p server-name)
-          nil
-        (server-start)))))
+  (when (not (server-running-p server-name))
+    (server-start)))
 #+END_SRC
 
 GUI-specific thing:
@@ -2151,7 +2151,8 @@ modes
   (interactive)
   (turn-on-auto-fill)
   (turn-on-flyspell)
-  (yas-minor-mode-on)
+  (when (fboundp 'yas-minor-mode)
+    (yas-minor-mode 1))
   (when (fboundp 'my/enable-abbrev-mode)
     (my/enable-abbrev-mode))
 

@@ -574,7 +574,7 @@ Start a server if not running, but a only for text-only:
 
 #+BEGIN_SRC emacs-lisp
 (use-package server
-  :config
+  :init
   (progn
     (when (not (window-system))
       (if (server-running-p server-name)
@@ -963,8 +963,6 @@ completion, prompt and term settings:
       (interactive)
       (let ((eshell-buffer-maximum-lines 0))
         (eshell-truncate-buffer))))
-  (use-package helm-eshell
-    :init (bind-key "M-l" #'helm-eshell-history eshell-mode-map))
 
   (add-hook 'eshell-mode-hook #'my/setup-eshell)
 

@@ -2205,8 +2205,8 @@ And now the huge org-mode configuration
           org-fontify-whole-heading-line t
           ;; force UTF-8
           org-export-coding-system 'utf-8
-          ;; use ido completion when I can
-          org-completion-use-ido t
+          ;; don't use ido completion (I use helm)
+          org-completion-use-ido nil
           ;; don't indent source code
           org-edit-src-content-indentation 0
           ;; don't adapt indentation
@@ -4180,7 +4180,6 @@ the link to this package.
 
 #+BEGIN_SRC emacs-lisp
 (use-package shrink-whitespace
-  :defer t
   :bind (("M-SPC" . shrink-whitespace)
          ("M-S-SPC" . shrink-whitespace)))
 #+END_SRC
@@ -4332,25 +4331,20 @@ instead of rigid completions
 #+BEGIN_SRC emacs-lisp
 (use-package ido
   :config
-  (progn
-    (setq ido-use-virtual-buffers nil
-          ;; this setting causes weird TRAMP connections, don't set it!
-          ;;ido-enable-tramp-completion nil
-          ido-enable-flex-matching t
-          ido-auto-merge-work-directories-length nil
-          ido-create-new-buffer 'always
-          ido-use-filename-at-point 'guess
-          ido-max-prospects 10)))
-
-(use-package flx-ido
-  :init (flx-ido-mode 1)
-  :config
-  (setq ido-use-faces nil))
-
-(use-package ido-vertical-mode
-  :init (ido-vertical-mode t))
-
-(use-package ido-ubiquitous)
+  (use-package ido-ubiquitous)
+  (use-package flx-ido
+    :init (flx-ido-mode 1)
+    :config (setq ido-use-faces nil))
+  (use-package ido-vertical-mode
+    :init (ido-vertical-mode t))
+  (setq ido-use-virtual-buffers nil
+        ;; this setting causes weird TRAMP connections, don't set it!
+        ;;ido-enable-tramp-completion nil
+        ido-enable-flex-matching t
+        ido-auto-merge-work-directories-length nil
+        ido-create-new-buffer 'always
+        ido-use-filename-at-point 'guess
+        ido-max-prospects 10))
 #+END_SRC
 
 ** multiple-cursors
@@ -4378,11 +4372,9 @@ immediately use Twitter :P
 
 #+BEGIN_SRC emacs-lisp
 (use-package twittering-mode
-  :defer t
   :config
-  (progn
-    (setq twittering-icon-mode t
-          twittering-use-master-password t)))
+  (setq twittering-icon-mode t
+        twittering-use-master-password t))
 #+END_SRC
 
 ** smex
@@ -4390,7 +4382,7 @@ immediately use Twitter :P
 :ID:       53E196A2-C782-4E01-80EA-03CA2A130D5E
 :CUSTOM_ID: 51bd136c-f119-47eb-b1d9-9293ea774596
 :END:
-Smex is IDO, but for =M-x=
+Smex is IDO, but for =M-x=. This is disabled because I'm using helm for M-x now.
 
 #+BEGIN_SRC emacs-lisp
 (use-package smex
@@ -4417,6 +4409,7 @@ Beacon flashes the cursor whenever you adjust position
 
 #+BEGIN_SRC emacs-lisp
 (use-package beacon
+  :diminish beacon-mode
   :init (beacon-mode 1))
 #+END_SRC
 
@@ -4587,13 +4580,9 @@ Highlight idle things, but only in certain modes
 #+BEGIN_SRC emacs-lisp
 (use-package idle-highlight-mode
   :init
-  (progn
-    (defun turn-on-idle-highlight-mode ()
-      (interactive)
-      (idle-highlight-mode 1))
-    (add-hook 'java-mode-hook #'turn-on-idle-highlight-mode)
-    (add-hook 'emacs-lisp-mode-hook #'turn-on-idle-highlight-mode)
-    (add-hook 'clojure-lisp-mode-hook #'turn-on-idle-highlight-mode)))
+  (add-hook 'java-mode-hook #'idle-highlight-mode)
+  (add-hook 'emacs-lisp-mode-hook #'idle-highlight-mode)
+  (add-hook 'clojure-lisp-mode-hook #'idle-highlight-mode))
 #+END_SRC
 
 ** Key Bindings
@@ -4625,6 +4614,12 @@ Deletes whitespace at join."
     (kill-line arg)))
 
 (global-set-key (kbd "C-k") 'kill-and-join-forward)
+
+;; join line to next line
+(global-set-key (kbd "M-j")
+                (lambda ()
+                  (interactive)
+                  (join-line -1)))
 
 ;; Completion that uses many different methods to find options.
 (global-set-key (kbd "M-/") 'hippie-expand)
@@ -4859,30 +4854,12 @@ and starting offset to number lines in rectangular-selection mode:
 Used more often than you'd think...
 
 #+BEGIN_SRC emacs-lisp
-(defun my/insert-lod ()
+(defun lod ()
   "Well. This is disappointing."
   (interactive)
   (insert "ಠ_ಠ"))
 
-(global-set-key (kbd "C-c M-d") 'my/insert-lod)
-#+END_SRC
-
-*** Browse Elasticsearch documentation
-:PROPERTIES:
-:ID:       E8FDEA15-2A6D-4527-A620-075F70B534A2
-:CUSTOM_ID: e6e7e394-ef2f-42f4-8c43-a8fe9096bfb6
-:END:
-A function to search/browse ES docs from Emacs using =eww=
-
-#+BEGIN_SRC emacs-lisp
-(defun my/search-es-docs (text)
-  "Search ES docs for `text'."
-  (interactive (list (read-string "Search for: ")))
-  (eww
-   (url-encode-url
-    (format "http://www.elastic.co/?q=%s" text))))
-
-(global-set-key (kbd "C-c d") 'my/search-es-docs)
+(global-set-key (kbd "C-c M-d") #'lod)
 #+END_SRC
 
 *** Narrow-widen DWIM (do what I mean)
@@ -4946,57 +4923,6 @@ See: `xah-forward-block'"
 (global-set-key (kbd "<C-down>") 'xah-forward-block)
 #+END_SRC
 
-*** File previews
-:PROPERTIES:
-:ID:       BF495BC5-2138-4AEB-9B31-05D20548F216
-:CUSTOM_ID: 952584d4-fb67-410d-a2fd-e6fa9ff7907a
-:END:
-Taken from ...
-
-#+BEGIN_SRC emacs-lisp
-(defun my/quick-view-file-at-point ()
-  "Preview the file at point then jump back after some idle time.
-
-In order for this to work you need to bind this function to a key combo,
-you cannot call it from the minibuffer and let it work.
-
-The reason it works is that by holding the key combo down, you inhibit
-idle timers from running so as long as you hold the key combo, the
-buffer preview will still display."
-  (interactive)
-  (setq-local lexical-binding t)
-  (let* ((buffer (current-buffer))
-         (file (thing-at-point 'filename t))
-         (file-buffer-name (format "*preview of %s*" file)))
-    (if (and file (file-exists-p file))
-        (let ((contents))
-          (if (get-buffer file)
-              (setq contents (save-excursion
-                               (with-current-buffer (get-buffer file)
-                                 (font-lock-fontify-buffer)
-                                 (buffer-substring (point-min) (point-max)))))
-            (let ((new-buffer (find-file-noselect file)))
-              (with-current-buffer new-buffer
-                (font-lock-mode t)
-                (font-lock-fontify-buffer)
-                (setq contents (buffer-substring (point-min) (point-max))))
-              (kill-buffer new-buffer)))
-          (switch-to-buffer (get-buffer-create file-buffer-name))
-          (setq-local header-line-format "%60b")
-          (delete-region (point-min) (point-max))
-          (save-excursion (insert contents))
-          (local-set-key (kbd "C-M-v") (lambda () (interactive) (sit-for .2)))
-          (run-with-idle-timer
-           .7
-           nil
-           (lambda ()
-             (switch-to-buffer buffer)
-             (kill-buffer file-buffer-name))))
-      (message "no file to preview at point!"))))
-
-(global-set-key (kbd "C-M-v") 'my/quick-view-file-at-point)
-#+END_SRC
-
 *** Replace smart quotes
 :PROPERTIES:
 :ID:       1903AC5A-3971-4844-9D82-29A635DA8A74
@@ -5033,12 +4959,12 @@ So, I'd like something to prompt me for an index name and the number of replicas
 to change to, because I do this quite a bit...
 
 #+BEGIN_SRC emacs-lisp
-(defun my/change-replica-count (index replicas)
+(defun change-replicas (index replicas)
   (interactive (list (read-string "Index (_all for all): ")
                      (read-string "Number of replicas: ")))
   (async-shell-command
    (concat
-    "curl -XPUT 'localhost:9200/"
+    "curl -s -XPUT 'localhost:9200/"
     index
     "/_settings' -d'{\"index\": {\"number_of_replicas\": "
     replicas
@@ -5046,6 +4972,8 @@ to change to, because I do this quite a bit...
 #+END_SRC
 
 *** Transpose buffers
+If you split buffers and have A on the left and B on the right, this will put B
+on the left and A on the right.
 
 #+BEGIN_SRC emacs-lisp
 (defun transpose-buffers (arg)

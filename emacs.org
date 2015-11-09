@@ -2096,7 +2096,6 @@ Config for Linux/X11 systems:
 
 #+BEGIN_SRC emacs-lisp
 (use-package smart-mode-line
-  :disabled t
   :init
   (progn
     (setq sml/theme my/background)
@@ -2109,10 +2108,10 @@ Config for Linux/X11 systems:
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
-(require 'spaceline-config)
-(setq powerline-default-separator 'wave)
-(setq anzu-cons-mode-line-p nil)
-(spaceline-spacemacs-theme)
+;;(require 'spaceline-config)
+;;(setq powerline-default-separator 'wave)
+;;(setq anzu-cons-mode-line-p nil)
+;;(spaceline-spacemacs-theme)
 #+END_SRC
 
 *** fringe

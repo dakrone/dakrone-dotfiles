@@ -755,13 +755,11 @@ Linux has less customization, mostly differing aliases.
 
 #+BEGIN_SRC sh :tangle .zsh.d/zsh.Linux
 # make emacs have 256 colors
-alias emacs='TERM=xterm-256color emacs -nw'
+alias -g emacs='TERM=xterm-256color /usr/local/bin/emacs -nw'
 
-alias ec="emacsclient"
+alias -g ec="/home/hinmanm/bin/emacsclient"
 
 function ekill() { emacsclient -e '(kill-emacs)' }
-
-alias e='emacs -nw'
 
 export EDITOR="emacs -nw"
 

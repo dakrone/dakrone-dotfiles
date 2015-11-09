@@ -493,7 +493,7 @@ export GTAGSLABEL=ctags
 #+END_SRC
 
 *** Ruby (rbenv)
-I need to set up the rbenv wrapper so I can have sane ruby building. If it
+I need to set up the [[https://github.com/sstephenson/rbenv#installation][rbenv]] wrapper so I can have sane ruby building. If it
 exists, anyway.
 
 #+BEGIN_SRC sh :tangle .zsh.d/17-ruby.zsh

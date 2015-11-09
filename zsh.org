@@ -43,6 +43,9 @@ export PATH=$PATH:~/node_modules/.bin
 # Cask
 export PATH=$PATH:~/.cask/bin
 
+# rbenv
+export PATH=~/.rbenv/bin:$PATH
+
 # Virtualenvwrapper environment home
 export WORKON_HOME=~/.venvs
 if [ -d "$WORKON_HOME" ]; then
@@ -489,13 +492,23 @@ fi
 export GTAGSLABEL=ctags
 #+END_SRC
 
-*** Virtualenvwrapper
+*** Ruby (rbenv)
+I need to set up the rbenv wrapper so I can have sane ruby building. If it
+exists, anyway.
+
+#+BEGIN_SRC sh :tangle .zsh.d/17-ruby.zsh
+if [ -f ~/.rbenv/bin/rbenv ]; then
+    eval "$(rbenv init -)"
+fi
+#+END_SRC
+
+*** Python (virtualenvwrapper)
 So [[http://virtualenvwrapper.readthedocs.org/en/latest/][virtualenvwrapper]] is a handy thing for managing virtualenv sessions, but it
 needs to be sourced if available.
 
 Use =pip install virtualenvwrapper= to install it
 
-#+BEGIN_SRC sh :tangle .zsh.d/17-virtualenv.zsh
+#+BEGIN_SRC sh :tangle .zsh.d/17-python.zsh
 if whence -cp virtualenvwrapper.sh > /dev/null 2>&1; then
     source `whence -cp virtualenvwrapper.sh`
 fi

@@ -1855,19 +1855,8 @@ Using rbenv, set it up correctly when idle
 
 #+BEGIN_SRC emacs-lisp
 (use-package rbenv
-  :disabled t
+  :defer 25
   :init (global-rbenv-mode t))
-#+END_SRC
-
-Or, chruby, which is much simpler (no shims)
-
-: brew install chruby ruby-install
-: ruby-install 2.1.3
-
-#+BEGIN_SRC emacs-lisp
-(use-package chruby
-  :defer t
-  :init (chruby "ruby-2.1.3"))
 #+END_SRC
 
 *** Haskell

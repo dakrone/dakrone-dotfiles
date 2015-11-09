@@ -1479,6 +1479,13 @@ highlighted so they stand out:
 (add-hook 'prog-mode-hook #'hl-line-mode)
 #+END_SRC
 
+I need to hide the lighter for subword mode:
+
+#+BEGIN_SRC emacs-lisp
+(use-package subword
+  :diminish subword-mode)
+#+END_SRC
+
 *** Clojure (also cider)
 :PROPERTIES:
 :ID:       751B0DF1-CC5D-4386-B0CA-1519325B01DA
@@ -4467,6 +4474,7 @@ for now.
          ("M-\\" . hs-hide-all)
          ("M-+" . hs-show-all))
   :init (add-hook #'prog-mode-hook #'hs-minor-mode)
+  :diminish hs-minor-mode
   :config
   (defvar hs-special-modes-alist
     (mapcar 'purecopy

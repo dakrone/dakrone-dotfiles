@@ -2287,8 +2287,7 @@ And now the huge org-mode configuration
           ;; Agenda org-mode files
           org-agenda-files `(,(file-truename "~/org/")
                              ,(file-truename "~/org/es/")
-                             ,(file-truename "~/org/es/design/")
-                             ,(file-truename "~/org/book/")))
+                             ,(file-truename "~/org/es/design/")))
 
     ;; Org todo keywords
     (setq org-todo-keywords

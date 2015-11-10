@@ -13,12 +13,12 @@ EMACSCMD="emacs"
 # wrap each argument in the code required to call tangle on it
 DIR=`pwd`
 FILES=""
-for i in $@; do
-    echo "File: $i"
+for file in $@; do
+    echo "File: $file"
     $EMACSCMD -nw --batch --eval "
 (progn
   (require 'org-install)
-  (find-file (expand-file-name \"$i\" \"$DIR\"))
+  (find-file (expand-file-name \"$file\" \"$DIR\"))
   (org-babel-tangle)
   (kill-buffer))" 2>&1 | grep "Tangled"
 done

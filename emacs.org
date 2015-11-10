@@ -602,21 +602,6 @@ Prettify all the symbols, if available (an Emacs 24.4 feature):
   (global-prettify-symbols-mode +1))
 #+END_SRC
 
-Always prefer to load newer files, instead of giving precedence to the .elc
-files.
-
-#+BEGIN_SRC emacs-lisp
-(setq load-prefer-newer t)
-#+END_SRC
-
-Turn on winner-mode, which allows me to use =C-c LEFT= to undo window
-configuration changes, if so desired.
-
-#+BEGIN_SRC emacs-lisp
-(use-package winner
-  :init (winner-mode 1))
-#+END_SRC
-
 Display the time and load on the modeline
 
 #+BEGIN_SRC emacs-lisp
@@ -896,6 +881,7 @@ completion, prompt and term settings:
   :commands (eshell eshell-command)
   :config
   (defalias 'emacs 'find-file)
+  (defalias 'sec 'sudoec)
   (setenv "PAGER" "cat")
   (use-package esh-opt
     :config
@@ -1083,10 +1069,15 @@ and dired tramp buffers are great for file management.
 (use-package tramp
   :defer 5
   :config
+  (setq )
+  ;; Turn of auto-save for tramp files
+  (defun tramp-set-auto-save ()
+    (auto-save-mode -1))
   (with-eval-after-load 'tramp-cache
     (setq tramp-persistency-file-name "~/.emacs.d/etc/tramp"))
-  (setq tramp-default-user-alist '(("\\`su\\(do\\)?\\'" nil "root"))
-        tramp-adb-program "/Users/hinmanm/android-sdk-macosx/platform-tools/adb"
+  (setq tramp-default-method "ssh"
+        tramp-default-user-alist '(("\\`su\\(do\\)?\\'" nil "root"))
+        tramp-adb-program "adb"
         ;; use the settings in ~/.ssh/config instead of Tramp's
         tramp-use-ssh-controlmaster-options nil
         backup-enable-predicate
@@ -4403,6 +4394,7 @@ Beacon flashes the cursor whenever you adjust position
 
 #+BEGIN_SRC emacs-lisp
 (use-package beacon
+  :disabled t
   :diminish beacon-mode
   :init (beacon-mode 1))
 #+END_SRC
@@ -4964,6 +4956,14 @@ to change to, because I do this quite a bit...
     "/_settings' -d'{\"index\": {\"number_of_replicas\": "
     replicas
     "}}'")))
+#+END_SRC
+
+*** Sudo-edit a file (useful in eshell)
+
+#+BEGIN_SRC emacs-lisp
+(defun sudoec (file)
+  (interactive)
+  (find-file (concat "/sudo::" (expand-file-name file))))
 #+END_SRC
 
 *** Transpose buffers

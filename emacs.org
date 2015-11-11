@@ -2276,9 +2276,13 @@ And now the huge org-mode configuration
           ;; Show all agenda dates - even if they are empty
           org-agenda-show-all-dates t
           ;; Agenda org-mode files
-          org-agenda-files `(,(file-truename "~/org/")
-                             ,(file-truename "~/org/es/")
-                             ,(file-truename "~/org/es/design/")))
+          org-agenda-files `(,(file-truename "~/org/refile.org")
+                             ,(file-truename "~/org/todo.org")
+                             ,(file-truename "~/org/microsoft.org")
+                             ,(file-truename "~/org/bibliography.org")
+                             ,(file-truename "~/org/notes.org")
+                             ,(file-truename "~/org/es-team.org")
+                             ,(file-truename "~/org/journal.org")))
 
     ;; Org todo keywords
     (setq org-todo-keywords

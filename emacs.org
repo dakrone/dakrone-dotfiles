@@ -2247,7 +2247,7 @@ And now the huge org-mode configuration
           ;; I don't want to be prompted on every code block evaluation
           org-confirm-babel-evaluate nil
           ;; Mark entries as done when archiving
-          org-archive-mark-done nil
+          org-archive-mark-done t
           ;; Where to put headlines when archiving them
           org-archive-location "%s_archive::* Archived Tasks"
           ;; Sorting order for tasks on the agenda

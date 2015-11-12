@@ -143,7 +143,7 @@ things add hooks that don't work if packages aren't installed.
     rainbow-mode leuven-theme dakrone-theme color-identifiers-mode
     nyan-mode color-theme-sanityinc-tomorrow apropospriate-theme
     material-theme smart-mode-line beacon aurora-theme moe-theme
-    spaceline
+    spaceline solarized-theme
 
     ;; misc
     diminish gist async sx exec-path-from-shell bbdb
@@ -1915,6 +1915,12 @@ modes:
 :ID:       FDD2C909-F169-4170-BBA3-697C059F0FFA
 :CUSTOM_ID: c86cfe3e-3d9f-4fff-a37c-e0e7e60f8846
 :END:
+I want indentation of 2 for json/js.
+
+#+BEGIN_SRC emacs-lisp
+(setq-default js-indent-level 2)
+#+END_SRC
+
 Bleh javascript. js2-mode is better than nothing.
 
 #+BEGIN_SRC emacs-lisp
@@ -1922,8 +1928,7 @@ Bleh javascript. js2-mode is better than nothing.
   :mode "\\.js\\'"
   :config
   (js2-imenu-extras-setup)
-  (setq-default js-auto-indent-flag nil
-                js-indent-level 2))
+  (setq-default js-auto-indent-flag nil))
 #+END_SRC
 
 There's =tern= also, but I leave it turned off by default
@@ -1998,15 +2003,18 @@ nice.
     :init (load-theme 'apropospriate-dark t))
   (use-package color-theme-sanityinc-tomorrow
     :init (load-theme 'sanityinc-tomorrow-night t))
-  (use-package aurora-theme
+  (use-package solarized-theme
     :disabled t
-    :init (load-theme 'aurora t)))
+    :init (load-theme 'solarized-dark t)))
 
 (defun dakrone-light ()
   (interactive)
   (use-package leuven-theme
+    :disabled t
     :init (load-theme 'leuven t) ;;:config (set-background-color "#f0f0f0")
     )
+  (use-package solarized-theme
+    :init (load-theme 'solarized-light t))
   (use-package material-theme
     :disabled t
     :init (load-theme 'material-light t)))
@@ -2083,7 +2091,7 @@ Config for Linux/X11 systems:
   :config
   (setq sml/shorten-directory t
         sml/shorten-modes t)
-  (add-to-list 'sml/replacer-regexp-list '("^~/src/elasticsearch/" ":ES:") t)
+  (add-to-list 'sml/replacer-regexp-list '("^~/es/elasticsearch/" ":ES:") t)
   (add-to-list 'sml/replacer-regexp-list '("^~/es/x-plugins/" ":x-plugins:") t))
 #+END_SRC
 
@@ -3324,17 +3332,11 @@ using a big font size and I need more eshell space
   :diminish golden-ratio-mode
   :defer t
   :config
-  (progn
-    (defun my/helm-alive-p ()
-      (if (boundp 'helm-alive-p)
-          (symbol-value 'helm-alive-p)))
-
-    ;; Inhibit helm
-    (add-to-list 'golden-ratio-inhibit-functions #'my/helm-alive-p)
-    ;; Inhibit ERC and mu4e
-    (setq golden-ratio-auto-scale t
-          golden-ratio-exclude-modes
-          '(erc-mode mu4e-headers-mode mu4e-view-mode))))
+  (defun my/helm-alive-p ()
+    (if (boundp 'helm-alive-p)
+        (symbol-value 'helm-alive-p)))
+  ;; Inhibit helm
+  (add-to-list 'golden-ratio-inhibit-functions #'my/helm-alive-p))
 #+END_SRC
 
 ** flycheck

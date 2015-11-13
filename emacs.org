@@ -3334,6 +3334,8 @@ using a big font size and I need more eshell space
   (defun my/helm-alive-p ()
     (if (boundp 'helm-alive-p)
         (symbol-value 'helm-alive-p)))
+  (add-to-list 'golden-ratio-exclude-modes #'messages-buffer-mode)
+  (add-to-list 'golden-ratio-exclude-modes #'fundamental-mode)
   ;; Inhibit helm
   (add-to-list 'golden-ratio-inhibit-functions #'my/helm-alive-p))
 #+END_SRC

@@ -100,10 +100,9 @@ during loading that breaks something, it's nice to have a debug information.
 (require 'package)
 (package-initialize)
 
-(add-to-list 'package-archives
-             '("melpa" . "http://melpa.org/packages/"))
-(add-to-list 'package-archives
-             '("melpa-stable" . "http://stable.melpa.org/packages/"))
+(setq package-archives (("melpa" . "http://melpa.org/packages/")
+                        ("melpa-stable" . "http://stable.melpa.org/packages/")
+                        ("gnu" . "http://elpa.gnu.org/packages/")))
 
 (when (boundp 'package-pinned-packages)
   (setq package-pinned-packages
@@ -4275,6 +4274,7 @@ helpful for documentation buffers and so on.
     ;; org-mode
     (push '("*Org tags*" :stick t :height 30)
           popwin:special-display-config)
+    (push '("*Org Select*" :stick t :noselect t) popwin:special-display-config)
 
     ;; Completions
     (push '("*Completions*" :stick t :noselect t) popwin:special-display-config)

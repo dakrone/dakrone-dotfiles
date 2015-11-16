@@ -145,7 +145,7 @@ things add hooks that don't work if packages aren't installed.
     spaceline solarized-theme
 
     ;; misc
-    diminish gist async sx exec-path-from-shell bbdb
+    diminish gist async sx exec-path-from-shell bbdb symon
 
     ;; es-mode is run from a  git checkout
 
@@ -4471,6 +4471,18 @@ for now.
               (java-mode "{" "}" "/[*/]" nil nil)
               (js-mode "{" "}" "/[*/]" nil)
               (javascript-mode  "{" "}" "/[*/]" nil)))))
+#+END_SRC
+
+** symon
+[[https://github.com/zk-phi/symon][Symon]] is a neat little system monitor that shows info in the modeline when Emacs
+is inactive.
+
+#+BEGIN_SRC emacs-lisp
+(use-package symon
+  :if window-system
+  :init (symon-mode 1)
+  :config
+  (setq symon-sparkline-type 'boxed))
 #+END_SRC
 
 ** abbrev

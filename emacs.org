@@ -100,9 +100,9 @@ during loading that breaks something, it's nice to have a debug information.
 (require 'package)
 (package-initialize)
 
-(setq package-archives (("melpa" . "http://melpa.org/packages/")
-                        ("melpa-stable" . "http://stable.melpa.org/packages/")
-                        ("gnu" . "http://elpa.gnu.org/packages/")))
+(setq package-archives '(("melpa" . "http://melpa.org/packages/")
+                         ("melpa-stable" . "http://stable.melpa.org/packages/")
+                         ("gnu" . "http://elpa.gnu.org/packages/")))
 
 (when (boundp 'package-pinned-packages)
   (setq package-pinned-packages

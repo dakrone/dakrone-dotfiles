@@ -3354,6 +3354,7 @@ Pretty minimally configured, but awesome tool for most dynamic languages.
          ("M-g M-p" . flycheck-previous-error)
          ("M-g M-=" . flycheck-list-errors))
   :init (global-flycheck-mode)
+  :diminish flycheck-mode
   :config
   (progn
     (setq-default flycheck-disabled-checkers '(emacs-lisp-checkdoc json-jsonlint json-python-json))
@@ -3745,7 +3746,7 @@ Also, add a thing for yanking the entire symbol into the query while searching:
   :config (require 'helm-config))
 #+END_SRC
 
-** helm-config
+** helm
 There are many helm things. I use it a lot.
 
 A lot of things are taken from taken from
@@ -3754,6 +3755,7 @@ https://tuhdo.github.io/helm-intro.html
 #+BEGIN_SRC emacs-lisp
 (use-package helm-config
   :demand t
+  :diminish helm-mode
   :bind
   (("C-M-z" . helm-resume)
    ("C-x C-f" . helm-find-files)

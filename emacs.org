@@ -161,6 +161,7 @@ things add hooks that don't work if packages aren't installed.
     smooth-scrolling multiple-cursors easy-kill simple-call-tree
     simple-call-tree+ ggtags bookmark+ golden-ratio wc-mode eyebrowse
     vlf hydra shrink-whitespace ix quick-preview pdf-tools smartscan
+    indent-guide
 
     ;; external process things
     prodigy
@@ -178,7 +179,7 @@ things add hooks that don't work if packages aren't installed.
     auctex
 
     ;; org-mode
-    org htmlize gnuplot-mode gnuplot org-alert
+    org htmlize gnuplot-mode gnuplot org-alert org-present
 
     ;; buffer utils
     popwin dired+
@@ -2752,6 +2753,27 @@ Notifications for upcoming org statuses!
   :init (org-alert-enable))
 #+END_SRC
 
+** org-present
+A simple presentation mode for org-mode
+
+#+BEGIN_SRC emacs-lisp
+(use-package org-present
+  :defer 20
+  :init
+  (add-hook 'org-present-mode-hook
+            (lambda ()
+              (org-present-big)
+              (org-display-inline-images)
+              (org-present-hide-cursor)
+              (org-present-read-only)))
+  (add-hook 'org-present-mode-quit-hook
+            (lambda ()
+              (org-present-small)
+              (org-remove-inline-images)
+              (org-present-show-cursor)
+              (org-present-read-write))))
+#+END_SRC
+
 ** alert (notifications)
 :PROPERTIES:
 :ID:       0D493EEE-3EEC-434A-9CB5-57061ECC9371
@@ -2763,11 +2785,18 @@ though.
 #+BEGIN_SRC emacs-lisp
 (use-package alert
   :config
-  (progn
-    (when (eq system-type 'darwin)
-      (setq alert-default-style 'notifier))
-    (when (eq system-type 'gnu/linux)
-      (setq alert-default-style 'notifications))))
+  (when (eq system-type 'darwin)
+    (setq alert-default-style 'notifier))
+  (when (eq system-type 'gnu/linux)
+    (setq alert-default-style 'notifications))
+
+  (defun finish ()
+    (interactive)
+    (alert (concat "Finished shell command in " (buffer-name))
+           :severity 'high
+           :category 'eshell
+           :title (buffer-name)
+           :persistent t)))
 #+END_SRC
 
 To use this, I just need to do =(alert "this is a message")=.

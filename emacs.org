@@ -2223,6 +2223,8 @@ And now the huge org-mode configuration
           org-src-window-setup 'current-window
           ;; Overwrite the current window with the agenda
           org-agenda-window-setup 'current-window
+          ;; Use 100 chars for the agenda width
+          org-agenda-tags-column -100
           ;; Use full outline paths for refile targets - we file directly with IDO
           org-refile-use-outline-path t
           ;; Targets complete directly with IDO

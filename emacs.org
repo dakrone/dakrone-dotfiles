@@ -3256,7 +3256,7 @@ works pretty well, so I use it everywhere paredit-mode doesn't work.
          ("M-0" . sp-forward-sexp))
   :init
   (show-smartparens-global-mode t)
-  (add-hook 'prog-mode-hook #'turn-on-smartparens-strict-mode)
+  (add-hook 'prog-mode-hook #'turn-on-smartparens-mode)
 
   :config
   (add-to-list 'sp-sexp-suffix '(json-mode regex ""))

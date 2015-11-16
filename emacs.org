@@ -161,7 +161,7 @@ things add hooks that don't work if packages aren't installed.
     smooth-scrolling multiple-cursors easy-kill simple-call-tree
     simple-call-tree+ ggtags bookmark+ golden-ratio wc-mode eyebrowse
     vlf hydra shrink-whitespace ix quick-preview pdf-tools smartscan
-    indent-guide
+    indent-guide ws-butler
 
     ;; external process things
     prodigy
@@ -4162,7 +4162,7 @@ Standard auto-completion configuration with company-mode
   :init (add-hook #'prog-mode-hook #'company-mode)
   :config
   (progn
-    (setq company-idle-delay 0.3
+    (setq company-idle-delay 0.4
           ;; min prefix of 3 chars
           company-minimum-prefix-length 3
           company-selection-wrap-around t
@@ -4174,6 +4174,15 @@ Standard auto-completion configuration with company-mode
                ("C-p" . company-select-previous)
                ("C-d" . company-show-doc-buffer)
                ("<tab>" . company-complete))))
+#+END_SRC
+
+** ws-butler
+Cleans up whitespace, but only on the lines that I actually touched.
+
+#+BEGIN_SRC emacs-lisp
+(use-package ws-butler
+  :diminish ws-butler-mode
+  :init (add-hook 'prog-mode-hook #'ws-butler-mode))
 #+END_SRC
 
 ** smart-tab

@@ -200,7 +200,7 @@ things add hooks that don't work if packages aren't installed.
     cperl-mode
 
     ;; python
-    hy-mode jedi virtualenvwrapper
+    hy-mode virtualenvwrapper
 
     ;; ruby
     ruby-mode ruby-test-mode inf-ruby puppet-mode rbenv chruby
@@ -1665,25 +1665,8 @@ keys, the custom hook only loads jedi when editing python files:
 (use-package python
   :defer t
   :config
-  (progn
-    (define-key python-mode-map (kbd "C-c C-z") 'run-python)
-    (define-key python-mode-map (kbd "<backtab>") 'python-back-indent)
-    (defun my/setup-jedi ()
-      (interactive)
-      (use-package jedi
-        :config
-        (progn
-
-          (jedi:setup)
-          (jedi:ac-setup)
-          (setq jedi:setup-keys t)
-          (setq jedi:complete-on-dot t)
-          (define-key python-mode-map (kbd "C-c C-d") 'jedi:show-doc)
-          (setq jedi:tooltip-method nil)
-          (set-face-attribute 'jedi:highlight-function-argument nil
-                              :foreground "green")
-          (define-key python-mode-map (kbd "C-c C-l") 'jedi:get-in-function-call))))
-    (add-hook 'python-mode-hook #'my/setup-jedi)))
+  (define-key python-mode-map (kbd "C-c C-z") 'run-python)
+  (define-key python-mode-map (kbd "<backtab>") 'python-back-indent))
 #+END_SRC
 
 **** virtualenv

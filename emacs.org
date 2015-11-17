@@ -4326,7 +4326,11 @@ helpful for documentation buffers and so on.
     (defun my/popup-downloads ()
       "Pop up the downloads buffer (4th eshell buffer for me"
       (interactive)
-      (popwin:popup-buffer "*eshell*<4>"))
+      (if (get-buffer "*eshell downloads*")
+          (switch-to-buffer "*eshell downloads*")
+        (let ((eshell-buffer-name "*eshell downloads*"))
+          (eshell)))
+      (popwin:popup-buffer "*eshell downloads*"))
 
     ;; eshell 4 is always my "download stuff" buffer
     (global-set-key (kbd "C-x M-d") #'my/popup-downloads)

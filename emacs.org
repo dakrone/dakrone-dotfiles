@@ -1023,7 +1023,7 @@ d=, if the buffer doesn't exist it is created.
     (let ((eshell-buffer-name "*eshell*<4>"))
       (eshell))))
 
-(global-set-key (kbd "H-1") 'my/create-or-switch-to-ebshell-1)
+(global-set-key (kbd "H-1") 'my/create-or-switch-to-eshell-1)
 (global-set-key (kbd "H-2") 'my/create-or-switch-to-eshell-2)
 (global-set-key (kbd "H-3") 'my/create-or-switch-to-eshell-3)
 (global-set-key (kbd "H-4") 'my/create-or-switch-to-eshell-4)

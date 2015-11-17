@@ -4814,11 +4814,18 @@ A utility method to add things to the $PATH, if needed.
   (interactive)
   (indent-region (point-min) (point-max)))
 
+(defvar bad-cleanup-modes '(python-mode yaml-mode)
+  "List of modes where `cleanup-buffer' should not be used")
+
 (defun cleanup-buffer ()
-  "Perform a bunch of operations on the whitespace content of a buffer."
+  "Perform a bunch of operations on the whitespace content of a
+buffer. If the buffer is one of the `bad-cleanup-modes' then no
+re-indenting and un-tabification is done."
   (interactive)
-  (indent-buffer)
-  (untabify-buffer)
+  (unless (member major-mode bad-cleanup-modes)
+    (progn
+      (indent-buffer)
+      (untabify-buffer)))
   (delete-trailing-whitespace))
 #+END_SRC
 

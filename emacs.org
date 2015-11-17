@@ -1830,7 +1830,10 @@ Using rbenv, set it up correctly when idle
 #+BEGIN_SRC emacs-lisp
 (use-package rbenv
   :defer 25
-  :init (global-rbenv-mode t))
+  :init
+  ;; I don't really care about the active ruby in the modeline
+  (setq rbenv-show-active-ruby-in-modeline nil)
+  (global-rbenv-mode t))
 #+END_SRC
 
 *** Haskell

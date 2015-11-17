@@ -4318,7 +4318,6 @@ helpful for documentation buffers and so on.
     ;; org-mode
     (push '("*Org tags*" :stick t :height 30)
           popwin:special-display-config)
-    (push '("*Org Select*" :stick t :noselect t) popwin:special-display-config)
 
     ;; Completions
     (push '("*Completions*" :stick t :noselect t) popwin:special-display-config)

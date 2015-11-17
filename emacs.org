@@ -4409,7 +4409,11 @@ immediately use Twitter :P
 (use-package twittering-mode
   :config
   (setq twittering-icon-mode t
-        twittering-use-master-password t))
+        twittering-use-master-password t
+        ;; Start up with home and "emacs" search
+        twittering-initial-timeline-spec-string
+         '("(:home+@)"
+           "(:search/emacs/)")))
 #+END_SRC
 
 ** smex

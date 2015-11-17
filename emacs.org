@@ -153,7 +153,7 @@ things add hooks that don't work if packages aren't installed.
     alert twittering-mode rcirc-color rcirc-alertify
 
     ;; for auto-complete
-    fuzzy popup company
+    fuzzy popup company auto-complete
 
     ;; editing utilities
     expand-region smex windresize ag undo-tree iedit ido-ubiquitous
@@ -170,7 +170,7 @@ things add hooks that don't work if packages aren't installed.
     log4j-mode logstash-conf
 
     ;; infrastructure stuff
-    restclient company-restclient
+    restclient
 
     ;; highlighting
     idle-highlight-mode
@@ -4168,7 +4168,12 @@ And the alternative, the auto-complete config:
 #+BEGIN_SRC emacs-lisp
 (use-package auto-complete
   :defer 10
-  :init (ac-config-default))
+  :init (ac-config-default)
+  :config
+  (dolist (mode '(git-commit-mode
+                  go-mode
+                  cider-repl-mode))
+    (add-to-list 'ac-modes mode)))
 #+END_SRC
 
 ** ws-butler

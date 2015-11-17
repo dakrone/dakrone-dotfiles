@@ -4133,7 +4133,7 @@ Extended bookmarks, which I've started used for dired buffers and so on
           bookmark-save-flag 1)))
 #+END_SRC
 
-** company-mode (auto-complete)
+** auto completion (company and auto-complete)
 :PROPERTIES:
 :ID:       C02A1935-39EF-42A6-BA96-D3270541B8A8
 :CUSTOM_ID: 1c3194f8-73fb-4833-9f74-5a8114eb1b2b
@@ -4142,6 +4142,7 @@ Standard auto-completion configuration with company-mode
 
 #+BEGIN_SRC emacs-lisp
 (use-package company
+  :disabled t
   :defer t
   :diminish company-mode
   :bind ("C-." . company-complete)
@@ -4160,6 +4161,14 @@ Standard auto-completion configuration with company-mode
                ("C-p" . company-select-previous)
                ("C-d" . company-show-doc-buffer)
                ("<tab>" . company-complete))))
+#+END_SRC
+
+And the alternative, the auto-complete config:
+
+#+BEGIN_SRC emacs-lisp
+(use-package auto-complete
+  :defer 10
+  :init (ac-config-default))
 #+END_SRC
 
 ** ws-butler

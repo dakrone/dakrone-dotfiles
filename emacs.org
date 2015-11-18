@@ -107,6 +107,7 @@ during loading that breaks something, it's nice to have a debug information.
 (when (boundp 'package-pinned-packages)
   (setq package-pinned-packages
         '((cider                             . "melpa-stable")
+          (ac-cider                          . "melpa-stable")
           (clojure-mode                      . "melpa-stable")
           (clojure-mode-extra-font-locking   . "melpa-stable")
           (company-cider                     . "melpa-stable")
@@ -195,6 +196,7 @@ things add hooks that don't work if packages aren't installed.
 
     ;; clojure
     clojure-mode clojure-mode-extra-font-locking cider paredit paren-face
+    ac-cider
 
     ;; perl
     cperl-mode
@@ -1482,48 +1484,15 @@ I need to hide the lighter for subword mode:
 :ID:       751B0DF1-CC5D-4386-B0CA-1519325B01DA
 :CUSTOM_ID: fb341ab2-acbd-42a0-98fc-277761e8e0e2
 :END:
-Some helper functions for jumping between tests, I prefer
-test/foo.clj instead of foo_test.clj
-
-#+BEGIN_SRC emacs-lisp
-;; custom test locations instead of foo_test.clj, use test/foo.clj
-(defun clojure-test-for-without-test (namespace)
-  (interactive)
-  (let* ((namespace (clojure-underscores-for-hyphens namespace))
-         (segments (split-string namespace "\\."))
-         (before (subseq segments 0 1))
-         (after (subseq segments 1))
-         (test-segments (append before (list "test") after)))
-    (format "%stest/%s.clj"
-            (locate-dominating-file buffer-file-name "src/")
-            (mapconcat 'identity test-segments "/"))))
-
-(defun clojure-test-implementation-for-without-test (namespace)
-  (interactive)
-  (let* ((namespace (clojure-underscores-for-hyphens namespace))
-         (segments (split-string namespace "\\."))
-         (before (subseq segments 0 1))
-         (after (subseq segments 2))
-         (impl-segments (append before after)))
-    (format "%s/src/%s.clj"
-            (locate-dominating-file buffer-file-name "src/")
-            (mapconcat 'identity impl-segments "/"))))
-#+END_SRC
-
-Other Clojure-specific settings:
+Things for Clojure development, which I do a lot of.
 
 #+BEGIN_SRC emacs-lisp
 (defun my/clojure-things-hook ()
   "Set up clojure-y things"
   (eldoc-mode 1)
   (subword-mode t)
-  ;; use my test layout fns
-  ;; (setq clojure-test-for-fn 'my-clojure-test-for)
-  ;; (setq clojure-test-implementation-for-fn 'my-clojure-test-implementation-for)
-  ;; compile faster
-  (setq font-lock-verbose nil)
-  (global-set-key (kbd "C-c t") 'clojure-jump-between-tests-and-code)
-  (paredit-mode 1))
+  (paredit-mode 1)
+  (global-set-key (kbd "C-c t") 'clojure-jump-between-tests-and-code))
 
 (use-package clojure-mode
   :init
@@ -1554,7 +1523,12 @@ And then finally use them if cider and ac-nrepl packages are available:
   (add-hook #'cider-mode-hook #'my/setup-cider)
   (add-hook #'cider-repl-mode-hook #'my/setup-cider)
   (add-hook #'cider-mode-hook #'my/clojure-things-hook)
-  (add-hook #'cider-repl-mode-hook #'my/clojure-things-hook))
+  (add-hook #'cider-repl-mode-hook #'my/clojure-things-hook)
+  (use-package ac-cider
+    :init
+    (add-hook #'cider-mode-hook #'ac-flyspell-workaround)
+    (add-hook #'cider-mode-hook #'ac-cider-setup)
+    (add-hook #'cider-repl-mode-hook #'ac-cider-setup)))
 #+END_SRC
 
 *** Shell
@@ -4174,8 +4148,11 @@ And the alternative, the auto-complete config:
   (dolist (mode '(git-commit-mode
                   go-mode
                   org-mode
+                  cider-mode
                   cider-repl-mode))
     (add-to-list 'ac-modes mode))
+  (setq ac-delay 0.2
+        ac-auto-show-menu 0.9)
   (use-package org-ac
     :init (org-ac/config-default)))
 #+END_SRC

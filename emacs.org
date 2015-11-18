@@ -3748,7 +3748,7 @@ Also, add a thing for yanking the entire symbol into the query while searching:
   ;; Save buffer when helm-multi-swoop-edit complete
   (setq helm-multi-swoop-edit-save t
         ;; If this value is t, split window inside the current window
-        helm-swoop-split-with-multiple-windows nil
+        helm-swoop-split-with-multiple-windows t
         ;; Split direcion. 'split-window-vertically or 'split-window-horizontally
         helm-swoop-split-direction 'split-window-vertically
         ;; If nil, you can slightly boost invoke speed in exchange for text color

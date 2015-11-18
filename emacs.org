@@ -228,6 +228,7 @@ things add hooks that don't work if packages aren't installed.
     ;; helm
     helm helm-descbinds helm-ag helm-projectile helm-swoop
     helm-gtags helm-ls-git helm-flycheck helm-flyspell helm-flx
+    helm-c-yasnippet
 
     ;; git
     magit git-gutter git-timemachine magit-gh-pulls with-editor git-annex
@@ -3992,6 +3993,16 @@ https://tuhdo.github.io/helm-intro.html
   (global-set-key (kbd "C-c M-h") 'helm-clj-http))
 #+END_SRC
 
+** helm-c-yasnippet
+This allows me to get a listing of all the snippets for the mode and look
+through them with helm
+
+#+BEGIN_SRC emacs-lisp
+(use-package helm-c-yasnippet
+  :bind
+  (("M-=" . helm-yas-complete)))
+#+END_SRC
+
 ** hydra
 :PROPERTIES:
 :ID:       3e03600f-b085-40b0-8877-c5008b010187
@@ -4059,8 +4070,6 @@ Snippets for coding, loading while idle so startup is faster.
   :functions (yas-guess-snippet-directories yas-table-name)
   :defines (yas-guessed-modes)
   :mode ("/\\.emacs\\.d/snippets/" . snippet-mode)
-  :bind (("C-c Y TAB" . yas-expand)
-         ("C-c Y s"   . yas-insert-snippet))
   :config
   (yas-load-directory "~/.emacs.d/snippets/")
   (yas-global-mode 1)

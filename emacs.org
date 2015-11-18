@@ -4173,8 +4173,11 @@ And the alternative, the auto-complete config:
   :config
   (dolist (mode '(git-commit-mode
                   go-mode
+                  org-mode
                   cider-repl-mode))
-    (add-to-list 'ac-modes mode)))
+    (add-to-list 'ac-modes mode))
+  (use-package org-ac
+    :init (org-ac/config-default)))
 #+END_SRC
 
 ** ws-butler
@@ -4332,8 +4335,7 @@ helpful for documentation buffers and so on.
     (defun my/popup-downloads ()
       "Pop up the downloads buffer (4th eshell buffer for me"
       (interactive)
-      (if (get-buffer "*eshell downloads*")
-          (switch-to-buffer "*eshell downloads*")
+      (when (not (get-buffer "*eshell downloads*"))
         (let ((eshell-buffer-name "*eshell downloads*"))
           (eshell)))
       (popwin:popup-buffer "*eshell downloads*"))

@@ -664,6 +664,9 @@ dired buffers.
 #+BEGIN_SRC emacs-lisp
 (when (eq system-type 'gnu/linux)
 
+  ;; Don't use GTK tooltips, use emacs ones
+  (setq x-gtk-use-system-tooltips nil)
+
   (defun my/max-fullscreen ()
     (interactive)
     (toggle-frame-maximized))

@@ -1633,6 +1633,7 @@ definitions:
 
 #+BEGIN_SRC emacs-lisp
 (use-package elisp-slime-nav
+  :diminish elisp-slime-nav-mode
   :init (add-hook 'emacs-lisp-mode-hook #'elisp-slime-nav-mode))
 #+END_SRC
 

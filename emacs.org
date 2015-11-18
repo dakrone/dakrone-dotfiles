@@ -4509,9 +4509,12 @@ is inactive.
 #+BEGIN_SRC emacs-lisp
 (use-package symon
   :if window-system
-  :init (symon-mode 1)
+  :init
+  (setq symon-refresh-rate 2
+        symon-delay 5)
+  (symon-mode 1)
   :config
-  (setq symon-sparkline-type 'boxed))
+  (setq symon-sparkline-type 'bounded))
 #+END_SRC
 
 ** abbrev

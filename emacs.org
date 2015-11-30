@@ -1200,6 +1200,12 @@ install mupdf= on osx)
     #'kill-this-buffer))
 #+END_SRC
 
+I also use the 'pdf-tools' pacakge
+
+#+BEGIN_SRC emacs-lisp
+(use-package pdf-tools)
+#+END_SRC
+
 *** Dired
 :PROPERTIES:
 :ID:       54C2ABF2-0B43-4E5B-BC78-3BB4EBF01A61

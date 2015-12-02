@@ -215,7 +215,7 @@ things add hooks that don't work if packages aren't installed.
     go-mode
 
     ;; java
-    malabar-mode groovy-mode javap-mode emacs-eclim
+    malabar-mode groovy-mode javap-mode emacs-eclim java-imports
 
     ;; javascript
     tern json-mode js2-mode
@@ -1785,6 +1785,16 @@ work with the ES codebase.
     (delete 'company-eclim company-backends)))
 
 (add-hook 'java-mode-hook 'setup-java)
+#+END_SRC
+
+I also have a custom package, [[https://github.com/dakrone/emacs-java-imports][java-imports]], which I use to quickly add imports
+for things.
+
+#+BEGIN_SRC emacs-lisp
+(add-hook
+ 'java-mode-hook
+ (lambda ()
+   (define-key java-mode-map (kbd "C-c M-i") 'java-imports-add-import)))
 #+END_SRC
 
 **** eclim

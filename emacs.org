@@ -4237,9 +4237,7 @@ And the alternative, the auto-complete config:
                   cider-repl-mode))
     (add-to-list 'ac-modes mode))
   (setq ac-delay 0.2
-        ac-auto-show-menu 0.9)
-  (use-package org-ac
-    :init (org-ac/config-default)))
+        ac-auto-show-menu 0.9))
 #+END_SRC
 
 ** ws-butler

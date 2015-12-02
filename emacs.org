@@ -152,6 +152,7 @@ things add hooks that don't work if packages aren't installed.
 
     ;; IRC/ERC and social stuff
     alert twittering-mode rcirc-color rcirc-alertify
+    ercn erc-hl-nicks
 
     ;; for auto-complete
     fuzzy popup company auto-complete

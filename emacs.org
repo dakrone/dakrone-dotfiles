@@ -3314,11 +3314,23 @@ Paredit for all the lisps.
 :ID:       54D306B0-B753-4AD6-B2A5-39C28F5A1E3B
 :CUSTOM_ID: 77f9a23d-51c9-4aa0-8c91-212d36770f14
 :END:
+I'm on the fence about this, I did some CPU profiling and this was taking up a
+looooot of CPU, so I have disabled it and I'm using electric-pair-mode now.
+
+#+BEGIN_SRC emacs-lisp
+(electric-pair-mode 1)
+(setq electric-pair-preserve-balance t
+      electric-pair-delete-adjacent-pairs t
+      electric-pair-open-newline-between-pairs nil)
+(show-paren-mode 1)
+#+END_SRC
+
 So, paredit is great, however, it doesn't work for non-lisp modes. Smartparens
 works pretty well, so I use it everywhere paredit-mode doesn't work.
 
 #+BEGIN_SRC emacs-lisp
 (use-package smartparens
+  :disabled t
   :defer 5
   :diminish smartparens-mode
   :bind (("M-9" . sp-backward-sexp)

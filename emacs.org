@@ -161,9 +161,8 @@ things add hooks that don't work if packages aren't installed.
     expand-region smex windresize ag undo-tree iedit ido-ubiquitous
     ido-vertical-mode yasnippet smart-tab anzu smartparens flx-ido projectile
     smooth-scrolling multiple-cursors easy-kill simple-call-tree
-    simple-call-tree+ ggtags bookmark+ golden-ratio wc-mode eyebrowse
-    vlf hydra shrink-whitespace ix quick-preview pdf-tools smartscan
-    indent-guide ws-butler
+    ggtags bookmark+ golden-ratio wc-mode eyebrowse vlf hydra shrink-whitespace
+    ix quick-preview pdf-tools smartscan indent-guide ws-butler
 
     ;; external process things
     prodigy

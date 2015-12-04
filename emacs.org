@@ -96,6 +96,11 @@ during loading that breaks something, it's nice to have a debug information.
   (autoload 'wisent-java-default-setup "semantic/wisent/java"
     "Hook run to setup Semantic in `java-mode'." nil nil))
 
+;; Load the development version of Org instead of the built-in one
+(when (file-exists-p "~/src/elisp/org-mode/lisp/org.el")
+  (add-to-list 'load-path "~/src/elisp/org-mode/lisp")
+  (require 'org))
+
 ;; initalize all ELPA packages
 (require 'package)
 (package-initialize)

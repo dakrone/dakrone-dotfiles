@@ -167,7 +167,7 @@ things add hooks that don't work if packages aren't installed.
     ido-vertical-mode yasnippet smart-tab anzu smartparens flx-ido projectile
     smooth-scrolling multiple-cursors easy-kill simple-call-tree
     ggtags bookmark+ golden-ratio wc-mode eyebrowse vlf hydra shrink-whitespace
-    ix quick-preview pdf-tools smartscan indent-guide ws-butler
+    ix quick-preview pdf-tools smartscan indent-guide
 
     ;; external process things
     prodigy
@@ -1358,13 +1358,6 @@ file to write to."
 :CUSTOM_ID: 6723ab3b-7cb8-41f3-a10c-ec94a3b1fd53
 :END:
 
-I set the width to 140, because although it should be 80, I only want
-highlighting past 140 columns, otherwise Java is unreadable.
-
-#+BEGIN_SRC emacs-lisp
-(setq whitespace-line-column 140)
-#+END_SRC
-
 Here are the things that whitespace-mode should highlight
 
 #+BEGIN_SRC emacs-lisp
@@ -1387,34 +1380,20 @@ Display pretty things for newlines and tabs (nothing for spaces)
         (tab-mark 9 [183 9] [92 9])))
 #+END_SRC
 
-Disable it in certain modes where whitespace doesn't make sense.
+Always turn on whitespace mode in programming buffers
 
 #+BEGIN_SRC emacs-lisp
-(setq whitespace-global-modes '(not org-mode
-                                    eshell-mode
-                                    shell-mode
-                                    web-mode
-                                    log4j-mode
-                                    "Web"
-                                    dired-mode
-                                    emacs-lisp-mode
-                                    clojure-mode
-                                    lisp-mode))
-#+END_SRC
-
-Always turn on whitespace mode
-
-#+BEGIN_SRC emacs-lisp
-;; turn on whitespace mode globally
-(global-whitespace-mode 1)
-(diminish 'global-whitespace-mode "")
+;; turn on whitespace mode globally in prog-mode buffers
+(add-hook 'prog-mode-hook #'whitespace-mode)
+(add-hook 'whitespace-mode-hook (lambda () (diminish 'whitespace-mode)))
 #+END_SRC
 
 Indicate trailing empty lines in the GUI:
 
 #+BEGIN_SRC emacs-lisp
-(set-default 'indicate-empty-lines t)
-(setq show-trailing-whitespace t)
+(setq-default whitespace-line-column nil) ;; use fill-column instead
+(setq-default indicate-empty-lines t)
+(setq-default show-trailing-whitespace t)
 #+END_SRC
 
 ** Programming language-specific configuration
@@ -1774,6 +1753,7 @@ work with the ES codebase.
   (define-key java-mode-map (kbd "M-,") 'pop-tag-mark)
   (c-set-style "intellij" t)
   (subword-mode 1)
+  (whitespace-mode -1)
   (toggle-truncate-lines 1)
   ;; Generic java stuff things
   (setq-local fci-rule-column 99)
@@ -1781,7 +1761,7 @@ work with the ES codebase.
   (when (boundp 'company-backends)
     (delete 'company-eclim company-backends)))
 
-(add-hook 'java-mode-hook 'setup-java)
+(add-hook 'java-mode-hook #'setup-java)
 #+END_SRC
 
 I also have a custom package, [[https://github.com/dakrone/emacs-java-imports][java-imports]], which I use to quickly add imports
@@ -1791,6 +1771,7 @@ for things.
 (add-hook
  'java-mode-hook
  (lambda ()
+   (setq-local fill-column 140)
    (define-key java-mode-map (kbd "C-c M-i") 'java-imports-add-import)))
 #+END_SRC
 
@@ -2045,6 +2026,7 @@ Config for Linux/X11 systems:
   (when (eq window-system 'x)
     ;; Font family
     (set-frame-font "DejaVu Sans Mono")
+    ;; (set-frame-font "Ubuntu Mono")
     ;; (set-frame-font "Hack")
     ;; (set-frame-font "Fantasque Sans Mono")
     ;; (set-frame-font "Anonymous Pro")
@@ -4278,15 +4260,6 @@ And the alternative, the auto-complete config:
     (add-to-list 'ac-modes mode))
   (setq ac-delay 0.2
         ac-auto-show-menu 0.9))
-#+END_SRC
-
-** ws-butler
-Cleans up whitespace, but only on the lines that I actually touched.
-
-#+BEGIN_SRC emacs-lisp
-(use-package ws-butler
-  :diminish ws-butler-mode
-  :init (add-hook 'prog-mode-hook #'ws-butler-mode))
 #+END_SRC
 
 ** smart-tab

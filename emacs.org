@@ -3686,6 +3686,13 @@ So I configure prodigy like so:
       :port 5601)
 
     (prodigy-define-service
+      :name "Kibana 4.3.0"
+      :cwd "~/ies/kibana-4.3.0-linux-x64"
+      :command "~/ies/kibana-4.3.0-linux-x64/bin/kibana"
+      :tags '(work kibana)
+      :port 5601)
+
+    (prodigy-define-service
       :name "Elasticsearch 1.7.3"
       :cwd "~/ies/elasticsearch-1.7.3"
       :command "~/ies/elasticsearch-1.7.3/bin/elasticsearch"

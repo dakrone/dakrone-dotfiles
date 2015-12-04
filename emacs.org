@@ -185,7 +185,7 @@ things add hooks that don't work if packages aren't installed.
     auctex
 
     ;; org-mode
-    org htmlize gnuplot-mode gnuplot org-alert org-present
+    org htmlize gnuplot-mode gnuplot org-alert org-present org-bullets
 
     ;; buffer utils
     popwin dired+
@@ -1551,17 +1551,9 @@ And then finally use them if cider and ac-nrepl packages are available:
 :ID:       43CC0B6F-A8BB-46E0-A224-AAD8F1D9A0BB
 :CUSTOM_ID: 1fc02df0-1e5a-404a-8ff9-a0d8bd8769eb
 :END:
-I write a LOT of shell-scripts, I turn off show-paren-mode (I have
-show-smartparen-mode anyway) and flycheck (I don't want to run
-it!) as well as not blinking the matching paren.
+Not much really here, just making .zsh also be a shell script.
 
 #+BEGIN_SRC emacs-lisp
-(add-hook 'sh-mode-hook
-          (lambda ()
-            (show-paren-mode -1)
-            (flycheck-mode -1)
-            (setq blink-matching-paren nil)))
-
 (add-to-list 'auto-mode-alist '("\\.zsh$" . shell-script-mode))
 #+END_SRC
 
@@ -1782,6 +1774,7 @@ work with the ES codebase.
   (define-key java-mode-map (kbd "M-,") 'pop-tag-mark)
   (c-set-style "intellij" t)
   (subword-mode 1)
+  (toggle-truncate-lines 1)
   ;; Generic java stuff things
   (setq-local fci-rule-column 99)
   ;; remove the stupid company-eclim backend
@@ -2188,6 +2181,8 @@ And now the huge org-mode configuration
           org-export-coding-system 'utf-8
           ;; don't use ido completion (I use helm)
           org-completion-use-ido nil
+          ;; start up org files with indentation (same as #+STARTUP: indent)
+          org-startup-indented t
           ;; don't indent source code
           org-edit-src-content-indentation 0
           ;; don't adapt indentation
@@ -2196,6 +2191,8 @@ And now the huge org-mode configuration
           org-src-preserve-indentation t
           ;; Imenu should use 3 depth instead of 2
           org-imenu-depth 3
+          ;; put state change log messages into a drawer
+          org-log-into-drawer t
           ;; special begin/end of line to skip tags and stars
           org-special-ctrl-a/e t
           ;; special keys for killing a headline
@@ -2226,6 +2223,8 @@ And now the huge org-mode configuration
           org-export-babel-evaluate nil
           ;; export tables as CSV instead of tab-delineated
           org-table-export-default-format "orgtbl-to-csv"
+          ;; start up showing images
+          org-startup-with-inline-images t
           ;; always enable noweb, results as code and exporting both
           org-babel-default-header-args
           (cons '(:noweb . "yes")
@@ -2761,6 +2760,14 @@ A simple presentation mode for org-mode
               (org-remove-inline-images)
               (org-present-show-cursor)
               (org-present-read-write))))
+#+END_SRC
+
+** org-bullets
+
+#+BEGIN_SRC emacs-lisp
+(use-package org-bullets
+  :init
+  (add-hook 'org-mode-hook #'org-bullets-mode))
 #+END_SRC
 
 ** alert (notifications)
@@ -3874,7 +3881,7 @@ https://tuhdo.github.io/helm-intro.html
    ("C-h t" . helm-world-time))
   :config
   (use-package helm-files
-    :config (setq helm-ff-file-compressed-list '("gz" "bz2" "zip" "tgz")))
+    :config (setq helm-ff-file-compressed-list '("gz" "bz2" "zip" "tgz" "xz")))
   (use-package helm-commands)
   (use-package helm-buffers)
   (use-package helm-mode
@@ -3905,10 +3912,18 @@ https://tuhdo.github.io/helm-intro.html
   (global-set-key (kbd "C-c h") 'helm-command-prefix)
   (global-unset-key (kbd "C-x c"))
 
-  (setq helm-idle-delay 0.01
-        helm-exit-idle-delay 0.1
-        helm-input-idle-delay 0.01
-        ;; truncate long lines in helm completion
+  ;; Via: https://www.reddit.com/r/emacs/comments/3asbyn/new_and_very_useful_helm_feature_enter_search/
+  (setq helm-echo-input-in-header-line t)
+  (defun helm-hide-minibuffer-maybe ()
+    (when (with-helm-buffer helm-echo-input-in-header-line)
+      (let ((ov (make-overlay (point-min) (point-max) nil nil t)))
+        (overlay-put ov 'window (selected-window))
+        (overlay-put ov 'face (let ((bg-color (face-background 'default nil)))
+                                `(:background ,bg-color :foreground ,bg-color)))
+        (setq-local cursor-type nil))))
+  (add-hook 'helm-minibuffer-set-up-hook 'helm-hide-minibuffer-maybe)
+
+  (setq ;; truncate long lines in helm completion
         helm-truncate-lines t
         ;; may be overridden if 'ggrep' is in path (see below)
         helm-grep-default-command
@@ -3918,20 +3933,16 @@ https://tuhdo.github.io/helm-intro.html
         ;; do not display invisible candidates
         helm-quick-update t
         ;; be idle for this many seconds, before updating in delayed sources.
-        helm-idle-delay 0.01
-        ;; use 40% of the window for things
-        ;; helm-autoresize-max-height 40
-        ;; helm-autoresize-min-height 40
+        ;; helm-idle-delay 0.01
+        ;; helm-input-idle-delay 0.01
         ;; wider buffer name in helm-buffers-list
         helm-buffer-max-length 25 ;; default is 20
-        ;; be idle for this many seconds, before updating candidate buffer
-        helm-input-idle-delay 0.01
         ;; open helm buffer in another window
         helm-split-window-default-side 'other
         ;; open helm buffer inside current window, don't occupy whole other window
         helm-split-window-in-side-p t
         ;; limit the number of displayed canidates
-        helm-candidate-number-limit 200
+        ;; helm-candidate-number-limit 200
         ;; don't use recentf stuff in helm-ff, I use C-x C-r for this
         helm-ff-file-name-history-use-recentf nil
         ;; move to end or beginning of source when reaching top or bottom
@@ -4231,7 +4242,6 @@ Standard auto-completion configuration with company-mode
 
 #+BEGIN_SRC emacs-lisp
 (use-package company
-  :disabled t
   :defer t
   :diminish company-mode
   :bind ("C-." . company-complete)
@@ -4256,6 +4266,7 @@ And the alternative, the auto-complete config:
 
 #+BEGIN_SRC emacs-lisp
 (use-package auto-complete
+  :disabled t
   :defer 10
   :init (ac-config-default)
   :config

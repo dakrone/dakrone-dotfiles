@@ -167,7 +167,7 @@ things add hooks that don't work if packages aren't installed.
     ido-vertical-mode yasnippet smart-tab anzu smartparens flx-ido projectile
     smooth-scrolling multiple-cursors easy-kill simple-call-tree
     ggtags bookmark+ golden-ratio wc-mode eyebrowse vlf hydra shrink-whitespace
-    ix quick-preview pdf-tools smartscan indent-guide
+    ix quick-preview pdf-tools smartscan indent-guide fill-column-indicator
 
     ;; external process things
     prodigy
@@ -3262,6 +3262,26 @@ Ediff is fantastic for looking through diffs
      ediff-split-window-function 'split-window-horizontally)))
 #+END_SRC
 
+** fill-column-indicator
+I have to hack something around this to make it fixed for org->html exports
+
+#+BEGIN_SRC emacs-lisp
+(use-package fill-column-indicator
+  :init
+  (add-hook 'prog-mode-hook #'fci-mode)
+
+  :config
+  ;; fix for org -> html export
+  (defun fci-mode-override-advice (&rest args))
+  (use-package org)
+  (advice-add 'org-html-fontify-code :around
+              (lambda (fun &rest args)
+                (advice-add 'fci-mode :override #'fci-mode-override-advice)
+                (let ((result  (apply fun args)))
+                  (advice-remove 'fci-mode #'fci-mode-override-advice)
+                  result))))
+#+END_SRC
+
 ** smooth-scrolling
 :PROPERTIES:
 :ID:       9DA976B9-A476-4096-B319-0FAF87FE9228
@@ -3433,7 +3453,7 @@ Pretty minimally configured, but awesome tool for most dynamic languages.
   (progn
     (setq-default flycheck-disabled-checkers '(emacs-lisp-checkdoc json-jsonlint json-python-json))
     (use-package flycheck-pos-tip
-      :init (setq flycheck-display-errors-function #'flycheck-pos-tip-error-messages))
+      :init (flycheck-pos-tip-mode))
     (use-package helm-flycheck
       :init (define-key flycheck-mode-map (kbd "C-c ! h") 'helm-flycheck))
     (use-package flycheck-haskell
@@ -4181,6 +4201,7 @@ Various markdown-related settings. Not much here.
 #+BEGIN_SRC emacs-lisp
 (use-package markdown-mode
   :load-path "site-lisp/markdown-mode"
+  :init (add-hook 'markdown-mode-hook #'whitespace-mode-hook)
   :mode (("\\`README\\.md\\'" . gfm-mode)
          ("\\.md\\'"          . markdown-mode)
          ("\\.markdown\\'"    . markdown-mode)))

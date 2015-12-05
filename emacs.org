@@ -151,7 +151,7 @@ things add hooks that don't work if packages aren't installed.
     spaceline solarized-theme
 
     ;; misc
-    diminish gist async sx exec-path-from-shell bbdb symon
+    diminish gist async sx exec-path-from-shell bbdb symon scpaste
 
     ;; es-mode is run from a  git checkout
 
@@ -878,6 +878,8 @@ First, a function to be called when eshell-mode is entered
   (semantic-mode -1)
   ;; turn off hl-line-mode
   (hl-line-mode -1)
+  ;; turn off whitespace-mode
+  (whitespace-mode -1)
   (define-key eshell-mode-map (kbd "M-l")
     'helm-eshell-history)
   (when (fboundp smartscan-mode)
@@ -4688,6 +4690,39 @@ Exclude very large buffers from dabbrev
 
 #+BEGIN_SRC emacs-lisp
 (use-package vlf-setup)
+#+END_SRC
+
+** scpaste
+Export an HTML version of the buffer and scp it somewhere
+
+#+BEGIN_SRC emacs-lisp
+(defvar fci-enabled? nil)
+(defvar fc-enabled? nil)
+(defun my/surround-scpaste (fun &rest args)
+  (if fci-mode
+      (progn
+        (setq fci-enabled? t)
+        (fci-mode -1))
+    (setq fci-enabled? nil))
+  (if flycheck-mode
+      (progn
+        (setq fc-enabled? t)
+        (flycheck-mode -1))
+    (setq fc-enabled? nil))
+  (let ((result  (apply fun args)))
+    (when fci-enabled?
+      (fci-mode 1))
+    (when fc-enabled?
+      (flycheck-mode 1))
+    result))
+
+(require 'scpaste)
+(setq scpaste-http-destination "http://writequit.org/paste"
+      scpaste-scp-destination "writequit.org:www/paste"
+      scpaste-user-name "dakrone"
+      scpaste-user-address "http://writequit.org/")
+;; Disable fill-column-indicator while scpasting
+(advice-add 'scpaste :around #'my/surround-scpaste)
 #+END_SRC
 
 ** eww

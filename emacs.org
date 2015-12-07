@@ -878,8 +878,7 @@ First, a function to be called when eshell-mode is entered
   (semantic-mode -1)
   ;; turn off hl-line-mode
   (hl-line-mode -1)
-  ;; turn off whitespace-mode
-  (whitespace-mode -1)
+  (setq-local show-trailing-whitespace nil)
   (define-key eshell-mode-map (kbd "M-l")
     'helm-eshell-history)
   (when (fboundp smartscan-mode)
@@ -1386,15 +1385,13 @@ Always turn on whitespace mode in programming buffers
 
 #+BEGIN_SRC emacs-lisp
 ;; turn on whitespace mode globally in prog-mode buffers
-(add-hook 'prog-mode-hook #'whitespace-mode)
+;; (add-hook 'prog-mode-hook #'whitespace-mode)
 (add-hook 'whitespace-mode-hook (lambda () (diminish 'whitespace-mode)))
 #+END_SRC
 
 Indicate trailing empty lines in the GUI:
 
 #+BEGIN_SRC emacs-lisp
-(setq-default whitespace-line-column nil) ;; use fill-column instead
-(setq-default indicate-empty-lines t)
 (setq-default show-trailing-whitespace t)
 #+END_SRC
 
@@ -1755,7 +1752,6 @@ work with the ES codebase.
   (define-key java-mode-map (kbd "M-,") 'pop-tag-mark)
   (c-set-style "intellij" t)
   (subword-mode 1)
-  (whitespace-mode -1)
   (toggle-truncate-lines 1)
   ;; Generic java stuff things
   (setq-local fci-rule-column 99)
@@ -2087,7 +2083,6 @@ So, fringe is nice actually, I set it to the same color as the background
 
 ;; Indicate where a buffer stars and stops
 (setq-default indicate-buffer-boundaries 'right)
-(toggle-indicate-empty-lines)
 #+END_SRC
 
 ** org-mode
@@ -2928,6 +2923,8 @@ to return the correct path depending on the account the email is from.
 #+BEGIN_SRC emacs-lisp
 (defun mail ()
   (interactive)
+  ;; All kinds of trailing whitespace in mu4e
+  (setq-default show-trailing-whitespace nil)
   (add-to-list 'load-path "~/src/mu-0.9.13/mu4e")
   ;; Don't need flycheck for Email
   (when (fboundp 'global-flycheck-mode)
@@ -4203,7 +4200,7 @@ Various markdown-related settings. Not much here.
 #+BEGIN_SRC emacs-lisp
 (use-package markdown-mode
   :load-path "site-lisp/markdown-mode"
-  :init (add-hook 'markdown-mode-hook #'whitespace-mode-hook)
+  :init (add-hook 'markdown-mode-hook #'whitespace-mode)
   :mode (("\\`README\\.md\\'" . gfm-mode)
          ("\\.md\\'"          . markdown-mode)
          ("\\.markdown\\'"    . markdown-mode)))
@@ -4628,6 +4625,7 @@ is inactive.
 #+BEGIN_SRC emacs-lisp
 (use-package symon
   :if window-system
+  :disabled t
   :init
   (setq symon-refresh-rate 2
         symon-delay 5)

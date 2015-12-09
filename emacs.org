@@ -3609,6 +3609,14 @@ I use =M-g M-g= everywhere to go directly to Magit.
   (bind-key "M-4" #'my/create-or-switch-to-eshell-4 magit-mode-map))
 #+END_SRC
 
+** magit-gh-pulls
+Pull requests! Directly from the Magit buffer! Hooray!
+
+#+BEGIN_SRC emacs-lisp
+(use-package magit-gh-pulls
+  :init (add-hook 'magit-mode-hook #'turn-on-magit-gh-pulls))
+#+END_SRC
+
 ** projectile
 :PROPERTIES:
 :ID:       0107185D-D5FC-42DD-A3FB-0FE125672D5D
@@ -4354,6 +4362,9 @@ helpful for documentation buffers and so on.
     ;; basic
     (push '("*Help*" :stick t :noselect t) popwin:special-display-config)
     (push '("*Pp Eval Output*" :stick t) popwin:special-display-config)
+
+    ;; compilation
+    (push '(compilation-mode :stick t :width 0.4) popwin:special-display-config)
 
     ;; magit
     (push '("*magit-process*" :stick t) popwin:special-display-config)

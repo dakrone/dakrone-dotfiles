@@ -281,6 +281,7 @@ alias scsetup2='sudo socat -d -d TCP4-listen:7777,fork OPENSSL:blackex:443,cert=
 # reverse proxy & keepopen
 alias prox='ssh -nNT -R 4444:localhost:22 writequit.org'
 alias autoprox='autossh -M 22000 -nNT -R 4444:localhost:22 writequit.org'
+alias awq='autossh -M 22001 writequit.org'
 # open elinks quickly
 alias el='TERM=xterm-color elinks'
 # datetime aliases

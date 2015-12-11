@@ -99,6 +99,7 @@ during loading that breaks something, it's nice to have a debug information.
 ;; Load the development version of Org instead of the built-in one
 (when (file-exists-p "~/src/elisp/org-mode/lisp/org.el")
   (add-to-list 'load-path "~/src/elisp/org-mode/lisp")
+  (add-to-list 'load-path "~/src/elisp/org-mode/contrib/lisp")
   (require 'org))
 
 ;; initalize all ELPA packages
@@ -142,7 +143,7 @@ things add hooks that don't work if packages aren't installed.
 (defvar my/install-packages
   '(
     ;; package management
-    use-package paradox
+    use-package
 
     ;; themeing
     rainbow-mode leuven-theme dakrone-theme color-identifiers-mode
@@ -153,7 +154,7 @@ things add hooks that don't work if packages aren't installed.
     ;; misc
     diminish gist async sx exec-path-from-shell bbdb symon scpaste
 
-    ;; es-mode is run from a  git checkout
+    ;; es-mode is run from a git checkout
 
     ;; IRC/ERC and social stuff
     alert twittering-mode rcirc-color rcirc-alertify
@@ -165,9 +166,9 @@ things add hooks that don't work if packages aren't installed.
     ;; editing utilities
     expand-region smex windresize ag undo-tree iedit ido-ubiquitous
     ido-vertical-mode yasnippet smart-tab anzu smartparens flx-ido projectile
-    smooth-scrolling multiple-cursors easy-kill simple-call-tree
-    ggtags bookmark+ golden-ratio wc-mode eyebrowse vlf hydra shrink-whitespace
-    ix quick-preview pdf-tools smartscan indent-guide fill-column-indicator
+    smooth-scrolling multiple-cursors ggtags bookmark+ golden-ratio wc-mode
+    eyebrowse vlf hydra shrink-whitespace quick-preview pdf-tools smartscan
+    indent-guide fill-column-indicator
 
     ;; external process things
     prodigy
@@ -203,14 +204,11 @@ things add hooks that don't work if packages aren't installed.
     clojure-mode clojure-mode-extra-font-locking cider paredit paren-face
     ac-cider
 
-    ;; perl
-    cperl-mode
-
     ;; python
     hy-mode virtualenvwrapper
 
     ;; ruby
-    ruby-mode ruby-test-mode inf-ruby puppet-mode rbenv chruby
+    ruby-mode ruby-test-mode inf-ruby puppet-mode rbenv
 
     ;; rust
     rust-mode
@@ -236,8 +234,7 @@ things add hooks that don't work if packages aren't installed.
     helm-c-yasnippet
 
     ;; git
-    magit git-gutter git-timemachine magit-gh-pulls with-editor git-annex
-    diff-hl
+    magit git-gutter git-timemachine magit-gh-pulls with-editor
 
     ;; eshell
     eshell-prompt-extras
@@ -1420,20 +1417,11 @@ And then things to set up semantic mode
 #+BEGIN_SRC emacs-lisp
 (defun my/setup-semantic-mode ()
   (interactive)
-  (use-package semantic)
-  (require 'semantic/ia)
-  (require 'semantic/wisent)
-  ;; Use a better (though slower) parser for java, if it exists
-  ;; (autoload 'wisent-java-default-setup "semantic/wisent/java")
-  (setq semantic-default-submodes
-        '(global-semantic-idle-scheduler-mode
-          global-semanticdb-minor-mode
-          global-semantic-idle-summary-mode
-          global-semantic-stickyfunc-mode))
-  (semantic-mode t)
-  (local-set-key [(control return)] 'semantic-ia-complete-symbol)
-  (local-set-key "\C-c>" 'semantic-complete-analyze-inline)
-  (local-set-key "\C-c?" 'semantic-analyze-proto-impl-toggle))
+  (use-package semantic
+    :init
+    (require 'semantic/ia)
+    (require 'semantic/wisent)
+    (semantic-mode t)))
 
 (add-hook 'c-mode-hook #'my/setup-semantic-mode)
 (add-hook 'java-mode-hook #'my/setup-semantic-mode)
@@ -1445,10 +1433,11 @@ And then things to set up semantic mode
 :CUSTOM_ID: e5ac862c-bc57-49d5-ac43-9cec3d480012
 :END:
 
-Remove some back-ends from vc-mode, no need to check all this ancient things:
+Remove some back-ends from vc-mode, no need to check all these things, I use
+magit for everything anyway:
 
 #+BEGIN_SRC emacs-lisp
-(setq vc-handled-backends '(SVN Git))
+(setq vc-handled-backends '())
 #+END_SRC
 
 In programming modes, make sure things like FIXME and TODO are
@@ -1462,6 +1451,11 @@ highlighted so they stand out:
           1 '((:foreground "#d7a3ad") (:weight bold)) t))))
 
 (add-hook 'prog-mode-hook #'my/add-watchwords)
+#+END_SRC
+
+Also highlight the line in prog-mode:
+
+#+BEGIN_SRC emacs-lisp
 (add-hook 'prog-mode-hook #'hl-line-mode)
 #+END_SRC
 
@@ -1755,22 +1749,30 @@ work with the ES codebase.
   (toggle-truncate-lines 1)
   ;; Generic java stuff things
   (setq-local fci-rule-column 99)
+  (setq-local fill-column 140)
   ;; remove the stupid company-eclim backend
   (when (boundp 'company-backends)
     (delete 'company-eclim company-backends)))
 
 (add-hook 'java-mode-hook #'setup-java)
+
+;; Make emacs' compile recognize gradle output
+(add-to-list 'compilation-error-regexp-alist
+             '("^.*:compileJava\(.*\):\([0-9]+\)\(.\)" 1 2 3))
 #+END_SRC
+
+**** java-imports
 
 I also have a custom package, [[https://github.com/dakrone/emacs-java-imports][java-imports]], which I use to quickly add imports
 for things.
 
 #+BEGIN_SRC emacs-lisp
-(add-hook
- 'java-mode-hook
- (lambda ()
-   (setq-local fill-column 140)
-   (define-key java-mode-map (kbd "C-c M-i") 'java-imports-add-import)))
+(use-package java-imports
+  :init
+  (bind-key "C-c M-i" 'java-imports-add-import java-mode-map)
+  :config
+  ;; Elasticsearch's import style
+  (setq java-imports-find-block-function 'java-imports-find-place-sorted-block))
 #+END_SRC
 
 **** eclim
@@ -1823,49 +1825,7 @@ modes:
   (progn
     (add-hook 'haskell-mode-hook #'haskell-indentation-mode)
     (add-hook 'haskell-mode-hook #'turn-on-haskell-doc-mode)
-    (add-hook 'haskell-mode-hook #'subword-mode))
-  :config
-  (progn
-    (let ((my-cabal-path (expand-file-name "~/.cabal/bin")))
-      (setenv "PATH" (concat my-cabal-path ":" (getenv "PATH")))
-      (add-to-list 'exec-path my-cabal-path))
-    (custom-set-variables '(haskell-tags-on-save t))
-
-    (custom-set-variables
-     '(haskell-process-suggest-remove-import-lines t)
-     '(haskell-process-auto-import-loaded-modules t)
-     '(haskell-process-log t))
-    (define-key haskell-mode-map (kbd "C-c C-l")
-      'haskell-process-load-or-reload)
-    (define-key haskell-mode-map (kbd "C-c C-z")
-      'haskell-interactive-switch)
-    (define-key haskell-mode-map (kbd "C-c C-n C-t")
-      'haskell-process-do-type)
-    (define-key haskell-mode-map (kbd "C-c C-n C-i")
-      'haskell-process-do-info)
-    (define-key haskell-mode-map (kbd "C-c C-n C-c")
-      'haskell-process-cabal-build)
-    (define-key haskell-mode-map (kbd "C-c C-n c")
-      'haskell-process-cabal)
-    (define-key haskell-mode-map (kbd "SPC")
-      'haskell-mode-contextual-space)
-
-    (eval-after-load 'haskell-cabal
-      '(progn
-         (define-key haskell-cabal-mode-map (kbd "C-c C-z")
-           'haskell-interactive-switch)
-         (define-key haskell-cabal-mode-map (kbd "C-c C-k")
-           'haskell-interactive-mode-clear)
-         (define-key haskell-cabal-mode-map (kbd "C-c C-c")
-           'haskell-process-cabal-build)
-         (define-key haskell-cabal-mode-map (kbd "C-c c")
-           'haskell-process-cabal)))
-
-    (custom-set-variables '(haskell-process-type 'cabal-repl))
-
-    (autoload 'ghc-init "ghc" nil t)
-    (autoload 'ghc-debug "ghc" nil t)
-    (add-hook 'haskell-mode-hook (lambda () (ghc-init)))))
+    (add-hook 'haskell-mode-hook #'subword-mode)))
 #+END_SRC
 
 *** Javascript
@@ -1916,17 +1876,6 @@ There's =tern= also, but I leave it turned off by default
       :init (use-package ob-elasticsearch)
       ;; Don't warn me about delete statements
       :config (setq es-warn-on-delete-query nil))))
-#+END_SRC
-
-*** LaTeX
-:PROPERTIES:
-:ID:       4836AB90-B5D5-4F55-8688-C396180A2EC2
-:CUSTOM_ID: 49eedd0e-de3b-4e8e-a1ca-18d99340a409
-:END:
-Use an engine from 2015
-
-#+BEGIN_SRC emacs-lisp
-(setq-default TeX-engine 'luatex)
 #+END_SRC
 
 ** theme
@@ -2054,14 +2003,6 @@ Config for Linux/X11 systems:
   (add-to-list 'sml/replacer-regexp-list '("^~/es/elasticsearch/" ":ES:") t))
 #+END_SRC
 
-#+BEGIN_SRC emacs-lisp
-;;(require 'spaceline-config)
-;;(setq powerline-default-separator 'wave)
-;;(setq anzu-cons-mode-line-p nil)
-;;(spaceline-spacemacs-theme)
-;;(spaceline-toggle-buffer-encoding-abbrev-off)
-#+END_SRC
-
 *** fringe
 :PROPERTIES:
 :ID:       1F8AD6A9-B64A-4B09-849D-34C413D27F5C
@@ -2146,7 +2087,7 @@ And now the huge org-mode configuration
     (add-hook 'org-mode-hook #'hl-line-mode)
     (add-hook 'org-mode-hook #'my/org-mode-hook)
     ;; enabled export backends
-    (custom-set-variables '(org-export-backends '(ascii html latex beamer md)))
+    (custom-set-variables '(org-export-backends '(ascii html latex md rss)))
     (setq org-directory (file-truename "~/org")
           ;; follow links by pressing ENTER on them
           org-return-follows-link t
@@ -3321,13 +3262,11 @@ Paredit for all the lisps.
   (bind-key "M-\"" #'my/other-window-backwards paredit-mode-map))
 #+END_SRC
 
-** smartparens
-:PROPERTIES:
-:ID:       54D306B0-B753-4AD6-B2A5-39C28F5A1E3B
-:CUSTOM_ID: 77f9a23d-51c9-4aa0-8c91-212d36770f14
-:END:
-I'm on the fence about this, I did some CPU profiling and this was taking up a
-looooot of CPU, so I have disabled it and I'm using electric-pair-mode now.
+** electric modes (pair/indent/layout)
+Emacs finally has better support for automatically doing things like indentation
+and pairing parentheses. So, let's enable (some) of that
+
+First, stuff for automatically inserting pairs of characters:
 
 #+BEGIN_SRC emacs-lisp
 (electric-pair-mode 1)
@@ -3336,6 +3275,35 @@ looooot of CPU, so I have disabled it and I'm using electric-pair-mode now.
       electric-pair-open-newline-between-pairs nil)
 (show-paren-mode 1)
 #+END_SRC
+
+Now, how about some auto-indentation:
+
+#+BEGIN_SRC emacs-lisp
+(electric-indent-mode 1)
+
+;; Ignore electric indentation for python and yaml
+(defun electric-indent-ignore-mode (char)
+  "Ignore electric indentation for python-mode"
+  (if (or (equal major-mode 'python-mode)
+          (equal major-mode 'yaml-mode))
+      'no-indent
+    nil))
+(add-hook 'electric-indent-functions 'electric-indent-ignore-mode)
+#+END_SRC
+
+Finally, perhaps we want some automatic layout:
+
+#+BEGIN_SRC emacs-lisp
+(electric-layout-mode 1)
+#+END_SRC
+
+** smartparens
+:PROPERTIES:
+:ID:       54D306B0-B753-4AD6-B2A5-39C28F5A1E3B
+:CUSTOM_ID: 77f9a23d-51c9-4aa0-8c91-212d36770f14
+:END:
+I'm on the fence about this, I did some CPU profiling and this was taking up a
+looooot of CPU, so I have disabled it and I'm using electric-pair-mode now.
 
 So, paredit is great, however, it doesn't work for non-lisp modes. Smartparens
 works pretty well, so I use it everywhere paredit-mode doesn't work.
@@ -3747,43 +3715,8 @@ p= bindings.
          ("C-c G" . git-gutter:popup-hunk))
   :diminish ""
   :init
-  (progn
-    ;; Only a few programming modes
-    (add-hook 'java-mode-hook 'git-gutter-mode)
-    (add-hook 'org-mode-hook 'git-gutter-mode)
-    (add-hook 'clojure-mode-hook 'git-gutter-mode)
-    (add-hook 'ruby-mode-hook 'git-gutter-mode)
-    (add-hook 'python-mode-hook 'git-gutter-mode)))
-#+END_SRC
-
-** git-annex
-:PROPERTIES:
-:ID:       1C30149B-9804-4157-9696-9DF1EFE9A926
-:CUSTOM_ID: 71ca4cc0-96d7-44eb-9a80-03d59f8dbd2e
-:END:
-Need to insinuate the git-annex support for dired buffers
-
-#+BEGIN_SRC emacs-lisp
-(use-package git-annex)
-#+END_SRC
-
-** diff-hl
-:PROPERTIES:
-:ID:       F90BC586-B58E-4B69-A6EB-3317C4F72C37
-:CUSTOM_ID: f57e7ad9-6b6d-4ea3-af4e-73972123134a
-:END:
-This provides basically the same functionality as =git-gutter=, but using the
-fringe, so I'm trying it out...
-
-#+BEGIN_SRC emacs-lisp
-(use-package diff-hl
-  :disabled t
-  :defer t
-  :bind (("C-c G" . diff-hl-diff-goto-hunk))
-  :init
-  (if (window-system)
-      (global-diff-hl-mode 1)
-    (diff-hl-margin-mode 1)))
+  (add-hook 'prog-mode-hook 'git-gutter-mode)
+  (add-hook 'org-mode-hook 'git-gutter-mode))
 #+END_SRC
 
 ** anzu
@@ -3806,6 +3739,7 @@ It can also be used for a "refactor-like" thing similar to query-replace.
     (set-face-attribute 'anzu-mode-line nil :foreground "yellow")))
 
 (add-hook 'prog-mode-hook #'anzu-mode)
+(add-hook 'org-mode-hook #'anzu-mode)
 #+END_SRC
 
 Also, add a thing for yanking the entire symbol into the query while searching:
@@ -3818,18 +3752,8 @@ Also, add a thing for yanking the entire symbol into the query while searching:
 (define-key isearch-mode-map (kbd "C-M-w") 'isearch-yank-symbol)
 #+END_SRC
 
-** easy-kill
-:PROPERTIES:
-:ID:       217A366E-7A0F-4317-8D43-B7F9B703E5E7
-:CUSTOM_ID: 70ad56a3-5ff9-4269-a241-21f55d83d700
-:END:
-#+BEGIN_SRC emacs-lisp
-(use-package easy-kill
-  :defer t
-  :init (global-set-key [remap kill-ring-save] 'easy-kill))
-#+END_SRC
-
 ** helm-swoop
+Best way to search in a buffer ever
 
 #+BEGIN_SRC emacs-lisp
 (use-package helm-swoop
@@ -4210,6 +4134,7 @@ Various markdown-related settings. Not much here.
   :load-path "site-lisp/markdown-mode"
   :init (add-hook 'markdown-mode-hook #'whitespace-mode)
   :mode (("\\`README\\.md\\'" . gfm-mode)
+         ("github\\.com.*\\.txt\\'" . gfm-mode)
          ("\\.md\\'"          . markdown-mode)
          ("\\.markdown\\'"    . markdown-mode)))
 #+END_SRC
@@ -4243,7 +4168,7 @@ Extended bookmarks, which I've started used for dired buffers and so on
           bookmark-save-flag 1)))
 #+END_SRC
 
-** auto completion (company and auto-complete)
+** auto completion (company)
 :PROPERTIES:
 :ID:       C02A1935-39EF-42A6-BA96-D3270541B8A8
 :CUSTOM_ID: 1c3194f8-73fb-4833-9f74-5a8114eb1b2b
@@ -4270,24 +4195,6 @@ Standard auto-completion configuration with company-mode
                ("C-p" . company-select-previous)
                ("C-d" . company-show-doc-buffer)
                ("<tab>" . company-complete))))
-#+END_SRC
-
-And the alternative, the auto-complete config:
-
-#+BEGIN_SRC emacs-lisp
-(use-package auto-complete
-  :disabled t
-  :defer 10
-  :init (ac-config-default)
-  :config
-  (dolist (mode '(git-commit-mode
-                  go-mode
-                  org-mode
-                  cider-mode
-                  cider-repl-mode))
-    (add-to-list 'ac-modes mode))
-  (setq ac-delay 0.2
-        ac-auto-show-menu 0.9))
 #+END_SRC
 
 ** smart-tab
@@ -4520,6 +4427,7 @@ immediately use Twitter :P
   :config
   (setq twittering-icon-mode t
         twittering-use-master-password t
+        twittering-timer-interval 900
         ;; Start up with home and "emacs" search
         twittering-initial-timeline-spec-string
          '("(:home+@)"
@@ -4656,6 +4564,7 @@ helpful to auto-correct.
 
 #+BEGIN_SRC emacs-lisp
 (use-package abbrev
+  :disabled t
   :diminish abbrev-mode
   :init (add-hook 'prog-mode-hook #'abbrev-mode)
   :defer 30
@@ -4746,21 +4655,6 @@ Wait, no, I mean the Emacs web browser built in to 24.4
 #+BEGIN_SRC emacs-lisp
 (use-package eww
   :defer t
-  :init
-  (progn
-    (define-prefix-command 'my/eww-map)
-    (define-key ctl-x-map "w" 'my/eww-map)
-
-    (define-key my/eww-map "t" 'eww)
-    (define-key my/eww-map "o" 'eww)
-    (define-key my/eww-map "w" 'my/eww-wiki)
-    (define-key my/eww-map "e" 'my/search-es-docs)
-
-    (defun my/eww-wiki (text)
-      "Function used to search wikipedia for the given text."
-      (interactive (list (read-string "Wiki for: ")))
-      (eww (format "https://en.m.wikipedia.org/wiki/Special:Search?search=%s"
-                   (url-encode-url text)))))
   :config
   (define-key eww-mode-map "o" 'eww)
   (define-key eww-mode-map "O" 'eww-browse-with-external-browser)
@@ -4824,9 +4718,6 @@ Deletes whitespace at join."
 ;; Completion that uses many different methods to find options.
 (global-set-key (kbd "M-/") 'hippie-expand)
 
-;; Perform general cleanup.
-(global-set-key (kbd "C-c n") #'cleanup-buffer)
-
 ;; Font size
 (define-key global-map (kbd "C-+") 'text-scale-increase)
 (define-key global-map (kbd "C--") 'text-scale-decrease)
@@ -4840,9 +4731,6 @@ Deletes whitespace at join."
 
 ;; Start eshell or switch to it if it's active.
 (global-set-key (kbd "C-x m") 'eshell)
-
-;; Start a new eshell even if one is active.
-(global-set-key (kbd "C-x M") (lambda () (interactive) (eshell t)))
 
 ;; Start a regular shell if you prefer that.
 (global-set-key (kbd "C-x C-m") 'shell)
@@ -4974,6 +4862,9 @@ re-indenting and un-tabification is done."
       (indent-buffer)
       (untabify-buffer)))
   (delete-trailing-whitespace))
+
+;; Perform general cleanup.
+(global-set-key (kbd "C-c n") #'cleanup-buffer)
 #+END_SRC
 
 *** Browsing URLs

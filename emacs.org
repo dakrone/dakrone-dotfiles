@@ -1744,6 +1744,7 @@ work with the ES codebase.
 (defun setup-java ()
   (interactive)
   (define-key java-mode-map (kbd "M-,") 'pop-tag-mark)
+  (define-key java-mode-map (kbd "C-c M-i") 'java-imports-add-import)
   (c-set-style "intellij" t)
   (subword-mode 1)
   (toggle-truncate-lines 1)
@@ -1768,8 +1769,6 @@ for things.
 
 #+BEGIN_SRC emacs-lisp
 (use-package java-imports
-  :init
-  (bind-key "C-c M-i" 'java-imports-add-import java-mode-map)
   :config
   ;; Elasticsearch's import style
   (setq java-imports-find-block-function 'java-imports-find-place-sorted-block))
@@ -2525,31 +2524,44 @@ Publishing org-mode files to my hosting provider:
 #+BEGIN_SRC emacs-lisp
 (use-package org
   :config
+  (require 'ox-rss)
+  (require 'ox-icalendar)
   (setq org-publish-project-alist
         `(;; Main website at http://writequit.org
           ("writequit-org"
-           :base-directory ,(file-truename "~/www")
-           :base-extension "org\\|html"
-           :publishing-directory
-           "/ssh:writequit.org:~/www/"
+           :base-directory ,(file-truename "~/org/writequit/")
+           :base-extension "org"
+           :publishing-directory "/ssh:writequit.org:~/www/"
            :publishing-function org-html-publish-to-html
            :with-toc nil
-           :html-preamble t)
+           :html-preamble t
+           :html-head-extra
+           "<link rel=\"alternate\" type=\"application/rss+xml\"
+                href=\"http://writequit.org/posts.xml\"
+                title=\"RSS feed for writequit.org\">")
+n          ("writequit-rss"
+           :base-directory ,(file-truename  "~/org/writequit")
+           :base-extension "org"
+           :publishing-directory "/ssh:writequit.org:~/www/"
+           :publishing-function org-rss-publish-to-rss
+           :html-link-home "http://writequit.org/"
+           :exclude ".*"
+           :include ("posts.org")
+           :html-link-use-abs-url t)
           ("writequit-images"
-           :base-directory ,(file-truename  "~/www/images")
+           :base-directory ,(file-truename  "~/org/writequit/images")
            :base-extension "png\\|jpg\\|gif"
-           :publishing-directory
-           "/ssh:writequit.org:~/www/images"
+           :publishing-directory "/ssh:writequit.org:~/www/images"
            :publishing-function org-publish-attachment)
           ("writequit-files"
-           :base-directory ,(file-truename  "~/www/files")
+           :base-directory ,(file-truename  "~/org/writequit/files")
            :base-extension "*"
-           :publishing-directory
-           "/ssh:writequit.org:~/www/files/"
+           :publishing-directory "/ssh:writequit.org:~/www/files/"
            :publishing-function org-publish-attachment)
           ("writequit" :components ("writequit-org"
                                     "writequit-images"
-                                    "writequit-files"))
+                                    "writequit-files"
+                                    "writequit-rss"))
 
           ;; Denver emacs site
           ("denver-emacs"
@@ -2636,17 +2648,7 @@ Publishing org-mode files to my hosting provider:
           ("org-es-design"
            :components ("org-es-design-org"
                         "org-es-design-files"
-                        "org-es-design-images"))
-
-          ;; Org-mode files for the book
-          ("org-book-pastebin"
-           :base-directory ,(file-truename "~/org/book/")
-           :base-extension "org\\|zsh\\|html\\|png"
-           :publishing-directory
-           "/ssh:writequit.org:~/www/org/book/"
-           :publishing-function org-html-publish-to-html
-           :with-toc t
-           :html-preamble t))))
+                        "org-es-design-images")))))
 #+END_SRC
 
 Then, when I'm editing ~/org/es/feature-foo.org, I can hit =C-c C-e P f= and

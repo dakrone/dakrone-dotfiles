@@ -1143,14 +1143,10 @@ In most non-programming modes, =M-.= can be used to spellcheck the word
 (otherwise it would jump to the definition)
 
 #+BEGIN_SRC emacs-lisp
-(defun my/enable-flyspell-prog-mode ()
-  (interactive)
-  (flyspell-prog-mode))
-
 (use-package flyspell
   :defer t
   :diminish ""
-  :init (add-hook 'prog-mode-hook #'my/enable-flyspell-prog-mode)
+  :init (add-hook 'prog-mode-hook #'flyspell-prog-mode)
   :config
   (use-package helm-flyspell
     :init
@@ -1746,6 +1742,8 @@ work with the ES codebase.
   (define-key java-mode-map (kbd "M-,") 'pop-tag-mark)
   (define-key java-mode-map (kbd "C-c M-i") 'java-imports-add-import)
   (c-set-style "intellij" t)
+  ;; automatically add newline after { in java
+  (setq-local electric-layout-rules '((?{ . after)))
   (subword-mode 1)
   (toggle-truncate-lines 1)
   ;; Generic java stuff things
@@ -1781,7 +1779,6 @@ Intellij all the time for things.
 
 #+BEGIN_SRC emacs-lisp
 (use-package emacs-eclim
-  :disabled t
   :init
   (progn
     ;; only show errors
@@ -1908,18 +1905,15 @@ nice.
     :disabled t
     :init (load-theme 'apropospriate-dark t))
   (use-package color-theme-sanityinc-tomorrow
-    :init (load-theme 'sanityinc-tomorrow-night t))
-  (use-package solarized-theme
-    :disabled t
-    :init (load-theme 'solarized-dark t)))
+    :init (load-theme 'sanityinc-tomorrow-night t)))
 
 (defun dakrone-light ()
   (interactive)
   (use-package leuven-theme
-    :disabled t
-    :init (load-theme 'leuven t) ;;:config (set-background-color "#f0f0f0")
-    )
+    :init (load-theme 'leuven t)
+    :config (set-background-color "#f0f0f0"))
   (use-package solarized-theme
+    :disabled t
     :init (load-theme 'solarized-light t))
   (use-package material-theme
     :disabled t
@@ -4113,15 +4107,16 @@ Snippets for coding, loading while idle so startup is faster.
 #+BEGIN_SRC emacs-lisp
 (use-package yasnippet
   :defer t
+  :init
+  ;; I don't want the included snippets, only mine
+  (setq yas-snippet-dirs "~/.emacs.d/snippets")
+  (add-hook 'org-mode-hook #'yas-minor-mode)
+  (add-hook 'prog-mode-hook #'yas-minor-mode)
   :diminish yas-minor-mode
   :commands (yas-expand yas-minor-mode)
   :functions (yas-guess-snippet-directories yas-table-name)
   :defines (yas-guessed-modes)
-  :mode ("/\\.emacs\\.d/snippets/" . snippet-mode)
-  :config
-  (yas-load-directory "~/.emacs.d/snippets/")
-  (yas-global-mode 1)
-  (bind-key "C-i" #'yas-next-field-or-maybe-expand yas-keymap))
+  :mode ("/\\.emacs\\.d/snippets/" . snippet-mode))
 #+END_SRC
 
 ** markdown-mode
@@ -4179,24 +4174,69 @@ Standard auto-completion configuration with company-mode
 
 #+BEGIN_SRC emacs-lisp
 (use-package company
-  :defer t
   :diminish company-mode
   :bind ("C-." . company-complete)
-  :init (add-hook #'prog-mode-hook #'company-mode)
+  :init
+  (add-hook 'after-init-hook #'global-company-mode)
+  (use-package company-quickhelp
+    :init
+    (add-hook 'company-mode-hook #'company-quickhelp-mode)
+    :config
+    (setq company-quickhelp-delay 1.0))
   :config
-  (progn
-    (setq company-idle-delay 0.4
-          ;; min prefix of 3 chars
-          company-minimum-prefix-length 3
-          company-selection-wrap-around t
-          company-show-numbers t
-          company-dabbrev-downcase nil
-          company-transformers '(company-sort-by-occurrence))
-    (bind-keys :map company-active-map
-               ("C-n" . company-select-next)
-               ("C-p" . company-select-previous)
-               ("C-d" . company-show-doc-buffer)
-               ("<tab>" . company-complete))))
+  (setq company-idle-delay 0.2
+        ;; min prefix of 3 chars
+        company-minimum-prefix-length 3
+        ;; wrap completions around
+        company-selection-wrap-around t
+        ;; don't show numbers in completion
+        company-show-numbers nil
+        ;; don't downcase dabbrev suggestions
+        company-dabbrev-downcase nil
+        ;; sort completions by occurrence
+        company-transformers '(company-sort-by-occurrence))
+
+  (bind-keys :map company-active-map
+             ("C-n" . company-select-next)
+             ("C-p" . company-select-previous)
+             ("C-d" . company-show-doc-buffer)
+             ("C-l" . company-show-location)
+             ("<tab>" . company-complete)))
+#+END_SRC
+
+I also need some code so yasnippet and company don't step on each other's toes
+when it comes to the =TAB= key:
+
+#+BEGIN_SRC emacs-lisp
+(defun check-expansion ()
+  (save-excursion
+    (if (looking-at "\\_>") t
+      (backward-char 1)
+      (if (looking-at "\\.") t
+        (backward-char 1)
+        (if (looking-at "->") t nil)))))
+
+(defun do-yas-expand ()
+  (let ((yas/fallback-behavior 'return-nil))
+    (yas/expand)))
+
+(defun tab-indent-or-complete ()
+  "If in the minibuffer, complete there. If a tab needs to be
+inserted, do that, otherwise check if either a yasnippet should
+be expanded or try company completion if not."
+  (interactive)
+  (if (minibufferp)
+      (minibuffer-complete)
+    (if (or (not yas-minor-mode)
+            (null (do-yas-expand)))
+        (if (check-expansion)
+            (company-complete-common)
+          (indent-for-tab-command)))))
+
+;; ಠ_ಠ yasnippet
+(add-hook 'yas-minor-mode-hook
+          (lambda ()
+            (local-set-key [tab] 'tab-indent-or-complete)))
 #+END_SRC
 
 ** smart-tab
@@ -4482,7 +4522,6 @@ Eyebrowse is a great package for workspaces in Emacs.
 
 #+BEGIN_SRC emacs-lisp
 (use-package eyebrowse
-  :diminish eyebrowse-mode
   :init
   (progn
     (defun my/create-eyebrowse-setup ()

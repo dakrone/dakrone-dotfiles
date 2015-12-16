@@ -165,7 +165,7 @@ things add hooks that don't work if packages aren't installed.
 
     ;; editing utilities
     expand-region smex windresize ag undo-tree iedit ido-ubiquitous
-    ido-vertical-mode yasnippet smart-tab anzu smartparens flx-ido projectile
+    ido-vertical-mode smart-tab anzu smartparens flx-ido projectile
     smooth-scrolling multiple-cursors ggtags bookmark+ golden-ratio wc-mode
     eyebrowse vlf hydra shrink-whitespace quick-preview pdf-tools smartscan
     indent-guide fill-column-indicator
@@ -231,7 +231,6 @@ things add hooks that don't work if packages aren't installed.
     ;; helm
     helm helm-descbinds helm-ag helm-projectile helm-swoop
     helm-gtags helm-ls-git helm-flycheck helm-flyspell helm-flx
-    helm-c-yasnippet
 
     ;; git
     magit git-gutter git-timemachine magit-gh-pulls with-editor
@@ -4106,6 +4105,7 @@ Snippets for coding, loading while idle so startup is faster.
 
 #+BEGIN_SRC emacs-lisp
 (use-package yasnippet
+  :disabled t
   :defer t
   :init
   ;; I don't want the included snippets, only mine

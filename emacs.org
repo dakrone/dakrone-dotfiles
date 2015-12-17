@@ -1754,9 +1754,9 @@ work with the ES codebase.
 
 (add-hook 'java-mode-hook #'setup-java)
 
-;; Make emacs' compile recognize gradle output
+;; Make emacs' compile recognize broken gradle output
 (add-to-list 'compilation-error-regexp-alist
-             '("^.*:compileJava\(.*\):\([0-9]+\)\(.\)" 1 2 3))
+             '("^:[^/.\n]+\\(/.+\\):\\([[:digit:]]+\\):" 1 2))
 #+END_SRC
 
 **** java-imports
@@ -1895,8 +1895,13 @@ nice.
 
 (defun dakrone-dark ()
   (interactive)
-  ;; (use-package color-theme-sanityinc-tomorrow
-  ;;   :init (color-theme-sanityinc-tomorrow-night))
+  (use-package moe-theme
+    :disabled t
+    :commands (moe-dark moe-light)
+    :init
+    ;; Show highlighted buffer-id as decoration. (Default: nil)
+    (setq moe-theme-highlight-buffer-id t)
+    (moe-dark))
   (use-package material-theme
     :disabled t
     :init (load-theme 'material t))

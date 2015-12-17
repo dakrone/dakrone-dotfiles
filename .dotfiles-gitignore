@@ -7,3 +7,4 @@
 .zshenv
 .zshrc
 .esvmrc
+.config/redshift.conf

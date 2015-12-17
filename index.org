@@ -92,3 +92,7 @@ directly from the repo. It can be regenerated however, from =bootstrap.org=.
 * ESVM configuration
 
 #+INCLUDE: esvm.org
+
+* Redshift configuration
+
+#+INCLUDE: redshift.org

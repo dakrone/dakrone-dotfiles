@@ -2245,6 +2245,8 @@ And now the huge org-mode configuration
     (setq org-capture-templates
           '(("t" "Todo" entry (file "~/org/refile.org")
              "* TODO %?\n%U\n")
+            ("m" "Email" entry (file "~/org/refile.org")
+             "* TODO [#B] %?\nSCHEDULED: %(org-insert-time-stamp (org-read-date nil t \"+0d\"))\n%a\n")
             ("n" "Notes" entry (file+headline "~/org/notes.org" "Notes")
              "* %? :NOTE:\n%U\n")
             ("e" "Emacs note" entry
@@ -2883,6 +2885,11 @@ to return the correct path depending on the account the email is from.
       ;; gpg stuff
       (use-package epa-file
         :init (epa-file-enable))
+
+      ;;store org-mode links to messages
+      (require 'org-mu4e)
+      ;;store link to message if in header view, not to header query
+      (setq org-mu4e-link-query-in-headers-mode nil)
 
       ;; Various mu4e settings
       (setq mu4e-mu-binary (executable-find "mu")

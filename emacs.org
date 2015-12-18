@@ -2877,6 +2877,7 @@ to return the correct path depending on the account the email is from.
   (when (fboundp 'global-flycheck-mode)
     (global-flycheck-mode -1))
   (use-package nyan-mode
+    :disabled t
     :init (nyan-mode 1)) ;; nyan-mode for mail!
   (use-package mu4e
     :config

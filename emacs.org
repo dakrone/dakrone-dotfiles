@@ -1914,8 +1914,7 @@ nice.
 (defun dakrone-light ()
   (interactive)
   (use-package leuven-theme
-    :init (load-theme 'leuven t)
-    :config (set-background-color "#f0f0f0"))
+    :init (load-theme 'leuven t))
   (use-package solarized-theme
     :disabled t
     :init (load-theme 'solarized-light t))
@@ -2705,6 +2704,11 @@ though.
     (setq alert-default-style 'notifier))
   (when (eq system-type 'gnu/linux)
     (setq alert-default-style 'notifications))
+
+  (defun my/compilation-finish (buffer msg)
+    (interactive)
+    (alert (format "[%s]: %s" buffer msg)))
+  (add-to-list 'compilation-finish-functions #'my/compilation-finish)
 
   (defun finish ()
     (interactive)

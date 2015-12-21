@@ -3591,9 +3591,11 @@ I use =M-g M-g= everywhere to go directly to Magit.
 ** magit-gh-pulls
 Pull requests! Directly from the Magit buffer! Hooray!
 
+I don't enable this all the time, because on large repositories it can take a
+long time when refreshing the buffer.
+
 #+BEGIN_SRC emacs-lisp
-(use-package magit-gh-pulls
-  :init (add-hook 'magit-mode-hook #'turn-on-magit-gh-pulls))
+(use-package magit-gh-pulls)
 #+END_SRC
 
 ** projectile
@@ -4524,9 +4526,10 @@ Beacon flashes the cursor whenever you adjust position
 
 #+BEGIN_SRC emacs-lisp
 (use-package beacon
-  :disabled t
   :diminish beacon-mode
-  :init (beacon-mode 1))
+  :init (beacon-mode 1)
+  :config
+  (add-to-list 'beacon-dont-blink-major-modes 'eshell-mode))
 #+END_SRC
 
 ** eyebrowse

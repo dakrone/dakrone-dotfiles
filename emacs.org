@@ -3058,14 +3058,14 @@ passed in. Also supports ignoring the msg at the point."
       (add-hook 'message-send-mail-hook 'mlh-msmtp)
 
       ;; Notification stuff
-      (setq global-mode-string
-            (if (string-match-p "mlh-mu4e-new-mail"
-                                (prin1-to-string global-mode-string))
-                global-mode-string
-              (cons
-               ;;         '(mlh-mu4e-new-mail "✉" "")
-               '(mlh-mu4e-new-mail "Mail" "")
-               global-mode-string)))
+      ;; (setq global-mode-string
+      ;;       (if (string-match-p "mlh-mu4e-new-mail"
+      ;;                           (prin1-to-string global-mode-string))
+      ;;           global-mode-string
+      ;;         (cons
+      ;;          ;;         '(mlh-mu4e-new-mail "✉" "")
+      ;;          '(mlh-mu4e-new-mail "Mail" "")
+      ;;          global-mode-string)))
 
       (defun mlh-mu4e-unread-mail-query ()
         "The query to look for unread messages in all account INBOXes.

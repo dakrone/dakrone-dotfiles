@@ -4137,6 +4137,78 @@ Snippets for coding, loading while idle so startup is faster.
   :mode ("/\\.emacs\\.d/snippets/" . snippet-mode))
 #+END_SRC
 
+** skeleton-mode
+Skeletons are kind of like yasnippet, but they don't mess with my keybindings
+all over the place and take forever to load ಠ_ಠ
+
+#+BEGIN_SRC emacs-lisp
+(require 'skeleton)
+
+(define-skeleton mlh-org-header
+  "Insert a standard header for org-mode files"
+  "Title: "
+  "#+TITLE: " str \n
+  "#+AUTHOR: " (user-full-name) \n
+  "#+EMAIL: " user-mail-address \n
+  "#+LANGUAGE: en
+,#+PROPERTY: header-args :results code replace :exports both :noweb yes :tangle no
+,#+HTML_HEAD: <link rel=\"stylesheet\" href=\"http://dakrone.github.io/org.css\" type=\"text/css\" />
+,#+EXPORT_EXCLUDE_TAGS: noexport
+,#+OPTIONS: H:4 num:nil toc:t \\n:nil @:t ::t |:t ^:{} -:t f:t *:t
+,#+OPTIONS: skip:nil d:(HIDE) tags:not-in-toc
+,#+TODO: TODO(t) | DONE(d)
+,#+TODO: TODO(t) SOMEDAY(s) INPROGRESS(i) HOLD(h) WAITING(w@/!) NEEDSREVIEW(n@/!) | DONE(d)
+,#+TODO: TODO(t) INPROGRESS(i) | CANCELLED(c@/!)
+,#+STARTUP: fold nodlcheck lognotestate content
+
+,* ")
+
+(define-skeleton mlh-org-wrap-elisp
+  "Wrap text with #+BEGIN_SRC / #+END_SRC for the emacs-lisp code"
+  nil
+  > "#+BEGIN_SRC emacs-lisp" \n
+  > _ \n
+  > "#+END_SRC" \n)
+
+(define-skeleton mlh-org-wrap-source
+  "Wrap text with #+BEGIN_SRC / #+END_SRC for a code type"
+  "Language: "
+  > "#+BEGIN_SRC " str \n
+  > _ \n
+  > "#+END_SRC" \n)
+
+(define-skeleton mlh-es-make-index
+  "Insert boilerplate to create an index with `es-mode' syntax"
+  "Index name: "
+  "POST /" str \n
+  "{" \n
+  > "\"settings\": {" \n
+  > "\"index\": {" \n
+  > "\"number_of_shards\": 1," \n
+  > "\"number_of_replicas\": 0" \n
+  > "}" \n ;; index
+  > "}," \n ;; settings
+  > "\"mappings\": {" \n
+  > "\"" (skeleton-read "Type name: ") "\": {" \n
+  > "\"properties\": {" \n
+  > "\"body\": {" \n
+  > "\"type\": \"string\"" \n
+  > "}" \n ;; body
+  > "}" \n ;; properties
+  > "}" \n ;; type
+  > "}" \n ;; mappings
+  > "}" \n)
+
+(define-skeleton mlh-java-try-catch
+  "Wrap code in a Java try/catch"
+  nil
+  > "try {" \n
+  > _
+  > "} catch (Exception e) {" \n
+  > "throw e;" \n
+  > "}" \n)
+#+END_SRC
+
 ** markdown-mode
 :PROPERTIES:
 :ID:       DE084266-9678-4BB9-988C-C8EFE857313B

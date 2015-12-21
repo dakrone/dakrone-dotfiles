@@ -2871,7 +2871,7 @@ to return the correct path depending on the account the email is from.
   (interactive)
   ;; All kinds of trailing whitespace in mu4e
   (setq-default show-trailing-whitespace nil)
-  (add-to-list 'load-path "~/src/mu-0.9.13/mu4e")
+  (add-to-list 'load-path "~/src/mu-0.9.15/mu4e")
   ;; Don't need flycheck for Email
   (when (fboundp 'global-flycheck-mode)
     (global-flycheck-mode -1))

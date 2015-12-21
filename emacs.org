@@ -8,7 +8,6 @@
 #+OPTIONS: skip:nil d:(HIDE) tags:not-in-toc
 #+TODO: SOMEDAY(s) TODO(t) INPROGRESS(i) WAITING(w@/!) NEEDSREVIEW(n@/!) | DONE(d)
 #+TODO: WAITING(w@/!) HOLD(h@/!) | CANCELLED(c@/!)
-#+TAGS: export(e) noexport(n)
 #+STARTUP: fold nodlcheck lognotestate content
 
 * Introduction
@@ -2238,7 +2237,7 @@ And now the huge org-mode configuration
             ("book" . ?b)
             ("support" . ?s)
             ("docs" . ?d)
-            ("export" . ?e)
+            ("emacs" . ?e)
             ("noexport" . ?n)
             ("recurring" . ?r)))
     ;; capture templates

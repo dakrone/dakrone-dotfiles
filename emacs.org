@@ -2537,7 +2537,7 @@ Publishing org-mode files to my hosting provider:
            "<link rel=\"alternate\" type=\"application/rss+xml\"
                 href=\"http://writequit.org/posts.xml\"
                 title=\"RSS feed for writequit.org\">")
-n          ("writequit-rss"
+          ("writequit-rss"
            :base-directory ,(file-truename  "~/org/writequit")
            :base-extension "org"
            :publishing-directory "/ssh:writequit.org:~/www/"

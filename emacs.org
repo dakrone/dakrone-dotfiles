@@ -3811,14 +3811,12 @@ https://tuhdo.github.io/helm-intro.html
   (("C-M-z" . helm-resume)
    ("C-x C-f" . helm-find-files)
    ("C-x C-r" . helm-mini)
+   ("C-c C-o" . helm-occur)
    ("C-x M-o" . helm-occur)
    ("M-y" . helm-show-kill-ring)
    ("C-h a" . helm-apropos)
    ("C-h m" . helm-man-woman)
    ("C-h SPC" . helm-all-mark-rings)
-   ("M-g >" . helm-ag-this-file)
-   ("M-g ," . helm-ag-pop-stack)
-   ("M-g ." . helm-do-grep)
    ("C-x C-i" . helm-semantic-or-imenu)
    ("M-x" . helm-M-x)
    ("C-x C-b" . helm-buffers-list)
@@ -3827,7 +3825,7 @@ https://tuhdo.github.io/helm-intro.html
    ("C-h t" . helm-world-time))
   :config
   (use-package helm-files
-    :config (setq helm-ff-file-compressed-list '("gz" "bz2" "zip" "tgz" "xz")))
+    :config (setq helm-ff-file-compressed-list '("gz" "bz2" "zip" "tgz" "xz" "txz")))
   (use-package helm-commands)
   (use-package helm-buffers)
   (use-package helm-mode

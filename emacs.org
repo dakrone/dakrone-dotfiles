@@ -81,6 +81,12 @@ during loading that breaks something, it's nice to have a debug information.
 (setq debug-on-quit t)
 #+END_SRC
 
+Also, let's make =cl= things available right from the start
+
+#+BEGIN_SRC emacs-lisp
+(require 'cl)
+#+END_SRC
+
 #+BEGIN_SRC emacs-lisp
 ;; Dvorak nicety, regardless of loading settings
 (define-key key-translation-map "\C-t" "\C-x")
@@ -1914,6 +1920,9 @@ nice.
   (interactive)
   (use-package leuven-theme
     :init (load-theme 'leuven t))
+  (use-package color-theme-sanityinc-tomorrow
+    :disabled t
+    :init (load-theme 'sanityinc-tomorrow-day t))
   (use-package solarized-theme
     :disabled t
     :init (load-theme 'solarized-light t))

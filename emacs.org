@@ -1914,11 +1914,15 @@ nice.
     :disabled t
     :init (load-theme 'apropospriate-dark t))
   (use-package color-theme-sanityinc-tomorrow
-    :init (load-theme 'sanityinc-tomorrow-night t)))
+    :init (load-theme 'sanityinc-tomorrow-night t))
+  (use-package tao-theme
+    :disabled t
+    :init (load-theme 'tao-yin t)))
 
 (defun dakrone-light ()
   (interactive)
   (use-package leuven-theme
+    :disabled t
     :init (load-theme 'leuven t))
   (use-package color-theme-sanityinc-tomorrow
     :disabled t
@@ -1928,7 +1932,9 @@ nice.
     :init (load-theme 'solarized-light t))
   (use-package material-theme
     :disabled t
-    :init (load-theme 'material-light t)))
+    :init (load-theme 'material-light t))
+  (use-package tao-theme
+    :init (load-theme 'tao-yang t)))
 
 (if (eq my/background 'dark)
     (dakrone-dark)
@@ -3822,6 +3828,7 @@ https://tuhdo.github.io/helm-intro.html
    ("C-x C-r" . helm-mini)
    ("C-c C-o" . helm-occur)
    ("C-x M-o" . helm-occur)
+   ("C-x C-o" . helm-occur)
    ("M-y" . helm-show-kill-ring)
    ("C-h a" . helm-apropos)
    ("C-h m" . helm-man-woman)

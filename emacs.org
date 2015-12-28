@@ -3880,7 +3880,6 @@ https://tuhdo.github.io/helm-intro.html
       (define-key helm-grep-mode-map (kbd "p")  'helm-grep-mode-jump-other-window-backward)))
   (use-package helm-man)
   (use-package helm-misc)
-  (use-package helm-aliases)
   (use-package helm-elisp)
   (use-package helm-imenu)
   (use-package helm-semantic)

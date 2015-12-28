@@ -165,6 +165,9 @@ things add hooks that don't work if packages aren't installed.
     alert twittering-mode rcirc-color rcirc-alertify
     ercn erc-hl-nicks
 
+    ;; the all-seeing eye
+    sauron
+
     ;; for auto-complete
     fuzzy popup company auto-complete
 
@@ -2737,6 +2740,26 @@ though.
 
 To use this, I just need to do =(alert "this is a message")=.
 
+** sauron
+The all-seeing eye
+
+#+BEGIN_SRC emacs-lisp
+(use-package sauron
+  :init
+  (setq sauron-max-line-length 120
+        sauron-watch-patterns '("dakrone" "thnetos" "okenezak")
+        sauron-watch-nicks '("dakrone" "thnetos")
+        sauron-frame-geometry "120x16+0-0")
+  ;; filter out IRC spam
+  (add-hook 'sauron-event-block-functions
+            (lambda (origin prio msg &optional props)
+              (or
+               (string-match "^*** Users" msg))))
+  (sauron-start-hidden)
+  (remove-hook 'sauron-event-added-functions #'sauron-alert-el-adapter)
+  :commands (sauron-toggle-hide-show)
+  :bind ("M-o" . sauron-toggle-hide-show))
+#+END_SRC
 ** ERC
 IRC in Emacs
 
@@ -4118,14 +4141,17 @@ _q_: quit
     (global-set-key (kbd "C-x t") 'hydra-toggle-map/body)
 
     ;; Jump between errors in a buffer:
-    (defhydra hydra-next-error (global-map "C-x")
+    (defhydra hydra-next-error nil
       "next-error"
       ("`" next-error "next")
       ("j" next-error "next" :bind nil)
+
       ("n" next-error "next" :bind nil)
       ("k" previous-error "previous" :bind nil)
       ("p" previous-error "previous" :bind nil)
-      ("l" flycheck-list-errors "list-errors" :exit t))))
+      ("l" flycheck-list-errors "list-errors" :exit t))
+
+    (global-set-key (kbd "C-x `") 'hydra-next-error/body)))
 #+END_SRC
 
 ** yasnippet
@@ -4573,7 +4599,7 @@ immediately use Twitter :P
   :config
   (setq twittering-icon-mode t
         twittering-use-master-password t
-        twittering-timer-interval 900
+        twittering-timer-interval 600
         ;; Start up with home and "emacs" search
         twittering-initial-timeline-spec-string
          '("(:home+@)"

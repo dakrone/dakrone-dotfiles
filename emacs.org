@@ -62,7 +62,7 @@ This list is in no way exhaustive.
 | =C-c u=     | search for the last URL and browse to it with system browser  | Sometimes                |
 | =C-x 4 t=   | transpose the current buffers                                 | Rarely                   |
 | =C-h e=     | pop up the ~*Messages*~ buffer                                | Rarely                   |
-| =C-x RET=   | open shell (zsh)                                              | Rarely                   |
+| =C-x RET=   | open shell                                                    | Rarely                   |
 #+TBLFM: $1=<@11$6>
 
 ** Pre-cursors
@@ -267,7 +267,9 @@ things add hooks that don't work if packages aren't installed.
 ;; Load use-package, used for loading packages everywhere else
 (require 'use-package)
 ;; Set to t to debug package loading or nil to disable
-(setq use-package-verbose t)
+(setq use-package-verbose nil)
+;; Always ensure the package is downloaded/installed
+(setq use-package-always-ensure t)
 #+END_SRC
 
 ** Setting up $PATH and other vars
@@ -303,10 +305,10 @@ built-in packages.
 :ID:       4AE7470D-E61E-48C4-959B-CB8C19A10725
 :CUSTOM_ID: 13ebbbbd-30d6-45eb-96ec-cb3c3a0b1e86
 :END:
-First, let's determine whether I'm going to be using a dark theme,
-or a light theme. I set a var to either '=light= or '=dark=
-depending on whatever I'm in the mood for. This is used later on for the
-modeline theme, as well as the general theme for things.
+First, let's determine whether I'm going to be using a dark background, or a
+light background. I set a var to either '=light= or '=dark= depending on
+whatever I'm in the mood for. This is used later on for the modeline theme, as
+well as the general theme for things.
 
 #+BEGIN_SRC emacs-lisp
 ;;(defvar my/background 'light)
@@ -870,8 +872,8 @@ comint-replace-by-expanded-history-before-point."
 :ID:       526FD9BE-DB34-48E1-9AA5-0879EAAF5D81
 :CUSTOM_ID: c4cdb5dc-5c10-49fc-9ab7-0d3e9f49de1d
 :END:
-Eshell is great for one-off shell things, but I use ZSH too much for it to be a
-full replacement. Regardless, it needs some tweaks in order to be fully useful.
+Eshell is great for most shell things. It's a great ZSH replacement. Regardless,
+it needs some tweaks in order to be fully useful.
 
 First, a function to be called when eshell-mode is entered
 
@@ -2749,7 +2751,7 @@ The all-seeing eye
   (setq sauron-max-line-length 120
         sauron-watch-patterns '("dakrone" "thnetos" "okenezak")
         sauron-watch-nicks '("dakrone" "thnetos")
-        sauron-frame-geometry "120x16+0-0")
+        sauron-frame-geometry "120x48+0+0")
   ;; filter out IRC spam
   (add-hook 'sauron-event-block-functions
             (lambda (origin prio msg &optional props)

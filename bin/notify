@@ -1,4 +1,4 @@
-#!/usr/bin/env zsh
+#!/usr/bin/env bash
 
 # A generic notification script that will either use the local HTTP interface
 # for sending a notification, or enqueue it into SQS to be consumed by a remote

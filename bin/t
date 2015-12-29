@@ -1,4 +1,4 @@
-#!/usr/bin/env zsh
+#!/usr/bin/env bash
 
 # A wrapper for an arbitrary command that notifies when it completes
 

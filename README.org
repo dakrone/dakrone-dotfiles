@@ -3,8 +3,6 @@
 #+EMAIL:   leehinman@fastmail.com
 #+LANGUAGE: en
 #+PROPERTY: header-args :results code replace :exports both :noweb yes :comments org :tangle no
-#+PROPERTY: header-args:sh :shebang "#!/usr/bin/env zsh"
-#+PROPERTY: header-args:python :shebang "#!/usr/bin/env python"
 #+HTML_HEAD: <link rel="stylesheet" href="http://dakrone.github.io/org.css" type="text/css" />
 #+EXPORT_SELECT_TAGS: export
 #+EXPORT_EXCLUDE_TAGS: noexport

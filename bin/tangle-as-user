@@ -1,4 +1,4 @@
-#!/usr/bin/env zsh
+#!/usr/bin/env bash
 # -*- mode: shell-script -*-
 #
 # Tangle .org files with org-mode

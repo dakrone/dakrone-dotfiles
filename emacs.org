@@ -1442,7 +1442,7 @@ Remove some back-ends from vc-mode, no need to check all these things, I use
 magit for everything anyway:
 
 #+BEGIN_SRC emacs-lisp
-(setq vc-handled-backends '())
+(setq vc-handled-backends '(git svn))
 #+END_SRC
 
 In programming modes, make sure things like FIXME and TODO are
@@ -1872,13 +1872,16 @@ There's =tern= also, but I leave it turned off by default
     (progn
       (add-to-list 'load-path "~/src/elisp/es-mode")
       (use-package es-mode
-        :init (use-package ob-elasticsearch)
+        :ensure nil
+        :init (use-package ob-elasticsearch
+                :ensure nil)
         ;; Don't warn me about delete statements
         :config (setq es-warn-on-delete-query nil)))
   (progn
     (use-package es-mode
       :ensure t
-      :init (use-package ob-elasticsearch)
+      :init (use-package ob-elasticsearch
+              :ensure es-mode)
       ;; Don't warn me about delete statements
       :config (setq es-warn-on-delete-query nil))))
 #+END_SRC
@@ -2082,6 +2085,7 @@ And now the huge org-mode configuration
 
 #+BEGIN_SRC emacs-lisp
 (use-package org
+  :ensure org
   :bind (("C-c l" . org-store-link)
          ("C-c a" . org-agenda)
          ("C-c b" . org-iswitchb)
@@ -2753,11 +2757,15 @@ The all-seeing eye
         sauron-watch-nicks '("dakrone" "thnetos")
         sauron-frame-geometry "120x48+0+0")
   ;; filter out IRC spam
-  (add-hook 'sauron-event-block-functions
-            (lambda (origin prio msg &optional props)
-              (or
-               (string-match "^*** Users" msg))))
+  (defun tsp/hide-irc-user-spam (origin priority msg &optional properties)
+    (or (string-match "^*** Users" msg)))
+  (defun tsp/hide-tweet-counts (origin priority msg &optional properties)
+    (or (string-match "^[0-9]+ new tweets" msg)))
+  (add-hook 'sauron-event-block-functions #'tsp/hide-irc-user-spam)
+  (add-hook 'sauron-event-block-functions #'tsp/hide-tweet-counts)
+
   (sauron-start-hidden)
+  ;; Turn this off!
   (remove-hook 'sauron-event-added-functions #'sauron-alert-el-adapter)
   :commands (sauron-toggle-hide-show)
   :bind ("M-o" . sauron-toggle-hide-show))
@@ -3845,6 +3853,7 @@ https://tuhdo.github.io/helm-intro.html
 
 #+BEGIN_SRC emacs-lisp
 (use-package helm-config
+  :ensure helm
   :demand t
   :diminish helm-mode
   :bind
@@ -3867,12 +3876,12 @@ https://tuhdo.github.io/helm-intro.html
   :config
   (use-package helm-files
     :config (setq helm-ff-file-compressed-list '("gz" "bz2" "zip" "tgz" "xz" "txz")))
-  (use-package helm-commands)
   (use-package helm-buffers)
   (use-package helm-mode
     :diminish helm-mode
     :init (helm-mode 1))
   (use-package helm-ls-git
+    :ensure t
     :bind ("C-x C-d" . helm-browse-project))
   (use-package helm-grep
     :config
@@ -3889,6 +3898,7 @@ https://tuhdo.github.io/helm-intro.html
   (use-package helm-bookmark
     :bind ("C-x M-b" . helm-bookmarks))
   (use-package helm-projectile
+    :ensure t
     :bind (("C-x f" . helm-projectile)
            ("C-c p f" . helm-projectile-find-file)
            ("C-c p s" . helm-projectile-switch-project)))
@@ -3907,8 +3917,7 @@ https://tuhdo.github.io/helm-intro.html
         (setq-local cursor-type nil))))
   (add-hook 'helm-minibuffer-set-up-hook 'helm-hide-minibuffer-maybe)
 
-  (setq ;; truncate long lines in helm completion
-        helm-truncate-lines t
+  (setq helm-truncate-lines t
         ;; may be overridden if 'ggrep' is in path (see below)
         helm-grep-default-command
         "grep -a -d skip %e -n%cH -e %p %f"
@@ -4096,6 +4105,8 @@ through them with helm
 
 #+BEGIN_SRC emacs-lisp
 (use-package helm-c-yasnippet
+  :ensure nil
+  :disabled t
   :bind
   (("M-=" . helm-yas-complete)))
 #+END_SRC
@@ -4164,6 +4175,7 @@ Snippets for coding, loading while idle so startup is faster.
 
 #+BEGIN_SRC emacs-lisp
 (use-package yasnippet
+  :ensure nil
   :disabled t
   :defer t
   :init
@@ -4780,7 +4792,8 @@ Exclude very large buffers from dabbrev
 [[https://github.com/m00natic/vlfi][VLF]] lets me handle things like 2gb files gracefully.
 
 #+BEGIN_SRC emacs-lisp
-(use-package vlf-setup)
+(use-package vlf-setup
+  :ensure vlf)
 #+END_SRC
 
 ** scpaste
@@ -4816,21 +4829,46 @@ Export an HTML version of the buffer and scp it somewhere
 (advice-add 'scpaste :around #'my/surround-scpaste)
 #+END_SRC
 
-** eww
+** eww and browsing
 :PROPERTIES:
 :ID:       B9806739-ABEF-4DB0-90E0-2B7169529C9A
 :CUSTOM_ID: e1bbe37a-071b-42c9-a1b4-0c386e1eb0db
 :END:
 Ewwwwww...
 
-Wait, no, I mean the Emacs web browser built in to 24.4
+Wait, no, I mean the Emacs web browser built in to 24.4+
+
+We can browse to anything that looks like a URL with =C-x m=.
+
+#+begin_src emacs-lisp :tangle yes
+(global-set-key (kbd "C-x m") 'browse-url-at-point)
+#+end_src
+
+I use EWW as my default browser in Emacs; certain things, I need to jump out of EWW and in to a real
+browser with javascript; which I can do if I just hit =&= -- it'll drop me in to a firefox session
+without a hassle.
+
+There are certain sites that, despite my best abilities, I cannot make work in EWW. For these, I
+launch Firefox directly, instead of hitting a silly man in the middle.
+
+#+begin_src emacs-lisp :tangle yes
+
+#+end_src
 
 #+BEGIN_SRC emacs-lisp
 (use-package eww
   :defer t
   :config
+  (use-package s
+    :ensure t)
   (define-key eww-mode-map "o" 'eww)
   (define-key eww-mode-map "O" 'eww-browse-with-external-browser)
+  (setq browse-url-browser-function
+        '((".*google.*maps.*" . browse-url-generic)
+          ("." . eww-browse-url)))
+  (setq shr-external-browser 'browse-url-generic)
+  (setq browse-url-generic-program (executable-find "firefox"))
+
   (use-package eww-lnum
     :config
     (bind-key "f" #'eww-lnum-follow eww-mode-map)

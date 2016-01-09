@@ -268,8 +268,6 @@ things add hooks that don't work if packages aren't installed.
 (require 'use-package)
 ;; Set to t to debug package loading or nil to disable
 (setq use-package-verbose nil)
-;; Always ensure the package is downloaded/installed
-(setq use-package-always-ensure t)
 #+END_SRC
 
 ** Setting up $PATH and other vars
@@ -1087,7 +1085,6 @@ and dired tramp buffers are great for file management.
 (use-package tramp
   :defer 5
   :config
-  (setq )
   ;; Turn of auto-save for tramp files
   (defun tramp-set-auto-save ()
     (auto-save-mode -1))
@@ -1241,9 +1238,12 @@ writable-dired mode is aawwweeeesssoooommee, it makes renames super easy.
     :config
     (add-to-list 'dired-omit-extensions ".DS_Store"))
   (customize-set-variable 'diredp-hide-details-initially-flag nil)
-  (use-package dired+)
+  (use-package dired+
+    :ensure t)
   (use-package dired-aux
-    :init (use-package dired-async))
+    :init
+    (use-package dired-async
+      :ensure async))
   (put 'dired-find-alternate-file 'disabled nil)
   (setq ls-lisp-dirs-first t
         dired-recursive-copies 'always
@@ -4844,16 +4844,13 @@ We can browse to anything that looks like a URL with =C-x m=.
 (global-set-key (kbd "C-x m") 'browse-url-at-point)
 #+end_src
 
-I use EWW as my default browser in Emacs; certain things, I need to jump out of EWW and in to a real
-browser with javascript; which I can do if I just hit =&= -- it'll drop me in to a firefox session
-without a hassle.
+I use EWW as my default browser in Emacs; certain things, I need to jump out of
+EWW and in to a real browser with javascript; which I can do if I just hit =&=
+-- it'll drop me in to a firefox session without a hassle.
 
-There are certain sites that, despite my best abilities, I cannot make work in EWW. For these, I
-launch Firefox directly, instead of hitting a silly man in the middle.
-
-#+begin_src emacs-lisp :tangle yes
-
-#+end_src
+There are certain sites that, despite my best abilities, I cannot make work in
+EWW. For these, I launch Firefox directly, instead of hitting a silly man in the
+middle.
 
 #+BEGIN_SRC emacs-lisp
 (use-package eww
